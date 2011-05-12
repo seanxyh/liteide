@@ -1,0 +1,74 @@
+/**************************************************************************
+** This file is part of LiteIDE
+**
+** Copyright (c) 2011 LiteIDE Team. All rights reserved.
+**
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Lesser General Public
+** License as published by the Free Software Foundation; either
+** version 2.1 of the License, or (at your option) any later version.
+**
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Lesser General Public License for more details.
+**
+** In addition, as a special exception,  that plugins developed for LiteIDE,
+** are allowed to remain closed sourced and can be distributed under any license .
+** These rights are included in the file LGPL_EXCEPTION.txt in this package.
+**
+**************************************************************************/
+// Module: golangasticon.h
+// Creator: visualfc <visualfc@gmail.com>
+// date: 2011-3-26
+// $Id: golangasticon.h,v 1.0 2011-5-12 visualfc Exp $
+
+#ifndef GOLANGASTICON_H
+#define GOLANGASTICON_H
+
+#include <QIcon>
+
+class GolangAstIcon
+{
+public:
+    GolangAstIcon();
+    QIcon iconFromTag(const QString &tag) const;
+protected:
+    QIcon   iconPackage;
+    QIcon   iconType;
+    QIcon   iconStruct;
+    QIcon   iconInterface;
+    QIcon   iconFunc;
+    QIcon   iconFuncs;
+    QIcon   iconVar;
+    QIcon   iconVars;
+    QIcon   iconConst;
+    QIcon   iconConsts;
+    QIcon   iconMethod;
+public:
+    QIcon   iconGofile;
+    QIcon   iconMakefile;
+    QIcon   iconProfile;
+};
+
+class GolangAstIconPriv
+{
+public:
+    GolangAstIconPriv();
+    QIcon iconFromTag(const QString &tag) const;
+protected:
+    QIcon   iconPackage;
+    QIcon   iconType;
+    QIcon   iconStruct;
+    QIcon   iconInterface;
+    QIcon   iconFunc;
+    QIcon   iconFuncs;
+    QIcon   iconVar;
+    QIcon   iconVars;
+    QIcon   iconConst;
+    QIcon   iconConsts;
+    QIcon   iconMethod;
+};
+
+
+#endif // GOLANGASTICON_H

@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/close.png</file>
+        <file>images/closeproject.png</file>
+        <file>images/liteide128.png</file>
+        <file>images/new.png</file>
+        <file>images/open.png</file>
+        <file>images/openfile.png</file>
+        <file>images/openproject.png</file>
+        <file>images/redo.png</file>
+        <file>images/save.png</file>
+        <file>images/saveproject.png</file>
+        <file>images/undo.png</file>
+        <file>images/saveall.png</file>
+        <file>images/closepage.png</file>
+        <file>images/listpage.png</file>
+        <file>images/addpage.png</file>
+        <file>images/fileitem.png</file>
+        <file>images/folderitem.png</file>
+        <file>images/projectitem.png</file>
+        <file>images/logo/logo1.png</file>
+        <file>images/logo/logo2.png</file>
+        <file>images/cleanoutput.png</file>
+        <file>images/hideoutput.png</file>
+        <file>images/liteide64.png</file>
+    </qresource>
+</RCC>

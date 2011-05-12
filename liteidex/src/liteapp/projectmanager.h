@@ -1,0 +1,69 @@
+/**************************************************************************
+** This file is part of LiteIDE
+**
+** Copyright (c) 2011 LiteIDE Team. All rights reserved.
+**
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Lesser General Public
+** License as published by the Free Software Foundation; either
+** version 2.1 of the License, or (at your option) any later version.
+**
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Lesser General Public License for more details.
+**
+** In addition, as a special exception,  that plugins developed for LiteIDE,
+** are allowed to remain closed sourced and can be distributed under any license .
+** These rights are included in the file LGPL_EXCEPTION.txt in this package.
+**
+**************************************************************************/
+// Module: projectmanager.h
+// Creator: visualfc <visualfc@gmail.com>
+// date: 2011-3-26
+// $Id: projectmanager.h,v 1.0 2011-5-12 visualfc Exp $
+
+#ifndef PROJECTMANAGER_H
+#define PROJECTMANAGER_H
+
+#include "../liteapi/liteapi.h"
+
+#include <QPointer>
+
+using namespace LiteApi;
+
+class QComboBox;
+class QStackedWidget;
+class QStandardItem;
+class QStandardItemModel;
+class QVBoxLayout;
+
+class ProjectManager : public IProjectManager
+{
+    Q_OBJECT
+public:
+    ProjectManager();
+    ~ProjectManager();
+    virtual IFile *createFile(const QString &fileName, const QString &mimeType);
+    virtual void addFactory(IFileFactory *factory);
+    virtual void removeFactory(IFileFactory *factory);
+    virtual QList<IFileFactory*> factoryList() const;
+    virtual QStringList mimeTypeList() const;
+public:
+    virtual void setCurrentProject(IProject *project);
+    virtual IProject *currentProject() const;
+    virtual QList<IEditor*> editorList(IProject *project) const;
+    QWidget *widget();
+public slots:
+    virtual void saveProject(IProject *project = 0);
+    virtual void closeProject(IProject *project = 0);
+protected:
+    virtual void closeProjectHelper(IProject *project);
+protected:
+    QPointer<IProject>      m_currentProject;
+    QList<IFileFactory*>    m_factoryList;
+    QWidget                 *m_widget;
+    QVBoxLayout             *m_mainLayout;
+};
+
+#endif // PROJECTMANAGER_H

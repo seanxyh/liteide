@@ -1,0 +1,7 @@
+[SETUP]
+NAME = "Go Project"
+AUTHOR = visualfc
+INFO = new golang project (*.e64)
+TYPE = project
+FILES = root.e64 main.go
+OPEN = root.e64
