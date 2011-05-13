@@ -58,6 +58,11 @@ void TextOutEdit::mouseDoubleClickEvent(QMouseEvent *e)
 void TextOutEdit::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return) {
+#ifdef Q_OS_WIN
+    m_inputText += "\r\n";
+#else
+    m_inputText += "\n";
+#endif
         emit enterText(m_inputText);
         m_inputText.clear();
         e->ignore();
