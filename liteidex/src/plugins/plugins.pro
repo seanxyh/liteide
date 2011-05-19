@@ -11,7 +11,4 @@ SUBDIRS = \
     golangast \
     litebuild \
     golangfmt \
-#    luabuild \
-#    golangbuild \
-#    makefilebuild \
-
+    golangcode

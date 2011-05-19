@@ -28,6 +28,7 @@
 
 #include "liteapi.h"
 #include <QTextCursor>
+#include <QCompleter>
 
 namespace LiteApi {
 
@@ -57,10 +58,12 @@ class ICompleter : public QObject
     Q_OBJECT
 public:
     ICompleter(QObject *parent): QObject(parent) {}
+    virtual QCompleter *completer() const = 0;
     virtual void appendItem(QString item,bool temp) = 0;
     virtual void appendItems(QStringList items, bool temp) = 0;
     virtual void clearTemp() = 0;
     virtual void clear() = 0;
+    virtual void show() = 0;
 signals:
     void prefixChanged(QTextCursor,QString);
     void wordCompleted(const QString &func, const QStringList &args);

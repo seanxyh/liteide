@@ -31,6 +31,8 @@
 #include <QTextCursor>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QAbstractItemView>
+#include <QScrollBar>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -82,6 +84,19 @@ void LiteCompleter::clearTemp()
             m_model->removeRow(i);
         }
     }
+}
+
+void LiteCompleter::show()
+{
+    if (!m_editor) {
+        return;
+    }
+    m_completer->popup()->setCurrentIndex(m_completer->completionModel()->index(0, 0));
+    QRect cr = m_editor->cursorRect();
+    cr.setWidth(m_completer->popup()->sizeHintForColumn(0)
+                + m_completer->popup()->verticalScrollBar()->sizeHint().width());
+    m_completer->complete(cr); // popup it up!
+
 }
 
 void LiteCompleter::appendItems(QStringList items,bool temp)
