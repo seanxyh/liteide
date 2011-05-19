@@ -106,7 +106,7 @@ void LiteCompleter::appendItems(QStringList items,bool temp)
     }
 }
 
-void LiteCompleter::appendItem(QString text, bool temp)
+bool LiteCompleter::appendItem(QString text, bool temp)
 {
     QString func,arg;
     int pos = text.indexOf(m_stop);
@@ -119,6 +119,7 @@ void LiteCompleter::appendItem(QString text, bool temp)
     QStringList words = func.split(m_completer->separator(),QString::SkipEmptyParts);
     QStandardItem *root = 0;
     QStandardItem *item = 0;
+    bool bnew = false;
     foreach (QString word, words) {
         item = 0;
         QModelIndex parent = m_model->indexFromItem(root);
@@ -137,6 +138,7 @@ void LiteCompleter::appendItem(QString text, bool temp)
             } else {
                 root->appendRow(item);
             }
+            bnew = true;
         }
         root = item;
     }
@@ -146,6 +148,7 @@ void LiteCompleter::appendItem(QString text, bool temp)
         args.removeDuplicates();
         item->setData(args);
     }
+    return bnew;
 }
 
 void LiteCompleter::completionPrefixChanged(QString prefix)

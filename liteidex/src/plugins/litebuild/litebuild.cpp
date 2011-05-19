@@ -312,11 +312,15 @@ void LiteBuild::extFinish(bool error,int exitCode, QString msg)
     }
     m_output->appendTag0(QString("</action>"));
 
-    QStringList task = m_process->userData(3).toStringList();
-    if (!task.isEmpty()) {
-        QString id = task.takeFirst();
-        m_process->setUserData(3,task);
-        execAction(id);
+    if (!error && exitCode == 0) {
+        QStringList task = m_process->userData(3).toStringList();
+        if (!task.isEmpty()) {
+            QString id = task.takeFirst();
+            m_process->setUserData(3,task);
+            execAction(id);
+        }
+    } else {
+        m_process->setUserData(3,QStringList());
     }
 }
 

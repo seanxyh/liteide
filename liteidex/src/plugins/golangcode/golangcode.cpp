@@ -73,18 +73,21 @@ void GolangCode::finished(int,QProcess::ExitStatus)
     int n = 0;
     foreach (QString s, all) {
         QStringList word = s.split(",,");
+        QString item,param;
         //classes, names, types
         if (word.count() == 3) {
+            if (word.at(0) == "type" || word.at(0) == "func") {
+                item = word.at(1);
+            }
             if (word.at(0) == "func") {
-                QString param;
                 int pos = word.at(2).indexOf("(");
                 if (pos != -1) {
                     param = word.at(2).right(word.at(2).length()-pos);
                 }
-                m_completer->appendItem(m_prefix+word.at(1)+param,true);
-                n++;
-            } else if (word.at(0) == "type") {
-                m_completer->appendItem(m_prefix+word.at(1),true);
+            }
+        }
+        if (!item.isEmpty()) {
+            if (m_completer->appendItem(m_prefix+item+param,true)) {
                 n++;
             }
         }
