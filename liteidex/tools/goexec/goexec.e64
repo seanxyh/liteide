@@ -1,0 +1,5 @@
+TARGET = goexec
+
+DESTDIR = ../../build/bin
+
+GOFILES = goexec.go

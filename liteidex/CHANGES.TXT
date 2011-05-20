@@ -1,0 +1,44 @@
+--- 2011.5.20
+Ver x2 0.3125
+* add gocode plugin
+* add build/makefile
+* add build/lua stdoutput:setvbuf("no")
+* fix build task stop on error
+* fix build process write \n
+
+--- 2011.5.12
+Ver x1 0.15625 
+*New LiteIDE X version
+
+--- 2011.2.25
+Ver 0.2.1
+* add build on MacOSX10.6
+* support Makefile and .pro project
+* project support GCOPT and GLOPT
+* global option page
+* global output pane
+* set GOROOT option
+* run shell
+* run debug
+* run process can write
+* run process can kill
+* clean project opt temp or all
+* new project wizard : .pro/package/Makefile
+* new example goinfo, how to use local or search package
+
+
+--- 2011.1.25
+Ver 0.1.8
+* goastview plugin
+
+--- 2011.1.18
+Ver 0.1.6
+* add build on Linux64
+
+--- 2011.1.12
+Ver 0.1.5 
+* build error and jump to source line
+
+--- 2010.1.11
+Ver 0.1.2
+* gopromake use goroutines

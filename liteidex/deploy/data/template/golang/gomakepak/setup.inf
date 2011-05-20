@@ -1,0 +1,7 @@
+[SETUP]
+NAME = "Go Makefile Package"
+AUTHOR = visualfc
+INFO = new golang makefile package
+TYPE = project
+FILES = Makefile root.go doc.go
+OPEN = Makefile

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+	<mime-type type="text/x-gomake" id="gomake">
+		<action id="Build" img="go/build.png" key="F7" cmd="mingw32-make" args="${PROJECTPATH} all" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
+		<action id="Rebuild" img="go/rebuild.png" key="CTRL+F7" cmd="mingw32-make" args="-B ${PROJECTPATH} all" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
+		<action id="Clean" img="go/clean.png" cmd="mingw32-make" args="${PROJECTPATH} clean" save="project" output="true"/>
+		<action id="Nuke" img="go/nuke.png" cmd="mingw32-make" args="${PROJECTPATH} nuke" save="project" output="true"/>
+		<action id="Install" img="go/install.png" cmd="mingw32-make" args="${PROJECTPATH} install" save="project" output="true"/>
+		<action id="Test" img="go/test.png" cmd="gotest" args="${PROJECTPATH}" save="project" output="true" codec="utf-8"/>
+		<action id="Exec" img="go/exec.png" key="F5" cmd="${LITEAPPDIR}/goexec" args="-w ${WORKDIR} ${TARGETPATH}" output="false"/>
+		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="" output="true" codec="utf-8"/>
+		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
+		<env id="system" file="go/system.env"/>
+		<env id="win32" file="go/win32.env"/>
+		<env id="win32-user" file="go/win32-user.env"/>
+	</mime-type>
+</mime-info>
