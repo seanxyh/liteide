@@ -50,3 +50,6 @@ process_file
 
 export deploy_file=libwelcome.dylib
 process_file
+
+export deploy_file=libgolangcode.dylib
+process_file
