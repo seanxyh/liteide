@@ -41,7 +41,6 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
         cmd = FileUtil::lookPath("gocode",QProcessEnvironment::systemEnvironment(),true);
     }
     if (cmd.isEmpty()) {
-        m_liteApp->appendConsole("GolangCode","gocode","not find in $PATH");
         return;
     }
 
@@ -55,6 +54,11 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     m_writeData = src.toUtf8();
     m_prefix = pre;
 
+    if (m_build){
+        m_process->setProcessEnvironment(m_build->currentEnv());
+    } else {
+        m_process->setProcessEnvironment(QProcessEnvironment::systemEnvironment());
+    }
     m_process->start(cmd,args);
 }
 

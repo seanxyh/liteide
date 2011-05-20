@@ -1,0 +1,3 @@
+https://github.com/nsf/gocode
+make install
+install gocode to $GOROOT/bin
