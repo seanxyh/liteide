@@ -8,6 +8,7 @@ SUBDIRS = \
     makefileproject \
     profileproject  \
     liteeditor \
+    liteshell \
     golangast \
     litebuild \
     golangfmt \

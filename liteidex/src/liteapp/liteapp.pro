@@ -12,7 +12,7 @@ include (../utils/textoutput/textoutput.pri)
 include (../utils/extension/extension.pri)
 include (../utils/browsereditor/browsereditor.pri)
 
-QT       += core gui
+QT       += core gui xml
 
 TARGET = $$IDE_APP_TARGET
 TEMPLATE = app
