@@ -581,7 +581,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="src/liteapp/newfiledialog.cpp" line="156"/>
-        <source>%1 exists, continue to rewrite or about?</source>
+        <source>%1 exists, continue to rewrite or abort?</source>
+        <oldsource>%1 exists, continue to rewrite or about?</oldsource>
         <translation>%1 已经存在，继续重写或中断?</translation>
     </message>
     <message>
