@@ -23,7 +23,10 @@
 // date: 2011-3-26
 // $Id: main.cpp,v 1.0 2011-5-12 visualfc Exp $
 
-#include <QtGui/QApplication>
+#include <QApplication>
+#include <QTranslator>
+#include <QLocale>
+#include <QLibraryInfo>
 #include <QDir>
 #include "mainwindow.h"
 #include "liteapp.h"
@@ -79,6 +82,25 @@ int  main(int argc, char *argv[])
     _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 #endif
     QApplication a(argc, argv);
+
+    QTranslator translator;
+    QTranslator qtTranslator;
+    QString locale = QLocale::system().name();
+
+    const QString &liteideTrPath = getResoucePath()+"/translations";
+    if (translator.load(QLatin1String("liteide_") + locale, liteideTrPath)) {
+        const QString &qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+        const QString &qtTrFile = QLatin1String("qt_") + locale;
+        // Binary installer puts Qt tr files into creatorTrPath
+        if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, liteideTrPath)) {
+            a.installTranslator(&translator);
+            a.installTranslator(&qtTranslator);
+            a.setProperty("liteide_locale", locale);
+        } else {
+            translator.load(QString()); // unload()
+        }
+    }
+
     LiteApp *app = new LiteApp;
     app->setPluginPath(getPluginPath());
     app->setResourcePath(getResoucePath());
