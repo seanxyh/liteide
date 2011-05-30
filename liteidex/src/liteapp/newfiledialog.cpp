@@ -153,7 +153,7 @@ void NewFileDialog::accept()
         ofile.replace("root",name);
         QString outfile = QFileInfo(location,ofile).absoluteFilePath();
         if (QFile::exists(outfile)) {
-            int ret = QMessageBox::warning(this,"Warning",QString(tr("%1 exists, continue to rewrite or about?").arg(outfile)),
+            int ret = QMessageBox::warning(this,"Warning",QString(tr("%1 exists, continue to rewrite or abort?").arg(outfile)),
                                  QMessageBox::Yes|QMessageBox::No|QMessageBox::Abort,QMessageBox::Abort);
             if (ret == QMessageBox::Abort) {
                 return;
