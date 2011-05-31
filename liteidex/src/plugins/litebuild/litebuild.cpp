@@ -110,18 +110,16 @@ LiteBuild::~LiteBuild()
     delete m_output;
 }
 
-void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
+void LiteBuild::resetProjectEnv(LiteApi::IProject *project)
 {
     QString projectPath,projectDir,projectName;
     QString workDir,targetPath,targetDir,targetName;
-    LiteApi::IBuild *build = 0;
     if (project) {
         LiteApi::IFile *file = project->file();
         if (file) {
             projectPath = file->fileName();
             projectDir = QFileInfo(projectPath).absolutePath();
             projectName = QFileInfo(projectPath).fileName();
-            build =  m_manager->findBuild(file->mimeType());
         }
         workDir = project->workPath();
         targetPath = project->target();
@@ -136,6 +134,26 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
     m_liteEnv.insert("${TARGETPATH}",targetPath);
     m_liteEnv.insert("${TARGETDIR}",targetDir);
     m_liteEnv.insert("${TARGETNAME}",targetName);
+}
+
+void LiteBuild::reloadProject()
+{
+    LiteApi::IProject *project = (LiteApi::IProject*)sender();
+    resetProjectEnv(project);
+}
+
+void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
+{
+    LiteApi::IBuild *build = 0;
+    if (project) {
+        connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
+        LiteApi::IFile *file = project->file();
+        if (file) {
+            build =  m_manager->findBuild(file->mimeType());
+        }
+    }
+
+    resetProjectEnv(project);
 
     if (!build) {
         m_liteApp->actionManager()->hideToolBar(m_toolBar);

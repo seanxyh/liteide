@@ -100,6 +100,7 @@ void ModelProjectImpl::setModelFile(ModelFileImpl *file)
         return;
     }
     m_file = file;
+    connect(file,SIGNAL(reloaded()),this,SIGNAL(reloaded()));
     m_tree->setModel(m_file->model());
 }
 
