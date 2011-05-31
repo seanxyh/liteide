@@ -350,14 +350,16 @@ void FileBrowser::openShell()
 {
     QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
     QDir dir = fileInfoToDir(info);
+    QStringList args;
 #if defined(Q_OS_WIN)
     QString shell = "cmd.exe";
 #elif defined(Q_OS_MAC)
-    QString shell = "/usr/X11R6/bin/xterm"
+    QString shell = "/usr/bin/open";
+    args << "-a" << "Terminal";
+    //QString shell = "/usr/X11R6/bin/xterm";
 #else
     QString shell = "/usr/bin/xterm";
 #endif
-    QStringList args;
-    QString work = dir.path();
-    QProcess::startDetached(shell,args,work);
+    QProcess::startDetached(shell,args,dir.path());
 }
+
