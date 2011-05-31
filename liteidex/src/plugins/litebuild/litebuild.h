@@ -40,8 +40,10 @@ public:
     explicit LiteBuild(LiteApi::IApplication *app, QObject *parent = 0);
     virtual ~LiteBuild();
     void setCurrentBuild(LiteApi::IBuild *build);
+    void resetProjectEnv(LiteApi::IProject *project);
 public slots:
     void currentProjectChanged(LiteApi::IProject*);
+    void reloadProject();
     void currentEditorChanged(LiteApi::IEditor*);
     void buildAction();
     void execAction(const QString &id);

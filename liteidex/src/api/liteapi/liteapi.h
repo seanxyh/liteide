@@ -211,7 +211,7 @@ public:
     virtual QString workPath() const = 0;
     virtual void load() = 0;
 signals:
-    void fileListChanged();
+    void reloaded();
 };
 
 class IOption : public IView
