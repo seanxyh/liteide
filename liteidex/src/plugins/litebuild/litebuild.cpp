@@ -433,6 +433,7 @@ void LiteBuild::execAction(const QString &id)
     }
 
     if (ba->save() == "project") {
+        m_liteApp->editorManager()->saveEditor();
         m_liteApp->projectManager()->saveProject();
     } else if(ba->save() == "editor") {
         m_liteApp->editorManager()->saveEditor();
