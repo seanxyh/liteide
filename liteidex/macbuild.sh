@@ -53,3 +53,9 @@ process_file
 
 export deploy_file=libgolangcode.dylib
 process_file
+
+export deploy_file=libfilebrowser.dylib
+process_file
+
+export deploy_file=libliteshell.dylib
+process_file
