@@ -33,10 +33,10 @@ class LiteEditorFile : public LiteApi::IFile
 {
     Q_OBJECT
 public:
-    LiteEditorFile(QObject *parent = 0);
+    LiteEditorFile(LiteApi::IApplication *app, QObject *parent = 0);
 
     virtual bool open(const QString &fileName, const QString &mimeType);
-    virtual bool reload();
+    virtual bool reload(bool externalModify);
     virtual bool save(const QString &fileName);
     virtual QString fileName() const;
     virtual QString mimeType() const;
@@ -45,6 +45,7 @@ public:
     void setTextCodec(QTextCodec *codec);
     QTextDocument  *document();
 protected:
+    LiteApi::IApplication *m_liteApp;
     QString        m_fileName;
     QString        m_mimeType;
     QTextDocument *m_document;

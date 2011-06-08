@@ -56,7 +56,7 @@ LiteApi::IFile *ProfileFileFactory::open(const QString &fileName, const QString 
         return 0;
     }
     ProfileProject *project = new ProfileProject(m_liteApp);
-    project->setModelFile(new ProfileFile(project));
+    project->setModelFile(new ProfileFile(m_liteApp,project));
     if (!project->open(fileName,mimeType)) {
         delete project;
         return 0;

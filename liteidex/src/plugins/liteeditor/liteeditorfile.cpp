@@ -28,6 +28,7 @@
 #include <QTextDocument>
 #include <QTextCodec>
 #include <QMessageBox>
+#include <QDebug>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -39,8 +40,9 @@
 #endif
 //lite_memory_check_end
 
-LiteEditorFile::LiteEditorFile(QObject *parent)
-    : LiteApi::IFile(parent)
+LiteEditorFile::LiteEditorFile(LiteApi::IApplication *app, QObject *parent)
+    : LiteApi::IFile(parent),
+      m_liteApp(app)
 {
     m_codec = QTextCodec::codecForName("UTF-8");
 }
@@ -66,12 +68,18 @@ bool LiteEditorFile::save(const QString &fileName)
     return true;
 }
 
-bool LiteEditorFile::reload()
+bool LiteEditorFile::reload(bool externalModify)
 {
-    if (m_document->isModified()) {
+    if (externalModify) {
+        QString text = QString(tr("%1\nThis file has been modified outside of the liteide. Do you want to reload it?")).arg(m_fileName);
+        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
+        if (ret != QMessageBox::Yes) {
+            return false;
+        }
+    } else if (m_document->isModified()) {
         QString text = QString(tr("Cancel file %1 modify and reload ?")).arg(m_fileName);
-        int ret = QMessageBox::question(0,"Question",text,QMessageBox::Yes|QMessageBox::No);
-        if (ret != QMessageBox::Ok) {
+        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
+        if (ret != QMessageBox::Yes) {
             return false;
         }
     }

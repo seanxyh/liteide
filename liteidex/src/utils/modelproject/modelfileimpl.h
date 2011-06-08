@@ -33,7 +33,7 @@ class ModelFileImpl : public LiteApi::IFile
 {
     Q_OBJECT
 public:
-    ModelFileImpl(QObject *parent);
+    ModelFileImpl(LiteApi::IApplication *app, QObject *parent);
     enum ITEM_TYPE{
         ItemRoot = 1,
         ItemFolder,
@@ -42,7 +42,7 @@ public:
     };
 public:
     virtual bool open(const QString &fileName, const QString &mimeType);
-    virtual bool reload();
+    virtual bool reload(bool externalModify);
     virtual bool save(const QString &fileName);
     virtual QString fileName() const;
     virtual QString mimeType() const;
@@ -57,6 +57,7 @@ public:
     QStringList fileList() const;
     QString fileNameToFullPath(const QString &fileName);
 protected:
+    LiteApi::IApplication *m_liteApp;
     QStandardItemModel       *m_model;
     QString     m_rootPath;
     QMap<QString,QStringList>   m_context;

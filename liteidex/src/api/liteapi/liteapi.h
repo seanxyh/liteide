@@ -84,12 +84,11 @@ public:
     virtual ~IFile() { }
 
     virtual bool open(const QString &fileName, const QString &mimeType) = 0;
-    virtual bool reload() = 0;
+    virtual bool reload(bool externalModify) = 0;
     virtual bool save(const QString &fileName) = 0;
     virtual QString fileName() const = 0;
     virtual QString mimeType() const = 0;
 signals:
-    void changed();
     void aboutToReload();
     void reloaded();
 };

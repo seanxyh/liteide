@@ -40,8 +40,8 @@
 #endif
 //lite_memory_check_end
 
-MakefileFile::MakefileFile(QObject *parent)
-    : ModelFileImpl(parent)
+MakefileFile::MakefileFile(LiteApi::IApplication *app,QObject *parent)
+    : ModelFileImpl(app,parent)
 {
 }
 

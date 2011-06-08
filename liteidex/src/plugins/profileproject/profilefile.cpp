@@ -41,8 +41,8 @@
 #endif
 //lite_memory_check_end
 
-ProfileFile::ProfileFile(QObject *parent)
-    : ModelFileImpl(parent)
+ProfileFile::ProfileFile(LiteApi::IApplication *app, QObject *parent)
+    : ModelFileImpl(app,parent)
 {
 }
 

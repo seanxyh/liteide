@@ -31,7 +31,7 @@
 class MakefileFile : public ModelFileImpl
 {
 public:
-    MakefileFile(QObject *parent = 0);
+    MakefileFile(LiteApi::IApplication *app, QObject *parent);
 protected:
     virtual bool loadFile(const QString &fileName);
     virtual void updateModel();

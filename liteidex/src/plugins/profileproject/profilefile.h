@@ -31,7 +31,7 @@
 class ProfileFile : public ModelFileImpl
 {
 public:
-    ProfileFile(QObject *parent = 0);
+    ProfileFile(LiteApi::IApplication *app, QObject *parent);
 protected:
     virtual bool loadFile(const QString &fileName);
     virtual void updateModel();
