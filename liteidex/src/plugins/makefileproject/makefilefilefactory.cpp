@@ -55,7 +55,7 @@ LiteApi::IFile *MakefileFileFactory::open(const QString &fileName, const QString
         return 0;
     }
     MakefileProject *project = new MakefileProject(m_liteApp);
-    project->setModelFile(new MakefileFile(project));
+    project->setModelFile(new MakefileFile(m_liteApp,project));
     if (!project->open(fileName,mimeType)) {
         delete project;
         return 0;

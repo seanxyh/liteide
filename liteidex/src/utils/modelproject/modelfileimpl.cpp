@@ -30,6 +30,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
+#include <QMessageBox>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -41,8 +42,9 @@
 #endif
 //lite_memory_check_end
 
-ModelFileImpl::ModelFileImpl(QObject *parent)
-    : LiteApi::IFile(parent)
+ModelFileImpl::ModelFileImpl(LiteApi::IApplication *app, QObject *parent)
+    : LiteApi::IFile(parent),
+      m_liteApp(app)
 {
     m_model = new QStandardItemModel(this);
 }
@@ -59,10 +61,17 @@ bool ModelFileImpl::open(const QString &fileName, const QString &mimeType)
     return !m_context.isEmpty();
 }
 
-bool ModelFileImpl::reload()
+bool ModelFileImpl::reload(bool externalModify)
 {
     if (m_fileName.isEmpty()) {
         return false;
+    }
+    if (externalModify) {
+        QString text = QString(tr("%1\nThis file has been modified outside of the liteide. Do you want to reload it?")).arg(m_fileName);
+        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
+        if (ret != QMessageBox::Yes) {
+            return false;
+        }
     }
     bool ret = open(m_fileName,m_mimeType);
     if (ret) {

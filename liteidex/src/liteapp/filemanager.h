@@ -31,6 +31,9 @@
 using namespace LiteApi;
 
 class NewFileDialog;
+class QFileSystemWatcher;
+struct FileStateItem;
+
 class FileManager : public IFileManager
 {
     Q_OBJECT
@@ -61,20 +64,28 @@ public:
 protected:
     void updateRecentFileActions();
     void updateRecentProjectActions();
+    void updateFileState(IFile *file);
 public slots:
     void newFile();
     void openFiles();
     void openEditors();
     void openProjects();
-    void deleteFile();
     void openRecentFile();
     void openRecentProject();
     void clearRecentFiles();
     void clearRecentProjects();
+    void fileChanged(QString);
+    void editorSaved(LiteApi::IEditor*);
+    void editorAboutToClose(LiteApi::IEditor*);
+    void checkForReload();
 protected:
     QList<IFile*>        m_files;
     QStringList          m_recentFiles;
     NewFileDialog        *m_newFileDialog;
+    QFileSystemWatcher   *m_fileWatcher;
+    QMap<QString,FileStateItem> m_fileStateMap;
+    QStringList          m_changedFiles;
+    bool                 m_checkActivated;
 protected:    
     enum { MaxRecentFiles = 16 };
     enum { MaxRecentProjects = 16 };

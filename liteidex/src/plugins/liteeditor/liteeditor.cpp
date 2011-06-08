@@ -73,7 +73,7 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     layout->addWidget(m_toolBar);
     layout->addWidget(m_editorWidget);
     m_widget->setLayout(layout);
-    m_file = new LiteEditorFile(this);
+    m_file = new LiteEditorFile(m_liteApp,this);
     m_file->setDocument(m_editorWidget->document());
     connect(m_file->document(),SIGNAL(modificationChanged(bool)),this,SIGNAL(modificationChanged(bool)));
     connect(m_file->document(),SIGNAL(contentsChanged()),this,SIGNAL(contentsChanged()));

@@ -48,6 +48,7 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
         return;
     }
     QString src = cur.document()->toPlainText();
+    src = src.replace("\r\n","\n");
     m_writeData = src.left(cur.position()).toUtf8();
     QStringList args;
     args << "-in" << "" << "-f" << "csv" << "autocomplete" << QString::number(m_writeData.length());

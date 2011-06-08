@@ -25,6 +25,7 @@
 
 #include "filemanager.h"
 #include "newfiledialog.h"
+#include "fileutil/fileutil.h"
 
 #include <QMenu>
 #include <QAction>
@@ -34,7 +35,9 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QFileInfo>
-#include "fileutil/fileutil.h"
+#include <QDateTime>
+#include <QFileSystemWatcher>
+#include <QTimer>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -48,11 +51,20 @@
 //lite_memory_check_end
 
 
+struct FileStateItem
+{
+    QDateTime modified;
+    IFile     *file;
+};
+
 bool FileManager::initWithApp(IApplication *app)
 {
     if (!IFileManager::initWithApp(app)) {
         return false;
     }
+
+    m_fileWatcher = new QFileSystemWatcher(this);
+    connect(m_fileWatcher,SIGNAL(fileChanged(QString)),this,SLOT(fileChanged(QString)));
 
     m_clearRecentFilesAct = new QAction(tr("Clear All"),this);
     m_clearRecentProjectsAct = new QAction(tr("Clear All"),this);
@@ -96,12 +108,14 @@ bool FileManager::initWithApp(IApplication *app)
 }
 
 FileManager::FileManager()
-    : m_newFileDialog(0)
+    : m_newFileDialog(0),
+      m_checkActivated(false)
 {
 }
 
 FileManager::~FileManager()
 {
+    delete m_fileWatcher;
     m_liteApp->settings()->setValue("FileManager/initpath",m_initPath);
     if (m_newFileDialog) {
         delete m_newFileDialog;
@@ -110,25 +124,28 @@ FileManager::~FileManager()
 
 bool FileManager::addFile(IFile *file)
 {
+    if (!file) {
+        return false;
+    }
     foreach (IFile *f, m_files) {
         if (FileUtil::compareFile(f->fileName(),file->fileName()))
             return false;
     }
-    connect(file,SIGNAL(destroyed()),this,SLOT(deleteFile()));
     m_files.push_back(file);
-    return true;
-}
-
-void FileManager::deleteFile()
-{
-    IFile *file = (IFile*)(sender());
-    if (file) {
-        removeFile(file);
+    if (!file->fileName().isEmpty()) {
+        updateFileState(file);
+        m_fileWatcher->addPath(file->fileName());
     }
+    return true;
 }
 
 bool FileManager::removeFile(IFile *file)
 {
+    if (!file->fileName().isEmpty()) {
+        m_fileStateMap.remove(file->fileName());
+        m_changedFiles.removeOne(file->fileName());
+        m_fileWatcher->removePath(file->fileName());
+    }
     return m_files.removeOne(file);
 }
 
@@ -444,7 +461,65 @@ void FileManager::removeRecentProject(const QString &_fileName)
     emit recentProjectsChanged();
 }
 
+void FileManager::updateFileState(IFile *file)
+{
+    if (!file) {
+        return;
+    }
+    QString fileName = file->fileName();
+    if (fileName.isEmpty()) {
+        return;
+    }
+    FileStateItem item = {QFileInfo(fileName).lastModified(),file};
+    m_fileStateMap.insert(fileName,item);
+}
 
+void FileManager::editorAboutToClose(LiteApi::IEditor *editor)
+{
+    IFile *file = editor->file();
+    if (file) {
+        removeFile(file);
+    }
+}
 
+void FileManager::editorSaved(LiteApi::IEditor *editor)
+{
+    IFile *file = editor->file();
+    if (file) {
+        updateFileState(file);
+    }
+}
+
+void FileManager::fileChanged(QString fileName)
+{
+    const bool wasempty = m_changedFiles.isEmpty();
+    if (!m_changedFiles.contains(fileName)) {
+        m_changedFiles.append(fileName);
+    }
+    if (wasempty && !m_changedFiles.isEmpty()) {
+        QTimer::singleShot(200, this, SLOT(checkForReload()));
+    }
+}
+
+void FileManager::checkForReload()
+{
+    if (m_checkActivated) {
+        return;
+    }
+    m_checkActivated = true;
+    foreach (QString fileName, m_changedFiles) {
+        QDateTime modified = QFileInfo(fileName).lastModified();
+        if (m_fileStateMap.contains(fileName)) {
+            FileStateItem item = m_fileStateMap.value(fileName);
+            if (item.modified >= modified) {
+                continue;
+            } else {
+                item.file->reload(true);
+            }
+        }
+    }
+    m_changedFiles.clear();
+    m_checkActivated = false;
+}
 
 
