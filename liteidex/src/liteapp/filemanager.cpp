@@ -37,6 +37,7 @@
 #include <QFileInfo>
 #include <QDateTime>
 #include <QFileSystemWatcher>
+#include <QMessageBox>
 #include <QTimer>
 #include <QDebug>
 
@@ -508,13 +509,34 @@ void FileManager::checkForReload()
     }
     m_checkActivated = true;
     foreach (QString fileName, m_changedFiles) {
-        QDateTime modified = QFileInfo(fileName).lastModified();
-        if (m_fileStateMap.contains(fileName)) {
-            FileStateItem item = m_fileStateMap.value(fileName);
-            if (item.modified >= modified) {
-                continue;
-            } else {
-                item.file->reload(true);
+        if (!QFile::exists(fileName)) {
+            //remove
+            if (m_fileStateMap.contains(fileName)) {
+                FileStateItem item = m_fileStateMap.value(fileName);
+                LiteApi::IFile *file = item.file;
+                QString text = QString(tr("%1\nThis file has been removed. Do you want save to file or close editor?")).arg(file->fileName());
+                int ret = QMessageBox::question(m_liteApp->mainWindow(),tr("LiteIDE X"),text,QMessageBox::Save |QMessageBox::Close | QMessageBox::Cancel,QMessageBox::Save);
+                if (ret == QMessageBox::Save) {
+                    file->save(file->fileName());
+                    m_fileWatcher->addPath(file->fileName());
+                } else if (ret == QMessageBox::Close) {
+                    foreach (LiteApi::IEditor *editor ,m_liteApp->editorManager()->editorList()) {
+                        if (editor->file() == file) {
+                            m_liteApp->editorManager()->closeEditor(editor);
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            QDateTime modified = QFileInfo(fileName).lastModified();
+            if (m_fileStateMap.contains(fileName)) {
+                FileStateItem item = m_fileStateMap.value(fileName);
+                if (item.modified >= modified) {
+                    continue;
+                } else {
+                    item.file->reload(true);
+                }
             }
         }
     }
