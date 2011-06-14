@@ -1,0 +1,7 @@
+[SETUP]
+NAME = "CGO Package Project"
+AUTHOR = visualfc
+INFO = new cgo package project
+TYPE = project
+FILES = Makefile root.go doc.go
+OPEN = Makefile

@@ -483,6 +483,14 @@ void FileManager::editorAboutToClose(LiteApi::IEditor *editor)
     }
 }
 
+void FileManager::projectAboutToClose(LiteApi::IProject *project)
+{
+    IFile *file = project->file();
+    if (file) {
+        removeFile(file);
+    }
+}
+
 void FileManager::editorSaved(LiteApi::IEditor *editor)
 {
     IFile *file = editor->file();
