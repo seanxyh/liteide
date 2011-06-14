@@ -99,6 +99,7 @@ LiteApp::LiteApp()
     connect(m_editorManager,SIGNAL(tabAddRequest()),m_fileManager,SLOT(openEditors()));
     connect(m_editorManager,SIGNAL(editorSaved(LiteApi::IEditor*)),m_fileManager,SLOT(editorSaved(LiteApi::IEditor*)));
     connect(m_editorManager,SIGNAL(editorAboutToClose(LiteApi::IEditor*)),m_fileManager,SLOT(editorAboutToClose(LiteApi::IEditor*)));
+    connect(m_projectManager,SIGNAL(projectAboutToClose(LiteApi::IProject*)),m_fileManager,SLOT(projectAboutToClose(LiteApi::IProject*)));
    // connect(m_mainwindow,SIGNAL(closeMainWindow()),this,SLOT(cleanup()));
 
     createActions();

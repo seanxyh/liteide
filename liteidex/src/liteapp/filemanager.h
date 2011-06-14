@@ -77,6 +77,7 @@ public slots:
     void fileChanged(QString);
     void editorSaved(LiteApi::IEditor*);
     void editorAboutToClose(LiteApi::IEditor*);
+    void projectAboutToClose(LiteApi::IProject*);
     void checkForReload();
 protected:
     QList<IFile*>        m_files;
