@@ -100,6 +100,7 @@ public:
     IFileFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QStringList mimeTypes() const = 0;
     virtual IFile *open(const QString &fileName, const QString &mimeType) = 0;
+    virtual QString target(const QString &fileName, const QString &mimetype) const = 0;
 };
 
 class IFileFactoryList
@@ -131,6 +132,8 @@ public:
     virtual void removeRecentProject(const QString &fileName) = 0;
     virtual QStringList recentFiles() const = 0;
     virtual QStringList recentProjects() const = 0;
+
+    virtual QString getFileTarget(const QString &fileName) const = 0;
 signals:
     void fileListChanged();
     void recentProjectsChanged();

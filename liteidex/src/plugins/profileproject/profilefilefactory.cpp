@@ -64,3 +64,17 @@ LiteApi::IFile *ProfileFileFactory::open(const QString &fileName, const QString 
     m_liteApp->projectManager()->setCurrentProject(project);
     return project->file();
 }
+
+QString ProfileFileFactory::target(const QString &fileName, const QString &mimetype) const
+{
+    if (!m_mimeTypes.contains(mimetype)) {
+        return QString();
+    }
+    QString target;
+    ProfileFile *file = new ProfileFile(m_liteApp,0);
+    if (file->open(fileName,mimetype)) {
+        target = file->target();
+    }
+    delete file;
+    return target;
+}

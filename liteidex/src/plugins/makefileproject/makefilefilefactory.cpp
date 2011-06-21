@@ -63,3 +63,17 @@ LiteApi::IFile *MakefileFileFactory::open(const QString &fileName, const QString
     m_liteApp->projectManager()->setCurrentProject(project);
     return project->file();
 }
+
+QString MakefileFileFactory::target(const QString &fileName, const QString &mimetype) const
+{
+    if (!m_mimeTypes.contains(mimetype)) {
+        return QString();
+    }
+    QString target;
+    MakefileFile *file = new MakefileFile(m_liteApp,0);
+    if (file->open(fileName,mimetype)) {
+        target = file->target();
+    }
+    delete file;
+    return target;
+}

@@ -51,6 +51,7 @@ public:
     void setType(const QString &mimeType);
     void setId(const QString &id);
     void appendAction(BuildAction *act);
+    void appendLookup(BuildLookup *lookup);
     void appendEnv(const QString &id,const QString &envFile);
 public:
     static bool loadBuild(LiteApi::IBuildManager *manager, const QString &fileName);

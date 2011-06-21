@@ -74,7 +74,7 @@ public:
         return m_id.isEmpty();
     }
 
-public:
+protected:
     QString m_id;
     QString m_key;
     QString m_cmd;
@@ -89,13 +89,12 @@ public:
 
 class BuildLookup
 {
-    Q_OBJECT
 public:
     void setMimeType(const QString &type) {m_type=type;}
     void setFile(const QString &file) {m_file=file;}
-    QString &mimeType() const {return m_type;}
-    QString &file() const {return m_file;}
-public:
+    QString mimeType() const {return m_type;}
+    QString file() const {return m_file;}
+protected:
     QString m_type;
     QString m_file;
 };

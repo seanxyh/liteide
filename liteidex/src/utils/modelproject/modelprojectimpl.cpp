@@ -108,6 +108,7 @@ bool ModelProjectImpl::open(const QString &fileName, const QString &mimeType)
 {
     bool success =  m_file->open(fileName,mimeType);
     if (success) {
+        m_file->updateModel();
         m_tree->expandAll();
     }
     return success;

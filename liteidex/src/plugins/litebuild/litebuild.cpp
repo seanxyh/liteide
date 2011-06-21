@@ -248,15 +248,47 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
         targetName = QFileInfo(editorPath).baseName();
         targetPath = targetDir+"/"+targetName;
     }
-    m_liteEnv.insert("${LITEAPPDIR}",m_liteApp->applicationPath());
-    m_liteEnv.insert("${EDITORPATH}",editorPath);
-    m_liteEnv.insert("${EDITORDIR}",editorDir);
-    m_liteEnv.insert("${EDITORNAME}",editorName);
-    m_liteEnv.insert("${WORKDIR}",workDir);
-    m_liteEnv.insert("${TARGETPATH}",targetPath);
-    m_liteEnv.insert("${TARGETDIR}",targetDir);
-    m_liteEnv.insert("${TARGETNAME}",targetName);
-
+    LiteApi::IBuild *projectBuild = 0;
+    QString projectPath;
+    if (build != 0) {
+        foreach (LiteApi::BuildLookup *lookup,build->lookupList()) {
+            QDir dir(workDir);
+            QFileInfoList infos = dir.entryInfoList(QStringList() << lookup->file(),QDir::Files);
+            if (infos.size() >= 1) {
+                projectBuild = m_manager->findBuild(lookup->mimeType());
+                if (projectBuild != 0) {
+                    projectPath = infos.at(0).filePath();
+                    break;
+                }
+            }
+        }
+    }
+    if (projectBuild != 0) {
+        build = projectBuild;
+        QString projectDir = QFileInfo(projectPath).absolutePath();
+        QString projectName = QFileInfo(projectPath).fileName();
+        workDir = projectDir;
+        targetPath = m_liteApp->fileManager()->getFileTarget(projectPath);
+        targetDir = QFileInfo(targetPath).absolutePath();
+        targetName = QFileInfo(targetPath).fileName();
+        m_liteEnv.insert("${LITEAPPDIR}",m_liteApp->applicationPath());
+        m_liteEnv.insert("${PROJECTPATH}",projectPath);
+        m_liteEnv.insert("${PROJECTDIR}",projectDir);
+        m_liteEnv.insert("${PROJECTNAME}",projectName);
+        m_liteEnv.insert("${WORKDIR}",workDir);
+        m_liteEnv.insert("${TARGETPATH}",targetPath);
+        m_liteEnv.insert("${TARGETDIR}",targetDir);
+        m_liteEnv.insert("${TARGETNAME}",targetName);
+    } else {
+        m_liteEnv.insert("${LITEAPPDIR}",m_liteApp->applicationPath());
+        m_liteEnv.insert("${EDITORPATH}",editorPath);
+        m_liteEnv.insert("${EDITORDIR}",editorDir);
+        m_liteEnv.insert("${EDITORNAME}",editorName);
+        m_liteEnv.insert("${WORKDIR}",workDir);
+        m_liteEnv.insert("${TARGETPATH}",targetPath);
+        m_liteEnv.insert("${TARGETDIR}",targetDir);
+        m_liteEnv.insert("${TARGETNAME}",targetName);
+    }
     if (!build) {
         m_liteApp->actionManager()->hideToolBar(m_toolBar);
         m_liteApp->outputManager()->hideOutput(m_output);
