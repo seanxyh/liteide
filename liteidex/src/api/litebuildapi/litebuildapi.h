@@ -87,6 +87,19 @@ public:
     bool    m_output;
 };
 
+class BuildLookup
+{
+    Q_OBJECT
+public:
+    void setMimeType(const QString &type) {m_type=type;}
+    void setFile(const QString &file) {m_file=file;}
+    QString &mimeType() const {return m_type;}
+    QString &file() const {return m_file;}
+public:
+    QString m_type;
+    QString m_file;
+};
+
 class IBuild : public QObject
 {
     Q_OBJECT
@@ -96,6 +109,7 @@ public:
     virtual QString mimeType() const = 0;
     virtual QString id() const = 0;
     virtual QList<BuildAction*> actionList() const = 0;
+    virtual QList<BuildLookup*> lookupList() const = 0;
     virtual BuildAction *findAction(const QString &name) = 0;
     virtual QStringList envIdList() const = 0;
     virtual QString findEnvFile(const QString &id) = 0;

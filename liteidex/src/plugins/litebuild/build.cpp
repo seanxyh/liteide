@@ -66,6 +66,11 @@ QList<BuildAction*> Build::actionList() const
     return m_actionList;
 }
 
+QList<BuildLookup*> Build::lookupList() const
+{
+    return m_lookupList;
+}
+
 BuildAction *Build::findAction(const QString &id)
 {
     foreach(BuildAction *act, m_actionList) {
@@ -123,6 +128,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
     QDir dir = QFileInfo(fileName).absoluteDir();
     Build *build = 0;
     BuildAction *act = 0;
+    BuildLookup *lookup = 0;
     while (!reader.atEnd()) {
         switch (reader.readNext()) {
         case QXmlStreamReader::StartElement:
@@ -131,6 +137,10 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 build = new Build;
                 build->setType(attrs.value("type").toString());
                 build->setId(attrs.value("id").toString());
+            } else if (reader.name() == "lookup" && lookup == 0) {
+                lookup = new BuildLookup;
+                lookup->setMimeType(attrs.value("mime-type").toString());
+                lookup->setFile(attrs.value("file").toString());
             } else if (reader.name() == "action" && act == 0) {
                 act = new BuildAction;
                 act->setId(attrs.value("id").toString());
