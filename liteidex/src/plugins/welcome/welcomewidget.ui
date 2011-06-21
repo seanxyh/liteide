@@ -86,7 +86,7 @@ p, li { white-space: pre-wrap; }
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../../liteapp/liteapp.qrc">:/images/logo/logo2.png</pixmap>
+               <pixmap resource="../../liteapp/liteapp.qrc">:/images/logo/logo3.png</pixmap>
               </property>
               <property name="alignment">
                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

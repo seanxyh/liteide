@@ -1,3 +1,9 @@
+--- 2011.6.21
+Ver x3 0.46875
+* add file browser plugin
+* source editor pre link project build
+* source editor outside modify/remove watcher
+
 --- 2011.5.20
 Ver x2 0.3125
 * add gocode plugin
