@@ -11,3 +11,6 @@ SOURCES += filebrowserplugin.cpp \
 HEADERS += filebrowserplugin.h\
         filebrowser_global.h \
     filebrowser.h
+
+RESOURCES += \
+    filebrowser.qrc

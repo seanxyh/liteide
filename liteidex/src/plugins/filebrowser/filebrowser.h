@@ -23,6 +23,8 @@ public slots:
     void visibilityChanged(bool);
     void doubleClickedTreeView(QModelIndex);
     void activatedFilter(QString);
+    void syncFileModel(bool);
+    void currentEditorChanged(LiteApi::IEditor*);
 protected:
     LiteApi::IApplication   *m_liteApp;
     QWidget                 *m_widget;
@@ -30,6 +32,8 @@ protected:
     QFileSystemModel        *m_fileModel;
     QSortFilterProxyModel   *m_proxyModel;
     QComboBox               *m_filterCombo;
+    QToolBar                *m_toolBar;
+    QAction                 *m_syncAct;
 };
 
 #endif // FILEBROWSER_H
