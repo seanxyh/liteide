@@ -38,6 +38,7 @@ public:
     virtual QString mimeType() const;
     virtual QString id() const;
     virtual QList<BuildAction*> actionList() const;
+    virtual QList<BuildLookup*> lookupList() const;
     virtual BuildAction *findAction(const QString &id);
     virtual QStringList envIdList() const;
     virtual QString findEnvFile(const QString &id);
@@ -58,6 +59,7 @@ protected:
     QString m_mimeType;
     QString m_id;
     QList<BuildAction*> m_actionList;
+    QList<BuildLookup*> m_lookupList;
     QStringList         m_envIdList;
     QMap<QString,QString>     m_idEnvFileMap;
     QString m_buildEnvId;
