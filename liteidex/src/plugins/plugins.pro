@@ -12,4 +12,5 @@ SUBDIRS = \
     golangast \
     litebuild \
     golangfmt \
-    golangcode
+    golangcode \
+    filebrowser
