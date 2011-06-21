@@ -46,9 +46,10 @@ public:
     virtual bool save(const QString &fileName);
     virtual QString fileName() const;
     virtual QString mimeType() const;
+public:
+    virtual void updateModel() = 0;
 protected:
     virtual bool loadFile(const QString &fileName) = 0;
-    virtual void updateModel() = 0;
 public:
     virtual QString target() const = 0;
     QStandardItemModel *model() const;

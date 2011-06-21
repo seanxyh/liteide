@@ -55,6 +55,8 @@ public:
     virtual void removeRecentProject(const QString &fileName);
     virtual QStringList recentFiles() const;
     virtual QStringList recentProjects() const;
+
+    virtual QString getFileTarget(const QString &fileName) const;
 public:
     QMenu *recentFileMenu() const;
     QMenu *recentProjectMenu() const;

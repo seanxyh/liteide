@@ -57,7 +57,6 @@ bool ModelFileImpl::open(const QString &fileName, const QString &mimeType)
     }
     m_fileName = fileName;
     m_rootPath = QFileInfo(m_fileName).absolutePath();
-    updateModel();
     return !m_context.isEmpty();
 }
 
@@ -75,6 +74,7 @@ bool ModelFileImpl::reload(bool externalModify)
     }
     bool ret = open(m_fileName,m_mimeType);
     if (ret) {
+        updateModel();
         emit reloaded();
     }
     return ret;

@@ -35,6 +35,7 @@ public:
 public:
     virtual QStringList mimeTypes() const;
     virtual LiteApi::IFile *open(const QString &fileName, const QString &mimeType);
+    virtual QString target(const QString &fileName, const QString &mimetype) const;
 protected:
     LiteApi::IApplication *m_liteApp;
     QStringList m_mimeTypes;

@@ -105,3 +105,12 @@ LiteApi::IFile *LiteEditorFileFactory::open(const QString &fileName, const QStri
     m_liteApp->editorManager()->addAutoReleaseEditor(editor);
     return editor->file();
 }
+
+QString LiteEditorFileFactory::target(const QString &fileName, const QString &mimetype) const
+{
+    if (!m_mimeTypes.contains(mimetype)) {
+        return QString();
+    }
+    QFileInfo info(fileName);
+    return info.absolutePath()+"/"+info.baseName();
+}

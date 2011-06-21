@@ -48,6 +48,7 @@ Build::Build(QObject *parent)
 
 Build::~Build()
 {
+    qDeleteAll(m_lookupList);
     qDeleteAll(m_actionList);
 }
 
@@ -104,6 +105,11 @@ void Build::setId(const QString &id)
 void Build::appendAction(BuildAction *act)
 {
     m_actionList.append(act);
+}
+
+void Build::appendLookup(BuildLookup *lookup)
+{
+    m_lookupList.append(lookup);
 }
 
 void Build::appendEnv(const QString &id, const QString &envFile)
@@ -179,6 +185,11 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                     build->appendAction(act);
                 }
                 act = 0;
+            } else if (reader.name() == "lookup") {
+                if (build && lookup) {
+                    build->appendLookup(lookup);
+                }
+                lookup = 0;
             }
             break;
         default:
