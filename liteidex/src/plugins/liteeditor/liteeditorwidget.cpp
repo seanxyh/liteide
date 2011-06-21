@@ -123,7 +123,7 @@ void LiteEditorWidget::setCompleter(QCompleter *completer)
          return;
 
      //static QString eow("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
-     static QString eow("~!@#$%^&*()_+{}|:\"<>?,/;'[]\\-="); // end of word
+     static QString eow("~!@#$%^&*()+{}|:\"<>?,/;'[]\\-="); // end of word
      bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
      QString completionPrefix = textUnderCursor(textCursor());
 
