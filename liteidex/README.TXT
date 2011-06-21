@@ -3,7 +3,7 @@ LiteIDE is a simple, open source, cross-platform IDE.
 
 Project:	LiteIDE
 Author:	visualfc (earthworm)
-Version:	v0.3125 (x2)
+Version:	v0.46875 (x3)
 Website:	http://code.google.com/liteide
 
 OS: 
