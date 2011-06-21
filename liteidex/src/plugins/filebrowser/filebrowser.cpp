@@ -1,6 +1,7 @@
 #include "filebrowser.h"
 
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QComboBox>
 #include <QTreeView>
 #include <QHeaderView>
@@ -49,7 +50,11 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     }
 
     m_filterCombo = new QComboBox;
+    m_filterCombo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
     m_filterCombo->setEditable(true);
+    m_filterCombo->addItem("*");
+    m_filterCombo->addItem("Makefile;*.go;*.cgo;*.s;*.goc;*.y;*.e64;*.pro");
+    m_filterCombo->addItem("*.sh;Makefile;*.go;*.cgo;*.s;*.goc;*.y;*.*.c;*.cpp;*.h;*.hpp;*.e64;*.pro");
 
     mainLayout->addWidget(m_treeView);
     mainLayout->addWidget(m_filterCombo);
