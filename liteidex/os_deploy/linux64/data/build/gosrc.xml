@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+	<mime-type type="text/x-gosrc" id="gosrc">
+		<lookup mime-type="text/x-gomake" file="Makefile"/>
+		<lookup mime-type="text/x-gopro" file="*.e64"/>
+		<action id="Build" img="go/build.png" key="F7" cmd="gopromake" args="-gofiles ${EDITORPATH} -o ${TARGETNAME}" save="editor" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" />
+		<action id="Clean" img="go/clean.png" cmd="gopromake" args="-gofiles ${EDITORPATH} -o ${TARGETNAME} -clean=obj" output="true" codec="utf-8"/>
+		<action id="CleanAll" img="go/cleanall.png" cmd="gopromake" args="-gofiles ${EDITORPATH} -o ${TARGETNAME} -clean=all" output="true" codec="utf-8"/>
+		<action id="Exec" img="go/exec.png" key="F5" cmd="/usr/bin/xterm" args="-e ${LITEAPPDIR}/goexec -w ${WORKDIR} ${TARGETPATH}" output="false"/>
+		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="" output="true" codec="utf-8"/>
+		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
+		<env id="system" file="go/system.env"/>
+		<env id="linux64" file="go/linux64.env"/>
+		<env id="linux64-arm" file="go/linux64-arm.env"/>
+		<env id="linux64-win32" file="go/linux64-win32.env"/>
+		<env id="linux64-user" file="go/linux64-user.env"/>
+	</mime-type>
+</mime-info>
