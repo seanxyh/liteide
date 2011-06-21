@@ -8,6 +8,9 @@
 #include <QDirModel>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
+#include <QToolBar>
+#include <QAction>
+#include <QFileInfo>
 #include <QDebug>
 
 FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
@@ -29,6 +32,24 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_proxyModel->setSortRole(Qt::DisplayRole);
     m_proxyModel->sortColumn();
 
+    m_toolBar = new QToolBar(m_widget);
+    m_toolBar->setIconSize(QSize(16,16));
+
+    m_syncAct = new QAction(QIcon(":/images/sync.png"),tr("Synchronize with editor"),this);
+    m_syncAct->setCheckable(true);
+
+    m_filterCombo = new QComboBox;
+    m_filterCombo->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+    m_filterCombo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+    m_filterCombo->setEditable(true);
+    m_filterCombo->addItem("*");
+    m_filterCombo->addItem("Makefile;*.go;*.cgo;*.s;*.goc;*.y;*.e64;*.pro");
+    m_filterCombo->addItem("*.sh;Makefile;*.go;*.cgo;*.s;*.goc;*.y;*.*.c;*.cpp;*.h;*.hpp;*.e64;*.pro");
+
+    m_toolBar->addAction(m_syncAct);
+    m_toolBar->addSeparator();
+    m_toolBar->addWidget(m_filterCombo);
+
     m_treeView = new QTreeView;
     m_treeView->setModel(m_proxyModel);
 
@@ -49,15 +70,8 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
         m_treeView->setColumnHidden(i,true);
     }
 
-    m_filterCombo = new QComboBox;
-    m_filterCombo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
-    m_filterCombo->setEditable(true);
-    m_filterCombo->addItem("*");
-    m_filterCombo->addItem("Makefile;*.go;*.cgo;*.s;*.goc;*.y;*.e64;*.pro");
-    m_filterCombo->addItem("*.sh;Makefile;*.go;*.cgo;*.s;*.goc;*.y;*.*.c;*.cpp;*.h;*.hpp;*.e64;*.pro");
-
+    mainLayout->addWidget(m_toolBar);
     mainLayout->addWidget(m_treeView);
-    mainLayout->addWidget(m_filterCombo);
     m_widget->setLayout(mainLayout);
 
 
@@ -65,6 +79,8 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(dock,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedTreeView(QModelIndex)));
     connect(m_filterCombo,SIGNAL(activated(QString)),this,SLOT(activatedFilter(QString)));
+    connect(m_syncAct,SIGNAL(triggered(bool)),this,SLOT(syncFileModel(bool)));
+    connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
 
     QModelIndex index = m_fileModel->index(QDir::currentPath());
     QModelIndex proxyIndex = m_proxyModel->mapFromSource(index);
@@ -101,3 +117,37 @@ void FileBrowser::activatedFilter(QString filter)
 {
     m_fileModel->setNameFilters(filter.split(";",QString::SkipEmptyParts));
 }
+
+void FileBrowser::currentEditorChanged(LiteApi::IEditor *editor)
+{
+    if (!m_syncAct->isChecked()) {
+        return;
+    }
+    if (!editor) {
+        return;
+    }
+    LiteApi::IFile *file = editor->file();
+    if (!file) {
+        return;
+    }
+    QString fileName = file->fileName();
+    if (fileName.isEmpty()) {
+        return;
+    }
+    QString path = QFileInfo(fileName).absolutePath();
+    QModelIndex index = m_fileModel->index(path);
+    QModelIndex proxyIndex = m_proxyModel->mapFromSource(index);
+    m_treeView->scrollTo(proxyIndex,QAbstractItemView::PositionAtCenter);
+    m_treeView->expand(proxyIndex);
+
+}
+
+void FileBrowser::syncFileModel(bool b)
+{
+    if (b == false) {
+        return;
+    } else {
+        currentEditorChanged(m_liteApp->editorManager()->currentEditor());
+    }
+}
+
