@@ -30,6 +30,7 @@
 #include "liteapi.h"
 #include <QtPlugin>
 
+class FileBrowser;
 class FileBrowserPlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
@@ -37,6 +38,8 @@ class FileBrowserPlugin : public LiteApi::IPlugin
 public:
     FileBrowserPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
+protected:
+    FileBrowser *m_browser;
 };
 
 #endif // FILEBROWSERPLUGIN_H

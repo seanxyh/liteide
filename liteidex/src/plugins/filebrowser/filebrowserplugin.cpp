@@ -24,8 +24,9 @@
 // $Id: filebrowserplugin.cpp,v 1.0 2011-5-12 visualfc Exp $
 
 #include "filebrowserplugin.h"
+#include "filebrowser.h"
 
-FileBrowserPlugin::FileBrowserPlugin()
+FileBrowserPlugin::FileBrowserPlugin() : m_browser(0)
 {
     m_info->setId("plugin/FileBrowser");
     m_info->setName("FileBrowser");
@@ -38,6 +39,7 @@ bool FileBrowserPlugin::initWithApp(LiteApi::IApplication *app)
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
+    m_browser = new FileBrowser(app,this);
     return true;
 }
 
