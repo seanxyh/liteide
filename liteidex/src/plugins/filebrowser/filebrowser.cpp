@@ -35,7 +35,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_toolBar = new QToolBar(m_widget);
     m_toolBar->setIconSize(QSize(16,16));
 
-    m_syncAct = new QAction(QIcon(":/images/sync.png"),tr("Synchronize with editor"),this);
+    m_syncAct = new QAction(QIcon(":/images/sync.png"),tr("Synchronize with editor "),this);
     m_syncAct->setCheckable(true);
 
     m_filterCombo = new QComboBox;

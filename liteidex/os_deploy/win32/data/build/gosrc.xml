@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
 	<mime-type type="text/x-gosrc" id="gosrc">
-		<lookup mime-type="text/x-gomake" file="Makefile"/>
-		<lookup mime-type="text/x-gopro" file="*.e64"/>
+		<lookup mime-type="text/x-gomake" file="Makefile" top="1"/>
+		<lookup mime-type="text/x-gopro" file="*.e64" top="1"/>
 		<action id="Build" img="go/build.png" key="F7" cmd="gopromake" args="-gofiles ${EDITORPATH} -o ${TARGETNAME}" save="editor" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" />
 		<action id="Clean" img="go/clean.png" cmd="gopromake" args="-gofiles ${EDITORPATH} -o ${TARGETNAME} -clean=obj" output="true" codec="utf-8"/>
 		<action id="CleanAll" img="go/cleanall.png" cmd="gopromake" args="-gofiles ${EDITORPATH} -o ${TARGETNAME} -clean=all" output="true" codec="utf-8"/>
