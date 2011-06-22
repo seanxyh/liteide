@@ -68,6 +68,7 @@ RESOURCES += \
 win32 {
     target.path = /bin
     INSTALLS += target
+    RC_FILE += liteapp.rc
 } else:macx {
     QMAKE_INFO_PLIST = Info.plist
 } else {
