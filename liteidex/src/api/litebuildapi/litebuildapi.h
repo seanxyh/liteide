@@ -90,13 +90,28 @@ protected:
 class BuildLookup
 {
 public:
+    BuildLookup() : m_top(1)
+    {
+    }
     void setMimeType(const QString &type) {m_type=type;}
     void setFile(const QString &file) {m_file=file;}
+    void setTop(const QString &top) {
+        if (top.isEmpty()) {
+            return;
+        }
+        bool ok = false;
+        int value = top.toInt(&ok);
+        if (ok) {
+            m_top=value;
+        }
+    }
     QString mimeType() const {return m_type;}
     QString file() const {return m_file;}
+    int top() const {return m_top;}
 protected:
     QString m_type;
     QString m_file;
+    int     m_top;
 };
 
 class IBuild : public QObject

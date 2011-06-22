@@ -147,6 +147,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 lookup = new BuildLookup;
                 lookup->setMimeType(attrs.value("mime-type").toString());
                 lookup->setFile(attrs.value("file").toString());
+                lookup->setTop(attrs.value("top").toString());
             } else if (reader.name() == "action" && act == 0) {
                 act = new BuildAction;
                 act->setId(attrs.value("id").toString());

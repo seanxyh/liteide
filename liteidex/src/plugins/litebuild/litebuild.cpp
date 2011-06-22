@@ -170,7 +170,7 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
 
 void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
 {
-    m_output->clear();
+   // m_output->clear();
 
     if (m_build == build) {
         return;
@@ -253,13 +253,16 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
     if (build != 0) {
         foreach (LiteApi::BuildLookup *lookup,build->lookupList()) {
             QDir dir(workDir);
-            QFileInfoList infos = dir.entryInfoList(QStringList() << lookup->file(),QDir::Files);
-            if (infos.size() >= 1) {
-                projectBuild = m_manager->findBuild(lookup->mimeType());
-                if (projectBuild != 0) {
-                    projectPath = infos.at(0).filePath();
-                    break;
+            for (int i = 0; i <= lookup->top(); i++) {
+                QFileInfoList infos = dir.entryInfoList(QStringList() << lookup->file(),QDir::Files);
+                if (infos.size() >= 1) {
+                    projectBuild = m_manager->findBuild(lookup->mimeType());
+                    if (projectBuild != 0) {
+                        projectPath = infos.at(0).filePath();
+                        break;
+                    }
                 }
+                dir.cdUp();
             }
         }
     }
@@ -507,6 +510,21 @@ void LiteBuild::dbclickBuildOutput()
     LiteApi::IProject *project = m_liteApp->projectManager()->currentProject();
     if (project) {
         fileName = project->fileNameToFullPath(fileName);
+    } else {
+        QString workDir = m_liteEnv.value("${WORKDIR}");
+        QDir dir(workDir);
+        QString filePath = dir.filePath(fileName);
+        if (QFile::exists(filePath)) {
+            fileName = filePath;
+        } else {
+            foreach(QFileInfo info,dir.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot)) {
+                QString filePath = info.absoluteDir().filePath(fileName);
+                if (QFile::exists(filePath)) {
+                    fileName = filePath;
+                    break;
+                }
+            }
+        }
     }
 
     LiteApi::IEditor *editor = m_liteApp->editorManager()->loadEditor(fileName);
