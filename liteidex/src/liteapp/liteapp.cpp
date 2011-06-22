@@ -303,6 +303,7 @@ void LiteApp::createActions()
     m_openAct = new QAction(QIcon(":/images/open.png"),tr("Open"),m_mainwindow);
     m_openAct->setShortcut(QKeySequence::Open);
     m_closeAct = new QAction(QIcon(":/images/close.png"),tr("Close"),m_mainwindow);
+    m_closeAct->setShortcut(QKeySequence("CTRL+W"));
     m_closeAllAct = new QAction(QIcon(":/images/closeall.png"),tr("Close All"),m_mainwindow);
     m_openProjectAct = new QAction(QIcon(":/images/openproject.png"),tr("Open Project"),m_mainwindow);
     m_saveProjectAct = new QAction(QIcon(":/images/saveproject.png"),tr("Save Project"),m_mainwindow);
