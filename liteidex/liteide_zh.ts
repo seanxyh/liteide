@@ -51,9 +51,20 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Project:&lt;/span&gt;	LiteIDE&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Author:	&lt;/span&gt;visualfc (earthworm)&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Version:&lt;/span&gt;	v0.3125 (x2)&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Version:&lt;/span&gt;	v0.46875 (x3)&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Website:&lt;/span&gt;	http://code.google.com/liteide&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <oldsource>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;SimSun&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Welcome to LiteIDE X!&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;LiteIDE is a simple, open source, cross-platform IDE.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Project:&lt;/span&gt;	LiteIDE&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Author:	&lt;/span&gt;visualfc (earthworm)&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Version:&lt;/span&gt;	v0.3125 (x2)&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Website:&lt;/span&gt;	http://code.google.com/liteide&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="124"/>
@@ -83,7 +94,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;xushiwei &lt;/span&gt;&amp;lt;xushiweizh@gmail.com&amp;gt;    &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;	Developer - CppModel&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="170"/>
@@ -101,7 +112,7 @@ The Kate Project (http://kate.kde.org)
 The SciTE project (http://www.scintilla.org)
 The GNU Software Foundation (http://www.gnu.org).
 Last, but not least, the open-source community.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="198"/>
@@ -126,7 +137,7 @@ In addition, as a special exception, that plugins developed for
 LiteIDE, are allowed to remain closed sourced and can be distributed
 under any license .These rights are included in the file 
 LGPL_EXCEPTION.txt in this package.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="260"/>
@@ -157,67 +168,91 @@ LGPL_EXCEPTION.txt in this package.</source>
     </message>
 </context>
 <context>
+    <name>FileBrowser</name>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="38"/>
+        <source>Synchronize with editor </source>
+        <translation>与编辑器同步</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="78"/>
+        <source>FileBrowser</source>
+        <translation>文件浏览</translation>
+    </message>
+</context>
+<context>
     <name>FileManager</name>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="57"/>
-        <location filename="src/liteapp/filemanager.cpp" line="58"/>
+        <location filename="src/liteapp/filemanager.cpp" line="70"/>
+        <location filename="src/liteapp/filemanager.cpp" line="71"/>
         <source>Clear All</source>
         <translation>清除所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="77"/>
+        <location filename="src/liteapp/filemanager.cpp" line="90"/>
         <source>Recent Files</source>
         <translation>历史文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="78"/>
+        <location filename="src/liteapp/filemanager.cpp" line="91"/>
         <source>Recent Projects</source>
         <translation>历史项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="157"/>
-        <location filename="src/liteapp/filemanager.cpp" line="178"/>
-        <location filename="src/liteapp/filemanager.cpp" line="199"/>
+        <location filename="src/liteapp/filemanager.cpp" line="196"/>
+        <location filename="src/liteapp/filemanager.cpp" line="217"/>
+        <location filename="src/liteapp/filemanager.cpp" line="238"/>
         <source>All Support File (%1)</source>
         <translation>所有支持文件(%1)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="160"/>
-        <location filename="src/liteapp/filemanager.cpp" line="181"/>
-        <location filename="src/liteapp/filemanager.cpp" line="202"/>
+        <location filename="src/liteapp/filemanager.cpp" line="199"/>
+        <location filename="src/liteapp/filemanager.cpp" line="220"/>
+        <location filename="src/liteapp/filemanager.cpp" line="241"/>
         <source>All Files (*)</source>
         <translation>所有文件(*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="243"/>
+        <location filename="src/liteapp/filemanager.cpp" line="282"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="244"/>
+        <location filename="src/liteapp/filemanager.cpp" line="283"/>
         <source>Project &apos;%1&apos; is created.
 Do you want to load?</source>
         <translation>项目文件 &apos;%1&apos;已建立,是否加载?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="260"/>
+        <location filename="src/liteapp/filemanager.cpp" line="299"/>
         <source>Open Project or File</source>
         <translation>打开项目或文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="273"/>
+        <location filename="src/liteapp/filemanager.cpp" line="312"/>
         <source>Open Files</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="286"/>
+        <location filename="src/liteapp/filemanager.cpp" line="325"/>
         <source>Open Project</source>
         <translation>打开项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="343"/>
-        <location filename="src/liteapp/filemanager.cpp" line="359"/>
+        <location filename="src/liteapp/filemanager.cpp" line="382"/>
+        <location filename="src/liteapp/filemanager.cpp" line="398"/>
         <source>&amp;%1 %2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/filemanager.cpp" line="546"/>
+        <source>%1
+This file has been removed. Do you want save to file or close editor?</source>
+        <translation>%1\n文件已经被删除，重新保存到文件还是关闭编辑器?</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/filemanager.cpp" line="547"/>
+        <source>LiteIDE X</source>
         <translation></translation>
     </message>
 </context>
@@ -240,102 +275,102 @@ Do you want to load?</source>
 <context>
     <name>LiteApp</name>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="113"/>
+        <location filename="src/liteapp/liteapp.cpp" line="116"/>
         <source>Console</source>
         <translation>控制台</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="298"/>
+        <location filename="src/liteapp/liteapp.cpp" line="301"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="300"/>
+        <location filename="src/liteapp/liteapp.cpp" line="303"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="302"/>
+        <location filename="src/liteapp/liteapp.cpp" line="305"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="303"/>
+        <location filename="src/liteapp/liteapp.cpp" line="306"/>
         <source>Close All</source>
         <translation>清除所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="304"/>
+        <location filename="src/liteapp/liteapp.cpp" line="307"/>
         <source>Open Project</source>
         <translation>打开项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="305"/>
+        <location filename="src/liteapp/liteapp.cpp" line="308"/>
         <source>Save Project</source>
         <translation>保存项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="306"/>
+        <location filename="src/liteapp/liteapp.cpp" line="309"/>
         <source>Close Project</source>
         <translation>关闭项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="307"/>
+        <location filename="src/liteapp/liteapp.cpp" line="310"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="309"/>
+        <location filename="src/liteapp/liteapp.cpp" line="312"/>
         <source>Save As</source>
         <translation>另存为</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="310"/>
+        <location filename="src/liteapp/liteapp.cpp" line="313"/>
         <source>Save All</source>
         <translation>保存所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="312"/>
+        <location filename="src/liteapp/liteapp.cpp" line="315"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="315"/>
+        <location filename="src/liteapp/liteapp.cpp" line="318"/>
         <source>About LiteIDE...</source>
         <translation>关于LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="316"/>
+        <location filename="src/liteapp/liteapp.cpp" line="319"/>
         <source>About Plugins...</source>
         <translation>关于插件...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="335"/>
+        <location filename="src/liteapp/liteapp.cpp" line="338"/>
         <source>&amp;File</source>
         <translation>文件(&amp;F)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="336"/>
+        <location filename="src/liteapp/liteapp.cpp" line="339"/>
         <source>&amp;View</source>
         <translation>查看(&amp;V)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="337"/>
+        <location filename="src/liteapp/liteapp.cpp" line="340"/>
         <source>&amp;Tools</source>
         <translation>工具(&amp;T)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="338"/>
+        <location filename="src/liteapp/liteapp.cpp" line="341"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="364"/>
+        <location filename="src/liteapp/liteapp.cpp" line="367"/>
         <source>Standard ToolBar</source>
         <translation>标准工具栏</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="375"/>
+        <location filename="src/liteapp/liteapp.cpp" line="378"/>
         <source>Navigation ToolBar</source>
         <translation>导航工具栏</translation>
     </message>
@@ -411,7 +446,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LiteEditorFile</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="72"/>
+        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="74"/>
+        <source>%1
+This file has been modified outside of the liteide. Do you want to reload it?</source>
+        <translation>%1\n文件已经被编辑器外修改，是否重新加载文件?</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="80"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation>是否取消对文件 %1 的修改并重新加载?</translation>
     </message>
@@ -421,7 +462,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="20"/>
@@ -527,6 +568,15 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>ModelFileImpl</name>
+    <message>
+        <location filename="src/utils/modelproject/modelfileimpl.cpp" line="69"/>
+        <source>%1
+This file has been modified outside of the liteide. Do you want to reload it?</source>
+        <translation>%1\n文件已经被外部修改，是否重新加载文件?</translation>
+    </message>
+</context>
+<context>
     <name>NewFileDialog</name>
     <message>
         <location filename="src/liteapp/newfiledialog.ui" line="14"/>
@@ -619,7 +669,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/liteapp/optionswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/liteapp/optionswidget.ui" line="41"/>
@@ -746,7 +796,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/plugins/welcome/welcomewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/plugins/welcome/welcomewidget.ui" line="73"/>
@@ -755,7 +805,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;SimSun&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:24pt; font-weight:600; font-style:italic;&quot;&gt;LiteIDE X&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/plugins/welcome/welcomewidget.ui" line="111"/>
