@@ -70,6 +70,7 @@ win32 {
     INSTALLS += target
     RC_FILE += liteapp.rc
 } else:macx {
+    ICON = images/liteide.icns
     QMAKE_INFO_PLIST = Info.plist
 } else {
     target.path  = /bin
