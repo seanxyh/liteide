@@ -14,6 +14,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QMenu>
+#include <QProcess>
 #include <QDebug>
 
 FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
@@ -347,5 +348,17 @@ void FileBrowser::removeFolder()
 
 void FileBrowser::openShell()
 {
-
+    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
+    QDir dir = fileInfoToDir(info);
+#if defined(Q_OS_WIN)
+    //QString shell = "cmd.exe";
+    QString shell = "c:\\MinGW\\msys\\1.0\\msys.bat";
+#elif defined(Q_OS_MAC)
+    QString shell = "/usr/X11R6/bin/xterm"
+#else
+    QString shell = "/usr/bin/xterm";
+#endif
+    QStringList args;
+    QString work = dir.path();
+    QProcess::startDetached(shell,args,work);
 }
