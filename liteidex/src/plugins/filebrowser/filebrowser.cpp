@@ -351,8 +351,7 @@ void FileBrowser::openShell()
     QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
     QDir dir = fileInfoToDir(info);
 #if defined(Q_OS_WIN)
-    //QString shell = "cmd.exe";
-    QString shell = "c:\\MinGW\\msys\\1.0\\msys.bat";
+    QString shell = "cmd.exe";
 #elif defined(Q_OS_MAC)
     QString shell = "/usr/X11R6/bin/xterm"
 #else
