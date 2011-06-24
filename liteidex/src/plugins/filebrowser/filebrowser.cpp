@@ -358,7 +358,7 @@ void FileBrowser::openShell()
     args << "-a" << "Terminal";
     //QString shell = "/usr/X11R6/bin/xterm";
 #else
-    QString shell = "/usr/bin/xterm";
+    QString shell = "/usr/bin/gnome-terminal";
 #endif
     QProcess::startDetached(shell,args,dir.path());
 }

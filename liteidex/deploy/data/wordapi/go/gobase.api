@@ -56,6 +56,6 @@ make
 new
 panic
 print
-printLn
+println
 real
 recover
