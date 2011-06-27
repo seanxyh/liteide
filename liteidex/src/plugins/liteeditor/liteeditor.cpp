@@ -135,10 +135,11 @@ void LiteEditor::createActions()
     m_cutAct = new QAction(QIcon(":/images/cut.png"),tr("Cut"),this);
     m_copyAct = new QAction(QIcon(":/images/copy.png"),tr("Copy"),this);
     m_pasteAct = new QAction(QIcon(":/images/paste.png"),tr("Paste"),this);
+#ifndef QT_NO_PRINTER
     m_filePrintPdfAct = new QAction(QIcon(":/images/exportpdf.png"),tr("Export PDF"),this);
     m_filePrintAct = new QAction(QIcon(":/images/fileprint.png"),tr("Print Document"),this);
     m_filePrintPreviewAct = new QAction(QIcon(":/images/fileprintpreview.png"),tr("Print Preview Document"),this);
-
+#endif
     m_undoAct->setEnabled(false);
     m_redoAct->setEnabled(false);
     m_cutAct->setEnabled(false);
@@ -155,10 +156,11 @@ void LiteEditor::createActions()
     connect(m_cutAct,SIGNAL(triggered()),m_editorWidget,SLOT(cut()));
     connect(m_copyAct,SIGNAL(triggered()),m_editorWidget,SLOT(copy()));
     connect(m_pasteAct,SIGNAL(triggered()),m_editorWidget,SLOT(paste()));
+#ifndef QT_NO_PRINTER
     connect(m_filePrintPdfAct,SIGNAL(triggered()),this,SLOT(filePrintPdf()));
     connect(m_filePrintAct,SIGNAL(triggered()),this,SLOT(filePrint()));
     connect(m_filePrintPreviewAct,SIGNAL(triggered()),this,SLOT(filePrintPreview()));
-
+#endif
     QClipboard *clipboard = QApplication::clipboard();
     connect(clipboard,SIGNAL(dataChanged()),this,SLOT(clipbordDataChanged()));
     clipbordDataChanged();
@@ -174,12 +176,15 @@ void LiteEditor::createToolBars()
     m_toolBar->addAction(m_pasteAct);
     m_toolBar->addSeparator();
     m_toolBar->addAction(m_undoAct);
-    m_toolBar->addAction(m_redoAct);
+    m_toolBar->addAction(m_redoAct);    
     m_toolBar->addSeparator();
+
+#ifndef QT_NO_PRINTER
     m_toolBar->addAction(m_filePrintPdfAct);
     m_toolBar->addAction(m_filePrintPreviewAct);
     m_toolBar->addAction(m_filePrintAct);
     m_toolBar->addSeparator();
+#endif
 
     m_findComboBox = new QComboBox(m_widget);
     m_findComboBox->setEditable(true);
