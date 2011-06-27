@@ -64,7 +64,7 @@ QWidget *LiteEditorOption::widget()
 
 QString LiteEditorOption::displayName() const
 {
-    return tr("LiteEditor");
+    return "LiteEditor";
 }
 
 QString LiteEditorOption::mimeType() const

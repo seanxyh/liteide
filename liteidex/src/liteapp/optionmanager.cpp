@@ -65,7 +65,7 @@ void OptionManager::editorCreated(LiteApi::IEditor *editor)
     if (editor != m_browser) {
         return;
     }
-    disconnect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),0,0);
+    disconnect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,0);
 
     foreach (IOptionFactory *f, m_factoryList) {
         QStringList mimeTypes = f->mimeTypes();
