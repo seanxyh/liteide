@@ -69,7 +69,10 @@ public slots:
     void clipbordDataChanged();
     void findNextText();
     void updateTip(QString,QStringList);
-    void printPdf();
+    void filePrintPdf();
+    void filePrint();
+    void filePrintPreview();
+    void printPreview(QPrinter *printer);
 public:
     LiteApi::IApplication *m_liteApp;
     Extension   *m_extension;
@@ -82,7 +85,9 @@ public:
     QAction *m_cutAct;
     QAction *m_copyAct;
     QAction *m_pasteAct;
-    QAction *m_printPdfAct;
+    QAction *m_filePrintPdfAct;
+    QAction *m_filePrintAct;
+    QAction *m_filePrintPreviewAct;
     QComboBox *m_findComboBox;
     QLabel    *m_tip;
     LiteEditorFile *m_file;
