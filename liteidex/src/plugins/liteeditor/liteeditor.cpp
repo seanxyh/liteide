@@ -44,6 +44,8 @@
 #include <QStandardItem>
 #include <QTextCursor>
 #include <QToolTip>
+#include <QFileDialog>
+#include <QPrinter>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -130,6 +132,7 @@ void LiteEditor::createActions()
     m_cutAct = new QAction(QIcon(":/images/cut.png"),tr("Cut"),this);
     m_copyAct = new QAction(QIcon(":/images/copy.png"),tr("Copy"),this);
     m_pasteAct = new QAction(QIcon(":/images/paste.png"),tr("Paste"),this);
+    m_printPdfAct = new QAction(QIcon(":/images/exportpdf.png"),tr("Export PDF"),this);
 
     m_undoAct->setEnabled(false);
     m_redoAct->setEnabled(false);
@@ -147,6 +150,7 @@ void LiteEditor::createActions()
     connect(m_cutAct,SIGNAL(triggered()),m_editorWidget,SLOT(cut()));
     connect(m_copyAct,SIGNAL(triggered()),m_editorWidget,SLOT(copy()));
     connect(m_pasteAct,SIGNAL(triggered()),m_editorWidget,SLOT(paste()));
+    connect(m_printPdfAct,SIGNAL(triggered()),this,SLOT(printPdf()));
 
     QClipboard *clipboard = QApplication::clipboard();
     connect(clipboard,SIGNAL(dataChanged()),this,SLOT(clipbordDataChanged()));
@@ -164,6 +168,8 @@ void LiteEditor::createToolBars()
     m_toolBar->addSeparator();
     m_toolBar->addAction(m_undoAct);
     m_toolBar->addAction(m_redoAct);
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(m_printPdfAct);
     m_toolBar->addSeparator();
 
     m_findComboBox = new QComboBox(m_widget);
@@ -275,4 +281,26 @@ void LiteEditor::updateTip(QString func,QStringList args)
     }
     m_tip->setToolTip(func+args.join(";"));
     QToolTip::showText(m_toolBar->mapToGlobal(m_tip->pos()),func+args.join(";"),m_tip);
+}
+
+void LiteEditor::printPdf()
+{
+#ifndef QT_NO_PRINTER
+//! [0]
+    QString title;
+    if (m_file) {
+        title = QFileInfo(m_file->fileName()).baseName();
+    }
+    QString fileName = QFileDialog::getSaveFileName(m_liteApp->mainWindow(), tr("Export PDF"),
+                                                    title, "*.pdf");
+    if (!fileName.isEmpty()) {
+        if (QFileInfo(fileName).suffix().isEmpty())
+            fileName.append(".pdf");
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(fileName);
+        m_editorWidget->document()->print(&printer);
+    }
+//! [0]
+#endif
 }
