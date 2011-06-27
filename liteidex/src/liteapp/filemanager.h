@@ -42,9 +42,6 @@ public:
     virtual bool initWithApp(IApplication *app);
     virtual ~FileManager();
 public:
-    virtual bool addFile(IFile *file);
-    virtual bool removeFile(IFile *file);
-
     virtual bool openFile(const QString &fileName);
     virtual bool openEditor(const QString &fileName);
     virtual bool openProject(const QString &fileName);
@@ -78,11 +75,10 @@ public slots:
     void clearRecentProjects();
     void fileChanged(QString);
     void editorSaved(LiteApi::IEditor*);
+    void editorCreated(LiteApi::IEditor*);
     void editorAboutToClose(LiteApi::IEditor*);
-    void projectAboutToClose(LiteApi::IProject*);
     void checkForReload();
 protected:
-    QList<IFile*>        m_files;
     QStringList          m_recentFiles;
     NewFileDialog        *m_newFileDialog;
     QFileSystemWatcher   *m_fileWatcher;
