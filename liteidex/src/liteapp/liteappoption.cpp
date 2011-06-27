@@ -16,7 +16,6 @@ LiteAppOption::LiteAppOption(LiteApi::IApplication *app,QObject *parent) :
     QDir dir(liteideTrPath);
     if (dir.exists()) {
         foreach (QFileInfo info,dir.entryInfoList(QStringList() << "liteide_*.qm")) {
-            //ui->langComboBox->addItem(info.baseName());
             QString base = info.baseName();
             QString lc = base.right(base.length()-8);
             QLocale::Language lang = QLocale(lc).language();
@@ -49,7 +48,7 @@ QWidget *LiteAppOption::widget()
 
 QString LiteAppOption::displayName() const
 {
-    return tr("LiteApp");
+    return "LiteApp";
 }
 
 QString LiteAppOption::mimeType() const
@@ -64,4 +63,5 @@ void LiteAppOption::apply()
     }
     QLocale::Language lc = (QLocale::Language)ui->langComboBox->itemData(index).toInt();
     m_liteApp->settings()->setValue("General/Language",QLocale(lc).name());
+
 }

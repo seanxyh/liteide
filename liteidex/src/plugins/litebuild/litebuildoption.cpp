@@ -68,7 +68,7 @@ QWidget *LiteBuildOption::widget()
 
 QString LiteBuildOption::displayName() const
 {
-    return tr("LiteBuild");
+    return "LiteBuild";
 }
 
 QString LiteBuildOption::mimeType() const
