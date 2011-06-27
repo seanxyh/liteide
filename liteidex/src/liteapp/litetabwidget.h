@@ -47,8 +47,8 @@ class LiteTabWidget : public QWidget
 public:
     explicit LiteTabWidget(QWidget *parent = 0);
 
-    int addTab(QWidget *w,const QString & label);
-    int addTab(QWidget *w,const QIcon & icon, const QString & label);
+    int addTab(QWidget *w,const QString & label, const QString &tip);
+    int addTab(QWidget *w,const QIcon & icon, const QString & label,const QString &tip);
     void removeTab(int index);
     int indexOf(QWidget *w);
     QWidget *widget(int index);
