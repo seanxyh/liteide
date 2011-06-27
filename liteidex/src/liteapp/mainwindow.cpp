@@ -75,7 +75,7 @@ void MainWindow::init()
     addToolBar(Qt::BottomToolBarArea,m_liteApp->outputManager()->toolBar());
     setCentralWidget(m_mainSplitter);
 
-    resize(640,480);
+    //resize(640,480);
 }
 
 MainWindow::~MainWindow()

@@ -52,7 +52,7 @@ public slots:
     void currentEditorChanged(LiteApi::IEditor*);
     void treeViewContextMenuRequested(const QPoint &pos);
 protected slots:
-    void openEditor();
+    void openFile();
     void newFile();
     void renameFile();
     void removeFile();
@@ -75,7 +75,7 @@ protected:
     QModelIndex m_contextIndex;
     QMenu   *m_fileMenu;
     QMenu   *m_folderMenu;
-    QAction *m_openEditorAct;
+    QAction *m_openFileAct;
     QAction *m_newFileAct;
     QAction *m_removeFileAct;
     QAction *m_renameFileAct;

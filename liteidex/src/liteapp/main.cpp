@@ -110,8 +110,8 @@ int  main(int argc, char *argv[])
     litApp->loadMimeType();
     litApp->loadPlugins();
     litApp->initPlugins();
-    litApp->mainWindow()->show();
     litApp->loadSession("default");
+    litApp->mainWindow()->show();
 
     if (argc >= 2) {
         for (int i = 1; i < argc; i++) {
