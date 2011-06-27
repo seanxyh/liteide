@@ -95,14 +95,12 @@ int  main(int argc, char *argv[])
         if (translator.load(QLatin1String("liteide_") + locale, liteideTrPath)) {
             const QString &qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
             const QString &qtTrFile = QLatin1String("qt_") + locale;
-            // Binary installer puts Qt tr files into creatorTrPath
+            // Binary installer puts Qt tr files into creatorTrPath            
+            a.installTranslator(&translator);
             if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, liteideTrPath)) {
-                a.installTranslator(&translator);
                 a.installTranslator(&qtTranslator);
-                a.setProperty("liteide_locale", locale);
-            } else {
-                translator.load(QString()); // unload()
             }
+            a.setProperty("liteide_locale", locale);
         }
     }
 
