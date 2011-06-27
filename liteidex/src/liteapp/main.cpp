@@ -111,7 +111,7 @@ int  main(int argc, char *argv[])
     app->loadPlugins();
     app->initPlugins();
     app->mainWindow()->show();
-    app->loadSession("liteapp/session");
+    app->loadSession("default");
 
     if (argc >= 2) {
         for (int i = 1; i < argc; i++) {
