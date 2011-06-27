@@ -404,9 +404,16 @@ void LiteApp::currentEditorChanged(IEditor *editor)
 
 void LiteApp::loadSession(const QString &name)
 {
-    QString projectName = m_settings->value("session/"+name+"_project").toString();
-    QString editorName = m_settings->value("session/"+name+"_cureditor").toString();
-    QStringList fileList = m_settings->value("session/"+name+"_alleditor").toStringList();
+    QString session = "session/"+name;
+    QString projectName = m_settings->value(session+"_project").toString();
+    QString editorName = m_settings->value(session+"_cureditor").toString();
+    QStringList fileList = m_settings->value(session+"_alleditor").toStringList();
+    QByteArray  geometry =     m_settings->value(session+"_geometry").toByteArray();
+    if (!geometry.isEmpty()) {
+        m_mainwindow->restoreGeometry(geometry);
+    } else {
+        m_mainwindow->resize(640,480);
+    }
     if (!projectName.isEmpty()) {
         m_fileManager->openProject(projectName);
     }
@@ -416,6 +423,7 @@ void LiteApp::loadSession(const QString &name)
     if (!editorName.isEmpty()) {
         m_fileManager->openEditor(editorName);
     }
+
 }
 
 void LiteApp::saveSession(const QString &name)
@@ -438,7 +446,9 @@ void LiteApp::saveSession(const QString &name)
             fileList.append(file->fileName());
         }
     }
-    m_settings->setValue("session/"+name+"_project",projectName);
-    m_settings->setValue("session/"+name+"_cureditor",editorName);
-    m_settings->setValue("session/"+name+"_alleditor",fileList);
+    QString session = "session/"+name;
+    m_settings->setValue(session+"_project",projectName);
+    m_settings->setValue(session+"_cureditor",editorName);
+    m_settings->setValue(session+"_alleditor",fileList);
+    m_settings->setValue(session+"_geometry",m_mainwindow->saveGeometry());
 }
