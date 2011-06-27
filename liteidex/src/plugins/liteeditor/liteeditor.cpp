@@ -46,6 +46,9 @@
 #include <QToolTip>
 #include <QFileDialog>
 #include <QPrinter>
+#include <QTextDocumentWriter>
+#include <QPrintDialog>
+#include <QPrintPreviewDialog>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -132,7 +135,9 @@ void LiteEditor::createActions()
     m_cutAct = new QAction(QIcon(":/images/cut.png"),tr("Cut"),this);
     m_copyAct = new QAction(QIcon(":/images/copy.png"),tr("Copy"),this);
     m_pasteAct = new QAction(QIcon(":/images/paste.png"),tr("Paste"),this);
-    m_printPdfAct = new QAction(QIcon(":/images/exportpdf.png"),tr("Export PDF"),this);
+    m_filePrintPdfAct = new QAction(QIcon(":/images/exportpdf.png"),tr("Export PDF"),this);
+    m_filePrintAct = new QAction(QIcon(":/images/fileprint.png"),tr("Print Document"),this);
+    m_filePrintPreviewAct = new QAction(QIcon(":/images/fileprintpreview.png"),tr("Print Preview Document"),this);
 
     m_undoAct->setEnabled(false);
     m_redoAct->setEnabled(false);
@@ -150,7 +155,9 @@ void LiteEditor::createActions()
     connect(m_cutAct,SIGNAL(triggered()),m_editorWidget,SLOT(cut()));
     connect(m_copyAct,SIGNAL(triggered()),m_editorWidget,SLOT(copy()));
     connect(m_pasteAct,SIGNAL(triggered()),m_editorWidget,SLOT(paste()));
-    connect(m_printPdfAct,SIGNAL(triggered()),this,SLOT(printPdf()));
+    connect(m_filePrintPdfAct,SIGNAL(triggered()),this,SLOT(filePrintPdf()));
+    connect(m_filePrintAct,SIGNAL(triggered()),this,SLOT(filePrint()));
+    connect(m_filePrintPreviewAct,SIGNAL(triggered()),this,SLOT(filePrintPreview()));
 
     QClipboard *clipboard = QApplication::clipboard();
     connect(clipboard,SIGNAL(dataChanged()),this,SLOT(clipbordDataChanged()));
@@ -169,7 +176,9 @@ void LiteEditor::createToolBars()
     m_toolBar->addAction(m_undoAct);
     m_toolBar->addAction(m_redoAct);
     m_toolBar->addSeparator();
-    m_toolBar->addAction(m_printPdfAct);
+    m_toolBar->addAction(m_filePrintPdfAct);
+    m_toolBar->addAction(m_filePrintPreviewAct);
+    m_toolBar->addAction(m_filePrintAct);
     m_toolBar->addSeparator();
 
     m_findComboBox = new QComboBox(m_widget);
@@ -283,7 +292,26 @@ void LiteEditor::updateTip(QString func,QStringList args)
     QToolTip::showText(m_toolBar->mapToGlobal(m_tip->pos()),func+args.join(";"),m_tip);
 }
 
-void LiteEditor::printPdf()
+void LiteEditor::filePrintPreview()
+{
+#ifndef QT_NO_PRINTER
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintPreviewDialog preview(&printer, m_widget);
+    connect(&preview, SIGNAL(paintRequested(QPrinter*)), SLOT(printPreview(QPrinter*)));
+    preview.exec();
+#endif
+}
+
+void LiteEditor::printPreview(QPrinter *printer)
+{
+#ifdef QT_NO_PRINTER
+    Q_UNUSED(printer);
+#else
+    m_editorWidget->print(printer);
+#endif
+}
+
+void LiteEditor::filePrintPdf()
 {
 #ifndef QT_NO_PRINTER
 //! [0]
@@ -291,7 +319,7 @@ void LiteEditor::printPdf()
     if (m_file) {
         title = QFileInfo(m_file->fileName()).baseName();
     }
-    QString fileName = QFileDialog::getSaveFileName(m_liteApp->mainWindow(), tr("Export PDF"),
+    QString fileName = QFileDialog::getSaveFileName(m_widget, tr("Export PDF"),
                                                     title, "*.pdf");
     if (!fileName.isEmpty()) {
         if (QFileInfo(fileName).suffix().isEmpty())
@@ -302,5 +330,20 @@ void LiteEditor::printPdf()
         m_editorWidget->document()->print(&printer);
     }
 //! [0]
+#endif
+}
+
+void LiteEditor::filePrint()
+{
+#ifndef QT_NO_PRINTER
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintDialog *dlg = new QPrintDialog(&printer, m_widget);
+    if (m_editorWidget->textCursor().hasSelection())
+        dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
+    dlg->setWindowTitle(tr("Print Document"));
+    if (dlg->exec() == QDialog::Accepted) {
+        m_editorWidget->print(&printer);
+    }
+    delete dlg;
 #endif
 }

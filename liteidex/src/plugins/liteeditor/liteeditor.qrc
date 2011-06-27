@@ -6,5 +6,7 @@
         <file>images/cut.png</file>
         <file>images/paste.png</file>
         <file>images/exportpdf.png</file>
+        <file>images/fileprint.png</file>
+        <file>images/fileprintpreview.png</file>
     </qresource>
 </RCC>
