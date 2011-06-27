@@ -54,6 +54,13 @@
 
 struct FileStateItem
 {
+    FileStateItem() : file(0)
+    {
+    }
+    FileStateItem(const QDateTime &m, IFile *f) :
+        modified(m),file(f)
+    {
+    }
     QDateTime modified;
     IFile     *file;
 };
@@ -121,33 +128,6 @@ FileManager::~FileManager()
     if (m_newFileDialog) {
         delete m_newFileDialog;
     }
-}
-
-bool FileManager::addFile(IFile *file)
-{
-    if (!file) {
-        return false;
-    }
-    foreach (IFile *f, m_files) {
-        if (FileUtil::compareFile(f->fileName(),file->fileName()))
-            return false;
-    }
-    m_files.push_back(file);
-    if (!file->fileName().isEmpty()) {
-        updateFileState(file);
-        m_fileWatcher->addPath(file->fileName());
-    }
-    return true;
-}
-
-bool FileManager::removeFile(IFile *file)
-{
-    if (!file->fileName().isEmpty()) {
-        m_fileStateMap.remove(file->fileName());
-        m_changedFiles.removeOne(file->fileName());
-        m_fileWatcher->removePath(file->fileName());
-    }
-    return m_files.removeOne(file);
 }
 
 QStringList FileManager::recentFiles() const
@@ -346,11 +326,8 @@ bool FileManager::openEditor(const QString &fileName)
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
     IFile *file = m_liteApp->editorManager()->createFile(fileName,mimeType);
-    if (file) {
-        if (addFile(file) ) {
-            addRecentFile(fileName);
-            return true;
-        }
+    if (file && !file->fileName().isEmpty()) {
+        addRecentFile(fileName);
     } else {
         removeRecentFile(fileName);
     }
@@ -361,11 +338,9 @@ bool FileManager::openProject(const QString &fileName)
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
     IFile *file = m_liteApp->projectManager()->createFile(fileName,mimeType);
-    if (file) {
-        if (addFile(file)) {
-            addRecentProject(fileName);
-            return true;
-        }
+    if (file && !file->fileName().isEmpty()) {
+        addRecentProject(fileName);
+        return true;
     } else {
         removeRecentProject(fileName);
     }
@@ -492,23 +467,25 @@ void FileManager::updateFileState(IFile *file)
     if (fileName.isEmpty()) {
         return;
     }
-    FileStateItem item = {QFileInfo(fileName).lastModified(),file};
-    m_fileStateMap.insert(fileName,item);
+    m_fileStateMap.insert(fileName,FileStateItem(QFileInfo(fileName).lastModified(),file));
+}
+
+void FileManager::editorCreated(LiteApi::IEditor *editor)
+{
+    LiteApi::IFile *file = editor->file();
+    if (file && !file->fileName().isEmpty()) {
+        updateFileState(file);
+        m_fileWatcher->addPath(file->fileName());
+    }
 }
 
 void FileManager::editorAboutToClose(LiteApi::IEditor *editor)
 {
     IFile *file = editor->file();
-    if (file) {
-        removeFile(file);
-    }
-}
-
-void FileManager::projectAboutToClose(LiteApi::IProject *project)
-{
-    IFile *file = project->file();
-    if (file) {
-        removeFile(file);
+    if (file && !file->fileName().isEmpty()) {
+        m_fileStateMap.remove(file->fileName());
+        m_changedFiles.removeOne(file->fileName());
+        m_fileWatcher->removePath(file->fileName());
     }
 }
 

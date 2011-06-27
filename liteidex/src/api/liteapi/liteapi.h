@@ -119,9 +119,6 @@ class IFileManager : public IManager
 public:
     IFileManager(QObject *parent = 0) : IManager(parent) {}
 
-    virtual bool addFile(IFile *file) = 0;
-    virtual bool removeFile(IFile *file) = 0;
-
     virtual bool openFile(const QString &fileName) = 0;
     virtual bool openEditor(const QString &fileName) = 0;
     virtual bool openProject(const QString &fileName) = 0;
