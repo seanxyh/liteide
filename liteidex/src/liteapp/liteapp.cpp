@@ -404,20 +404,41 @@ void LiteApp::currentEditorChanged(IEditor *editor)
 
 void LiteApp::loadSession(const QString &name)
 {
-    QStringList files = m_settings->value(name).toStringList();
-    foreach(QString fileName, files) {
+    QString projectName = m_settings->value("session/"+name+"_project").toString();
+    QString editorName = m_settings->value("session/"+name+"_cureditor").toString();
+    QStringList fileList = m_settings->value("session/"+name+"_alleditor").toStringList();
+    if (!projectName.isEmpty()) {
+        m_fileManager->openProject(projectName);
+    }
+    foreach(QString fileName, fileList) {
         m_fileManager->openEditor(fileName);
+    }
+    if (!editorName.isEmpty()) {
+        m_fileManager->openEditor(editorName);
     }
 }
 
 void LiteApp::saveSession(const QString &name)
 {
-    QStringList files;
+    QString projectName;
+    QString editorName;
+    IProject *project = m_projectManager->currentProject();
+    if (project && project->file()) {
+        projectName = project->file()->fileName();
+    }
+    IEditor *editor = m_editorManager->currentEditor();
+    if (editor && editor->file()) {
+        editorName = editor->file()->fileName();
+    }
+
+    QStringList fileList;
     foreach (IEditor* ed,m_editorManager->sortedEditorList()) {
         IFile *file = ed->file();
         if (file) {
-            files.append(file->fileName());
+            fileList.append(file->fileName());
         }
     }
-    m_settings->setValue(name,files);
+    m_settings->setValue("session/"+name+"_project",projectName);
+    m_settings->setValue("session/"+name+"_cureditor",editorName);
+    m_settings->setValue("session/"+name+"_alleditor",fileList);
 }
