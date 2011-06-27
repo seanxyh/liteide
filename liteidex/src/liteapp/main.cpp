@@ -83,7 +83,7 @@ int  main(int argc, char *argv[])
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 #endif
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
     QTranslator translator;
     QTranslator qtTranslator;
@@ -96,32 +96,32 @@ int  main(int argc, char *argv[])
             const QString &qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
             const QString &qtTrFile = QLatin1String("qt_") + locale;
             // Binary installer puts Qt tr files into creatorTrPath            
-            a.installTranslator(&translator);
+            app.installTranslator(&translator);
             if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, liteideTrPath)) {
-                a.installTranslator(&qtTranslator);
+                app.installTranslator(&qtTranslator);
             }
-            a.setProperty("liteide_locale", locale);
+            app.setProperty("liteide_locale", locale);
         }
     }
 
-    LiteApp *app = new LiteApp;
-    app->setPluginPath(getPluginPath());
-    app->setResourcePath(getResoucePath());
-    app->loadMimeType();
-    app->loadPlugins();
-    app->initPlugins();
-    app->mainWindow()->show();
-    app->loadSession("default");
+    LiteApp *litApp = new LiteApp;
+    litApp->setPluginPath(getPluginPath());
+    litApp->setResourcePath(getResoucePath());
+    litApp->loadMimeType();
+    litApp->loadPlugins();
+    litApp->initPlugins();
+    litApp->mainWindow()->show();
+    litApp->loadSession("default");
 
     if (argc >= 2) {
         for (int i = 1; i < argc; i++) {
             QString fileName = QDir::toNativeSeparators(argv[i]);
             if (QFile::exists(fileName)) {
-                app->fileManager()->openFile(fileName);
+                litApp->fileManager()->openFile(fileName);
             }
         }
     }
-    int ret = a.exec();
-    delete app;
+    int ret = app.exec();
+    delete litApp;
     return ret;
 }
