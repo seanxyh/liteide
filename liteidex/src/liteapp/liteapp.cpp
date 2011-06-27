@@ -401,3 +401,23 @@ void LiteApp::currentEditorChanged(IEditor *editor)
     m_closeAct->setEnabled(b);
     m_closeAllAct->setEnabled(b);
 }
+
+void LiteApp::loadSession(const QString &name)
+{
+    QStringList files = m_settings->value(name).toStringList();
+    foreach(QString fileName, files) {
+        m_fileManager->openEditor(fileName);
+    }
+}
+
+void LiteApp::saveSession(const QString &name)
+{
+    QStringList files;
+    foreach (IEditor* ed,m_editorManager->sortedEditorList()) {
+        IFile *file = ed->file();
+        if (file) {
+            files.append(file->fileName());
+        }
+    }
+    m_settings->setValue(name,files);
+}

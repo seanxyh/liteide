@@ -55,6 +55,7 @@ public:
     QWidget *currentWidget();
     QTabBar *tabBar();
     void setTabText(int index, const QString & text);
+    QList<QWidget*> widgetList() const;
 signals:
     void currentChanged(int index);
     void tabCloseRequested(int index);

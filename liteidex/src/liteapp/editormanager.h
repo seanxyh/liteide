@@ -55,6 +55,8 @@ public:
     virtual IEditor *loadEditor(const QString &fileName);
 protected:
     void addEditorHelper(IEditor *editor, bool autoRelease);
+public:
+    QList<IEditor*> sortedEditorList() const;
 public slots:
     virtual bool saveEditor(IEditor *editor = 0);
     virtual bool saveEditorAs(IEditor *editor = 0);

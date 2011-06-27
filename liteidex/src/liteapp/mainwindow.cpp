@@ -43,6 +43,7 @@
 #include <QRegExp>
 #include <QFileInfo>
 #include <QSplitter>
+#include <QDebug>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -99,6 +100,7 @@ void MainWindow::createMenus()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    m_liteApp->saveSession("liteapp/session");
     m_liteApp->projectManager()->closeProject();
     if (m_liteApp->editorManager()->closeAllEditors(false)) {
         event->accept();

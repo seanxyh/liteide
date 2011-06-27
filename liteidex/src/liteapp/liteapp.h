@@ -70,6 +70,10 @@ public:
     virtual QString pluginPath() const;
 
     virtual QList<IPlugin*> pluginList() const;
+
+    virtual void loadSession(const QString &name);
+    virtual void saveSession(const QString &name);
+
     virtual void appendConsole(const QString &model, const QString &action, const QString &log = QString());
 public:
     void createActions();
