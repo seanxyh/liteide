@@ -24,7 +24,7 @@ void GolangCode::setBuild(LiteApi::IBuild *build)
 void GolangCode::setCompleter(LiteApi::ICompleter *completer)
 {
     if (m_completer) {
-        disconnect(m_completer,0);
+        disconnect(m_completer,0,this,0);
     }
     m_completer = completer;
     if (m_completer) {
