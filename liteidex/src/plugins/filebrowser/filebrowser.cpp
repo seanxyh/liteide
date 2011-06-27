@@ -379,7 +379,7 @@ QString FileBrowser::getShellCmd(LiteApi::IApplication *app)
 #elif defined(Q_OS_MAC)
     defCmd = "/usr/bin/open";
 #else
-    defCmd = "/user/bin/gnome-terminal";
+    defCmd = "/usr/bin/gnome-terminal";
 #endif
     return app->settings()->value("filebrowser/shell_cmd",defCmd).toString();
 }

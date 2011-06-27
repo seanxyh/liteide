@@ -347,7 +347,7 @@ void LiteEditor::applyOption(QString id)
     m_editorWidget->setFont(font);
     m_editorWidget->setTabWidth(4);
 
-    QString style = m_liteApp->settings()->value("editor/style").toString();
+    QString style = m_liteApp->settings()->value("editor/style","default.xml").toString();
     if (style != m_colorStyle) {
         m_colorStyle = style;
         m_colorStyleScheme->clear();
