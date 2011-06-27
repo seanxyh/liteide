@@ -307,7 +307,10 @@ void LiteEditor::printPreview(QPrinter *printer)
 #ifdef QT_NO_PRINTER
     Q_UNUSED(printer);
 #else
+    QPlainTextEdit::LineWrapMode mode = m_editorWidget->lineWrapMode();
+    m_editorWidget->setLineWrapMode(QPlainTextEdit::WidgetWidth);
     m_editorWidget->print(printer);
+    m_editorWidget->setLineWrapMode(mode);
 #endif
 }
 
@@ -327,7 +330,10 @@ void LiteEditor::filePrintPdf()
         QPrinter printer(QPrinter::HighResolution);
         printer.setOutputFormat(QPrinter::PdfFormat);
         printer.setOutputFileName(fileName);
-        m_editorWidget->document()->print(&printer);
+        QPlainTextEdit::LineWrapMode mode = m_editorWidget->lineWrapMode();
+        m_editorWidget->setLineWrapMode(QPlainTextEdit::WidgetWidth);
+        m_editorWidget->print(&printer);
+        m_editorWidget->setLineWrapMode(mode);
     }
 //! [0]
 #endif
@@ -342,7 +348,10 @@ void LiteEditor::filePrint()
         dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
     dlg->setWindowTitle(tr("Print Document"));
     if (dlg->exec() == QDialog::Accepted) {
+        QPlainTextEdit::LineWrapMode mode = m_editorWidget->lineWrapMode();
+        m_editorWidget->setLineWrapMode(QPlainTextEdit::WidgetWidth);
         m_editorWidget->print(&printer);
+        m_editorWidget->setLineWrapMode(mode);
     }
     delete dlg;
 #endif
