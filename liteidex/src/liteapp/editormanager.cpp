@@ -94,7 +94,13 @@ void EditorManager::addEditorHelper(IEditor *editor, bool autoRelease)
         if (w == 0) {
             return;
         }
-        m_editorTabWidget->addTab(w,QIcon(),editor->displayName());
+        QString tip;
+        if (editor && editor->file()) {
+            tip = editor->file()->fileName();
+        } else {
+            tip = editor->displayName();
+        }
+        m_editorTabWidget->addTab(w,QIcon(),editor->displayName(),tip);
         m_widgetEditorMap.insert(w,editor);
         if (autoRelease) {
             m_autoReleaseEditorList.append(editor);

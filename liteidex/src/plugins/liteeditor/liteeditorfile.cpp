@@ -28,6 +28,7 @@
 #include <QTextDocument>
 #include <QTextCodec>
 #include <QMessageBox>
+#include <QDir>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -117,7 +118,7 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType)
         return false;
     }
     m_mimeType = mimeType;
-    m_fileName = fileName;
+    m_fileName =  QDir::toNativeSeparators(fileName);
     QByteArray text = file.readAll();
     if (m_codec) {
         m_document->setPlainText(m_codec->toUnicode(text));

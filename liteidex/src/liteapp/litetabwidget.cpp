@@ -121,12 +121,12 @@ void LiteTabWidget::selectListActGroup(QAction *act)
     setCurrentIndex(index);
 }
 
-int LiteTabWidget::addTab(QWidget *w,const QString & label)
+int LiteTabWidget::addTab(QWidget *w,const QString & label, const QString &tip)
 {
-    return addTab(w,QIcon(),label);
+    return addTab(w,QIcon(),label,tip);
 }
 
-int LiteTabWidget::addTab(QWidget *w,const QIcon & icon, const QString & label)
+int LiteTabWidget::addTab(QWidget *w,const QIcon & icon, const QString & label, const QString &tip)
 {
     if (!w) {
         return -1;
@@ -141,6 +141,9 @@ int LiteTabWidget::addTab(QWidget *w,const QIcon & icon, const QString & label)
     m_listActMenu->addAction(act);
 
     int index = m_tabBar->addTab(icon,label);
+    if (!tip.isEmpty()) {
+        m_tabBar->setTabToolTip(index,tip);
+    }
     m_stackLayout->addWidget(w);
     m_widgetList.append(w);
 
