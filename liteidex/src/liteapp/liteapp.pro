@@ -37,7 +37,9 @@ SOURCES += main.cpp\
     litetabwidget.cpp \
     optionmanager.cpp \
     newfiledialog.cpp \
-    optionsbrowser.cpp
+    optionsbrowser.cpp \
+    liteappoption.cpp \
+    liteappoptionfactory.cpp
 
 HEADERS  += mainwindow.h \
     liteapp.h \
@@ -54,13 +56,16 @@ HEADERS  += mainwindow.h \
     litetabwidget.h \
     optionmanager.h \
     newfiledialog.h \
-    optionsbrowser.h
+    optionsbrowser.h \
+    liteappoption.h \
+    liteappoptionfactory.h
 
 FORMS += \
     aboutdialog.ui \
     pluginsdialog.ui \
     newfiledialog.ui \
-    optionswidget.ui
+    optionswidget.ui \
+    liteappoption.ui
 
 RESOURCES += \
     liteapp.qrc

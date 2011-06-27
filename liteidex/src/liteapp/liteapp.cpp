@@ -35,6 +35,7 @@
 #include "optionmanager.h"
 #include "mainwindow.h"
 #include "browsereditor/browsereditormanager.h"
+#include "liteappoptionfactory.h"
 
 #include <QApplication>
 #include <QMenuBar>
@@ -125,6 +126,10 @@ LiteApp::LiteApp()
 
     this->appendConsole("LiteApp","Init");
     this->appendConsole("LiteApp","ObjectIdList",m_extension->objectMetaList().join(";"));
+
+    m_liteAppOptionFactory = new LiteAppOptionFactory(this,this);
+
+    m_optionManager->addFactory(m_liteAppOptionFactory);
 }
 
 LiteApp::~LiteApp()
@@ -139,6 +144,8 @@ IExtension *LiteApp::extension()
 
 void LiteApp::cleanup()
 {
+    delete m_liteAppOptionFactory;
+
     delete m_browserManager;
     delete m_projectManager;
     delete m_editorManager;
