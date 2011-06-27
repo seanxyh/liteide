@@ -336,6 +336,9 @@ public:
 
     virtual QList<IPlugin*> pluginList() const = 0;
 
+    virtual void loadSession(const QString &name) = 0;
+    virtual void saveSession(const QString &name) = 0;
+
     virtual void appendConsole(const QString &model, const QString &action, const QString &log = QString()) = 0;
 };
 

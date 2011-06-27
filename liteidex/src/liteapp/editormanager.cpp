@@ -105,6 +105,18 @@ void EditorManager::addEditorHelper(IEditor *editor, bool autoRelease)
     setCurrentEditor(editor);
 }
 
+QList<IEditor*> EditorManager::sortedEditorList() const
+{
+    QList<IEditor*> editorList;
+    foreach (QWidget *w,m_editorTabWidget->widgetList()) {
+        IEditor *ed = m_widgetEditorMap.value(w);
+        if (ed) {
+            editorList << ed;
+        }
+    }
+    return editorList;
+}
+
 void EditorManager::addAutoReleaseEditor(IEditor *editor)
 {
     addEditorHelper(editor,true);

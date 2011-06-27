@@ -179,6 +179,11 @@ QTabBar *LiteTabWidget::tabBar()
     return m_tabBar;
 }
 
+QList<QWidget*> LiteTabWidget::widgetList() const
+{
+    return m_widgetList;
+}
+
 void LiteTabWidget::setTabText(int index, const QString & text)
 {
     QAction *act = m_listActGroup->actions().value(index);
