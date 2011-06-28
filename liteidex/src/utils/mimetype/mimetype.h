@@ -21,7 +21,7 @@
 // Module: mimetype.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: mimetype.h,v 1.0 2011-5-12 visualfc Exp $
+// $Id: mimetype.h,v 1.0 2011-6-28 visualfc Exp $
 
 #ifndef LITEAPI_MIMETYPE_H
 #define LITEAPI_MIMETYPE_H
@@ -33,11 +33,13 @@ class MimeType : public LiteApi::IMimeType
 public:
     virtual QString type() const;
     virtual QString comment() const;
+    virtual QString codec() const;
     virtual QStringList globPatterns() const;
     virtual QStringList subClassesOf() const;
     virtual void merge(const IMimeType *mimeType);
 
     void setType(const QString &type);
+    void setCodec(const QString &codec);
     void setComment(const QString &comment);
     void appendGlobPatterns(const QString &globPattern);
     void appendSubClassesOf(const QString &subClassOf);
@@ -45,9 +47,10 @@ public:
     bool isEmpty() const;
 public:
     static bool loadMimeTypes(LiteApi::IMimeTypeManager *manager, const QString &fileName);
-    static bool loadMimeTypes2(LiteApi::IMimeTypeManager *manager, QIODevice *dev, const QString &fileName);
+    static bool loadMimeTypes(LiteApi::IMimeTypeManager *manager, QIODevice *dev, const QString &fileName);
 protected:
     QString m_type;
+    QString m_codec;
     QStringList m_comment;
     QStringList m_globPatterns;
     QStringList m_subClassesOf;

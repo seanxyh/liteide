@@ -21,7 +21,7 @@
 // Module: liteeditor.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteeditor.cpp,v 1.0 2011-6-27 visualfc Exp $
+// $Id: liteeditor.cpp,v 1.0 2011-6-28 visualfc Exp $
 
 #include "liteeditor.h"
 #include "liteeditorwidget.h"
@@ -49,6 +49,7 @@
 #include <QTextDocumentWriter>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
+#include <QTextCodec>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -90,6 +91,12 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     m_extension->addObject("LiteApi.QToolBar",m_toolBar);
     m_extension->addObject("LiteApi.LiteEditorWidget",m_editorWidget);
     m_extension->addObject("LiteApi.QPlainTextEdit",m_editorWidget);
+
+    findCodecs();
+    foreach (QTextCodec *codec, m_codecs) {
+        m_codecComboBox->addItem(codec->name(), codec->mibEnum());
+    }
+    connect(m_codecComboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(codecComboBoxChanged(QString)));
 }
 
 LiteEditor::~LiteEditor()
@@ -166,10 +173,45 @@ void LiteEditor::createActions()
     clipbordDataChanged();
 }
 
+void LiteEditor::findCodecs()
+ {
+     QMap<QString, QTextCodec *> codecMap;
+     QRegExp iso8859RegExp("ISO[- ]8859-([0-9]+).*");
+
+     foreach (int mib, QTextCodec::availableMibs()) {
+         QTextCodec *codec = QTextCodec::codecForMib(mib);
+
+         QString sortKey = codec->name().toUpper();
+         int rank;
+
+         if (sortKey.startsWith("UTF-8")) {
+             rank = 1;
+         } else if (sortKey.startsWith("UTF-16")) {
+             rank = 2;
+         } else if (iso8859RegExp.exactMatch(sortKey)) {
+             if (iso8859RegExp.cap(1).size() == 1)
+                 rank = 3;
+             else
+                 rank = 4;
+         } else {
+             rank = 5;
+         }
+         sortKey.prepend(QChar('0' + rank));
+
+         codecMap.insert(sortKey, codec);
+     }
+     m_codecs = codecMap.values();
+ }
+
+
 void LiteEditor::createToolBars()
 {
     m_toolBar = new QToolBar(tr("editor"),m_widget);
     m_toolBar->setIconSize(QSize(16,16));
+
+    m_codecComboBox = new QComboBox;
+    m_toolBar->addWidget(m_codecComboBox);
+    m_toolBar->addSeparator();
 
     m_toolBar->addAction(m_cutAct);
     m_toolBar->addAction(m_copyAct);
@@ -240,6 +282,14 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
     bool success = m_file->open(fileName,mimeType);
     if (success) {
         m_editorWidget->initLoadDocument();
+        QString codecName = m_file->textCodec();
+        for (int i = 0; i < m_codecComboBox->count(); i++) {
+            QString text = m_codecComboBox->itemText(i);
+            if (codecName == text) {
+                m_codecComboBox->setCurrentIndex(i);
+                break;
+            }
+        }
     }
     return success;
 }
@@ -360,4 +410,13 @@ void LiteEditor::filePrint()
     }
     delete dlg;
 #endif
+}
+
+void LiteEditor::codecComboBoxChanged(QString codec)
+{
+    bool success = m_file->reloadByCodec(codec);
+    if (success) {
+        m_editorWidget->initLoadDocument();
+    }
+    return;
 }

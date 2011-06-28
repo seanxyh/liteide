@@ -21,7 +21,7 @@
 // Module: liteapi.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteapi.h,v 1.0 2011-4-22 visualfc Exp $
+// $Id: liteapi.h,v 1.0 2011-6-28 visualfc Exp $
 
 #ifndef __LITEAPI_H__
 #define __LITEAPI_H__
@@ -59,6 +59,7 @@ public:
 
     virtual QString type() const = 0;
     virtual QString comment() const = 0;
+    virtual QString codec() const = 0;
     virtual QStringList globPatterns() const = 0;
     virtual QStringList subClassesOf() const = 0;
     virtual void merge(const IMimeType *mimeType) = 0;
