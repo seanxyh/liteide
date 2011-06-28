@@ -21,7 +21,7 @@
 // Module: liteeditorfile.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteeditorfile.h,v 1.0 2011-5-12 visualfc Exp $
+// $Id: liteeditorfile.h,v 1.0 2011-6-28 visualfc Exp $
 
 #ifndef LITEEDITORFILE_H
 #define LITEEDITORFILE_H
@@ -42,9 +42,25 @@ public:
     virtual QString mimeType() const;
 public:
     void setDocument(QTextDocument *document);
-    void setTextCodec(QTextCodec *codec);
     QTextDocument  *document();
+    void setTextCodec(const QString &name);
+    QString textCodec() const;
+    bool reloadByCodec(const QString &codecName);
+    bool open(const QString &fileName, const QString &mimeType, bool bCheckCodec);
 protected:
+    enum LineTerminatorMode {
+        LFLineTerminator,
+        CRLFLineTerminator,
+        NativeLineTerminator =
+#if defined (Q_OS_WIN)
+        CRLFLineTerminator
+#else
+        LFLineTerminator
+#endif
+    };
+    LineTerminatorMode m_lineTerminatorMode;
+protected:
+    bool m_hasDecodingError;
     LiteApi::IApplication *m_liteApp;
     QString        m_fileName;
     QString        m_mimeType;

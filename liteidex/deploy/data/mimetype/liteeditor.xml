@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
-  <mime-type type="text/x-gosrc">
+  <mime-type type="text/x-gosrc" codec="utf-8">
     <sub-class-of type="text/plain"/>
     <comment>Golang Source File</comment>
     <glob pattern="*.go"/>
   </mime-type>
-  <mime-type type="text/x-lua">
+  <mime-type type="text/x-lua" codec="utf-8">
     <sub-class-of type="text/plain"/>
     <comment>Lua Source File</comment>
     <glob pattern="*.lua"/>

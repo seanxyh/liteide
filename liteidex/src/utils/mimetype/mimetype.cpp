@@ -47,6 +47,12 @@ QString MimeType::comment() const
 {
     return m_comment.join("/");
 }
+
+QString MimeType::codec() const
+{
+    return m_codec;
+}
+
 QStringList MimeType::globPatterns() const
 {
     return m_globPatterns;
@@ -65,6 +71,10 @@ void MimeType::merge(const IMimeType *mimeType)
     m_globPatterns.append(mimeType->globPatterns());    
     m_comment.append(mimeType->comment());
 
+    if (!mimeType->codec().isEmpty()) {
+        m_codec = mimeType->codec();
+    }
+
     m_subClassesOf.removeDuplicates();
     m_globPatterns.removeDuplicates();
     m_comment.removeDuplicates();
@@ -73,6 +83,11 @@ void MimeType::merge(const IMimeType *mimeType)
 void MimeType::setType(const QString &type)
 {
     m_type = type;
+}
+
+void MimeType::setCodec(const QString &codec)
+{
+    m_codec = codec;
 }
 
 void MimeType::setComment(const QString &comment)
@@ -114,10 +129,10 @@ bool MimeType::loadMimeTypes(LiteApi::IMimeTypeManager *manager, const QString &
     if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
         return false;
     }
-    return MimeType::loadMimeTypes2(manager,&file,fileName);
+    return MimeType::loadMimeTypes(manager,&file,fileName);
 }
 
-bool MimeType::loadMimeTypes2(LiteApi::IMimeTypeManager *manager, QIODevice *dev, const QString &/*fileName*/)
+bool MimeType::loadMimeTypes(LiteApi::IMimeTypeManager *manager, QIODevice *dev, const QString &/*fileName*/)
 {
     QXmlStreamReader reader(dev);
     QXmlStreamAttributes attrs;
@@ -129,6 +144,7 @@ bool MimeType::loadMimeTypes2(LiteApi::IMimeTypeManager *manager, QIODevice *dev
             if (reader.name() == "mime-type" && mimeType == 0) {
                 mimeType = new MimeType;
                 mimeType->setType(attrs.value("type").toString());
+                mimeType->setCodec(attrs.value("codec").toString());
             } else if (reader.name() == "sub-class-of" && mimeType) {
                 mimeType->appendSubClassesOf(attrs.value("type").toString());
             } else if (reader.name() == "comment" && mimeType) {

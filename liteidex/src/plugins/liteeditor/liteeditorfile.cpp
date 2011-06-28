@@ -21,7 +21,7 @@
 // Module: liteeditorfile.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteeditorfile.cpp,v 1.0 2011-5-12 visualfc Exp $
+// $Id: liteeditorfile.cpp,v 1.0 2011-6-28 visualfc Exp $
 
 #include "liteeditorfile.h"
 #include <QFile>
@@ -45,7 +45,8 @@ LiteEditorFile::LiteEditorFile(LiteApi::IApplication *app, QObject *parent)
     : LiteApi::IFile(parent),
       m_liteApp(app)
 {
-    m_codec = QTextCodec::codecForName("UTF-8");
+    m_codec = QTextCodec::codecForName("utf-8");
+    m_hasDecodingError = false;
 }
 
 QString LiteEditorFile::fileName() const
@@ -56,10 +57,14 @@ QString LiteEditorFile::fileName() const
 bool LiteEditorFile::save(const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+    if (!file.open(QFile::WriteOnly | QIODevice::Truncate)) {
         return false;
     }
+
     QString text = m_document->toPlainText();
+    if (m_lineTerminatorMode == CRLFLineTerminator)
+        text.replace(QLatin1Char('\n'), QLatin1String("\r\n"));
+
     if (m_codec) {
         file.write(m_codec->fromUnicode(text));
     } else {
@@ -67,6 +72,23 @@ bool LiteEditorFile::save(const QString &fileName)
     }
     m_document->setModified(false);
     return true;
+}
+
+bool LiteEditorFile::reloadByCodec(const QString &codecName)
+{
+    if (m_document->isModified()) {
+        QString text = QString(tr("Cancel file %1 modify and reload ?")).arg(m_fileName);
+        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
+        if (ret != QMessageBox::Yes) {
+            return false;
+        }
+    }
+    setTextCodec(codecName);
+    bool ret = open(m_fileName,m_mimeType,false);
+    if (ret) {
+        emit reloaded();
+    }
+    return ret;
 }
 
 bool LiteEditorFile::reload(bool externalModify)
@@ -101,9 +123,17 @@ void LiteEditorFile::setDocument(QTextDocument *document)
     m_document = document;
 }
 
-void LiteEditorFile::setTextCodec(QTextCodec *codec)
+void LiteEditorFile::setTextCodec(const QString &name)
 {
-    m_codec = codec;
+    QTextCodec *codec = QTextCodec::codecForName(name.toAscii());
+    if (codec) {
+        m_codec = codec;
+    }
+}
+
+QString LiteEditorFile::textCodec() const
+{
+    return m_codec->name();
 }
 
 QTextDocument  *LiteEditorFile::document()
@@ -111,19 +141,61 @@ QTextDocument  *LiteEditorFile::document()
     return m_document;
 }
 
-bool LiteEditorFile::open(const QString &fileName, const QString &mimeType)
+bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool bCheckCodec)
 {
     QFile file(fileName);
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+    if (!file.open(QFile::ReadOnly)) {
         return false;
     }
     m_mimeType = mimeType;
     m_fileName =  QDir::toNativeSeparators(fileName);
-    QByteArray text = file.readAll();
-    if (m_codec) {
-        m_document->setPlainText(m_codec->toUnicode(text));
-    } else {
-        m_document->setPlainText(text);
+
+    QByteArray buf = file.readAll();
+
+    if (bCheckCodec) {
+        LiteApi::IMimeType *im = m_liteApp->mimeTypeManager()->findMimeType(mimeType);
+        if (im) {
+            QString codecName = im->codec();
+            if (!codecName.isEmpty()) {
+                m_codec = QTextCodec::codecForName(codecName.toAscii());
+            }
+        }
+
+        int bytesRead = buf.size();
+
+        QTextCodec *codec = m_codec;
+        // code taken from qtextstream
+        if (bytesRead >= 4 && ((uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe && uchar(buf[2]) == 0 && uchar(buf[3]) == 0)
+                               || (uchar(buf[0]) == 0 && uchar(buf[1]) == 0 && uchar(buf[2]) == 0xfe && uchar(buf[3]) == 0xff))) {
+            codec = QTextCodec::codecForName("UTF-32");
+        } else if (bytesRead >= 2 && ((uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe)
+                                      || (uchar(buf[0]) == 0xfe && uchar(buf[1]) == 0xff))) {
+            codec = QTextCodec::codecForName("UTF-16");
+        } else if (bytesRead >= 3 && uchar(buf[0] == 0xef && uchar(buf[1]) == 0xbb && uchar(buf[2])== 0xbf)) {
+            codec = QTextCodec::codecForName("UTF-8");
+        } else if (!codec) {
+            codec = QTextCodec::codecForLocale();
+        }
+        // end code taken from qtextstream
+
+        m_codec = codec;
     }
+    QString text = m_codec->toUnicode(buf);
+
+    int lf = text.indexOf('\n');
+    if (lf > 0 && text.at(lf-1) == QLatin1Char('\r')) {
+        m_lineTerminatorMode = CRLFLineTerminator;
+    } else if (lf >= 0) {
+        m_lineTerminatorMode = LFLineTerminator;
+    } else {
+        m_lineTerminatorMode = NativeLineTerminator;
+    }
+
+    m_document->setPlainText(text);
     return true;
+}
+
+bool LiteEditorFile::open(const QString &fileName, const QString &mimeType)
+{
+    return open(fileName,mimeType,true);
 }

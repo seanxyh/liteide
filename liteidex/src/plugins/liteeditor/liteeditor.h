@@ -73,11 +73,15 @@ public slots:
     void filePrint();
     void filePrintPreview();
     void printPreview(QPrinter *printer);
+    void codecComboBoxChanged(QString);
 public:
+    void findCodecs();
+    QList<QTextCodec *> m_codecs;
     LiteApi::IApplication *m_liteApp;
     Extension   *m_extension;
     QWidget *m_widget;
     QToolBar *m_toolBar;
+    QComboBox *m_codecComboBox;
     LiteEditorWidget    *m_editorWidget;
     LiteCompleter   *m_completer;
     QAction *m_undoAct;

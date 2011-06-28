@@ -370,7 +370,8 @@ Do you want to load?</source>
         <location filename="src/liteapp/filemanager.cpp" line="523"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
-        <translation>%1\n文件已经被删除，重新保存到文件还是关闭编辑器?</translation>
+        <translation>%1
+文件已经被删除，重新保存到文件还是关闭编辑器?</translation>
     </message>
     <message>
         <location filename="src/liteapp/filemanager.cpp" line="524"/>
