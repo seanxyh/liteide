@@ -157,12 +157,12 @@ LGPL_EXCEPTION.txt in this package.</source>
 <context>
     <name>EditorManager</name>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="165"/>
+        <location filename="src/liteapp/editormanager.cpp" line="171"/>
         <source>%1 is modified.</source>
         <translation>%1 被修改.</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="166"/>
+        <location filename="src/liteapp/editormanager.cpp" line="172"/>
         <source>Save Modify</source>
         <translation>保存修改内容</translation>
     </message>
@@ -420,7 +420,7 @@ This file has been removed. Do you want save to file or close editor?</source>
     <message>
         <location filename="src/liteapp/liteapp.cpp" line="313"/>
         <source>Close All</source>
-        <translation>清除所有</translation>
+        <translation>关闭所有</translation>
     </message>
     <message>
         <location filename="src/liteapp/liteapp.cpp" line="314"/>
@@ -550,49 +550,49 @@ This file has been removed. Do you want save to file or close editor?</source>
 <context>
     <name>LiteEditor</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="133"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="140"/>
         <source>Undo</source>
         <translation>撤消</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="134"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="141"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="135"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="142"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="136"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="143"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="137"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="144"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="139"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="330"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="146"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="380"/>
         <source>Export PDF</source>
         <translation>输出PDF文档</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="140"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="354"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="147"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="404"/>
         <source>Print Document</source>
         <translation>文档打印</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="141"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="148"/>
         <source>Print Preview Document</source>
         <translation>文档打印预览</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="171"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="209"/>
         <source>editor</source>
         <translation>编辑器</translation>
     </message>
@@ -600,13 +600,14 @@ This file has been removed. Do you want save to file or close editor?</source>
 <context>
     <name>LiteEditorFile</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="74"/>
+        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="97"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation>%1\n文件已经被编辑器外修改，是否重新加载文件?</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="80"/>
+        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="103"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation>是否取消对文件 %1 的修改并重新加载?</translation>
     </message>

@@ -11,4 +11,20 @@
     <glob pattern="*.lua"/>
     <glob pattern="*.wlua"/>
   </mime-type>  
+  <mime-type type="text/x-csrc" codec="system">
+    <sub-class-of type="text/plain"/>
+    <comment>C Source File</comment>
+    <glob pattern="*.c"/>
+    <glob pattern="*.cpp"/>
+    <glob pattern="*.cxx"/>
+    <glob pattern="*.cc"/>
+    <glob pattern="*.c++"/>
+    <glob pattern="*.h"/>
+	<glob pattern="*.hpp"/>
+	<glob pattern="*.hh"/>
+	<glob pattern="*.hxx"/>
+	<glob pattern="*.h++"/>	
+	<glob pattern="*.hcc"/>		
+	<glob pattern="*.moc"/>		
+  </mime-type> 
 </mime-info>
