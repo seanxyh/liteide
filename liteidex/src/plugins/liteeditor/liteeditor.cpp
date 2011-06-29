@@ -52,6 +52,7 @@
 #include <QPrintPreviewDialog>
 #include <QTextCodec>
 #include <QDebug>
+#include <QPalette>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -71,6 +72,7 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     m_widget = new QWidget;
     m_editorWidget = new LiteEditorWidget(m_widget);
     m_colorStyleScheme = new ColorStyleScheme(this);
+    m_defPalette = m_editorWidget->palette();
 
     createActions();
     createToolBars();
@@ -87,12 +89,13 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     connect(m_file->document(),SIGNAL(contentsChanged()),this,SIGNAL(contentsChanged()));
     connect(m_liteApp->optionManager(),SIGNAL(applyOption(QString)),this,SLOT(applyOption(QString)));
 
-    applyOption("option/liteeditor");
+    //applyOption("option/liteeditor");
 
     m_extension->addObject("LiteApi.ITextEditor",this);
     m_extension->addObject("LiteApi.QToolBar",m_toolBar);
     m_extension->addObject("LiteApi.LiteEditorWidget",m_editorWidget);
     m_extension->addObject("LiteApi.QPlainTextEdit",m_editorWidget);
+
 
     findCodecs();
     foreach (QTextCodec *codec, m_codecs) {
@@ -106,6 +109,11 @@ LiteEditor::~LiteEditor()
     delete m_extension;
     delete m_editorWidget;
     delete m_widget;
+}
+
+const ColorStyleScheme *LiteEditor::colorStyleScheme() const
+{
+    return m_colorStyleScheme;
 }
 
 void LiteEditor::setCompleter(LiteCompleter *complter)
@@ -338,6 +346,37 @@ void LiteEditor::applyOption(QString id)
     font.setPointSize(fontSize);
     m_editorWidget->setFont(font);
     m_editorWidget->setTabWidth(4);
+
+    QString style = m_liteApp->settings()->value("editor/style").toString();
+    if (style != m_colorStyle) {
+        m_colorStyle = style;
+        m_colorStyleScheme->clear();
+        QString styleFileName = m_liteApp->resourcePath()+"/colorstyle/"+m_colorStyle;
+        bool b = m_colorStyleScheme->load(styleFileName);
+        if (b) {
+            const ColorStyle *style = m_colorStyleScheme->findStyle("Text");
+            const ColorStyle *selection = m_colorStyleScheme->findStyle("Select");
+            if (style) {
+                QPalette p = m_editorWidget->palette();
+                p.setColor(QPalette::Text, style->foregound());
+                p.setColor(QPalette::Foreground, style->foregound());
+                p.setColor(QPalette::Base, style->background());
+                if (selection) {
+                    p.setColor(QPalette::Highlight, (selection->background().isValid()?
+                                                         selection->background(): QApplication::palette().color(QPalette::Highlight) ));
+                    if (selection->foregound().isValid()) {
+                        p.setBrush(QPalette::HighlightedText, selection->foregound());
+                    }
+                }
+                p.setBrush(QPalette::Inactive, QPalette::Highlight, p.highlight());
+                p.setBrush(QPalette::Inactive, QPalette::HighlightedText, p.highlightedText());
+                m_editorWidget->setPalette(p);
+            } else {
+                m_editorWidget->setPalette(m_defPalette);
+            }
+            emit colorStyleChanged();
+        }
+    }
 }
 
 void LiteEditor::updateTip(QString func,QStringList args)

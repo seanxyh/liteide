@@ -81,7 +81,7 @@ public:
     virtual ~ColorStyleScheme();
 public:
     QString name() const { return m_name; }
-    ColorStyle *findStyle(const QString &name);
+    const ColorStyle *findStyle(const QString &name) const;
     bool load(const QString &fileName);
     bool load(QIODevice *dev, const QString &fileName);
     void clear();

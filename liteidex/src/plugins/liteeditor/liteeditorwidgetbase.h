@@ -58,7 +58,7 @@ public slots:
     void gotoLineStartWithSelection();
     void gotoLineEnd();
     void gotoLineEndWithSelection();
-protected:
+public:
     void keyPressEvent(QKeyEvent *e);
     void indentBlock(QTextBlock block, bool bIndent);
     void indentCursor(QTextCursor cur, bool bIndent);

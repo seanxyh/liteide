@@ -119,6 +119,8 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     connect(m_process,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finishedProcess(int,QProcess::ExitStatus)));
     connect(m_timer,SIGNAL(timeout()),this,SLOT(updateAstNow()));
     connect(m_tree,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClockedTree(QModelIndex)));
+
+    m_liteApp->extension()->addObject("GoAstView.Widget",m_widget);
 }
 
 GolangAst::~GolangAst()

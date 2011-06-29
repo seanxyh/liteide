@@ -44,7 +44,7 @@ void ColorStyleScheme::clear()
     m_name.clear();
 }
 
-ColorStyle *ColorStyleScheme::findStyle(const QString &name)
+const ColorStyle *ColorStyleScheme::findStyle(const QString &name) const
 {
     return m_nameStyleMap.value(name,0);
 }

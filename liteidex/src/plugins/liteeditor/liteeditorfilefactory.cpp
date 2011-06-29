@@ -83,6 +83,18 @@ QStringList LiteEditorFileFactory::mimeTypes() const
     return m_mimeTypes;
 }
 
+void LiteEditorFileFactory::colorStyleChanged()
+{
+    LiteEditor *editor = static_cast<LiteEditor *>(sender());
+    if (!editor) {
+        return;
+    }
+    TextEditor::SyntaxHighlighter *h = static_cast<TextEditor::SyntaxHighlighter*>(editor->extension()->findObject("TextEditor::SyntaxHighlighter"));
+    if (h) {
+        m_kate->setColorStyle(h,editor->colorStyleScheme());
+    }
+}
+
 LiteApi::IFile *LiteEditorFileFactory::open(const QString &fileName, const QString &mimeType)
 {
     LiteEditor *editor = new LiteEditor(m_liteApp);
@@ -92,7 +104,12 @@ LiteApi::IFile *LiteEditorFileFactory::open(const QString &fileName, const QStri
     }
 
     QTextDocument *doc = editor->m_editorWidget->document();
-    m_kate->create(doc,mimeType);
+    TextEditor::SyntaxHighlighter *h = m_kate->create(doc,mimeType);
+    if (h) {
+        editor->extension()->addObject("TextEditor::SyntaxHighlighter",h);
+        connect(editor,SIGNAL(colorStyleChanged()),this,SLOT(colorStyleChanged()));
+    }
+    editor->applyOption("option/liteeditor");
 
     LiteWordCompleter *wordCompleter = new LiteWordCompleter(editor);
     editor->setCompleter(wordCompleter);

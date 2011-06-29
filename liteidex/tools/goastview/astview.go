@@ -18,7 +18,7 @@ var (
 )
 
 func main() {
-	flag1.Parse()
+	flag.Parse()
 	if len(*flagInputSrc) == 0 && len(*flagInputFiles) == 0{
 		flag.Usage()
 		os.Exit(1)
