@@ -24,5 +24,6 @@
         <file>images/hideoutput.png</file>
         <file>images/liteide64.png</file>
         <file>images/logo/logo3.png</file>
+        <file>images/logo/logo4.png</file>
     </qresource>
 </RCC>
