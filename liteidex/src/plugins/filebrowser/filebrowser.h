@@ -42,6 +42,9 @@ class FileBrowser : public QObject
 public:
     explicit FileBrowser(LiteApi::IApplication *app,QObject *parent = 0);
     virtual ~FileBrowser();
+public:
+    static QString getShellCmd(LiteApi::IApplication *app);
+    static QStringList getShellArgs(LiteApi::IApplication *app);
 signals:
 
 public slots:

@@ -25,6 +25,7 @@
 
 #include "filebrowseroption.h"
 #include "ui_filebrowseroption.h"
+#include "filebrowser.h"
 #include <QDir>
 #include <QFileInfo>
 #include <QLocale>
@@ -36,6 +37,8 @@ FileBrowserOption::FileBrowserOption(LiteApi::IApplication *app,QObject *parent)
     ui(new Ui::FileBrowserOption)
 {
     ui->setupUi(m_widget);
+    ui->cmdLineEdit->setText(FileBrowser::getShellCmd(m_liteApp));
+    ui->argsLineEdit->setText(FileBrowser::getShellArgs(m_liteApp).join(" "));
 }
 
 FileBrowserOption::~FileBrowserOption()
@@ -58,6 +61,11 @@ QString FileBrowserOption::mimeType() const
 {
     return "option/filebrowser";
 }
+
 void FileBrowserOption::apply()
 {
+    QString cmd = ui->cmdLineEdit->text().trimmed();
+    QString args = ui->argsLineEdit->text().trimmed();
+    m_liteApp->settings()->setValue("filebrowser/shell_cmd",cmd);
+    m_liteApp->settings()->setValue("filebrowser/shell_args",args.split(" ",QString::SkipEmptyParts));
 }

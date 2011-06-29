@@ -371,20 +371,38 @@ void FileBrowser::removeFolder()
     }
 }
 
+QString FileBrowser::getShellCmd(LiteApi::IApplication *app)
+{
+    QString defCmd;
+#if defined(Q_OS_WIN)
+    defCmd = "cmd.exe";
+#elif defined(Q_OS_MAC)
+    defCmd = "/usr/bin/open";
+#else
+    defCmd = "/user/bin/gnome-terminal";
+#endif
+    return app->settings()->value("filebrowser/shell_cmd",defCmd).toString();
+}
+
+QStringList FileBrowser::getShellArgs(LiteApi::IApplication *app)
+{
+    QStringList defArgs;
+#if defined(Q_OS_MAC)
+    defArgs << "-a" << "Terminal";
+#endif
+    return app->settings()->value("filebrowser/shell_args",defArgs).toStringList();
+}
+
+
 void FileBrowser::openShell()
 {
     QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
     QDir dir = fileInfoToDir(info);
-    QStringList args;
-#if defined(Q_OS_WIN)
-    QString shell = "cmd.exe";
-#elif defined(Q_OS_MAC)
-    QString shell = "/usr/bin/open";
-    args << "-a" << "Terminal";
-    //QString shell = "/usr/X11R6/bin/xterm";
-#else
-    QString shell = "/usr/bin/gnome-terminal";
-#endif
-    QProcess::startDetached(shell,args,dir.path());
+    QString cmd = getShellCmd(m_liteApp);
+    if (cmd.isEmpty()) {
+        return;
+    }
+    QStringList args = getShellArgs(m_liteApp);
+    QProcess::startDetached(cmd,args,dir.path());
 }
 

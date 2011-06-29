@@ -25,6 +25,7 @@
 
 #include "filebrowserplugin.h"
 #include "filebrowser.h"
+#include "filebrowseroptionfactory.h"
 
 FileBrowserPlugin::FileBrowserPlugin() : m_browser(0)
 {
@@ -40,6 +41,7 @@ bool FileBrowserPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
     m_browser = new FileBrowser(app,this);
+    app->optionManager()->addFactory(new FileBrowserOptionFactory(app,this));
     return true;
 }
 
