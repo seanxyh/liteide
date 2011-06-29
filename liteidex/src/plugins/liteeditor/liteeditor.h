@@ -65,6 +65,9 @@ public:
     virtual int line() const;
     virtual int column() const;
     virtual void gotoLine(int line, int column);
+    const ColorStyleScheme *colorStyleScheme() const;
+signals:
+    void colorStyleChanged();
 public slots:
     void applyOption(QString);
     void clipbordDataChanged();
@@ -97,6 +100,8 @@ public:
     QComboBox *m_findComboBox;
     QLabel    *m_tip;
     LiteEditorFile *m_file;
+    QString  m_colorStyle;
+    QPalette m_defPalette;
 };
 
 #endif //LITEEDITOR_H

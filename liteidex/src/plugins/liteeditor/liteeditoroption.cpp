@@ -26,6 +26,8 @@
 #include "liteeditoroption.h"
 #include "ui_liteeditoroption.h"
 #include <QFontDatabase>
+#include <QDir>
+#include <QFileInfo>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -55,6 +57,22 @@ LiteEditorOption::LiteEditorOption(LiteApi::IApplication *app,QObject *parent) :
     ui->familyComboBox->setCurrentIndex(idx);
 
     updatePointSizes();
+
+    QString styleName = m_liteApp->settings()->value("editor/style","default.xml").toString();
+    QString stylePath = m_liteApp->resourcePath()+"/colorstyle";
+    QDir dir(stylePath);
+    int index = -1;
+    foreach(QFileInfo info, dir.entryInfoList(QStringList() << "*.xml")) {
+        ui->styleComboBox->addItem(info.fileName());
+        if (info.fileName() == styleName) {
+            index = ui->styleComboBox->count()-1;
+        }
+    }
+    if (index >= 0 && index < ui->styleComboBox->count()) {
+        ui->styleComboBox->setCurrentIndex(index);
+    }
+
+    connect(ui->editPushButton,SIGNAL(clicked()),this,SLOT(editStyleFile()));
 }
 
 QWidget *LiteEditorOption::widget()
@@ -83,8 +101,10 @@ void LiteEditorOption::apply()
             m_fontSize = size;
         }
     }
+    QString style = ui->styleComboBox->currentText();
     m_liteApp->settings()->setValue("editor/family",m_fontFamily);
     m_liteApp->settings()->setValue("editor/fontsize",m_fontSize);
+    m_liteApp->settings()->setValue("editor/style",style);
 }
 
 LiteEditorOption::~LiteEditorOption()
@@ -132,4 +152,14 @@ QList<int> LiteEditorOption::pointSizesForSelectedFont() const
         sizeLst = QFontDatabase::standardSizes();
 
     return sizeLst;
+}
+
+void LiteEditorOption::editStyleFile()
+{
+    QString fileName = ui->styleComboBox->currentText();
+    if (fileName.isEmpty()) {
+        return;
+    }
+    QString filePath = m_liteApp->resourcePath()+"/colorstyle/"+fileName;
+    m_liteApp->fileManager()->openEditor(filePath);
 }

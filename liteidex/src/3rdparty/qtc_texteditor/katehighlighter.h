@@ -10,11 +10,13 @@
 #include "syntaxhighlighter.h"
 #include "colorscheme.h"
 
+class ColorStyleScheme;
 class TEXTEDITOR_EXPORT KateHighlighter : public QObject
 {
     Q_OBJECT
 public:
     explicit KateHighlighter(QObject *parent = 0);
+    static void setColorStyle(TextEditor::SyntaxHighlighter *h,const ColorStyleScheme*);
 public:
     void loadPath(const QString &definitionsPaths);
     QStringList mimeTypes() const;
@@ -22,7 +24,6 @@ public:
     QString mimeTypeName(const QString &mimeType) const;
     TextEditor::SyntaxHighlighter *create(QTextDocument *doc, const QString &mimeType);
     QTextCharFormat toTextCharFormat(const QString &name);
-    void reset(TextEditor::SyntaxHighlighter *h);
 };
 
 #endif // KATEHIGHLIGHTER_H

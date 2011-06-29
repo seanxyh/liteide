@@ -4,6 +4,7 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 include(../../liteideutils.pri)
+include(../../utils/colorstyle/colorstyle.pri)
 
 DEFINES += TEXTEDITOR_LIBRARY
 

@@ -44,6 +44,8 @@ public:
     virtual void apply();
     void updatePointSizes();
     QList<int> pointSizesForSelectedFont() const;
+public slots:
+    void editStyleFile();
 public:
     int m_fontSize;
     QString m_fontFamily;
