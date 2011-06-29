@@ -40,6 +40,7 @@ class LiteEditorFile;
 class QComboBox;
 class QLabel;
 class LiteCompleter;
+class ColorStyleScheme;
 
 class LiteEditor : public LiteApi::ITextEditor
 {
@@ -76,6 +77,7 @@ public slots:
     void codecComboBoxChanged(QString);
 public:
     void findCodecs();
+    ColorStyleScheme    *m_colorStyleScheme;
     QList<QTextCodec *> m_codecs;
     LiteApi::IApplication *m_liteApp;
     Extension   *m_extension;

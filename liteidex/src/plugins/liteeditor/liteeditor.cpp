@@ -27,6 +27,7 @@
 #include "liteeditorwidget.h"
 #include "liteeditorfile.h"
 #include "litecompleter.h"
+#include "colorstyle/colorstyle.h"
 
 #include <QFileInfo>
 #include <QVBoxLayout>
@@ -69,6 +70,7 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
 {
     m_widget = new QWidget;
     m_editorWidget = new LiteEditorWidget(m_widget);
+    m_colorStyleScheme = new ColorStyleScheme(this);
 
     createActions();
     createToolBars();

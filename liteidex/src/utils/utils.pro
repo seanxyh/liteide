@@ -14,5 +14,6 @@ SUBDIRS = \
     modelproject \
     wordapi \
     processex \
+    colorstyle \
 
 
