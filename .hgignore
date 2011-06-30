@@ -4,4 +4,4 @@ syntax: glob
 *.5
 *.pro.user
 liteide-build-desktop
-liteidex/build
+liteidex/liteide

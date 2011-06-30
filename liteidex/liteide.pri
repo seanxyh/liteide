@@ -16,7 +16,7 @@ defineReplace(qtLibraryName) {
 
 IDE_APP_TARGET   = liteide
 IDE_SOURCE_TREE = $$PWD
-IDE_BUILD_TREE = $$IDE_SOURCE_TREE/build
+IDE_BUILD_TREE = $$IDE_SOURCE_TREE/liteide
 IDE_LIB_PATH = $$IDE_BUILD_TREE/lib
 IDE_APP_PATH = $$IDE_BUILD_TREE/bin
 
