@@ -34,6 +34,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QFileInfo>
+#include <QFileDialog>
 #include <QDebug>
 #include "litetabwidget.h"
 #include "fileutil/fileutil.h"
@@ -229,7 +230,27 @@ bool EditorManager::saveEditorAs(IEditor *editor)
     if (cur == 0) {
         return false;
     }
-
+    IFile *file = cur->file();
+    if (!file) {
+        return false;
+    }
+    QString fileName = file->fileName();
+    QFileInfo info(fileName);
+    QStringList filter;
+    QString ext = info.suffix();
+    if (!ext.isEmpty()) {
+        filter.append(QString("%1 (*.%1)").arg(ext).arg(ext));
+    }
+    filter.append(tr("All Files (*)"));
+    QString path = info.absolutePath();
+    QString saveFileName = QFileDialog::getSaveFileName(m_liteApp->mainWindow(),tr("Save As"),path,filter.join(";;"));
+    if (saveFileName.isEmpty()) {
+        return false;
+    }
+    if (!cur->file()->save(saveFileName)) {
+        return false;
+    }
+    m_liteApp->fileManager()->openEditor(saveFileName);
     return true;
 }
 
