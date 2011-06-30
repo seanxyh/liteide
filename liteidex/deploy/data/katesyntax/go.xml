@@ -4,7 +4,7 @@
           version="1.00" kateversion="2.4"
           indenter="cstyle"
           extensions="*.go"
-          mimetype="text/go-src"
+          mimetype="text/x-gosrc"
           priority="5"
           author="The Go Authors"
           license="BSD">

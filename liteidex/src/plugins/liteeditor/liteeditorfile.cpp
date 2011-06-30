@@ -171,7 +171,7 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
         } else if (bytesRead >= 2 && ((uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe)
                                       || (uchar(buf[0]) == 0xfe && uchar(buf[1]) == 0xff))) {
             codec = QTextCodec::codecForName("UTF-16");
-        } else if (bytesRead >= 3 && uchar(buf[0] == 0xef && uchar(buf[1]) == 0xbb && uchar(buf[2])== 0xbf)) {
+        } else if (bytesRead >= 3 && uchar(buf[0]) == 0xef && uchar(buf[1]) == 0xbb && uchar(buf[2])== 0xbf) {
             codec = QTextCodec::codecForName("UTF-8");
         } else if (!codec) {
             codec = QTextCodec::codecForLocale();
