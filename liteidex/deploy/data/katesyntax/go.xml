@@ -90,6 +90,8 @@
         <DetectChar attribute="Symbol" context="#stay" char="{" beginRegion="Brace1" />
         <DetectChar attribute="Symbol" context="#stay" char="}" endRegion="Brace1" />
 
+		<RegExpr      attribute="Numbers"  context="#stay"  String="\-?\.\d*(e|e\-|e\+)?\d+i?\b"/>
+		<RegExpr      attribute="Numbers"  context="#stay"  String="\-\d*\.?\d*(e|e\-|e\+)?\d+i?\b"/>
         <RegExpr      attribute="Numbers"  context="#stay"  String="\b\d*\.?\d*(e|e\-|e\+)?\d+i?\b"/>
         <RegExpr      attribute="Numbers"  context="#stay"  String="\b-?0[xX][0-9a-fA-F]+\b"/>
 
@@ -129,7 +131,7 @@
       <itemData name="Predeclared Identifier" defStyleNum="dsOthers" spellChecking="false"/>
       <itemData name="Builtin Function" defStyleNum="dsFunction" spellChecking="false"/>
       <itemData name="Data Type"    defStyleNum="dsDataType" spellChecking="false"/>
-      <itemData name="Numbers"      defStyleNum="dsBaseN" spellChecking="false"/>
+      <itemData name="Numbers"      defStyleNum="dsDecVal" spellChecking="false"/>
       <itemData name="Decimal"      defStyleNum="dsDecVal" spellChecking="false"/>
       <itemData name="Octal"        defStyleNum="dsBaseN" spellChecking="false"/>
       <itemData name="Hex"          defStyleNum="dsBaseN" spellChecking="false"/>
