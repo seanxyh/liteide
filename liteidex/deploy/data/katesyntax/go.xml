@@ -4,7 +4,7 @@
           version="1.00" kateversion="2.4"
           indenter="cstyle"
           extensions="*.go"
-          mimetype="text/x-gosrc"
+          mimetype="text/go-src"
           priority="5"
           author="The Go Authors"
           license="BSD">
@@ -12,13 +12,13 @@
     <list name="keywords">
       <item> break </item>
       <item> case </item>
+      <item> chan </item>
       <item> const </item>
       <item> continue </item>
       <item> default </item>
       <item> defer </item>
       <item> else </item>
       <item> fallthrough </item>
-      <item> false </item>
       <item> for </item>
       <item> func </item>
       <item> go </item>
@@ -26,22 +26,25 @@
       <item> if </item>
       <item> import </item>
       <item> interface </item>
-      <item> iota </item>
-      <item> nil </item>
+      <item> map </item>
       <item> package </item>
       <item> range </item>
       <item> return </item>
       <item> select </item>
       <item> struct </item>
       <item> switch </item>
-      <item> true </item>
       <item> type </item>
       <item> var </item>
+    </list>
+    <list name="predeclared">
+      <item> false </item>
+      <item> iota </item>
+      <item> nil </item>
+      <item> true </item>
     </list>
     <list name="types">
       <item> bool </item>
       <item> byte </item>
-      <item> chan </item>
       <item> complex64 </item>
       <item> complex128 </item>
       <item> float32 </item>
@@ -51,7 +54,6 @@
       <item> int16 </item>
       <item> int32 </item>
       <item> int64 </item>
-      <item> map </item>
       <item> string </item>
       <item> uint </item>
       <item> uintptr </item>
@@ -64,7 +66,6 @@
       <item> append </item>
       <item> cap </item>
       <item> close </item>
-      <item> closed </item>
       <item> complex </item>
       <item> copy </item>
       <item> imag </item>
@@ -81,11 +82,17 @@
       <context attribute="Normal Text" lineEndContext="#stay" name="Normal">
         <DetectSpaces />
         <keyword attribute="Keyword" context="#stay" String="keywords"/>
+        <keyword attribute="Predeclared Identifier" context="#stay"
+          String="predeclared"/>
         <keyword attribute="Data Type" context="#stay" String="types"/>
         <keyword attribute="Builtin Function" context="#stay" String="functions"/>
         <DetectIdentifier />
         <DetectChar attribute="Symbol" context="#stay" char="{" beginRegion="Brace1" />
         <DetectChar attribute="Symbol" context="#stay" char="}" endRegion="Brace1" />
+
+        <RegExpr      attribute="Numbers"  context="#stay"  String="\b\d*\.?\d*(e|e\-|e\+)?\d+\b"/>
+        <RegExpr      attribute="Numbers"  context="#stay"  String="\b-?0[xX][0-9a-fA-F]+\b"/>
+
         <HlCOct attribute="Octal" context="#stay"/>
         <HlCHex attribute="Hex" context="#stay"/>
         <HlCChar attribute="Char" context="#stay"/>
@@ -119,8 +126,10 @@
     <itemDatas>
       <itemData name="Normal Text"  defStyleNum="dsNormal" spellChecking="false"/>
       <itemData name="Keyword"      defStyleNum="dsKeyword" spellChecking="false"/>
+      <itemData name="Predeclared Identifier" defStyleNum="dsOthers" spellChecking="false"/>
       <itemData name="Builtin Function" defStyleNum="dsFunction" spellChecking="false"/>
       <itemData name="Data Type"    defStyleNum="dsDataType" spellChecking="false"/>
+      <itemData name="Numbers"      defStyleNum="dsBaseN" spellChecking="false"/>
       <itemData name="Decimal"      defStyleNum="dsDecVal" spellChecking="false"/>
       <itemData name="Octal"        defStyleNum="dsBaseN" spellChecking="false"/>
       <itemData name="Hex"          defStyleNum="dsBaseN" spellChecking="false"/>
