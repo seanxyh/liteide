@@ -5,5 +5,5 @@ cp -v README.TXT liteide
 cp -v CHANGES.TXT liteide
 cp -v GOCODE.TXT liteide
 cp -r -v deploy/* liteide/
-cp -r -v os_deploy/linux64/* liteide/
+cp -r -v os_deploy/linux32/* liteide/
 

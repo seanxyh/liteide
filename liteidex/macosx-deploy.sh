@@ -1,16 +1,16 @@
 #!/bin/sh
-cp -v LICENSE.LGPL build/bin
-cp -v LGPL_EXCEPTION.TXT build/bin
-cp -v README.TXT build/bin
-cp -v CHANGES.TXT build/bin
-cp -v GOCODE.TXT build/bin
-cp -r -v deploy/data/* build/bin/LiteIDE.app/Contents/Resources
-cp -r -v os_deploy/macosx/data/* build/bin/LiteIDE.app/Contents/Resources
+cp -v LICENSE.LGPL liteide/bin
+cp -v LGPL_EXCEPTION.TXT liteide/bin
+cp -v README.TXT liteide/bin
+cp -v CHANGES.TXT liteide/bin
+cp -v GOCODE.TXT liteide/bin
+cp -r -v deploy/data/* liteide/bin/LiteIDE.app/Contents/Resources
+cp -r -v os_deploy/macosx/data/* liteide/bin/LiteIDE.app/Contents/Resources
 
-cp -v build/bin/goastview build/bin/LiteIDE.app/Contents/MacOS
-cp -v build/bin/goexec build/bin/LiteIDE.app/Contents/MacOS
-cp -v build/bin/gopromake build/bin/LiteIDE.app/Contents/MacOS
-cp -v src/liteapp/Info.plist build/bin/LiteIDE.app/Contents
+cp -v liteide/bin/goastview liteide/bin/LiteIDE.app/Contents/MacOS
+cp -v liteide/bin/goexec liteide/bin/LiteIDE.app/Contents/MacOS
+cp -v liteide/bin/gopromake liteide/bin/LiteIDE.app/Contents/MacOS
+cp -v src/liteapp/Info.plist liteide/bin/LiteIDE.app/Contents
 
 function process_file()
 {
@@ -18,12 +18,12 @@ function process_file()
 install_name_tool -change \
  QtCore.framework/Versions/4/QtCore \
  @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore \
- build/bin/LiteIDE.app/Contents/PlugIns/$deploy_file  
+ liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file  
 
 install_name_tool -change \
  QtGui.framework/Versions/4/QtGui \
  @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui \
-  build/bin/LiteIDE.app/Contents/PlugIns/$deploy_file   
+  liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file   
 }
 
 function process_file2()
@@ -31,17 +31,17 @@ function process_file2()
 install_name_tool -change \
  QtCore.framework/Versions/4/QtCore \
  @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore \
- build/bin/LiteIDE.app/Contents/PlugIns/$deploy_file  
+ liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file  
 
 install_name_tool -change \
  QtGui.framework/Versions/4/QtGui \
  @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui \
-  build/bin/LiteIDE.app/Contents/PlugIns/$deploy_file   
+  liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file   
   
 install_name_tool -change \
  QtXml.framework/Versions/4/QtXml \
  @executable_path/../Frameworks/QtXml.framework/Versions/4/QtXml \
-  build/bin/LiteIDE.app/Contents/PlugIns/$deploy_file   
+  liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file   
 }
 
 export deploy_file=libgolangast.dylib
