@@ -205,12 +205,14 @@ void FileBrowser::currentEditorChanged(LiteApi::IEditor *editor)
     if (fileName.isEmpty()) {
         return;
     }
-    QString path = QFileInfo(fileName).absolutePath();
+    QString path = QFileInfo(fileName).filePath();
     QModelIndex index = m_fileModel->index(path);
+    if (!index.isValid()) {
+        return;
+    }
     QModelIndex proxyIndex = m_proxyModel->mapFromSource(index);
-    m_treeView->scrollTo(proxyIndex,QAbstractItemView::PositionAtCenter);
-    m_treeView->expand(proxyIndex);
-
+    m_treeView->scrollTo(proxyIndex,QAbstractItemView::EnsureVisible);
+    m_treeView->setCurrentIndex(proxyIndex);
 }
 
 void FileBrowser::syncFileModel(bool b)
