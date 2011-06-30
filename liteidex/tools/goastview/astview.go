@@ -19,7 +19,7 @@ var (
 
 func main() {
 	flag.Parse()
-	if len(*flagInputSrc) == && len(*flagInputFiles) == 0{
+	if len(*flagInputSrc) == && len(*flagInputFiles) == 0 {
 		flag.Usage()
 		os.Exit(1)
 	}
