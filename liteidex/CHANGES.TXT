@@ -1,3 +1,15 @@
+--- 2011.6.30
+Ver x4 0.625
+* add interface zh_cn
+* add filebrowser pluing add/change/remove 
+* add editor color style scheme setup
+* add editor codec check/reload
+* add editor pdf export
+* add editor print and preview
+* editor style line LRLF of source
+* kate go.xml support "number" style
+* liteapp last session save/load
+
 --- 2011.6.21
 Ver x3 0.46875
 * add file browser plugin

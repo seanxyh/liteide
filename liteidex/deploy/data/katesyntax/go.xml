@@ -92,7 +92,7 @@
 
 		<RegExpr      attribute="Numbers"  context="#stay"  String="\-?\.\d*(e|e\-|e\+)?\d+i?\b"/>
 		<RegExpr      attribute="Numbers"  context="#stay"  String="\-\d*\.?\d*(e|e\-|e\+)?\d+i?\b"/>
-        <RegExpr      attribute="Numbers"  context="#stay"  String="\b\d*\.?\d*(e|e\-|e\+)?\d+i?\b"/>
+        <RegExpr      attribute="Numbers"  context="#stay"  String="\b\d*\.?\d*(e|e\-|e\+)?\d+i?\b"/>		
         <RegExpr      attribute="Numbers"  context="#stay"  String="\b-?0[xX][0-9a-fA-F]+\b"/>
 
         <HlCOct attribute="Octal" context="#stay"/>
