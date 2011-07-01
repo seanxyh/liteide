@@ -5,4 +5,6 @@ CONFIG   += ordered
 
 SUBDIRS = src
 
-TRANSLATIONS = liteide_zh.ts
+TRANSLATIONS = \
+    liteide_zh.ts   \
+    liteide_ru.ts
