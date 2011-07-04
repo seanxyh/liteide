@@ -1,0 +1,23 @@
+.LITEIDE
+.GB18030
+
+需要解决的问题列表：解决方案
+
+双击FileBrowser中打开editor焦点：EditorManager.setCurrentIndex时设置焦点。
+
+重命名文件时在显示原文件名：可以自己写一个GetText对话框代替QT本身的，翻译容易。
+
+ENV设置文件中c:/go/bin;$PATH$，GOBIN需要优先级提前：LINUX/MACOS/WIN32下都需要更新。
+
+FileBrowser中MAC下排序不正确：需要使用QSortFilterProxyModel提供的排序功能。
+
+FileBrowser支持顶层目录功能：需要增加一个ComboBox，以及Up,Root按钮。
+
+FileBorser的大小及目录初始的自动保存：需要测试一下如何保存？
+
+GoFmt功能后重新载入时保持编辑位置不变：记录之前位置，只能是大致位置保持。
+
+搜索替换功能：(Colo)(u)(r) 替换为 $1$3 如何支持？
+
+gopromake/goexec未能升级到r58：需要更新exec模块。
+
