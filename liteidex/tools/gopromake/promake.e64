@@ -1,5 +1,5 @@
 TARGET = gopromake
-DESTDIR = ../../build/bin	
+DESTDIR = ../../liteide/bin	
 
 GOFILES = \
 	promake.go \

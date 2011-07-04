@@ -36,8 +36,11 @@ func NewGoBin(defgoroot string) (p *GoBin, err os.Error) {
 		goroot = defgoroot
 		os.Setenv("GOROOT",goroot)
 	}
-
-	gobin := goroot+"/bin"
+	
+	gobin := os.Getenv("GOBIN")
+	if gobin == "" {		
+		gobin = goroot+"/bin"
+	}
 
 	goos := os.Getenv("GOOS")
 	if goos == "" {

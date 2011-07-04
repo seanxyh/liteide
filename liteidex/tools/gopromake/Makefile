@@ -1,6 +1,6 @@
 include $(GOROOT)/src/Make.inc
 
-TARG=../../build/bin/gopromake
+TARG=../../liteide/bin/gopromake
 GOFILES=\
         depparser.go\
         gobin.go\
