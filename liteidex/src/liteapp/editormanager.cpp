@@ -173,7 +173,7 @@ bool EditorManager::closeEditor(IEditor *editor)
         int ret = QMessageBox::question(m_editorTabWidget,tr("Save Modify"),text,QMessageBox::Save | QMessageBox::No | QMessageBox::Cancel);
         if (ret == QMessageBox::Cancel) {
             return false;
-        } else if (ret == QMessageBox::SaveAll) {
+        } else if (ret == QMessageBox::Save) {
             cur->save();
         }
     }
