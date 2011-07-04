@@ -32,6 +32,8 @@
 #include <QTextCodec>
 #include <QTextCursor>
 #include <QTextBlock>
+#include <QScrollBar>
+
 #include "processex/processex.h"
 #include "litefindobj.h"
 //lite_memory_check_begin
@@ -99,6 +101,11 @@ void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
                 QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
                 QTextCodec *codec = QTextCodec::codecForName("utf-8");
                 if (ed && codec) {
+                    int vpos = -1;
+                    QScrollBar *bar = ed->verticalScrollBar();
+                    if (bar) {
+                        vpos = bar->sliderPosition();
+                    }
                     QTextCursor cur = ed->textCursor();
                     int pos = cur.position();
                     cur.beginEditBlock();
@@ -108,6 +115,9 @@ void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
                     cur.setPosition(pos);
                     cur.endEditBlock();
                     ed->setTextCursor(cur);
+                    if (vpos != -1) {
+                        bar->setSliderPosition(vpos);
+                    }
                 }
             }
         }
