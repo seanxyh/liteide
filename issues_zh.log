@@ -18,7 +18,7 @@ FileBrowser支持顶层目录功能：需要增加一个ComboBox，以及Up,Root按钮。
 
 FileBorser的大小及目录初始的自动保存：需要测试一下如何保存？
 
-GoFmt功能后重新载入时保持编辑位置不变：记录之前位置，只能是大致位置保持。
+##:GoFmt重新载入编辑位置不变:当前已保持cursor位置，再保存verticalScrollBar的sliderPosition即可。
 
 搜索替换功能：(Colo)(u)(r) 替换为 $1$3 如何支持？
 
