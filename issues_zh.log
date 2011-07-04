@@ -1,11 +1,14 @@
 .LITEIDE
 .GB18030
+.##已解决
 
 需要解决的问题列表：解决方案
 
 双击FileBrowser中打开editor焦点：EditorManager.setCurrentIndex时设置焦点。
 
-重命名文件时在显示原文件名：可以自己写一个GetText对话框代替QT本身的，翻译容易。
+##:重命名文件时在显示原文件名：需要判断一下是否与原文件名相等
+
+可以自己写一个GetText对话框代替QT本身的，翻译容易。
 
 ##:ENV设置文件中c:/go/bin;%PATH%，GOBIN需要优先级提前：LINUX/MACOS/WIN32下都需要更新。
 
