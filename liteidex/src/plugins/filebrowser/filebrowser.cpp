@@ -295,8 +295,9 @@ void FileBrowser::renameFile()
         return;
     }
     QString fileName = QInputDialog::getText(m_liteApp->mainWindow(),
-                                             tr("Rename File"),tr("File Name"));
-    if (!fileName.isEmpty()) {
+                                             tr("Rename File"),tr("File Name"),
+                                             QLineEdit::Normal,info.fileName());
+    if (!fileName.isEmpty() && fileName != info.fileName()) {
         QDir dir = fileInfoToDir(info);
         if (!QFile::rename(info.filePath(),QFileInfo(dir,fileName).filePath())) {
             QMessageBox::information(m_liteApp->mainWindow(),tr("Rename File"),
@@ -344,8 +345,10 @@ void FileBrowser::renameFolder()
         return;
     }
 
-    QString folderName = QInputDialog::getText(m_liteApp->mainWindow(),tr("Rename Folder"),tr("Folder Name"));
-    if (!folderName.isEmpty()) {
+    QString folderName = QInputDialog::getText(m_liteApp->mainWindow(),
+                                               tr("Rename Folder"),tr("Folder Name"),
+                                               QLineEdit::Normal,info.fileName());
+    if (!folderName.isEmpty() && folderName != info.fileName()) {
         QDir dir = fileInfoToDir(info);
         dir.cdUp();
         if (!dir.rename(info.fileName(),folderName)) {
