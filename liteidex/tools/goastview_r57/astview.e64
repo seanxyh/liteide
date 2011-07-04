@@ -1,6 +1,6 @@
 TARGET=goastview
 
-DESTDIR=../../build/bin
+DESTDIR=../../liteide/bin
 
 GOFILES = \
 	astview.go \
