@@ -21,3 +21,10 @@ GoFmt功能后重新载入时保持编辑位置不变：记录之前位置，只能是大致位置保持。
 
 gopromake/goexec未能升级到r58：需要更新exec模块。
 
+FileBrowser终端已代替LiteShell部分功能：准备删除。
+
+##:LiteEditor中使用Copy时，未能复制语法着色：参考QTC的代码。:createMimeDataFromSelection 
+
+PrintPreview可以代替Print功能：合并为Preview即可。
+
+LiteEditor需要实现ReadOnly功能：
