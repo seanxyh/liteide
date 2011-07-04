@@ -42,6 +42,27 @@
 #include <QProcess>
 #include <QDebug>
 
+class QSortFileSystemProxyModel : public QSortFilterProxyModel
+{
+public:
+    QSortFileSystemProxyModel(QObject *parent) :
+        QSortFilterProxyModel(parent)
+    {
+    }
+    virtual bool lessThan( const QModelIndex & left, const QModelIndex & right ) const
+    {
+        QFileSystemModel *model = static_cast<QFileSystemModel*>(this->sourceModel());
+        QFileInfo l = model->fileInfo(left);
+        QFileInfo r = model->fileInfo(right);
+        if (l.isDir() && r.isFile()) {
+            return true;
+        } else if (l.isFile() && r.isDir()) {
+            return false;
+        }
+        return (l.fileName().compare(r.fileName(),Qt::CaseInsensitive) <= 0);
+    }
+};
+
 FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
     m_liteApp(app)
@@ -54,12 +75,13 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileModel->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
     m_fileModel->setRootPath(m_fileModel->myComputer().toString());
 
-    m_proxyModel = new QSortFilterProxyModel(this);
+    m_proxyModel = new QSortFileSystemProxyModel(this);
     m_proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     m_proxyModel->setDynamicSortFilter(true);
     m_proxyModel->setSourceModel(m_fileModel);
-    m_proxyModel->setSortRole(Qt::DisplayRole);
-    m_proxyModel->sortColumn();
+    m_proxyModel->sort(0);
+    //m_proxyModel->setSortRole(Qt::DisplayRole);
+    //m_proxyModel->sortColumn();
 
     //create toolbar
     m_toolBar = new QToolBar(m_widget);

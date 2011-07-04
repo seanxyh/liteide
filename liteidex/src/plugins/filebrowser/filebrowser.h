@@ -72,6 +72,7 @@ protected:
     QTreeView               *m_treeView;
     QFileSystemModel        *m_fileModel;
     QComboBox   *m_filterCombo;
+    //QComboBox   *m_rootCombo;
     QToolBar    *m_toolBar;
     QAction *m_syncAct;
 protected:
