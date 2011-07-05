@@ -292,6 +292,7 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
     bool success = m_file->open(fileName,mimeType);
     if (success) {
         m_editorWidget->initLoadDocument();
+        m_editorWidget->setReadOnly(m_file->isReadOnly());
         QString codecName = m_file->textCodec();
         for (int i = 0; i < m_codecComboBox->count(); i++) {
             QString text = m_codecComboBox->itemText(i);
@@ -306,10 +307,18 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
 
 bool LiteEditor::save()
 {
+    if (m_file->isReadOnly()) {
+        return false;
+    }
     return m_file->save(m_file->fileName());
 }
 
-bool LiteEditor::isModified()
+bool LiteEditor::isReadOnly() const
+{
+    return m_file->isReadOnly();
+}
+
+bool LiteEditor::isModified() const
 {
     return m_file->document()->isModified();
 }

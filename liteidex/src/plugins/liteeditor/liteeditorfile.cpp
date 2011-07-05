@@ -47,11 +47,20 @@ LiteEditorFile::LiteEditorFile(LiteApi::IApplication *app, QObject *parent)
 {
     m_codec = QTextCodec::codecForLocale();
     m_hasDecodingError = false;
+    m_bReadOnly = false;
 }
 
 QString LiteEditorFile::fileName() const
 {
     return m_fileName;
+}
+
+bool LiteEditorFile::isReadOnly() const
+{
+    if (m_hasDecodingError) {
+        return true;
+    }
+    return m_bReadOnly;
 }
 
 bool LiteEditorFile::save(const QString &fileName)
@@ -147,6 +156,9 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
     if (!file.open(QFile::ReadOnly)) {
         return false;
     }
+    const QFileInfo fi(fileName);
+    m_bReadOnly = !fi.isWritable();
+
     m_mimeType = mimeType;
     m_fileName =  QDir::toNativeSeparators(fileName);
 
@@ -181,6 +193,11 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
         m_codec = codec;
     }
     QString text = m_codec->toUnicode(buf);
+
+    if (text.length()*4+3 < buf.length()) {
+        m_hasDecodingError = true;
+    }
+    qDebug() << m_hasDecodingError;
 
     int lf = text.indexOf('\n');
     if (lf > 0 && text.at(lf-1) == QLatin1Char('\r')) {

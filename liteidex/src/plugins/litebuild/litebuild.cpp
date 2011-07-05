@@ -84,7 +84,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_envAct->setVisible(false);
     //m_toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_liteApp->actionManager()->addToolBar(m_toolBar);
-
+    m_toolBar->setObjectName("BuildToolBar");
 
     m_process = new ProcessEx(this);
     m_output = new LiteOutput;

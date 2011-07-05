@@ -47,6 +47,7 @@ ModelFileImpl::ModelFileImpl(LiteApi::IApplication *app, QObject *parent)
       m_liteApp(app)
 {
     m_model = new QStandardItemModel(this);
+    m_bReadOnly = false;
 }
 
 bool ModelFileImpl::open(const QString &fileName, const QString &mimeType)
@@ -78,6 +79,11 @@ bool ModelFileImpl::reload(bool externalModify)
         emit reloaded();
     }
     return ret;
+}
+
+bool ModelFileImpl::isReadOnly() const
+{
+    return m_bReadOnly;
 }
 
 bool ModelFileImpl::save(const QString &/*fileName*/)
