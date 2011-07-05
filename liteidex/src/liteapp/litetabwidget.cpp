@@ -35,6 +35,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QMenu>
+#include <QKeyEvent>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -232,4 +233,18 @@ void LiteTabWidget::tabCurrentChanged(int index)
 void LiteTabWidget::setCurrentIndex(int index)
 {    
     m_tabBar->setCurrentIndex(index);
+}
+
+void LiteTabWidget::keyPressEvent(QKeyEvent *e)
+{
+    if (e->modifiers() == Qt::CTRL &&
+            e->key() == Qt::Key_Tab) {
+        int index = m_tabBar->currentIndex();
+        index++;
+        if (index >= m_tabBar->count()) {
+            index = 0;
+        }
+        setCurrentIndex(index);
+    }
+    QWidget::keyPressEvent(e);
 }
