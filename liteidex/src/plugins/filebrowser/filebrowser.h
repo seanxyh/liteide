@@ -51,6 +51,7 @@ public slots:
     void visibilityChanged(bool);
     void doubleClickedTreeView(QModelIndex);
     void activatedFilter(QString);
+    void activatedRoot(QString);
     void syncFileModel(bool);
     void currentEditorChanged(LiteApi::IEditor*);
     void treeViewContextMenuRequested(const QPoint &pos);
@@ -63,8 +64,11 @@ protected slots:
     void renameFolder();
     void removeFolder();
     void openShell();
+    void setFolderToRoot();
+    void cdUp();
 protected:
     void showTreeViewContextMenu(const QPoint &globalPos, const QFileInfo &info);
+    void addFolderToRoot(const QString &path);
 protected:
     LiteApi::IApplication   *m_liteApp;
     QSortFilterProxyModel   *m_proxyModel;
@@ -72,8 +76,9 @@ protected:
     QTreeView               *m_treeView;
     QFileSystemModel        *m_fileModel;
     QComboBox   *m_filterCombo;
-    //QComboBox   *m_rootCombo;
-    QToolBar    *m_toolBar;
+    QComboBox   *m_rootCombo;
+    QToolBar    *m_filterToolBar;
+    QToolBar    *m_rootToolBar;
     QAction *m_syncAct;
 protected:
     QModelIndex m_contextIndex;
@@ -87,6 +92,8 @@ protected:
     QAction *m_removeFolderAct;
     QAction *m_renameFolderAct;
     QAction *m_openShellAct;
+    QAction *m_cdupAct;
+    QAction *m_setRootAct;
 };
 
 #endif // FILEBROWSER_H

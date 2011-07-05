@@ -59,7 +59,12 @@ public:
         } else if (l.isFile() && r.isDir()) {
             return false;
         }
-        return (l.fileName().compare(r.fileName(),Qt::CaseInsensitive) <= 0);
+#ifdef Q_OS_WIN
+        if (l.filePath().length() <= 3 || r.filePath().length() <= 3) {
+            return l.filePath().at(0) < r.filePath().at(0);
+        }
+#endif
+        return (l.fileName().compare(r.fileName(),Qt::CaseInsensitive) < 0);
     }
 };
 
@@ -73,21 +78,18 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_fileModel = new QFileSystemModel(this);
     m_fileModel->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
-    m_fileModel->setRootPath(m_fileModel->myComputer().toString());
 
     m_proxyModel = new QSortFileSystemProxyModel(this);
     m_proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     m_proxyModel->setDynamicSortFilter(true);
     m_proxyModel->setSourceModel(m_fileModel);
     m_proxyModel->sort(0);
-    //m_proxyModel->setSortRole(Qt::DisplayRole);
-    //m_proxyModel->sortColumn();
 
-    //create toolbar
-    m_toolBar = new QToolBar(m_widget);
-    m_toolBar->setIconSize(QSize(16,16));
+    //create filter toolbar
+    m_filterToolBar = new QToolBar(m_widget);
+    m_filterToolBar->setIconSize(QSize(16,16));
 
-    m_syncAct = new QAction(QIcon(":/images/sync.png"),tr("Synchronize with editor "),this);
+    m_syncAct = new QAction(QIcon(":/images/sync.png"),tr("Synchronize with editor"),this);
     m_syncAct->setCheckable(true);
 
     m_filterCombo = new QComboBox;
@@ -98,9 +100,25 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_filterCombo->addItem("Makefile;*.go;*.cgo;*.s;*.goc;*.y;*.e64;*.pro");
     m_filterCombo->addItem("*.sh;Makefile;*.go;*.cgo;*.s;*.goc;*.y;*.*.c;*.cpp;*.h;*.hpp;*.e64;*.pro");
 
-    m_toolBar->addAction(m_syncAct);
-    m_toolBar->addSeparator();
-    m_toolBar->addWidget(m_filterCombo);
+    m_filterToolBar->addAction(m_syncAct);
+    m_filterToolBar->addSeparator();
+    m_filterToolBar->addWidget(m_filterCombo);
+
+    //create root toolbar
+    m_rootToolBar = new QToolBar(m_widget);
+    m_rootToolBar->setIconSize(QSize(16,16));
+
+    m_cdupAct = new QAction(QIcon(":/images/cdup.png"),tr("open to parent"),this);
+
+    m_rootCombo = new QComboBox;
+    m_rootCombo->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+    m_rootCombo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+    m_rootCombo->setEditable(false);
+    m_rootCombo->addItem(m_fileModel->myComputer().toString());
+
+    m_rootToolBar->addAction(m_cdupAct);
+    m_rootToolBar->addSeparator();
+    m_rootToolBar->addWidget(m_rootCombo);
 
     //create treeview
     m_treeView = new QTreeView;
@@ -123,7 +141,8 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
         m_treeView->setColumnHidden(i,true);
     }
 
-    mainLayout->addWidget(m_toolBar);
+    mainLayout->addWidget(m_filterToolBar);
+    mainLayout->addWidget(m_rootToolBar);
     mainLayout->addWidget(m_treeView);
     m_widget->setLayout(mainLayout);
 
@@ -136,6 +155,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_renameFileAct = new QAction(tr("Rename File"),this);
     m_removeFileAct = new QAction(tr("Remove File"),this);
 
+    m_setRootAct = new QAction(tr("Set Folder To Root"),this);
     m_newFolderAct = new QAction(tr("New Folder"),this);
     m_renameFolderAct = new QAction(tr("Rename Folder"),this);
     m_removeFolderAct = new QAction(tr("Remove Folder"),this);
@@ -150,6 +170,8 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_openShellAct);
 
+    m_folderMenu->addAction(m_setRootAct);
+    m_folderMenu->addSeparator();
     m_folderMenu->addAction(m_newFileAct);
     m_folderMenu->addAction(m_newFolderAct);
     m_folderMenu->addAction(m_renameFolderAct);
@@ -165,24 +187,32 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_renameFolderAct,SIGNAL(triggered()),this,SLOT(renameFolder()));
     connect(m_removeFolderAct,SIGNAL(triggered()),this,SLOT(removeFolder()));
     connect(m_openShellAct,SIGNAL(triggered()),this,SLOT(openShell()));
+    connect(m_setRootAct,SIGNAL(triggered()),this,SLOT(setFolderToRoot()));
+    connect(m_cdupAct,SIGNAL(triggered()),this,SLOT(cdUp()));
 
 
     QDockWidget *dock = m_liteApp->dockManager()->addDock(m_widget,tr("FileBrowser"));
     connect(dock,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedTreeView(QModelIndex)));
     connect(m_filterCombo,SIGNAL(activated(QString)),this,SLOT(activatedFilter(QString)));
+    connect(m_rootCombo,SIGNAL(activated(QString)),this,SLOT(activatedRoot(QString)));
     connect(m_syncAct,SIGNAL(triggered(bool)),this,SLOT(syncFileModel(bool)));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(treeViewContextMenuRequested(QPoint)));
 
-    QModelIndex index = m_fileModel->index(QDir::currentPath());
-    QModelIndex proxyIndex = m_proxyModel->mapFromSource(index);
-    m_treeView->scrollTo(proxyIndex);
+    QString lastRoot = m_liteApp->settings()->value("filebrowser/lastroot",m_fileModel->myComputer().toString()).toString();
+    addFolderToRoot(lastRoot);
+//    QModelIndex index = m_fileModel->index(QDir::currentPath());
+//    QModelIndex proxyIndex = m_proxyModel->mapFromSource(index);
+//    m_treeView->scrollTo(proxyIndex);
     //m_treeView->resizeColumnToContents(0);
+
 }
 
 FileBrowser::~FileBrowser()
 {
+    QString lastRoot = m_rootCombo->currentText();
+    m_liteApp->settings()->setValue("filebrowser/lastroot",lastRoot);
     delete m_widget;
 }
 
@@ -430,6 +460,52 @@ void FileBrowser::openShell()
         return;
     }
     QStringList args = getShellArgs(m_liteApp);
-    QProcess::startDetached(cmd,args,dir.path());
+    //qDebug() << dir.path();
+    QString path = dir.path();
+#ifdef Q_OS_WIN
+    if (path.length() == 2 && path.right(1) == ":") {
+        path += "/";
+    }
+#endif
+    QProcess::startDetached(cmd,args,path);
 }
 
+void FileBrowser::addFolderToRoot(const QString &path)
+{
+    int index = -1;
+    for (int i = 0; i < m_rootCombo->count(); i++) {
+        QString text = m_rootCombo->itemText(i);
+        if (text == path) {
+            index = i;
+            break;
+        }
+    }
+    if (index == -1) {
+        m_rootCombo->addItem(path);
+        index = m_rootCombo->count()-1;
+    }
+    m_rootCombo->setCurrentIndex(index);
+    activatedRoot(path);
+}
+
+void FileBrowser::setFolderToRoot()
+{
+    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
+    QDir dir = fileInfoToDir(info);
+    addFolderToRoot(dir.path());
+}
+
+void FileBrowser::activatedRoot(QString path)
+{
+    QModelIndex index = m_fileModel->setRootPath(path);
+    QModelIndex proxyIndex = m_proxyModel->mapFromSource(index);
+    m_treeView->setRootIndex(proxyIndex);
+}
+
+void FileBrowser::cdUp()
+{
+    QDir dir = m_fileModel->rootDirectory();
+    if (dir.cdUp()) {
+        addFolderToRoot(dir.path());
+    }
+}
