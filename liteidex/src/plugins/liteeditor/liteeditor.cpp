@@ -152,11 +152,14 @@ void LiteEditor::createActions()
     m_cutAct = new QAction(QIcon(":/images/cut.png"),tr("Cut"),this);
     m_copyAct = new QAction(QIcon(":/images/copy.png"),tr("Copy"),this);
     m_pasteAct = new QAction(QIcon(":/images/paste.png"),tr("Paste"),this);
+    m_lockAct = new QAction(QIcon(":/images/unlock.png"),tr("File is writable"),this);
 #ifndef QT_NO_PRINTER
     m_filePrintPdfAct = new QAction(QIcon(":/images/exportpdf.png"),tr("Export PDF"),this);
     m_filePrintAct = new QAction(QIcon(":/images/fileprint.png"),tr("Print Document"),this);
     m_filePrintPreviewAct = new QAction(QIcon(":/images/fileprintpreview.png"),tr("Print Preview Document"),this);
 #endif
+    m_lockAct->setEnabled(false);
+
     m_undoAct->setEnabled(false);
     m_redoAct->setEnabled(false);
     m_cutAct->setEnabled(false);
@@ -219,6 +222,8 @@ void LiteEditor::createToolBars()
     m_toolBar = new QToolBar(tr("editor"),m_widget);
     m_toolBar->setIconSize(QSize(16,16));
 
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(m_lockAct);
     m_codecComboBox = new QComboBox;
     m_toolBar->addWidget(m_codecComboBox);
     m_toolBar->addSeparator();
@@ -230,7 +235,6 @@ void LiteEditor::createToolBars()
     m_toolBar->addAction(m_undoAct);
     m_toolBar->addAction(m_redoAct);    
     m_toolBar->addSeparator();
-
 #ifndef QT_NO_PRINTER
     m_toolBar->addAction(m_filePrintPdfAct);
     m_toolBar->addAction(m_filePrintPreviewAct);
@@ -300,6 +304,13 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
                 m_codecComboBox->setCurrentIndex(i);
                 break;
             }
+        }
+        if (m_file->isReadOnly()) {
+            m_lockAct->setIcon(QIcon(":/images/lock.png"));
+            m_lockAct->setText("File Is ReadOnly");
+        } else {
+            m_lockAct->setIcon(QIcon(":/images/unlock.png"));
+            m_lockAct->setText("File Is Writable");
         }
     }
     return success;

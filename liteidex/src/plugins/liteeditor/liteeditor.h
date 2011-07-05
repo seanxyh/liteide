@@ -95,6 +95,7 @@ public:
     QAction *m_cutAct;
     QAction *m_copyAct;
     QAction *m_pasteAct;
+    QAction *m_lockAct;
     QAction *m_filePrintPdfAct;
     QAction *m_filePrintAct;
     QAction *m_filePrintPreviewAct;

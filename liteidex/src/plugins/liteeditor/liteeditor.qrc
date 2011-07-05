@@ -8,5 +8,7 @@
         <file>images/exportpdf.png</file>
         <file>images/fileprint.png</file>
         <file>images/fileprintpreview.png</file>
+        <file>images/lock.png</file>
+        <file>images/unlock.png</file>
     </qresource>
 </RCC>
