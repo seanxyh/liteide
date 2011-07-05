@@ -38,7 +38,8 @@ public:
 
     virtual bool open(const QString &fileName, const QString &mimeType);
     virtual bool save();
-    virtual bool isModified();
+    virtual bool isReadOnly() const;
+    virtual bool isModified() const;
     virtual LiteApi::IFile *file();
 };
 

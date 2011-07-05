@@ -44,6 +44,7 @@ public:
     virtual bool open(const QString &fileName, const QString &mimeType);
     virtual bool reload(bool externalModify);
     virtual bool save(const QString &fileName);
+    virtual bool isReadOnly() const;
     virtual QString fileName() const;
     virtual QString mimeType() const;
 public:
@@ -65,6 +66,7 @@ protected:
     QStringList m_fileList;
     QString     m_mimeType;
     QString     m_fileName;
+    bool        m_bReadOnly;
 };
 
 #endif // MODELFILEIMPL_H

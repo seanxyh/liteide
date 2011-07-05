@@ -173,25 +173,6 @@ static void convertToPlainText(QString &txt)
     }
 }
 
-static int firstNonSpace(const QString &text)
-{
-    int i = 0;
-    while (i < text.size()) {
-        if (!text.at(i).isSpace())
-            return i;
-        ++i;
-    }
-    return i;
-}
-
-static bool cursorIsAtBeginningOfLine(const QTextCursor &cursor)
-{
-    QString text = cursor.block().text();
-    int fns = firstNonSpace(text);
-    return (cursor.position() - cursor.block().position() <= fns);
-}
-
-
 QMimeData *LiteEditorWidget::createMimeDataFromSelection() const
 {
     QTextCursor cursor = textCursor();

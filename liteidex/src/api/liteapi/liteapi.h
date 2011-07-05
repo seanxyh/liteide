@@ -87,6 +87,7 @@ public:
     virtual bool open(const QString &fileName, const QString &mimeType) = 0;
     virtual bool reload(bool externalModify) = 0;
     virtual bool save(const QString &fileName) = 0;
+    virtual bool isReadOnly() const = 0;
     virtual QString fileName() const = 0;
     virtual QString mimeType() const = 0;
 signals:
@@ -159,7 +160,8 @@ class IEditor : public IView
 public:
     virtual bool open(const QString &fileName,const QString &mimeType) = 0;
     virtual bool save() = 0;
-    virtual bool isModified() = 0;
+    virtual bool isReadOnly() const = 0;
+    virtual bool isModified() const = 0;
     virtual IFile *file() = 0;
 signals:
     void modificationChanged(bool);

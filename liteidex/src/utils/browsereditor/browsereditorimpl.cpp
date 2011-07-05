@@ -60,7 +60,12 @@ bool BrowserEditorImpl::save()
     return false;
 }
 
-bool BrowserEditorImpl::isModified()
+bool BrowserEditorImpl::isReadOnly() const
+{
+    return true;
+}
+
+bool BrowserEditorImpl::isModified() const
 {
     return false;
 }
