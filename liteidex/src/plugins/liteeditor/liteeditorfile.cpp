@@ -193,11 +193,17 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
         m_codec = codec;
     }
     QString text = m_codec->toUnicode(buf);
-
-    if (text.length()*4+3 < buf.length()) {
+/*
+    QByteArray verifyBuf = m_codec->fromUnicode(text); // slow
+    // the minSize trick lets us ignore unicode headers
+    int minSize = qMin(verifyBuf.size(), buf.size());
+    m_hasDecodingError = (minSize < buf.size()- 4
+                          || memcmp(verifyBuf.constData() + verifyBuf.size() - minSize,
+                                    buf.constData() + buf.size() - minSize, minSize));
+*/
+    if (text.length()*2+4 < buf.length()) {
         m_hasDecodingError = true;
     }
-    qDebug() << m_hasDecodingError;
 
     int lf = text.indexOf('\n');
     if (lf > 0 && text.at(lf-1) == QLatin1Char('\r')) {

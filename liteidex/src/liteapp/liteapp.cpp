@@ -372,6 +372,7 @@ void LiteApp::createMenus()
 void LiteApp::createToolBars()
 {
     m_stdToolBar = m_mainwindow->addToolBar(tr("Standard ToolBar"));
+    m_stdToolBar->setObjectName("StandardToolBar");
     m_stdToolBar->addAction(m_newAct);
     m_stdToolBar->addSeparator();
     m_stdToolBar->addAction(m_openAct);
@@ -383,6 +384,7 @@ void LiteApp::createToolBars()
     m_stdToolBar->addAction(m_closeProjectAct);
 
     m_navToolBar = m_mainwindow->addToolBar(tr("Navigation ToolBar"));
+    m_navToolBar->setObjectName("NavigationToolBar");
 }
 
 void LiteApp::currentProjectChanged(IProject *project)
