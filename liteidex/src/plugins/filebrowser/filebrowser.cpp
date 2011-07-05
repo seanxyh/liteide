@@ -460,7 +460,6 @@ void FileBrowser::openShell()
         return;
     }
     QStringList args = getShellArgs(m_liteApp);
-    //qDebug() << dir.path();
     QString path = dir.path();
 #ifdef Q_OS_WIN
     if (path.length() == 2 && path.right(1) == ":") {
@@ -505,7 +504,7 @@ void FileBrowser::activatedRoot(QString path)
 void FileBrowser::cdUp()
 {
     QDir dir = m_fileModel->rootDirectory();
-    if (dir.cdUp()) {
+    if (!dir.path().isEmpty() && dir.cdUp()) {
         addFolderToRoot(dir.path());
     }
 }
