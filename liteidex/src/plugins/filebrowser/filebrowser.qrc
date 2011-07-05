@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>images/sync.png</file>
         <file>images/refresh.png</file>
+        <file>images/cdup.png</file>
     </qresource>
 </RCC>
