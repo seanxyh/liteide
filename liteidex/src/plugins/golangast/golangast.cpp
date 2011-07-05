@@ -111,7 +111,7 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     m_timer = new QTimer(this);
     m_bEnable = false;
     m_bVisible = true;
-    QDockWidget *widget = m_liteApp->dockManager()->addDock(m_widget,tr("GoAstView"),Qt::RightDockWidgetArea);
+    QDockWidget *widget = m_liteApp->dockManager()->addDock(m_widget,tr("GoAstView"),Qt::LeftDockWidgetArea);
     connect(widget,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(projectChanged(LiteApi::IProject*)));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(editorChanged(LiteApi::IEditor*)));
@@ -137,13 +137,13 @@ void GolangAst::setEnable(bool b)
     }
     m_bEnable = b;
     if (b && m_bVisible) {
-        m_liteApp->dockManager()->showDock(m_widget);
+        // m_liteApp->dockManager()->showDock(m_widget);
         projectChanged(m_liteApp->projectManager()->currentProject());
         editorChanged(m_liteApp->editorManager()->currentEditor());
         updateAst();
     } else {
         m_model->clear();
-        m_liteApp->dockManager()->hideDock(m_widget);
+        // m_liteApp->dockManager()->hideDock(m_widget);
     }
 }
 

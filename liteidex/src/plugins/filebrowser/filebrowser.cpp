@@ -200,19 +200,19 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(treeViewContextMenuRequested(QPoint)));
 
-    QString lastRoot = m_liteApp->settings()->value("filebrowser/lastroot",m_fileModel->myComputer().toString()).toString();
-    addFolderToRoot(lastRoot);
-//    QModelIndex index = m_fileModel->index(QDir::currentPath());
-//    QModelIndex proxyIndex = m_proxyModel->mapFromSource(index);
-//    m_treeView->scrollTo(proxyIndex);
-    //m_treeView->resizeColumnToContents(0);
-
+    QString root = m_liteApp->settings()->value("FileBrowser/root",m_fileModel->myComputer().toString()).toString();
+    addFolderToRoot(root);
+    bool b = m_liteApp->settings()->value("FileBrowser/sync").toBool();
+    if (b) {
+        m_syncAct->toggle();
+    }
 }
 
 FileBrowser::~FileBrowser()
 {
-    QString lastRoot = m_rootCombo->currentText();
-    m_liteApp->settings()->setValue("filebrowser/lastroot",lastRoot);
+    QString root = m_rootCombo->currentText();
+    m_liteApp->settings()->setValue("FileBrowser/root",root);
+    m_liteApp->settings()->setValue("FileBrowser/sync",m_syncAct->isChecked());
     delete m_widget;
 }
 

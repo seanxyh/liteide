@@ -52,6 +52,7 @@ QDockWidget *DockManager::addDock(QWidget *widget, const QString &title, Qt::Doc
     }
     dock = new QDockWidget(title,m_liteApp->mainWindow());
     dock->setWidget(widget);
+    dock->setObjectName(title);
     dock->setAllowedAreas(alowedAreas);
     dock->setFeatures(features);
     m_liteApp->mainWindow()->addDockWidget(area, dock);

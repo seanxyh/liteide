@@ -414,6 +414,7 @@ void LiteApp::loadSession(const QString &name)
     } else {
         m_mainwindow->resize(640,480);
     }
+
     if (!projectName.isEmpty()) {
         m_fileManager->openProject(projectName);
     }
@@ -424,6 +425,7 @@ void LiteApp::loadSession(const QString &name)
         m_fileManager->openEditor(editorName);
     }
 
+    m_mainwindow->restoreState(m_settings->value(session+"_state").toByteArray());
 }
 
 void LiteApp::saveSession(const QString &name)
@@ -451,4 +453,5 @@ void LiteApp::saveSession(const QString &name)
     m_settings->setValue(session+"_cureditor",editorName);
     m_settings->setValue(session+"_alleditor",fileList);
     m_settings->setValue(session+"_geometry",m_mainwindow->saveGeometry());
+    m_settings->setValue(session+"_state",m_mainwindow->saveState());
 }
