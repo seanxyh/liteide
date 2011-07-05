@@ -160,6 +160,7 @@ void GolangAst::visibilityChanged(bool b)
 void GolangAst::projectChanged(LiteApi::IProject *project)
 {
     m_updateFiles.clear();
+    m_model->clear();
     if (project) {
         foreach(QString file, project->fileList()) {
             if (QFileInfo(file).suffix() == "go") {
@@ -179,6 +180,7 @@ void GolangAst::editorChanged(LiteApi::IEditor *editor)
 {
     if (!m_liteApp->projectManager()->currentProject()) {
         m_updateFiles.clear();
+        m_model->clear();
         if (editor) {
             LiteApi::IFile *file = editor->file();
             if (file) {
