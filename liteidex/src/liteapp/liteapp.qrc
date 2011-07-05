@@ -18,12 +18,17 @@
         <file>images/fileitem.png</file>
         <file>images/folderitem.png</file>
         <file>images/projectitem.png</file>
-        <file>images/logo/logo1.png</file>
-        <file>images/logo/logo2.png</file>
         <file>images/cleanoutput.png</file>
         <file>images/hideoutput.png</file>
         <file>images/liteide64.png</file>
-        <file>images/logo/logo3.png</file>
-        <file>images/logo/logo4.png</file>
+        <file>images/logo/dui.png</file>
+        <file>images/logo/gen.png</file>
+        <file>images/logo/kan.png</file>
+        <file>images/logo/kun.png</file>
+        <file>images/logo/li.png</file>
+        <file>images/logo/qian.png</file>
+        <file>images/logo/space.png</file>
+        <file>images/logo/xun.png</file>
+        <file>images/logo/zhen.png</file>
     </qresource>
 </RCC>
