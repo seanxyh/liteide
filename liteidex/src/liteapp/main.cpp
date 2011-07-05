@@ -104,24 +104,24 @@ int  main(int argc, char *argv[])
         }
     }
 
-    LiteApp *litApp = new LiteApp;
-    litApp->setPluginPath(getPluginPath());
-    litApp->setResourcePath(getResoucePath());
-    litApp->loadMimeType();
-    litApp->loadPlugins();
-    litApp->initPlugins();
-    litApp->loadSession("default");
-    litApp->mainWindow()->show();
+    LiteApp *liteApp = new LiteApp;
+    liteApp->setPluginPath(getPluginPath());
+    liteApp->setResourcePath(getResoucePath());
+    liteApp->loadMimeType();
+    liteApp->loadPlugins();
+    liteApp->initPlugins();
+    liteApp->loadSession("default");
+    liteApp->mainWindow()->show();
 
     if (argc >= 2) {
         for (int i = 1; i < argc; i++) {
             QString fileName = QDir::toNativeSeparators(argv[i]);
             if (QFile::exists(fileName)) {
-                litApp->fileManager()->openFile(fileName);
+                liteApp->fileManager()->openFile(fileName);
             }
         }
     }
     int ret = app.exec();
-    delete litApp;
+    delete liteApp;
     return ret;
 }
