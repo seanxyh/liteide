@@ -222,8 +222,8 @@ void LiteEditor::createToolBars()
     m_toolBar = new QToolBar(tr("editor"),m_widget);
     m_toolBar->setIconSize(QSize(16,16));
 
-    m_toolBar->addSeparator();
     m_toolBar->addAction(m_lockAct);
+    m_toolBar->addSeparator();
     m_codecComboBox = new QComboBox;
     m_toolBar->addWidget(m_codecComboBox);
     m_toolBar->addSeparator();
