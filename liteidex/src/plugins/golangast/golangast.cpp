@@ -21,7 +21,7 @@
 // Module: golangast.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: golangast.cpp,v 1.0 2011-5-12 visualfc Exp $
+// $Id: golangast.cpp,v 1.0 2011-7-5 visualfc Exp $
 
 #include "golangast.h"
 #include "litefindobj.h"
