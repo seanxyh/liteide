@@ -21,7 +21,7 @@
 // Module: liteeditor.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteeditor.cpp,v 1.0 2011-6-28 visualfc Exp $
+// $Id: liteeditor.cpp,v 1.0 2011-7-6 visualfc Exp $
 
 #include "liteeditor.h"
 #include "liteeditorwidget.h"
@@ -242,21 +242,22 @@ void LiteEditor::createToolBars()
     m_toolBar->addSeparator();
 #endif
 
+#ifdef LITEEDITOR_FIND
     m_findComboBox = new QComboBox(m_widget);
     m_findComboBox->setEditable(true);
     m_findComboBox->setMinimumWidth(120);
     m_findComboBox->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
     m_toolBar->addWidget(m_findComboBox);
-
+    m_toolBar->addSeparator();
+    connect(m_findComboBox->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findNextText()));
+#endif
     m_tip = new QLabel(m_widget);
     m_tip->setAlignment(Qt::AlignCenter);
     m_tip->setText("...");
-    m_toolBar->addSeparator();
     m_toolBar->addWidget(m_tip);
-
-    connect(m_findComboBox->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findNextText()));
 }
 
+#ifdef LITEEDITOR_FIND
 void LiteEditor::findNextText()
 {
     QString text = m_findComboBox->lineEdit()->text();
@@ -265,6 +266,7 @@ void LiteEditor::findNextText()
     }
     m_editorWidget->find(text);
 }
+#endif
 
 LiteApi::IExtension *LiteEditor::extension()
 {

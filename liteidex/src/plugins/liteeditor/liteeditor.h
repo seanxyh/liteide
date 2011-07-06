@@ -21,7 +21,7 @@
 // Module: liteeditor.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteeditor.h,v 1.0 2011-6-28 visualfc Exp $
+// $Id: liteeditor.h,v 1.0 2011-7-6 visualfc Exp $
 
 #ifndef LITEEDITOR_H
 #define LITEEDITOR_H
@@ -30,6 +30,8 @@
 #include "extension/extension.h"
 #include <QSet>
 #include <QHash>
+
+//#define LITEEDITOR_FIND
 
 class TreeModelCompleter;
 class QAbstractItemModel;
@@ -72,7 +74,9 @@ signals:
 public slots:
     void applyOption(QString);
     void clipbordDataChanged();
+#ifdef LITEEDITOR_FIND
     void findNextText();
+#endif
     void updateTip(QString,QStringList);
     void filePrintPdf();
     void filePrint();
@@ -99,7 +103,9 @@ public:
     QAction *m_filePrintPdfAct;
     QAction *m_filePrintAct;
     QAction *m_filePrintPreviewAct;
+#ifdef LITEEDITOR_FIND
     QComboBox *m_findComboBox;
+#endif
     QLabel    *m_tip;
     LiteEditorFile *m_file;
     QString  m_colorStyle;
