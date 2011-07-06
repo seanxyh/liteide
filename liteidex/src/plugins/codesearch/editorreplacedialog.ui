@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>585</width>
-    <height>220</height>
+    <width>573</width>
+    <height>259</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Replace</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4">
+  <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -78,31 +78,45 @@
           </spacer>
          </item>
          <item>
-          <widget class="QCheckBox" name="matchWordCheckBox">
-           <property name="text">
-            <string>Match whole word only</string>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Options</string>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="matchCaseCheckBox">
-           <property name="text">
-            <string>Match case</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="useRegexCheckBox">
-           <property name="text">
-            <string>Regular expression</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="allEditorCheckBox">
-           <property name="text">
-            <string>Search all open documents</string>
-           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QCheckBox" name="matchWordCheckBox">
+              <property name="text">
+               <string>Match whole word only</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="matchCaseCheckBox">
+              <property name="text">
+               <string>Match case</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="useRegexCheckBox">
+              <property name="text">
+               <string>Regular expression</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="wrapAroundCheckBox">
+              <property name="text">
+               <string>Wrap around</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+           <zorder>matchWordCheckBox</zorder>
+           <zorder>matchWordCheckBox</zorder>
+           <zorder>useRegexCheckBox</zorder>
+           <zorder>wrapAroundCheckBox</zorder>
+           <zorder>matchCaseCheckBox</zorder>
           </widget>
          </item>
         </layout>
@@ -115,6 +129,13 @@
         <widget class="QPushButton" name="findNextPushButton">
          <property name="text">
           <string>Find Next</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="findPrevPushButton">
+         <property name="text">
+          <string>Find Prev</string>
          </property>
         </widget>
        </item>
