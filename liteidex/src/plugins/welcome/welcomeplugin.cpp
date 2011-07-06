@@ -21,7 +21,7 @@
 // Module: welcomeplugin.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: welcomeplugin.cpp,v 1.0 2011-5-12 visualfc Exp $
+// $Id: welcomeplugin.cpp,v 1.0 2011-7-6 visualfc Exp $
 
 #include "welcomeplugin.h"
 #include "litefindobj.h"
@@ -84,7 +84,7 @@ bool WelcomePlugin::initWithApp(LiteApi::IApplication *app)
     QToolBar *toolBar = LiteApi::findExtensionObject<QToolBar*>(m_liteApp,"LiteApi.NavToolBar");
     if (toolBar) {
         m_homeAct = new QAction(QIcon(":/images/home.png"),tr("Home"),this);
-        m_homeAct->setShortcut(QKeySequence("CTRL+H"));
+        m_homeAct->setShortcut(QKeySequence("CTRL+ALT+H"));
         connect(m_homeAct,SIGNAL(triggered()),this,SLOT(home()));
         toolBar->addAction(m_homeAct);
     }

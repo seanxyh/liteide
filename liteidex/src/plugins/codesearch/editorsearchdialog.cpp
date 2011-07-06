@@ -12,9 +12,11 @@ EditorSearchDialog::EditorSearchDialog(LiteApi::IApplication *app, QWidget *pare
     ui(new Ui::EditorSearchDialog)
 {
     ui->setupUi(this);
+    ui->wrapAroundCheckBox->setChecked(true);
+
     connect(ui->cancelPushButton,SIGNAL(clicked()),this,SLOT(reject()));
-    connect(ui->findNextPushButton,SIGNAL(clicked()),this,SLOT(findNext()));
-    connect(ui->findPrevPushButton,SIGNAL(clicked()),this,SLOT(findPrev()));
+    connect(ui->findNextPushButton,SIGNAL(clicked()),this,SLOT(onFindNext()));
+    connect(ui->findPrevPushButton,SIGNAL(clicked()),this,SLOT(onFindPrev()));
 }
 
 EditorSearchDialog::~EditorSearchDialog()
@@ -22,37 +24,69 @@ EditorSearchDialog::~EditorSearchDialog()
     delete ui;
 }
 
+void EditorSearchDialog::onFindNext()
+{
+    accept();
+    findNext();
+}
+
+void EditorSearchDialog::onFindPrev()
+{
+    accept();
+    findPrev();
+}
+
 void EditorSearchDialog::findPrev()
 {
-    QString text = ui->findComboBox->currentText();
+    QString text = ui->findComboBox->currentText().trimmed();
     if (text.isEmpty()) {
         return;
     }
     LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
-    if (editor) {
-        findEditor(editor,true);
+    if (!editor) {
+        return;
+    }
+    QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
+    if (!ed) {
+        return;
+    }
+
+    QTextCursor find = findEditor(ed,ed->textCursor(),true);
+    if (find.isNull() && ui->wrapAroundCheckBox->isChecked()) {
+        ed->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
+        find = findEditor(ed,ed->textCursor(),true);
+    }
+    if (!find.isNull()) {
+        ed->setTextCursor(find);
     }
 }
 
 void EditorSearchDialog::findNext()
 {
-    QString text = ui->findComboBox->currentText();
+    QString text = ui->findComboBox->currentText().trimmed();
     if (text.isEmpty()) {
         return;
     }
     LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
-    if (editor) {
-        findEditor(editor,false);
+    if (!editor) {
+        return;
     }
-}
-
-void EditorSearchDialog::findEditor(LiteApi::IEditor *editor, bool findBackward)
-{
     QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
     if (!ed) {
         return;
     }
-    QTextCursor cursor = ed->textCursor();
+    QTextCursor find = findEditor(ed,ed->textCursor(),false);
+    if (find.isNull() && ui->wrapAroundCheckBox->isChecked()) {
+        ed->moveCursor(QTextCursor::Start,QTextCursor::MoveAnchor);
+        find = findEditor(ed,ed->textCursor(),false);
+    }
+    if (!find.isNull()) {
+        ed->setTextCursor(find);
+    }
+}
+
+QTextCursor EditorSearchDialog::findEditor(QPlainTextEdit *ed, const QTextCursor &cursor, bool findBackward)
+{
     QString text = ui->findComboBox->currentText().trimmed();
     QTextDocument::FindFlags flags = 0;
     if (findBackward) {
@@ -70,16 +104,5 @@ void EditorSearchDialog::findEditor(LiteApi::IEditor *editor, bool findBackward)
     } else {
         find = ed->document()->find(text,cursor,flags);
     }
-    QString info;
-    if (!find.isNull()) {
-        ed->setTextCursor(find);
-        info = QString(tr("Find %1:%2")).arg(find.blockNumber()+1).arg(find.columnNumber());
-    } else {
-        if (findBackward) {
-            info = tr("Not find backward editor to begin!");
-        } else {
-            info = tr("Not find editor to end!");
-        }
-    }
-    ui->infoLineEdit->setText(info);
+    return find;
 }
