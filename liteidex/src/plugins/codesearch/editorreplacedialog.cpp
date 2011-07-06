@@ -28,6 +28,11 @@ EditorReplaceDialog::~EditorReplaceDialog()
     delete ui;
 }
 
+void EditorReplaceDialog::setFindText(const QString &text)
+{
+    ui->findComboBox->setEditText(text);
+}
+
 void EditorReplaceDialog::replaceAll()
 {
     QString text = ui->findComboBox->currentText();

@@ -32,16 +32,32 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QAction>
+#include <QPlainTextEdit>
+#include <QTextCursor>
 #include <QDebug>
 
 CodeSearchPlugin::CodeSearchPlugin()
     : m_editorSearchDialog(0),
-      m_editorReplaceDialog(0)
+      m_editorReplaceDialog(0),
+      m_toolMenu(0)
 {
     m_info->setId("plugin/CodeSearch");
     m_info->setName("CodeSearch");
     m_info->setAnchor("visualfc");
     m_info->setInfo("CodeSearch Plugin");
+}
+
+CodeSearchPlugin::~CodeSearchPlugin()
+{
+    if (m_toolMenu) {
+        delete m_toolMenu;
+    }
+    if (m_editorSearchDialog) {
+        delete m_editorSearchDialog;
+    }
+    if (m_editorReplaceDialog) {
+        delete m_editorReplaceDialog;
+    }
 }
 
 bool CodeSearchPlugin::initWithApp(LiteApi::IApplication *app)
@@ -51,6 +67,7 @@ bool CodeSearchPlugin::initWithApp(LiteApi::IApplication *app)
     }
 
     m_editorSearchAct = new QAction(tr("Find"),this);
+    m_editorSearchAct->setIcon(QIcon(":/images/search.png"));
     m_editorSearchAct->setShortcut(QKeySequence::Find);
 
     m_editorReplaceAct = new QAction(tr("Replace"),this);
@@ -68,13 +85,9 @@ bool CodeSearchPlugin::initWithApp(LiteApi::IApplication *app)
     m_toolMenu->addAction(m_findNext);
     m_toolMenu->addAction(m_findPrev);
 
-    m_editorSearchDialog = new EditorSearchDialog(m_liteApp,m_liteApp->mainWindow());
-
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_editorSearchAct,SIGNAL(triggered()),this,SLOT(editorSearch()));
     connect(m_editorReplaceAct,SIGNAL(triggered()),this,SLOT(editorReplace()));
-    connect(m_findNext,SIGNAL(triggered()),m_editorSearchDialog,SLOT(findNext()));
-    connect(m_findPrev,SIGNAL(triggered()),m_editorSearchDialog,SLOT(findPrev()));
 
     return true;
 }
@@ -107,6 +120,26 @@ void CodeSearchPlugin::editorSearch()
     if (!editor) {
         return;
     }
+
+    QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
+    if (!ed) {
+        return;
+    }
+
+    if (m_editorSearchDialog == 0) {
+        m_editorSearchDialog = new EditorSearchDialog(m_liteApp,m_liteApp->mainWindow());
+        connect(m_findNext,SIGNAL(triggered()),m_editorSearchDialog,SLOT(findNext()));
+        connect(m_findPrev,SIGNAL(triggered()),m_editorSearchDialog,SLOT(findPrev()));
+    }
+
+    QTextCursor cursor = ed->textCursor();
+    if (!cursor.isNull()) {
+        QString text = cursor.selectedText().trimmed();
+        if (!text.isEmpty()) {
+            m_editorSearchDialog->setFindText(text);
+        }
+    }
+
     m_editorSearchDialog->exec();
 }
 
@@ -116,8 +149,19 @@ void CodeSearchPlugin::editorReplace()
     if (!editor) {
         return;
     }
+    QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
+    if (!ed) {
+        return;
+    }
     if (m_editorReplaceDialog == 0) {
         m_editorReplaceDialog = new EditorReplaceDialog(m_liteApp,m_liteApp->mainWindow());
+    }
+    QTextCursor cursor = ed->textCursor();
+    if (!cursor.isNull()) {
+        QString text = cursor.selectedText().trimmed();
+        if (!text.isEmpty()) {
+            m_editorReplaceDialog->setFindText(text);
+        }
     }
     m_editorReplaceDialog->exec();
 }

@@ -39,6 +39,7 @@ class CodeSearchPlugin : public LiteApi::IPlugin
     Q_INTERFACES(LiteApi::IPlugin)
 public:
     CodeSearchPlugin();
+    ~CodeSearchPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
 protected slots:
     void editorCreated(LiteApi::IEditor*);

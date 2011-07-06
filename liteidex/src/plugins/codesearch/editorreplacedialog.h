@@ -17,6 +17,7 @@ class EditorReplaceDialog : public QDialog
 public:
     explicit EditorReplaceDialog(LiteApi::IApplication *app, QWidget *parent = 0);
     ~EditorReplaceDialog();
+    void setFindText(const QString &text);
 protected slots:
     void findNext();
     void findPrev();
