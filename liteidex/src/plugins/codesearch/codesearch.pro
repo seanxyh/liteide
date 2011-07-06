@@ -17,3 +17,6 @@ HEADERS += codesearchplugin.h\
 FORMS += \
     editorsearchdialog.ui \
     editorreplacedialog.ui
+
+RESOURCES += \
+    codesearch.qrc

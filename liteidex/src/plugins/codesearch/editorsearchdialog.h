@@ -18,6 +18,7 @@ class EditorSearchDialog : public QDialog
 public:
     explicit EditorSearchDialog(LiteApi::IApplication *app, QWidget *parent = 0);
     ~EditorSearchDialog();
+    void setFindText(const QString &text);
 public slots:
     void findNext();
     void findPrev();

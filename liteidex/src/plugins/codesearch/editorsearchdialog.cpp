@@ -24,6 +24,11 @@ EditorSearchDialog::~EditorSearchDialog()
     delete ui;
 }
 
+void EditorSearchDialog::setFindText(const QString &text)
+{
+    ui->findComboBox->setEditText(text);
+}
+
 void EditorSearchDialog::onFindNext()
 {
     accept();
