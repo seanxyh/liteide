@@ -21,7 +21,7 @@
 // Module: codesearchplugin.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-7-5
-// $Id: codesearchplugin.h,v 1.0 2011-7-5 visualfc Exp $
+// $Id: codesearchplugin.h,v 1.0 2011-7-6 visualfc Exp $
 
 #ifndef CODESEARCHPLUGIN_H
 #define CODESEARCHPLUGIN_H
