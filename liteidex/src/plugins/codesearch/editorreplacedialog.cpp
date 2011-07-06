@@ -13,8 +13,15 @@ EditorReplaceDialog::EditorReplaceDialog(LiteApi::IApplication *app,QWidget *par
     ui(new Ui::EditorReplaceDialog)
 {
     ui->setupUi(this);
-    ui->wrapAroundCheckBox->setChecked(true);
     ui->infoLineEdit->setReadOnly(true);
+
+    m_liteApp->settings()->beginGroup("codesearch_replace");
+    ui->matchWordCheckBox->setChecked(m_liteApp->settings()->value("matchword",false).toBool());
+    ui->matchCaseCheckBox->setChecked(m_liteApp->settings()->value("matchcase",false).toBool());
+    ui->useRegexCheckBox->setChecked(m_liteApp->settings()->value("useregex",false).toBool());
+    ui->wrapAroundCheckBox->setChecked(m_liteApp->settings()->value("wraparound",true).toBool());
+    m_liteApp->settings()->endGroup();
+
 
     connect(ui->closePushButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(ui->findNextPushButton,SIGNAL(clicked()),this,SLOT(findNext()));
@@ -25,6 +32,13 @@ EditorReplaceDialog::EditorReplaceDialog(LiteApi::IApplication *app,QWidget *par
 
 EditorReplaceDialog::~EditorReplaceDialog()
 {
+    m_liteApp->settings()->beginGroup("codesearch_replace");
+    m_liteApp->settings()->setValue("matchword",ui->matchWordCheckBox->isChecked());
+    m_liteApp->settings()->setValue("matchcase",ui->matchCaseCheckBox->isChecked());
+    m_liteApp->settings()->setValue("useregex",ui->useRegexCheckBox->isChecked());
+    m_liteApp->settings()->setValue("wraparound",ui->wrapAroundCheckBox->isChecked());
+    m_liteApp->settings()->endGroup();
+
     delete ui;
 }
 
