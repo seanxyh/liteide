@@ -14,7 +14,7 @@ EditorSearchDialog::EditorSearchDialog(LiteApi::IApplication *app, QWidget *pare
     ui->setupUi(this);
     ui->wrapAroundCheckBox->setChecked(true);
 
-    connect(ui->cancelPushButton,SIGNAL(clicked()),this,SLOT(reject()));
+    connect(ui->closePushButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(ui->findNextPushButton,SIGNAL(clicked()),this,SLOT(onFindNext()));
     connect(ui->findPrevPushButton,SIGNAL(clicked()),this,SLOT(onFindPrev()));
 }
@@ -38,7 +38,7 @@ void EditorSearchDialog::onFindPrev()
 
 void EditorSearchDialog::findPrev()
 {
-    QString text = ui->findComboBox->currentText().trimmed();
+    QString text = ui->findComboBox->currentText();
     if (text.isEmpty()) {
         return;
     }
@@ -63,7 +63,7 @@ void EditorSearchDialog::findPrev()
 
 void EditorSearchDialog::findNext()
 {
-    QString text = ui->findComboBox->currentText().trimmed();
+    QString text = ui->findComboBox->currentText();
     if (text.isEmpty()) {
         return;
     }
@@ -87,7 +87,7 @@ void EditorSearchDialog::findNext()
 
 QTextCursor EditorSearchDialog::findEditor(QPlainTextEdit *ed, const QTextCursor &cursor, bool findBackward)
 {
-    QString text = ui->findComboBox->currentText().trimmed();
+    QString text = ui->findComboBox->currentText();
     QTextDocument::FindFlags flags = 0;
     if (findBackward) {
         flags |= QTextDocument::FindBackward;
