@@ -12,7 +12,13 @@ EditorSearchDialog::EditorSearchDialog(LiteApi::IApplication *app, QWidget *pare
     ui(new Ui::EditorSearchDialog)
 {
     ui->setupUi(this);
-    ui->wrapAroundCheckBox->setChecked(true);
+
+    m_liteApp->settings()->beginGroup("codesearch_find");
+    ui->matchWordCheckBox->setChecked(m_liteApp->settings()->value("matchword",false).toBool());
+    ui->matchCaseCheckBox->setChecked(m_liteApp->settings()->value("matchcase",false).toBool());
+    ui->useRegexCheckBox->setChecked(m_liteApp->settings()->value("useregex",false).toBool());
+    ui->wrapAroundCheckBox->setChecked(m_liteApp->settings()->value("wraparound",true).toBool());
+    m_liteApp->settings()->endGroup();
 
     connect(ui->closePushButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(ui->findNextPushButton,SIGNAL(clicked()),this,SLOT(onFindNext()));
@@ -21,6 +27,13 @@ EditorSearchDialog::EditorSearchDialog(LiteApi::IApplication *app, QWidget *pare
 
 EditorSearchDialog::~EditorSearchDialog()
 {
+    m_liteApp->settings()->beginGroup("codesearch_find");
+    m_liteApp->settings()->setValue("matchword",ui->matchWordCheckBox->isChecked());
+    m_liteApp->settings()->setValue("matchcase",ui->matchCaseCheckBox->isChecked());
+    m_liteApp->settings()->setValue("useregex",ui->useRegexCheckBox->isChecked());
+    m_liteApp->settings()->setValue("wraparound",ui->wrapAroundCheckBox->isChecked());
+    m_liteApp->settings()->endGroup();
+
     delete ui;
 }
 
