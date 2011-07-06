@@ -9,86 +9,86 @@
         <translation>О программе Liteide</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="101"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="182"/>
         <source>Infomation</source>
         <translation>Информация</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="107"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="188"/>
         <source>Welcome:</source>
         <translation>Добро пожаловать:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="113"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="194"/>
         <source>Welcome to LiteIDE X!
 LiteIDE is a simple, open source, cross-platform IDE.</source>
         <translation>Добро пожаловать в LiteIDE X!
 LiteIDE это простая кросплатформенная среда разработки с открытым исходным кодом.</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="124"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="205"/>
         <source>Project:</source>
         <translation>Проект:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="130"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="211"/>
         <source>Name:</source>
         <translation>Название:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="144"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="225"/>
         <source>Author:</source>
         <translation>Автор:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="158"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="239"/>
         <source>Version:</source>
         <translation>Версия:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="172"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="253"/>
         <source>Website:</source>
         <translation>Веб-сайт:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="203"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="284"/>
         <source>Credits</source>
         <translation>Создатели</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="209"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="290"/>
         <source>Version X</source>
         <translation>Версия X</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="229"/>
-        <location filename="src/liteapp/aboutdialog.ui" line="252"/>
-        <location filename="src/liteapp/aboutdialog.ui" line="289"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="310"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="333"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="370"/>
         <source>Developer - Project leader</source>
         <translation>Разработчик - лидер проекта</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="239"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="320"/>
         <source>Version 0.1-0.2.1 (Qt)</source>
         <translation>Версия 0.1-0.2.1 (Qt)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="269"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="350"/>
         <source>Version 0.1 (WTL)</source>
         <translation>Версия 0.1 (WTL)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="310"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="391"/>
         <source>Developer - CppModel</source>
         <translation>Разработчик - CppModel</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="334"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="418"/>
         <source>Thanks to...</source>
         <translation>Благодарности...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="340"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="424"/>
         <source>All contributors that provided patches.
 
 The Go Project (http://golang.org/)
@@ -109,12 +109,12 @@ GNU Software Foundation (http://www.gnu.org).
 И наконец, всё сообщество open source.</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="362"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="446"/>
         <source>License</source>
         <translation>Лицензия</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="368"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="452"/>
         <source>Copyright (c) 2011 LiteIDE team. All rights reserved.
 
 This library is free software; you can redistribute it and/or
@@ -134,16 +134,40 @@ LGPL_EXCEPTION.txt in this package.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="424"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="493"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
 </context>
 <context>
+    <name>CodeSearchPlugin</name>
+    <message>
+        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="78"/>
+        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="90"/>
+        <source>Find</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="82"/>
+        <source>Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="85"/>
+        <source>Find Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="86"/>
+        <source>Find Prev</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DockManager</name>
     <message>
-        <location filename="src/liteapp/dockmanager.cpp" line="58"/>
-        <location filename="src/liteapp/dockmanager.cpp" line="68"/>
+        <location filename="src/liteapp/dockmanager.cpp" line="59"/>
+        <location filename="src/liteapp/dockmanager.cpp" line="69"/>
         <source>View</source>
         <translation>Вид</translation>
     </message>
@@ -172,132 +196,268 @@ LGPL_EXCEPTION.txt in this package.</source>
     </message>
 </context>
 <context>
-    <name>FileBrowser</name>
+    <name>EditorReplaceDialog</name>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="68"/>
-        <source>Synchronize with editor </source>
-        <translation>Синхронизировать с редактором </translation>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="14"/>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="144"/>
+        <source>Replace</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="112"/>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="28"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="48"/>
+        <source>Replace:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="83"/>
+        <source>Options</source>
+        <translation type="unfinished">Параметры</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="89"/>
+        <source>Match whole word only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="96"/>
+        <source>Match case</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="103"/>
+        <source>Regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="110"/>
+        <source>Wrap around</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="130"/>
+        <source>Find Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="137"/>
+        <source>Find Prev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="151"/>
+        <source>Replace All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="171"/>
+        <source>Close</source>
+        <translation type="unfinished">Закрыть</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="184"/>
+        <source>Info:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EditorSearchDialog</name>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="14"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="24"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="59"/>
+        <source>Options</source>
+        <translation type="unfinished">Параметры</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="65"/>
+        <source>Match whole word only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="72"/>
+        <source>Match case</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="79"/>
+        <source>Regular expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="86"/>
+        <source>Wrap around</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="100"/>
+        <source>Find Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="107"/>
+        <source>Find Prev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="127"/>
+        <source>Close</source>
+        <translation type="unfinished">Закрыть</translation>
+    </message>
+</context>
+<context>
+    <name>FileBrowser</name>
+    <message>
+        <source>Synchronize with editor </source>
+        <translation type="obsolete">Синхронизировать с редактором </translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="101"/>
+        <source>Synchronize with editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="120"/>
+        <source>open to parent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="162"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="113"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="163"/>
         <source>New File</source>
         <translation>Новый файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="114"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="298"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="302"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="164"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="361"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="366"/>
         <source>Rename File</source>
         <translation>Переименовать файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="115"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="315"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="320"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="165"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="379"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="384"/>
         <source>Remove File</source>
         <translation>Удалить файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="117"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="167"/>
+        <source>Set Folder To Root</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="168"/>
         <source>New Folder</source>
         <translation>Новая папка</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="118"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="347"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="352"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="169"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="412"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="418"/>
         <source>Rename Folder</source>
         <translation>Переименовать папку</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="119"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="365"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="370"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="170"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="431"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="436"/>
         <source>Remove Folder</source>
         <translation>Удалить папку</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="121"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="172"/>
         <source>Open Terminal Here</source>
         <translation>Открыть терминал в этой папке</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="148"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="203"/>
         <source>FileBrowser</source>
         <translation>Навигитор</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="273"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="277"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="284"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="336"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="340"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="347"/>
         <source>Create File</source>
         <translation>Создание файла</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="273"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="298"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="336"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="361"/>
         <source>File Name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="278"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="341"/>
         <source>The filename is exists!</source>
         <translation>Файл уже существует!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="285"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="348"/>
         <source>Failed to create the file!</source>
         <translation>Ошибка при создании файла!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="303"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="367"/>
         <source>Failed to rename the file!</source>
         <translation>Ошибка при переименовании файла!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="316"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="380"/>
         <source>Confirm remove the file and continue</source>
         <translation>Подтвердите удаление файла для продолжения</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="321"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="385"/>
         <source>Failed to remove the file!</source>
         <translation>Ошибка при удалении файла!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="330"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="334"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="394"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="398"/>
         <source>Create Folder</source>
         <translation>Создание папки</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="330"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="347"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="394"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="412"/>
         <source>Folder Name</source>
         <translation>Имя папки</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="335"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="399"/>
         <source>Failed to create the folder!</source>
         <translation>Ошибка при создании папки!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="353"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="419"/>
         <source>Failed to rename the folder!</source>
         <translation>Ошибка при переименовании папки!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="366"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="432"/>
         <source>Confirm remove the foler and continue</source>
         <translation>Подтвердите удаление папки для продолжения</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="371"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="437"/>
         <source>Failed to remove the folder!</source>
         <translation>Ошибка при удалении папки!</translation>
     </message>
@@ -517,7 +677,7 @@ This file has been removed. Do you want save to file or close editor?</source>
         <translation>Стандартная панель</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="385"/>
+        <location filename="src/liteapp/liteapp.cpp" line="386"/>
         <source>Navigation ToolBar</source>
         <translation>Панель навигации</translation>
     </message>
@@ -599,38 +759,53 @@ This file has been removed. Do you want save to file or close editor?</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="156"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="421"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="155"/>
+        <source>File is writable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="157"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="443"/>
         <source>Export PDF</source>
         <translation>Экспортировать в PDF</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="157"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="445"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="158"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="467"/>
         <source>Print Document</source>
         <translation>Печать документа</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="158"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="159"/>
         <source>Print Preview Document</source>
         <translation>Предварительный просмотр документа</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="219"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="222"/>
         <source>editor</source>
         <translation>редактор</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="312"/>
+        <source>File Is ReadOnly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="315"/>
+        <source>File Is Writable</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LiteEditorFile</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="80"/>
-        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="103"/>
+        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="89"/>
+        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="112"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation>Отменить изменения в %1 и перезагрузить файл?</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="97"/>
+        <location filename="src/plugins/liteeditor/liteeditorfile.cpp" line="106"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation>%1
@@ -686,17 +861,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteTabWidget</name>
     <message>
-        <location filename="src/liteapp/litetabwidget.cpp" line="67"/>
+        <location filename="src/liteapp/litetabwidget.cpp" line="68"/>
         <source>Close Page</source>
         <translation>Закрыть страницу</translation>
     </message>
     <message>
-        <location filename="src/liteapp/litetabwidget.cpp" line="69"/>
+        <location filename="src/liteapp/litetabwidget.cpp" line="70"/>
         <source>List Page</source>
         <translation>Список страниц</translation>
     </message>
     <message>
-        <location filename="src/liteapp/litetabwidget.cpp" line="71"/>
+        <location filename="src/liteapp/litetabwidget.cpp" line="72"/>
         <source>Add Page</source>
         <translation>Добавить страницу</translation>
     </message>
@@ -760,7 +935,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>ModelFileImpl</name>
     <message>
-        <location filename="src/utils/modelproject/modelfileimpl.cpp" line="69"/>
+        <location filename="src/utils/modelproject/modelfileimpl.cpp" line="70"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation>%1
@@ -989,36 +1164,37 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>Форма</translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="73"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;SimSun&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:24pt; font-weight:600; font-style:italic;&quot;&gt;LiteIDE X&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="128"/>
+        <source>2011 (c) earchworm</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="111"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="138"/>
+        <source>http://code.google.com/p/liteide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="175"/>
         <source>Recent Projects</source>
         <translation>Недавние проекты</translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="121"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="185"/>
         <source>Recent Files</source>
         <translation>Недавние файлы</translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="136"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="200"/>
         <source>NewProject</source>
         <translation>Новый проект</translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="143"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="207"/>
         <source>OpenProject</source>
         <translation>Открыть проект</translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="163"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="227"/>
         <source>Options</source>
         <translation>Параметры</translation>
     </message>
