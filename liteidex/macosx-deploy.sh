@@ -76,3 +76,5 @@ process_file
 export deploy_file=libgolangdoc.dylib
 process_file
 
+export deploy_file=libliteenv.dylib
+process_file
