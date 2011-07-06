@@ -46,13 +46,13 @@ protected slots:
     void editorSearch();
     void editorReplace();
 protected:
+    EditorSearchDialog *m_editorSearchDialog;
+    EditorReplaceDialog *m_editorReplaceDialog;
     QMenu       *m_toolMenu;
     QAction *m_findNext;
     QAction *m_findPrev;
     QAction *m_editorSearchAct;
     QAction *m_editorReplaceAct;
-    EditorSearchDialog *m_editorSearchDialog;
-    EditorReplaceDialog *m_editorReplaceDialog;
 };
 
 #endif // CODESEARCHPLUGIN_H

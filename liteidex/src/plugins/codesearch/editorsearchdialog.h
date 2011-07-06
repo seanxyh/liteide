@@ -54,8 +54,8 @@ protected slots:
 protected:
     QTextCursor findEditor(QPlainTextEdit*,const QTextCursor &cursor,bool findBackward);
 private:
-    Ui::EditorSearchDialog *ui;
     LiteApi::IApplication *m_liteApp;
+    Ui::EditorSearchDialog *ui;
 };
 
 #endif // EDITORSEARCHDIALOG_H
