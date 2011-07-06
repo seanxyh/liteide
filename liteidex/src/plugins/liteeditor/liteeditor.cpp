@@ -309,10 +309,10 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
         }
         if (m_file->isReadOnly()) {
             m_lockAct->setIcon(QIcon(":/images/lock.png"));
-            m_lockAct->setText("File Is ReadOnly");
+            m_lockAct->setText(tr("File Is ReadOnly"));
         } else {
             m_lockAct->setIcon(QIcon(":/images/unlock.png"));
-            m_lockAct->setText("File Is Writable");
+            m_lockAct->setText(tr("File Is Writable"));
         }
     }
     return success;

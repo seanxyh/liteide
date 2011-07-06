@@ -1,3 +1,18 @@
+--- 2011.7.6
+Ver x5 0.78125
+* add Search and Replace Editor
+* add Search and Replace Regex: (Colo)(u)(r) -> \1\3
+* add FileBorwser top dir setup
+* add LiteEditor Copy Syntax Color support (HTML mimedata)
+* add LiteEditor ReadOnly
+* add MainWindow all DockWidget saveState
+* add EditorManager CTRL+TAB switch
+* fix filebrowser rename show oldname
+* fix ENV c:/go/bin;%PATH% order, BOBIN is priority
+* fix FileBrowser sort incorrect on MACOSX
+* fix GoFmt reload editor display pos keep
+* fix Editor Close Ask BUG ret==SaveAll
+
 --- 2011.6.30
 Ver x4 0.625
 * add interface zh_cn
