@@ -156,8 +156,8 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_widget->setLayout(mainLayout);
 
     //create menu
-    m_fileMenu = new QMenu;//(m_treeView);
-    m_folderMenu = new QMenu;//(m_treeView);
+    m_fileMenu = new QMenu;
+    m_folderMenu = new QMenu;
 
     m_openFileAct = new QAction(tr("Open File"),this);
     m_newFileAct = new QAction(tr("New File"),this);
@@ -222,6 +222,8 @@ FileBrowser::~FileBrowser()
     QString root = m_rootCombo->currentText();
     m_liteApp->settings()->setValue("FileBrowser/root",root);
     m_liteApp->settings()->setValue("FileBrowser/sync",m_syncAct->isChecked());
+    delete m_fileMenu;
+    delete m_folderMenu;
     delete m_widget;
 }
 
