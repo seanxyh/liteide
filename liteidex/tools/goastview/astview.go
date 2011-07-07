@@ -12,23 +12,23 @@ import (
 )
 
 var (
-	flagInputSrc = flag.String("src", "", "input go source file")
-	flagStdin    = flag.Bool("stdin", false, "input by stdin")
+	flagInputSrc   = flag.String("src", "", "input go source file")
+	flagStdin      = flag.Bool("stdin", false, "input by stdin")
 	flagInputFiles = flag.String("files", "", "input go files")
 )
 
 func main() {
 	flag.Parse()
-	if len(*flagInputSrc) == && len(*flagInputFiles) == 0 {
+	if len(*flagInputSrc) == 0 && len(*flagInputFiles) == 0 {
 		flag.Usage()
 		os.Exit(1)
 	}
-	
+
 	if len(*flagInputFiles) > 0 {
-		var files []string = strings.Split(*flagInputFiles," ",-1)
-		err := PrintFilesTree(files,os.Stdout)
+		var files []string = strings.Split(*flagInputFiles, " ", -1)
+		err := PrintFilesTree(files, os.Stdout)
 		if err != nil {
-			fmt.Fprint(os.Stderr,err)
+			fmt.Fprint(os.Stderr, err)
 			os.Exit(1)
 		}
 		os.Exit(0)
@@ -39,14 +39,14 @@ func main() {
 			f = os.Stdin
 		} else {
 			var err os.Error
-			f,err = os.Open( *flagInputSrc, os.O_RDONLY, 0)
+			f, err = os.OpenFile(*flagInputSrc, os.O_RDONLY, 0)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error:%s", err)
 				os.Exit(1)
 			}
 		}
 		defer f.Close()
-		
+
 		view, err := NewFilePackageSource(*flagInputSrc, f)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error:%s", err)
