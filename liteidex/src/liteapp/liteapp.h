@@ -125,7 +125,7 @@ protected:
     QToolBar    *m_navToolBar;
     QMenu       *m_fileMenu;
     QMenu       *m_viewMenu;
-    QMenu       *m_toolMenu;
+    //QMenu       *m_toolMenu;
     QMenu       *m_helpMenu;    
 };
 
