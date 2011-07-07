@@ -30,13 +30,20 @@
 #include "liteapi.h"
 #include <QtPlugin>
 
+class GolangDoc;
 class GolangDocPlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
     Q_INTERFACES(LiteApi::IPlugin)
 public:
     GolangDocPlugin();
+    ~GolangDocPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
+    virtual QStringList dependPluginList() const;
+protected slots:
+    void currentEditorChanged(LiteApi::IEditor*);
+protected:
+    GolangDoc *m_golangDoc;
 };
 
 #endif // GOLANGDOCPLUGIN_H

@@ -61,6 +61,7 @@ public:
     virtual bool createNew(const QString &contents);
     virtual bool open(const QString &fileName, const QString &mimeType);
     virtual bool save();
+    virtual void setReadOnly(bool b);
     virtual bool isReadOnly() const;
     virtual bool isModified() const;
     virtual LiteApi::IFile *file();
@@ -110,6 +111,7 @@ public:
     LiteEditorFile *m_file;
     QString  m_colorStyle;
     QPalette m_defPalette;
+    bool       m_bReadOnly;
 };
 
 #endif //LITEEDITOR_H

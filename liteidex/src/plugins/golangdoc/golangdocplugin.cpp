@@ -24,13 +24,23 @@
 // $Id: golangdocplugin.cpp,v 1.0 2011-7-7 visualfc Exp $
 
 #include "golangdocplugin.h"
+#include "golangdoc.h"
+#include "liteapi/litefindobj.h"
 
 GolangDocPlugin::GolangDocPlugin()
+    : m_golangDoc(0)
 {
-    m_info->setId("plugin/GolangDoc");
+    m_info->setId("plugin/golangdoc");
     m_info->setName("GolangDoc");
     m_info->setAnchor("visualfc");
     m_info->setInfo("GolangDoc Plugin");
+}
+
+GolangDocPlugin::~GolangDocPlugin()
+{
+    if (m_golangDoc) {
+        delete m_golangDoc;
+    }
 }
 
 bool GolangDocPlugin::initWithApp(LiteApi::IApplication *app)
@@ -38,7 +48,27 @@ bool GolangDocPlugin::initWithApp(LiteApi::IApplication *app)
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
+
+    m_golangDoc = new GolangDoc(app,this);
+
     return true;
+}
+
+QStringList GolangDocPlugin::dependPluginList() const
+{
+    return QStringList() << "plugin/litebuild";
+}
+
+void GolangDocPlugin::currentEditorChanged(LiteApi::IEditor *editor)
+{
+    bool active = false;
+    if (editor) {
+        LiteApi::IFile *file = editor->file();
+        if (file &&file->mimeType() == "text/x-gosrc") {
+            active = true;
+        }
+    }
+    //m_golangDoc->changeState()
 }
 
 Q_EXPORT_PLUGIN(GolangDocPlugin)

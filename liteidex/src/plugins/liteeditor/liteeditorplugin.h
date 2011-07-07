@@ -37,6 +37,7 @@ class LiteEditorPlugin : public LiteApi::IPlugin
 public:
     LiteEditorPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
+    virtual QStringList dependPluginList() const;
 };
 
 #endif // LITEEDITORPLUGIN_H

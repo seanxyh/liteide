@@ -50,7 +50,7 @@ CodeSearchPlugin::CodeSearchPlugin()
       m_editorReplaceDialog(0),
       m_toolMenu(0)
 {
-    m_info->setId("plugin/CodeSearch");
+    m_info->setId("plugin/codesearch");
     m_info->setName("CodeSearch");
     m_info->setAnchor("visualfc");
     m_info->setInfo("CodeSearch Plugin");

@@ -38,7 +38,7 @@
 
 FileBrowserPlugin::FileBrowserPlugin() : m_browser(0)
 {
-    m_info->setId("plugin/FileBrowser");
+    m_info->setId("plugin/filebrowser");
     m_info->setName("FileBrowser");
     m_info->setAnchor("visualfc");
     m_info->setInfo("FileBrowser Plugin");

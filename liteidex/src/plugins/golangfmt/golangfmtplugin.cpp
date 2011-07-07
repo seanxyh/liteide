@@ -47,7 +47,7 @@
 GolangFmtPlugin::GolangFmtPlugin()
     : m_fmt(0)
 {
-    m_info->setId("plugin/GolangFmt");
+    m_info->setId("plugin/golangfmt");
     m_info->setName("GolangFmt");
     m_info->setAnchor("visualfc");
     m_info->setInfo("GolangFmt Plugin");
@@ -66,7 +66,7 @@ bool GolangFmtPlugin::initWithApp(LiteApi::IApplication *app)
     return true;
 }
 
-QStringList GolangFmtPlugin::dependPluginList() {
+QStringList GolangFmtPlugin::dependPluginList() const{
     return QStringList() << "plugin/litebuild";
 }
 
@@ -114,7 +114,7 @@ void GolangFmtPlugin::gofmt()
     }
     QString cmd = FileUtil::findExecute(gobin+"/gofmt");
     if (cmd.isEmpty()) {
-        cmd = FileUtil::lookPath(cmd,m_build->currentEnv(),true);
+        cmd = FileUtil::lookPath("gofmt",m_build->currentEnv(),true);
     }
     m_fmt->gofmt(cmd);
 }
