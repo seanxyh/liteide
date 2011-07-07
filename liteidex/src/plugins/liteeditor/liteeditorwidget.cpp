@@ -145,9 +145,16 @@ void LiteEditorWidget::keyPressEvent(QKeyEvent *e)
         m_completer->setCompletionPrefix(completionPrefix);
         m_completer->popup()->setCurrentIndex(m_completer->completionModel()->index(0, 0));
     }
+
+    if (m_completer->currentCompletion() == completionPrefix) {
+        m_completer->popup()->hide();
+        return;
+    }
+
     QRect cr = cursorRect();
     cr.setWidth(m_completer->popup()->sizeHintForColumn(0)
                 + m_completer->popup()->verticalScrollBar()->sizeHint().width());
+
     m_completer->complete(cr); // popup it up!
 }
 
