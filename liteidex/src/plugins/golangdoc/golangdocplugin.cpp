@@ -68,7 +68,6 @@ void GolangDocPlugin::currentEditorChanged(LiteApi::IEditor *editor)
             active = true;
         }
     }
-    //m_golangDoc->changeState()
 }
 
 Q_EXPORT_PLUGIN(GolangDocPlugin)

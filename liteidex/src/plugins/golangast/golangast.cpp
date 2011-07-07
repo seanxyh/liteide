@@ -111,7 +111,7 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     m_timer = new QTimer(this);
     m_bEnable = false;
     m_bVisible = true;
-    QDockWidget *widget = m_liteApp->dockManager()->addDock(m_widget,tr("GoAstView"),Qt::RightDockWidgetArea);
+    QDockWidget *widget = m_liteApp->dockManager()->addDock(m_widget,tr("GoAstView"),Qt::LeftDockWidgetArea);
     connect(widget,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(projectChanged(LiteApi::IProject*)));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(editorChanged(LiteApi::IEditor*)));
