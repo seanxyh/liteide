@@ -1,13 +1,14 @@
 package main
 
 import (
+	"flag"
 	"exec"
 	"os"
 	"fmt"
 )
 
 func main() {	
-	args := os.Args[1:]
+	args := flag.Args()
 
 	if len(args) < 1 {
 		fmt.Println("Usage: goexec [-w work_path] <program_name> [arguments...]")
@@ -28,34 +29,34 @@ func main() {
 	} else {
 		fileName = args[0]
 	}
-		
+
 	filePath,err := exec.LookPath(fileName)
 	if err != nil {
 		fmt.Println(err)
 		wait_exit()
 	}
 	
-	fmt.Printf("Starting Process %s ...\n\n",filePath)
-	
-	cmd := exec.Command(filePath,args[1:]...)
-	cmd.Dir = workPath
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	
-	err = cmd.Run()
-	
+	fmt.Println("Starting ",args)
+	fmt.Println()
+		
+	cmd,err := exec.Run(filePath,args,os.Environ(),workPath,exec.PassThrough,exec.PassThrough,exec.PassThrough)
 	if err != nil {
-		fmt.Println("\nEnd Process",err)
-	} else {
-		fmt.Println("\nEnd Process","exit status 0")
+		fmt.Println(err)
+		os.Exit(-2)
 	}
-
+	msg,err := cmd.Wait(0)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-2)
+	}
+	fmt.Println()
+	fmt.Println(msg)
+	
 	wait_exit()
 }
 
 func wait_exit() {
-	fmt.Println("\nPress enter key to continue")
+	fmt.Println("Press enter key to continue")
 	var s = [256]byte{}
 	os.Stdin.Read(s[:])		
 	os.Exit(0)	
