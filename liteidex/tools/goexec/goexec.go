@@ -4,6 +4,7 @@ import (
 	"exec"
 	"os"
 	"fmt"
+	"path"
 )
 
 func main() {	
@@ -35,7 +36,7 @@ func main() {
 		wait_exit()
 	}
 	
-	fmt.Printf("Starting Process %s ...\n\n",filePath)
+	fmt.Printf("Starting Process %s ...\n\n",path.Clean(filePath))
 	
 	cmd := exec.Command(filePath,args[1:]...)
 	cmd.Dir = workPath

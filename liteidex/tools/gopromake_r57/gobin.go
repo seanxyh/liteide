@@ -7,6 +7,7 @@ package main
 import (
 	"runtime"
 	"os"
+	"exec"
 	"path"
 )
 
@@ -39,7 +40,6 @@ func NewGoBin(defgoroot string) (p *GoBin, err os.Error) {
 	gobin := os.Getenv("GOBIN")
 	if gobin == "" {		
 		gobin = goroot+"/bin"
-		os.Setenv("GOBIN",gobin)
 	}
 
 	goos := os.Getenv("GOOS")
@@ -86,10 +86,22 @@ func NewGoBin(defgoroot string) (p *GoBin, err os.Error) {
 	p.pakext = ".a"
 	p.rm = rm
 
-	p.compiler = path.Join(gobin,p.compiler)
-	p.link = path.Join(gobin,p.link)
-	p.pack = path.Join(gobin,p.pack)
-	p.cgo  = path.Join(gobin,p.cgo)
+	p.compiler, err = exec.LookPath(path.Join(gobin,p.compiler))
+	if err != nil {
+		return
+	}
+	p.link, err = exec.LookPath(path.Join(gobin,p.link))
+	if err != nil {
+		return
+	}
+	p.pack, err = exec.LookPath(path.Join(gobin,p.pack))
+	if err != nil {
+		return
+	}
+	p.cgo, err = exec.LookPath(path.Join(gobin,p.cgo))
+	if err != nil {
+		return
+	}
 
 	return
 }

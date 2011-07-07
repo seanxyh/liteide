@@ -17,7 +17,7 @@ var (
 	goFileName   *string = flag.String("gofiles", "", "make go sources")
 	goTargetName *string = flag.String("o", "", "file specify output file")
 	printDep     *bool   = flag.Bool("dep", false, "print packages depends ")
-	showVer      *bool   = flag.Bool("ver", false, "print version ")
+	showVer      *bool   = flag.Bool("ver", true, "print version ")
 	buildLib     *bool   = flag.Bool("lib", false, "build packages as librarys outside main")
 	goroot		 *string = flag.String("goroot",defGoroot(),"default go root")	
 	clean		 *string = flag.String("clean","","clean project [obj|all]")
@@ -25,7 +25,7 @@ var (
 
 var Usage = func() {
 	_, name := path.Split(os.Args[0])
-	fmt.Fprintf(os.Stderr, "usage: %s -gopro   example.e64\n", name)
+	fmt.Fprintf(os.Stderr, "usage: %s -gopro   example.pro\n", name)
 	fmt.Fprintf(os.Stderr, "       %s -gofiles \"go1.go go2.go\"\n", name)
 	flag.PrintDefaults()
 }
@@ -37,10 +37,8 @@ func exitln(err os.Error) {
 
 func main() {
 	flag.Parse()
-	fmt.Println("Golang Project Build Tools.")
-	
 	if *showVer == true {
-		fmt.Println("Version 1.1, make by visualfc <visualfc@gmail.com>.")
+		fmt.Println("golang project make tools. v1.0 by visualfc.")
 	}
 
 	gobin, err := NewGoBin(*goroot)
@@ -48,22 +46,24 @@ func main() {
 		exitln(err)
 	}
 
-	var pro *GoProject
+	var pro *Gopro
 
 	if len(*proFileName) > 0 {
-		pro, err = NewGoProject(*proFileName)
+		pro, err = NewGopro(*proFileName)
 		if err != nil {
 			exitln(err)
 		}
 	} else if len(*goFileName) > 0 {
 		var input []byte = []byte(*goFileName)
 		all := bytes.SplitAfter(input, []byte(" "), -1)
-		pro, err = NewGoProjectWithFiles(all)
-		if err != nil {
-			exitln(err)
-		}	
+		pro = new(Gopro)
+		pro.Values = make(map[string][]string)
+
+		for _, v := range all {
+			pro.Values["GOFILES"] = append(pro.Values["GOFILES"], string(v))
+		}
 	}
-	if pro == nil {
+	if pro == nil || err != nil {
 		Usage()
 		os.Exit(1)
 	}
@@ -71,7 +71,7 @@ func main() {
 	if len(*goTargetName) > 0 {
 		pro.Values["TARGET"] = []string{*goTargetName}
 	}
-	fmt.Println("Parser Files",pro.Gofiles())
+	fmt.Println("gopromake parser files...")
 
 	files := pro.Gofiles()
 	pro.array = ParserFiles(files)
@@ -97,9 +97,11 @@ func main() {
 		os.Exit(0)
 	}		
 
-	err = pro.MakeTarget(gobin)
+	status, err := pro.MakeTarget(gobin)
 	if err != nil {
 		exitln(err)
-	} 
+	} else if status.ExitStatus() != 0 {
+		exitln(os.NewError("Error"))
+	}
 	os.Exit(0)
 }
