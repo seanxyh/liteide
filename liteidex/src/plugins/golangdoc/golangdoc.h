@@ -55,16 +55,16 @@ public slots:
 protected:
     LiteApi::IApplication   *m_liteApp;
     QWidget *m_widget;
-    QStringListModel *m_logModel;
-    QListView *m_logListView;
+    QStringListModel *m_recentModel;
+    QListView *m_recentListView;
     QComboBox *m_findComboBox;
     ProcessEx  *m_process;
-    DocumentBrowser *m_browser;
+    DocumentBrowser *m_docBrowser;
     QAction *m_browserAct;
-    QLabel  *m_resultLabel;
+    QLabel  *m_findResultLabel;
     QString m_findText;
     QString m_goroot;
-    QStringList m_logPackage;
+    QStringList m_recentPackages;
     QByteArray  m_findData;
     QByteArray  m_templateData;
 };
