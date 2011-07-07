@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// The doc package extracts source code documentation from a Go AST.
+// Package doc extracts source code documentation from a Go AST.
 package doc
 
 import (
@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"sort"
 )
+
 
 // ----------------------------------------------------------------------------
 
@@ -34,8 +35,8 @@ type typeDoc struct {
 //
 type docReader struct {
 	doc     *ast.CommentGroup // package documentation, if any
-	showAll bool
 	pkgName string
+	showAll bool
 	values  []*ast.GenDecl // consts and vars
 	types   map[string]*typeDoc
 	funcs   map[string]*ast.FuncDecl
@@ -67,7 +68,7 @@ func (doc *docReader) addDoc(comments *ast.CommentGroup) {
 	n2 := len(comments.List)
 	list := make([]*ast.Comment, n1+1+n2) // + 1 for separator line
 	copy(list, doc.doc.List)
-	list[n1] = &ast.Comment{token.NoPos, []byte("//")} // separator line
+	list[n1] = &ast.Comment{token.NoPos, "//"} // separator line
 	copy(list[n1+1:], comments.List)
 	doc.doc = &ast.CommentGroup{list}
 }
@@ -105,11 +106,9 @@ func baseTypeName(typ ast.Expr, showAll bool) string {
 	case *ast.Ident:
 		// if the type is not exported, the effect to
 		// a client is as if there were no type name
-		if showAll {
-			return string(t.Name)
-		} else if t.IsExported() {
-			return string(t.Name)
-		}
+		if showAll || t.IsExported() {
+			return t.Name
+		} 
 	case *ast.StarExpr:
 		return baseTypeName(t.X, showAll)
 	}
@@ -131,7 +130,7 @@ func (doc *docReader) addValue(decl *ast.GenDecl) {
 			switch {
 			case v.Type != nil:
 				// a type is present; determine its name
-				name = baseTypeName(v.Type, doc.showAll)
+				name = baseTypeName(v.Type,doc.showAll)
 			case decl.Tok == token.CONST:
 				// no type is present but we have a constant declaration;
 				// use the previous type name (w/o more type information
@@ -193,7 +192,7 @@ func (doc *docReader) addFunc(fun *ast.FuncDecl) {
 	// determine if it should be associated with a type
 	if fun.Recv != nil {
 		// method
-		typ := doc.lookupTypeDoc(baseTypeName(fun.Recv.List[0].Type, doc.showAll))
+		typ := doc.lookupTypeDoc(baseTypeName(fun.Recv.List[0].Type,doc.showAll))
 		if typ != nil {
 			// exported receiver type
 			setFunc(typ.methods, fun)
@@ -214,7 +213,7 @@ func (doc *docReader) addFunc(fun *ast.FuncDecl) {
 			// exactly one (named or anonymous) result associated
 			// with the first type in result signature (there may
 			// be more than one result)
-			tname := baseTypeName(res.Type, doc.showAll)
+			tname := baseTypeName(res.Type,doc.showAll)
 			typ := doc.lookupTypeDoc(tname)
 			if typ != nil {
 				// named and exported result type
@@ -303,9 +302,9 @@ func (doc *docReader) addFile(src *ast.File) {
 	// collect BUG(...) comments
 	for _, c := range src.Comments {
 		text := c.List[0].Text
-		if m := bug_markers.FindIndex(text); m != nil {
+		if m := bug_markers.FindStringIndex(text); m != nil {
 			// found a BUG comment; maybe empty
-			if btxt := text[m[1]:]; bug_content.Match(btxt) {
+			if btxt := text[m[1]:]; bug_content.MatchString(btxt) {
 				// non-empty BUG comment; collect comment without BUG prefix
 				list := copyCommentList(c.List)
 				list[0].Text = text[m[1]:]
@@ -317,9 +316,9 @@ func (doc *docReader) addFile(src *ast.File) {
 }
 
 
-func NewFileDoc(file *ast.File, showAll bool) *PackageDoc {
+func NewFileDoc(file *ast.File,showAll bool) *PackageDoc {
 	var r docReader
-	r.init(file.Name.Name, showAll)
+	r.init(file.Name.Name,showAll)
 	r.addFile(file)
 	return r.newDoc("", nil)
 }
@@ -327,7 +326,7 @@ func NewFileDoc(file *ast.File, showAll bool) *PackageDoc {
 
 func NewPackageDoc(pkg *ast.Package, importpath string, showAll bool) *PackageDoc {
 	var r docReader
-	r.init(pkg.Name, showAll)
+	r.init(pkg.Name,showAll)
 	filenames := make([]string, len(pkg.Files))
 	i := 0
 	for filename, f := range pkg.Files {
@@ -575,6 +574,20 @@ func (doc *docReader) newDoc(importpath string, filenames []string) *PackageDoc 
 type Filter func(string) bool
 
 
+func matchFields(fields *ast.FieldList, f Filter) bool {
+	if fields != nil {
+		for _, field := range fields.List {
+			for _, name := range field.Names {
+				if f(name.Name) {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+
 func matchDecl(d *ast.GenDecl, f Filter) bool {
 	for _, d := range d.Specs {
 		switch v := d.(type) {
@@ -587,6 +600,16 @@ func matchDecl(d *ast.GenDecl, f Filter) bool {
 		case *ast.TypeSpec:
 			if f(v.Name.Name) {
 				return true
+			}
+			switch t := v.Type.(type) {
+			case *ast.StructType:
+				if matchFields(t.Fields, f) {
+					return true
+				}
+			case *ast.InterfaceType:
+				if matchFields(t.Methods, f) {
+					return true
+				}
 			}
 		}
 	}

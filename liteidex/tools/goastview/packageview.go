@@ -31,8 +31,8 @@ const (
 )
 
 type PackageView struct {
-	fset  *token.FileSet
-	pdoc  *doc.PackageDoc
+	fset *token.FileSet
+	pdoc *doc.PackageDoc
 }
 
 var AllFiles []string
@@ -72,8 +72,8 @@ func NewPackage(pkg *ast.Package, fset *token.FileSet) (*PackageView, os.Error) 
 	p := new(PackageView)
 	p.fset = fset
 	var importpath string = ""
-	p.pdoc = doc.NewPackageDoc(pkg,importpath,true)
-	return p,nil
+	p.pdoc = doc.NewPackageDoc(pkg, importpath, true)
+	return p, nil
 }
 
 func ParseFiles(fset *token.FileSet, filenames []string, mode uint) (pkgs map[string]*ast.Package, pkgsfiles []string, first os.Error) {
@@ -83,12 +83,13 @@ func ParseFiles(fset *token.FileSet, filenames []string, mode uint) (pkgs map[st
 			name := src.Name.Name
 			pkg, found := pkgs[name]
 			if !found {
-				pkg = &ast.Package{name, nil, make(map[string]*ast.File)}
+				//pkg = &ast.Package{name, nil, make(map[string]*ast.File)}
+				pkg = &ast.Package{name, nil, nil, make(map[string]*ast.File)}
 				pkgs[name] = pkg
 			}
 			pkg.Files[filename] = src
-			pkgsfiles = append(pkgsfiles,filename)
-		}  else {
+			pkgsfiles = append(pkgsfiles, filename)
+		} else {
 			first = err
 			return
 		}
@@ -98,16 +99,16 @@ func ParseFiles(fset *token.FileSet, filenames []string, mode uint) (pkgs map[st
 
 func PrintFilesTree(filenames []string, w io.Writer) os.Error {
 	fset := token.NewFileSet()
-	pkgs, pkgsfiles, err := ParseFiles(fset,filenames,0)
+	pkgs, pkgsfiles, err := ParseFiles(fset, filenames, 0)
 	if err != nil {
 		return err
 	}
 	AllFiles = pkgsfiles
 	for i := 0; i < len(AllFiles); i++ {
-		fmt.Fprintf(w,"@,%s\n",AllFiles[i])
+		fmt.Fprintf(w, "@,%s\n", AllFiles[i])
 	}
-	for _,pkg := range pkgs {
-		view, err := NewPackage(pkg,fset)
+	for _, pkg := range pkgs {
+		view, err := NewPackage(pkg, fset)
 		if err != nil {
 			return err
 		}
