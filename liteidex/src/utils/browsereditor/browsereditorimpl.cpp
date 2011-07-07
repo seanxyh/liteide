@@ -60,6 +60,11 @@ bool BrowserEditorImpl::save()
     return false;
 }
 
+void BrowserEditorImpl::setReadOnly(bool /*b*/)
+{
+
+}
+
 bool BrowserEditorImpl::isReadOnly() const
 {
     return true;

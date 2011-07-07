@@ -67,7 +67,8 @@
 LiteEditor::LiteEditor(LiteApi::IApplication *app)
     : m_liteApp(app),
       m_extension(new Extension),
-      m_completer(0)
+      m_completer(0),
+      m_bReadOnly(false)
 {
     m_widget = new QWidget;
     m_editorWidget = new LiteEditorWidget(m_widget);
@@ -298,7 +299,6 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
     bool success = m_file->open(fileName,mimeType);
     if (success) {
         m_editorWidget->initLoadDocument();
-        m_editorWidget->setReadOnly(m_file->isReadOnly());
         QString codecName = m_file->textCodec();
         for (int i = 0; i < m_codecComboBox->count(); i++) {
             QString text = m_codecComboBox->itemText(i);
@@ -307,28 +307,34 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
                 break;
             }
         }
-        if (m_file->isReadOnly()) {
-            m_lockAct->setIcon(QIcon(":/images/lock.png"));
-            m_lockAct->setText(tr("File Is ReadOnly"));
-        } else {
-            m_lockAct->setIcon(QIcon(":/images/unlock.png"));
-            m_lockAct->setText(tr("File Is Writable"));
-        }
+        setReadOnly(m_file->isReadOnly());
     }
     return success;
 }
 
 bool LiteEditor::save()
 {
-    if (m_file->isReadOnly()) {
+    if (m_bReadOnly) {
         return false;
     }
     return m_file->save(m_file->fileName());
 }
 
+void LiteEditor::setReadOnly(bool b)
+{
+    m_bReadOnly = b;
+    if (m_bReadOnly) {
+        m_lockAct->setIcon(QIcon(":/images/lock.png"));
+        m_lockAct->setText(tr("File Is ReadOnly"));
+    } else {
+        m_lockAct->setIcon(QIcon(":/images/unlock.png"));
+        m_lockAct->setText(tr("File Is Writable"));
+    }
+}
+
 bool LiteEditor::isReadOnly() const
 {
-    return m_file->isReadOnly();
+    return m_bReadOnly;
 }
 
 bool LiteEditor::isModified() const

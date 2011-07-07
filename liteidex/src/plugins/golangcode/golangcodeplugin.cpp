@@ -16,7 +16,7 @@
 
 GolangCodePlugin::GolangCodePlugin()
 {
-    m_info->setId("plugin/GolangCode");
+    m_info->setId("plugin/golangcode");
     m_info->setName("GolangCode");
     m_info->setAnchor("visualfc");
     m_info->setInfo("Gocode Helper Plugin");

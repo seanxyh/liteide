@@ -18,30 +18,31 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: browsereditorimpl.h
+// Module: documentbrowser.h
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2011-3-26
-// $Id: browsereditorimpl.h,v 1.0 2011-5-12 visualfc Exp $
+// date: 2011-7-7
+// $Id: documentbrowser.h,v 1.0 2011-7-7 visualfc Exp $
 
-#ifndef BROWSEREDITORIMPL_H
-#define BROWSEREDITORIMPL_H
+#ifndef DOCUMENTBROWSER_H
+#define DOCUMENTBROWSER_H
 
-#include "liteapi.h"
+#include "browsereditor/browsereditorimpl.h"
 
-class BrowserEditorImpl : public LiteApi::IEditor
+class QTextBrowser;
+class DocumentBrowser : public BrowserEditorImpl
 {
     Q_OBJECT
 public:
+    DocumentBrowser(LiteApi::IApplication *app);
+    ~DocumentBrowser();
     virtual QWidget *widget();
     virtual QString displayName() const;
     virtual QIcon icon() const;
-
-    virtual bool open(const QString &fileName, const QString &mimeType);
-    virtual bool save();
-    virtual void setReadOnly(bool b);
-    virtual bool isReadOnly() const;
-    virtual bool isModified() const;
-    virtual LiteApi::IFile *file();
+    QTextBrowser *browser();
+protected:
+    LiteApi::IApplication   *m_liteApp;
+    QWidget *m_widget;
+    QTextBrowser *m_browser;
 };
 
-#endif //BROWSEREDITORIMPL_H
+#endif // DOCUMENTBROWSER_H

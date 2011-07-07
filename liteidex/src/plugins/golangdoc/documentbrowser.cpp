@@ -18,30 +18,56 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: browsereditorimpl.h
+// Module: documentbrowser.cpp
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2011-3-26
-// $Id: browsereditorimpl.h,v 1.0 2011-5-12 visualfc Exp $
+// date: 2011-7-7
+// $Id: documentbrowser.cpp,v 1.0 2011-7-7 visualfc Exp $
 
-#ifndef BROWSEREDITORIMPL_H
-#define BROWSEREDITORIMPL_H
+#include "documentbrowser.h"
 
-#include "liteapi.h"
+#include <QTextBrowser>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
-class BrowserEditorImpl : public LiteApi::IEditor
+DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app) :
+    m_liteApp(app)
 {
-    Q_OBJECT
-public:
-    virtual QWidget *widget();
-    virtual QString displayName() const;
-    virtual QIcon icon() const;
+    m_widget = new QWidget;
 
-    virtual bool open(const QString &fileName, const QString &mimeType);
-    virtual bool save();
-    virtual void setReadOnly(bool b);
-    virtual bool isReadOnly() const;
-    virtual bool isModified() const;
-    virtual LiteApi::IFile *file();
-};
+    m_browser = new QTextBrowser;
+    m_browser->setSearchPaths(QStringList() << m_liteApp->resourcePath());
+    m_browser->setOpenLinks(false);
 
-#endif //BROWSEREDITORIMPL_H
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->setMargin(0);
+
+    mainLayout->addWidget(m_browser);
+    m_widget->setLayout(mainLayout);    
+}
+
+DocumentBrowser::~DocumentBrowser()
+{
+    if (m_widget) {
+        delete m_widget;
+    }
+}
+
+QWidget *DocumentBrowser::widget()
+{
+    return m_widget;
+}
+
+QString DocumentBrowser::displayName() const
+{
+    return tr("DocumentBrowser");
+}
+
+QIcon DocumentBrowser::icon() const
+{
+    return QIcon();
+}
+
+QTextBrowser *DocumentBrowser::browser()
+{
+    return m_browser;
+}

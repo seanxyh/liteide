@@ -160,6 +160,7 @@ class IEditor : public IView
 public:
     virtual bool open(const QString &fileName,const QString &mimeType) = 0;
     virtual bool save() = 0;
+    virtual void setReadOnly(bool b) = 0;
     virtual bool isReadOnly() const = 0;
     virtual bool isModified() const = 0;
     virtual IFile *file() = 0;
@@ -355,7 +356,7 @@ public:
     virtual QString ver() const { return m_ver; }
     void setAnchor(QString anchor) { m_anchor = anchor; }
     void setInfo(QString info) { m_info = info; }
-    void setId(QString id) { m_id = id; }
+    void setId(QString id) { m_id = id.toLower(); }
     void setName(QString name) { m_name = name; }
     void setVer(QString ver) { m_ver = ver; }
 protected:
@@ -389,7 +390,7 @@ public:
     virtual QString name() const {
         return m_info->name();
     }
-    virtual QStringList dependPluginList() {
+    virtual QStringList dependPluginList() const{
         return QStringList();
     }
     virtual const PluginInfo *info() const {

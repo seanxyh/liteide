@@ -18,38 +18,55 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: golangfmtplugin.h
+// Module: golangdoc.h
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2011-3-26
-// $Id: golangfmtplugin.h,v 1.0 2011-5-12 visualfc Exp $
+// date: 2011-7-7
+// $Id: golangdoc.h,v 1.0 2011-7-7 visualfc Exp $
 
-#ifndef GOLANGFMTPLUGIN_H
-#define GOLANGFMTPLUGIN_H
+#ifndef GOLANGDOC_H
+#define GOLANGDOC_H
 
-#include "golangfmt_global.h"
 #include "liteapi.h"
-#include "litebuildapi/litebuildapi.h"
-#include <QtPlugin>
+#include <QUrl>
+#include <QModelIndex>
 
-class GolangFmt;
-class QToolButton;
-class GolangFmtPlugin : public LiteApi::IPlugin
+class QLabel;
+class QListView;
+class QStringListModel;
+class QComboBox;
+class QPushButton;
+class ProcessEx;
+class DocumentBrowser;
+class GolangDoc : public QObject
 {
     Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
-    GolangFmtPlugin();
-    virtual bool initWithApp(LiteApi::IApplication *app);
-    virtual QStringList dependPluginList() const;
-protected slots:
-    void editorCreated(LiteApi::IEditor*);
-    void buildChanged(LiteApi::IBuild*);
-    void gofmt();
+    explicit GolangDoc(LiteApi::IApplication *app, QObject *parent = 0);
+    ~GolangDoc();
+signals:
+
+public slots:
+    void findPackage(QString);
+    void findOutput(QByteArray,bool);
+    void findFinish(bool,int,QString);
+    void anchorClicked(QUrl);
+    void doubleClockedLog(QModelIndex);
+    void clearRecentPackages();
 protected:
-    QAction   *m_gofmtAct;
-    QToolButton *m_fmtBtn;
-    GolangFmt *m_fmt;
-    LiteApi::IBuild *m_build;
+    LiteApi::IApplication   *m_liteApp;
+    QWidget *m_widget;
+    QStringListModel *m_logModel;
+    QListView *m_logListView;
+    QComboBox *m_findComboBox;
+    ProcessEx  *m_process;
+    DocumentBrowser *m_browser;
+    QAction *m_browserAct;
+    QLabel  *m_resultLabel;
+    QString m_findText;
+    QString m_goroot;
+    QStringList m_logPackage;
+    QByteArray  m_findData;
+    QByteArray  m_templateData;
 };
 
-#endif // GOLANGFMTPLUGIN_H
+#endif // GOLANGDOC_H

@@ -59,4 +59,9 @@ bool LiteEditorPlugin::initWithApp(LiteApi::IApplication *app)
     return true;
 }
 
+QStringList LiteEditorPlugin::dependPluginList() const
+{
+    return QStringList() << "plugin/litebuild";
+}
+
 Q_EXPORT_PLUGIN(LiteEditorPlugin)
