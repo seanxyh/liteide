@@ -57,6 +57,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 {
     m_process = new ProcessEx(this);
 
+    m_goroot = m_liteApp->settings()->value("golangdoc/goroot").toString();
+
     m_widget = new QWidget;
     m_logModel = new QStringListModel(this);
 
@@ -124,6 +126,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
 GolangDoc::~GolangDoc()
 {
+    m_liteApp->settings()->setValue("golangdoc/goroot",m_goroot);
     m_liteApp->settings()->setValue("golangdoc/RecentPackages",m_logPackage);
     if (m_browser) {
         delete m_browser;

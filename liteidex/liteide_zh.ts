@@ -165,6 +165,14 @@ LGPL_EXCEPTION.txt in this package.</source>
     </message>
 </context>
 <context>
+    <name>DocumentBrowser</name>
+    <message>
+        <location filename="src/plugins/golangdoc/documentbrowser.cpp" line="62"/>
+        <source>DocumentBrowser</source>
+        <translation>文档浏览器</translation>
+    </message>
+</context>
+<context>
     <name>EditorManager</name>
     <message>
         <location filename="src/liteapp/editormanager.cpp" line="172"/>
@@ -567,6 +575,29 @@ This file has been removed. Do you want save to file or close editor?</source>
     </message>
 </context>
 <context>
+    <name>GolangDoc</name>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="84"/>
+        <source>Find:</source>
+        <translation>查找:</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="88"/>
+        <source>Clear</source>
+        <translation>清除</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="92"/>
+        <source>Recent:</source>
+        <translation>历史:</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="112"/>
+        <source>GolangDoc</source>
+        <translation>GO文档</translation>
+    </message>
+</context>
+<context>
     <name>GolangFmtPlugin</name>
     <message>
         <location filename="src/plugins/golangfmt/golangfmtplugin.cpp" line="96"/>
@@ -705,7 +736,7 @@ This file has been removed. Do you want save to file or close editor?</source>
     <message>
         <location filename="src/plugins/litebuild/litebuild.cpp" line="94"/>
         <source>LiteBuild</source>
-        <translation></translation>
+        <translation>编译输出</translation>
     </message>
 </context>
 <context>
@@ -729,64 +760,64 @@ This file has been removed. Do you want save to file or close editor?</source>
 <context>
     <name>LiteEditor</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="150"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="151"/>
         <source>Undo</source>
         <translation>撤消</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="151"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="152"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="152"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="153"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="153"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="154"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="154"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="155"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="155"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="156"/>
         <source>File is writable</source>
         <translation>文件可写</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="157"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="443"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="158"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="449"/>
         <source>Export PDF</source>
         <translation>输出PDF文档</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="158"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="467"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="159"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="473"/>
         <source>Print Document</source>
         <translation>文档打印</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="159"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="160"/>
         <source>Print Preview Document</source>
         <translation>文档打印预览</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="222"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="223"/>
         <source>editor</source>
         <translation>编辑器</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="312"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="328"/>
         <source>File Is ReadOnly</source>
         <translation>文件只读</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="315"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="331"/>
         <source>File Is Writable</source>
         <translation>文件可写</translation>
     </message>
