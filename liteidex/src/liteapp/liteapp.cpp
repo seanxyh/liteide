@@ -292,8 +292,9 @@ void LiteApp::initPlugins()
         i.next();
         deps.insertMulti(i.value(),idPlguinMap.value(i.key()));
     }
-
-    foreach(int index, deps.keys().toSet()) {
+    QList<int> keys = deps.keys().toSet().toList();
+    qSort(keys);
+    foreach(int index, keys) {
         foreach(IPlugin *p, deps.values(index)) {
             bool ret = p->initWithApp(this);
             appendConsole("LiteApp","initPlugin",

@@ -45,7 +45,8 @@
 //lite_memory_check_end
 
 GolangFmtPlugin::GolangFmtPlugin()
-    : m_fmt(0)
+    : m_fmt(0),
+      m_build(0)
 {
     m_info->setId("plugin/golangfmt");
     m_info->setName("GolangFmt");
@@ -61,6 +62,7 @@ bool GolangFmtPlugin::initWithApp(LiteApi::IApplication *app)
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
     if (manager) {
+        m_build = manager->currentBuild();
         connect(manager,SIGNAL(buildChanged(LiteApi::IBuild*)),this,SLOT(buildChanged(LiteApi::IBuild*)));
     }
     return true;
