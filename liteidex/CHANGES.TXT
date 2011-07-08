@@ -1,4 +1,4 @@
---- 2011.7.6
+--- 2011.7.7
 Ver x5 0.78125
 * add CodeSearch plugin : Editor Search and Replace
 * add GolangDoc plugin : Golang Package Find
@@ -11,6 +11,7 @@ Ver x5 0.78125
 * update tools/gopromake to r58
 * update tools/goexec to r58
 * update tools/goastview to r58
+* fix plugin depends load
 * fix filebrowser rename show oldname
 * fix ENV c:/go/bin;%PATH% order, BOBIN is priority
 * fix FileBrowser sort incorrect on MACOSX
