@@ -600,7 +600,7 @@ This file has been removed. Do you want save to file or close editor?</source>
 <context>
     <name>GolangFmtPlugin</name>
     <message>
-        <location filename="src/plugins/golangfmt/golangfmtplugin.cpp" line="96"/>
+        <location filename="src/plugins/golangfmt/golangfmtplugin.cpp" line="98"/>
         <source>gofmt</source>
         <translation></translation>
     </message>
@@ -613,97 +613,96 @@ This file has been removed. Do you want save to file or close editor?</source>
         <translation>控制台</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="307"/>
+        <location filename="src/liteapp/liteapp.cpp" line="308"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="309"/>
+        <location filename="src/liteapp/liteapp.cpp" line="310"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="311"/>
+        <location filename="src/liteapp/liteapp.cpp" line="312"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="313"/>
+        <location filename="src/liteapp/liteapp.cpp" line="314"/>
         <source>Close All</source>
         <translation>关闭所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="314"/>
+        <location filename="src/liteapp/liteapp.cpp" line="315"/>
         <source>Open Project</source>
         <translation>打开项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="315"/>
+        <location filename="src/liteapp/liteapp.cpp" line="316"/>
         <source>Save Project</source>
         <translation>保存项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="316"/>
+        <location filename="src/liteapp/liteapp.cpp" line="317"/>
         <source>Close Project</source>
         <translation>关闭项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="317"/>
+        <location filename="src/liteapp/liteapp.cpp" line="318"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="319"/>
+        <location filename="src/liteapp/liteapp.cpp" line="320"/>
         <source>Save As</source>
         <translation>另存为</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="320"/>
+        <location filename="src/liteapp/liteapp.cpp" line="321"/>
         <source>Save All</source>
         <translation>保存所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="322"/>
+        <location filename="src/liteapp/liteapp.cpp" line="323"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="325"/>
+        <location filename="src/liteapp/liteapp.cpp" line="326"/>
         <source>About LiteIDE...</source>
         <translation>关于LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="326"/>
+        <location filename="src/liteapp/liteapp.cpp" line="327"/>
         <source>About Plugins...</source>
         <translation>关于插件...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="345"/>
+        <location filename="src/liteapp/liteapp.cpp" line="346"/>
         <source>&amp;File</source>
         <translation>文件(&amp;F)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="346"/>
+        <location filename="src/liteapp/liteapp.cpp" line="347"/>
         <source>&amp;View</source>
         <translation>查看(&amp;V)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="347"/>
         <source>&amp;Tools</source>
-        <translation>工具(&amp;T)</translation>
+        <translation type="obsolete">工具(&amp;T)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="348"/>
+        <location filename="src/liteapp/liteapp.cpp" line="349"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="374"/>
+        <location filename="src/liteapp/liteapp.cpp" line="375"/>
         <source>Standard ToolBar</source>
         <translation>标准工具栏</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="386"/>
+        <location filename="src/liteapp/liteapp.cpp" line="387"/>
         <source>Navigation ToolBar</source>
         <translation>导航工具栏</translation>
     </message>
