@@ -5,7 +5,8 @@
     <name>AboutDialog</name>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="20"/>
-        <source>About Liteide</source>
+        <source>About LiteIDE</source>
+        <oldsource>About Liteide</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -51,43 +52,36 @@ LiteIDE is a simple, open source, cross-platform IDE.</source>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="284"/>
-        <source>Credits</source>
+        <source>Developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="290"/>
-        <source>Version X</source>
+        <location filename="src/liteapp/aboutdialog.ui" line="390"/>
+        <source>Translations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="310"/>
-        <location filename="src/liteapp/aboutdialog.ui" line="333"/>
-        <location filename="src/liteapp/aboutdialog.ui" line="370"/>
-        <source>Developer - Project leader</source>
+        <location filename="src/liteapp/aboutdialog.ui" line="402"/>
+        <source>Chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="320"/>
-        <source>Version 0.1-0.2.1 (Qt)</source>
+        <location filename="src/liteapp/aboutdialog.ui" line="416"/>
+        <source>Japanese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="350"/>
-        <source>Version 0.1 (WTL)</source>
+        <location filename="src/liteapp/aboutdialog.ui" line="430"/>
+        <source>Russian</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="391"/>
-        <source>Developer - CppModel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="418"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="461"/>
         <source>Thanks to...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="424"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="467"/>
         <source>All contributors that provided patches.
 
 The Go Project (http://golang.org/)
@@ -100,12 +94,12 @@ Last, but not least, the open-source community.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="446"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="489"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="452"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="495"/>
         <source>Copyright (c) 2011 LiteIDE team. All rights reserved.
 
 This library is free software; you can redistribute it and/or
@@ -125,7 +119,7 @@ LGPL_EXCEPTION.txt in this package.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="493"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="536"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>

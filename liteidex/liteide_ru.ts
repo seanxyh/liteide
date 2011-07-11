@@ -5,8 +5,9 @@
     <name>AboutDialog</name>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="20"/>
-        <source>About Liteide</source>
-        <translation>О программе Liteide</translation>
+        <source>About LiteIDE</source>
+        <oldsource>About Liteide</oldsource>
+        <translation type="unfinished">О программе Liteide</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="182"/>
@@ -52,43 +53,36 @@ LiteIDE это простая кросплатформенная среда ра
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="284"/>
-        <source>Credits</source>
-        <translation>Создатели</translation>
+        <source>Developers</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="290"/>
-        <source>Version X</source>
-        <translation>Версия X</translation>
+        <location filename="src/liteapp/aboutdialog.ui" line="390"/>
+        <source>Translations</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="310"/>
-        <location filename="src/liteapp/aboutdialog.ui" line="333"/>
-        <location filename="src/liteapp/aboutdialog.ui" line="370"/>
-        <source>Developer - Project leader</source>
-        <translation>Разработчик - лидер проекта</translation>
+        <location filename="src/liteapp/aboutdialog.ui" line="402"/>
+        <source>Chinese</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="320"/>
-        <source>Version 0.1-0.2.1 (Qt)</source>
-        <translation>Версия 0.1-0.2.1 (Qt)</translation>
+        <location filename="src/liteapp/aboutdialog.ui" line="416"/>
+        <source>Japanese</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="350"/>
-        <source>Version 0.1 (WTL)</source>
-        <translation>Версия 0.1 (WTL)</translation>
+        <location filename="src/liteapp/aboutdialog.ui" line="430"/>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="391"/>
-        <source>Developer - CppModel</source>
-        <translation>Разработчик - CppModel</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="418"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="461"/>
         <source>Thanks to...</source>
         <translation>Благодарности...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="424"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="467"/>
         <source>All contributors that provided patches.
 
 The Go Project (http://golang.org/)
@@ -109,12 +103,12 @@ GNU Software Foundation (http://www.gnu.org).
 И наконец, всё сообщество open source.</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="446"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="489"/>
         <source>License</source>
         <translation>Лицензия</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="452"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="495"/>
         <source>Copyright (c) 2011 LiteIDE team. All rights reserved.
 
 This library is free software; you can redistribute it and/or
@@ -134,7 +128,7 @@ LGPL_EXCEPTION.txt in this package.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="493"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="536"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
@@ -327,10 +321,6 @@ LGPL_EXCEPTION.txt in this package.</source>
 </context>
 <context>
     <name>FileBrowser</name>
-    <message>
-        <source>Synchronize with editor </source>
-        <translation type="obsolete">Синхронизировать с редактором </translation>
-    </message>
     <message>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="101"/>
         <source>Synchronize with editor</source>
@@ -691,10 +681,6 @@ This file has been removed. Do you want save to file or close editor?</source>
         <location filename="src/liteapp/liteapp.cpp" line="347"/>
         <source>&amp;View</source>
         <translation>&amp;Вид</translation>
-    </message>
-    <message>
-        <source>&amp;Tools</source>
-        <translation type="obsolete">&amp;Инструменты</translation>
     </message>
     <message>
         <location filename="src/liteapp/liteapp.cpp" line="349"/>
