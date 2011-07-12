@@ -169,7 +169,7 @@ void GolangDoc::findPackage(QString package)
     }
     m_findData.clear();
     QStringList args;
-    args << "-html=true" << package;
+    args << "-html=true" << package.split(" ");
     m_process->start(cmd,args);
 }
 
