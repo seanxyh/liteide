@@ -34,6 +34,7 @@ class QTreeView;
 class QFileSystemModel;
 class QSortFilterProxyModel;
 class QFileInfo;
+class QDir;
 class QMenu;
 
 class FileBrowser : public QObject
@@ -67,6 +68,8 @@ protected slots:
     void setFolderToRoot();
     void cdUp();
 protected:
+    QFileInfo contextFileInfo() const;
+    QDir contextDir() const;
     void showTreeViewContextMenu(const QPoint &globalPos, const QFileInfo &info);
     void addFolderToRoot(const QString &path);
 protected:
@@ -84,6 +87,7 @@ protected:
     QModelIndex m_contextIndex;
     QMenu   *m_fileMenu;
     QMenu   *m_folderMenu;
+    QMenu   *m_rootMenu;
     QAction *m_openFileAct;
     QAction *m_newFileAct;
     QAction *m_removeFileAct;

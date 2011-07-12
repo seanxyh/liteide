@@ -158,6 +158,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     //create menu
     m_fileMenu = new QMenu;
     m_folderMenu = new QMenu;
+    m_rootMenu = new QMenu;
 
     m_openFileAct = new QAction(tr("Open File"),this);
     m_newFileAct = new QAction(tr("New File"),this);
@@ -187,6 +188,13 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_folderMenu->addAction(m_removeFolderAct);
     m_folderMenu->addSeparator();
     m_folderMenu->addAction(m_openShellAct);
+
+    m_rootMenu->addAction(m_cdupAct);
+    m_rootMenu->addSeparator();
+    m_rootMenu->addAction(m_newFileAct);
+    m_rootMenu->addAction(m_newFolderAct);
+    m_rootMenu->addSeparator();
+    m_rootMenu->addAction(m_openShellAct);
 
     connect(m_openFileAct,SIGNAL(triggered()),this,SLOT(openFile()));
     connect(m_newFileAct,SIGNAL(triggered()),this,SLOT(newFile()));
@@ -224,6 +232,7 @@ FileBrowser::~FileBrowser()
     m_liteApp->settings()->setValue("FileBrowser/sync",m_syncAct->isChecked());
     delete m_fileMenu;
     delete m_folderMenu;
+    delete m_rootMenu;
     delete m_widget;
 }
 
@@ -303,7 +312,10 @@ void FileBrowser::showTreeViewContextMenu(const QPoint &globalPos, const QFileIn
         contextMenu = m_folderMenu;
     } else if (info.isFile()) {
         contextMenu = m_fileMenu;
+    } else {
+        contextMenu = m_rootMenu;
     }
+
     if (contextMenu && contextMenu->actions().count() > 0) {
         contextMenu->popup(globalPos);
     }
@@ -317,21 +329,9 @@ void FileBrowser::openFile()
     }
 }
 
-static QDir fileInfoToDir(const QFileInfo &info)
-{
-    QDir dir;
-    if (info.isDir()) {
-        dir.setPath(info.filePath());
-    } else {
-        dir = info.dir();
-    }
-    return dir;
-}
-
 void FileBrowser::newFile()
 {
-    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
-    QDir dir = fileInfoToDir(info);
+    QDir dir = contextDir();
 
     QString fileName = QInputDialog::getText(m_liteApp->mainWindow(),tr("Create File"),tr("File Name"));
     if (!fileName.isEmpty()) {
@@ -353,7 +353,7 @@ void FileBrowser::newFile()
 
 void FileBrowser::renameFile()
 {
-    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
+    QFileInfo info = contextFileInfo();
     if (!info.isFile()) {
         return;
     }
@@ -361,7 +361,7 @@ void FileBrowser::renameFile()
                                              tr("Rename File"),tr("File Name"),
                                              QLineEdit::Normal,info.fileName());
     if (!fileName.isEmpty() && fileName != info.fileName()) {
-        QDir dir = fileInfoToDir(info);
+        QDir dir = contextDir();
         if (!QFile::rename(info.filePath(),QFileInfo(dir,fileName).filePath())) {
             QMessageBox::information(m_liteApp->mainWindow(),tr("Rename File"),
                                      tr("Failed to rename the file!"));
@@ -371,7 +371,7 @@ void FileBrowser::renameFile()
 
 void FileBrowser::removeFile()
 {
-    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
+    QFileInfo info = contextFileInfo();
     if (!info.isFile()) {
         return;
     }
@@ -389,12 +389,13 @@ void FileBrowser::removeFile()
 
 void FileBrowser::newFolder()
 {
-    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
-
     QString folderName = QInputDialog::getText(m_liteApp->mainWindow(),tr("Create Folder"),tr("Folder Name"));
     if (!folderName.isEmpty()) {
-        QDir dir = fileInfoToDir(info);
-        if (!dir.mkpath(folderName)) {
+        QDir dir = contextDir();
+        if (!dir.entryList(QStringList() << folderName,QDir::Dirs).isEmpty()) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Create Folder"),
+                                     tr("The folder name is exists!"));
+        } else if (!dir.mkpath(folderName)) {
             QMessageBox::information(m_liteApp->mainWindow(),tr("Create Folder"),
                                      tr("Failed to create the folder!"));
         }
@@ -403,7 +404,7 @@ void FileBrowser::newFolder()
 
 void FileBrowser::renameFolder()
 {
-    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
+    QFileInfo info = contextFileInfo();
     if (!info.isDir()) {
         return;
     }
@@ -412,7 +413,7 @@ void FileBrowser::renameFolder()
                                                tr("Rename Folder"),tr("Folder Name"),
                                                QLineEdit::Normal,info.fileName());
     if (!folderName.isEmpty() && folderName != info.fileName()) {
-        QDir dir = fileInfoToDir(info);
+        QDir dir = contextDir();
         dir.cdUp();
         if (!dir.rename(info.fileName(),folderName)) {
             QMessageBox::information(m_liteApp->mainWindow(),tr("Rename Folder"),
@@ -423,7 +424,7 @@ void FileBrowser::renameFolder()
 
 void FileBrowser::removeFolder()
 {
-    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
+    QFileInfo info = contextFileInfo();
     if (!info.isDir()) {
         return;
     }
@@ -461,11 +462,29 @@ QStringList FileBrowser::getShellArgs(LiteApi::IApplication *app)
     return app->settings()->value("filebrowser/shell_args",defArgs).toStringList();
 }
 
+QFileInfo FileBrowser::contextFileInfo() const
+{
+    if (m_contextIndex.isValid()) {
+        return m_fileModel->fileInfo(m_contextIndex);
+    }
+    return QFileInfo(m_fileModel->rootPath());
+}
+
+QDir FileBrowser::contextDir() const
+{
+    if (m_contextIndex.isValid()) {
+        if (m_fileModel->isDir(m_contextIndex)) {
+            return m_fileModel->filePath(m_contextIndex);
+        } else {
+            return m_fileModel->fileInfo(m_contextIndex).absoluteDir();
+        }
+    }
+    return m_fileModel->rootDirectory();
+}
 
 void FileBrowser::openShell()
 {
-    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
-    QDir dir = fileInfoToDir(info);
+    QDir dir = contextDir();
     QString cmd = getShellCmd(m_liteApp);
     if (cmd.isEmpty()) {
         return;
@@ -500,8 +519,7 @@ void FileBrowser::addFolderToRoot(const QString &path)
 
 void FileBrowser::setFolderToRoot()
 {
-    QFileInfo info = m_fileModel->fileInfo(m_contextIndex);
-    QDir dir = fileInfoToDir(info);
+    QDir dir = contextDir();
     addFolderToRoot(dir.path());
 }
 
