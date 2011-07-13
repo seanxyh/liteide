@@ -40,6 +40,8 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QProcess>
+#include <QDesktopServices>
+#include <QUrl>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -171,6 +173,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_removeFolderAct = new QAction(tr("Remove Folder"),this);
 
     m_openShellAct = new QAction(tr("Open Terminal Here"),this);
+    m_openExplorerAct = new QAction(tr("Open Explorer Here"),this);
 
     m_fileMenu->addAction(m_openFileAct);
     m_fileMenu->addSeparator();
@@ -179,6 +182,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileMenu->addAction(m_removeFileAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_openShellAct);
+    m_fileMenu->addAction(m_openExplorerAct);
 
     m_folderMenu->addAction(m_setRootAct);
     m_folderMenu->addSeparator();
@@ -188,6 +192,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_folderMenu->addAction(m_removeFolderAct);
     m_folderMenu->addSeparator();
     m_folderMenu->addAction(m_openShellAct);
+    m_folderMenu->addAction(m_openExplorerAct);
 
     m_rootMenu->addAction(m_cdupAct);
     m_rootMenu->addSeparator();
@@ -195,6 +200,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_rootMenu->addAction(m_newFolderAct);
     m_rootMenu->addSeparator();
     m_rootMenu->addAction(m_openShellAct);
+    m_rootMenu->addAction(m_openExplorerAct);
 
     connect(m_openFileAct,SIGNAL(triggered()),this,SLOT(openFile()));
     connect(m_newFileAct,SIGNAL(triggered()),this,SLOT(newFile()));
@@ -206,6 +212,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_openShellAct,SIGNAL(triggered()),this,SLOT(openShell()));
     connect(m_setRootAct,SIGNAL(triggered()),this,SLOT(setFolderToRoot()));
     connect(m_cdupAct,SIGNAL(triggered()),this,SLOT(cdUp()));
+    connect(m_openExplorerAct,SIGNAL(triggered()),this,SLOT(openExplorer()));
 
 
     QDockWidget *dock = m_liteApp->dockManager()->addDock(m_widget,tr("FileBrowser"));
@@ -481,6 +488,13 @@ QDir FileBrowser::contextDir() const
     }
     return m_fileModel->rootDirectory();
 }
+
+void FileBrowser::openExplorer()
+{
+    QDir dir = contextDir();
+    QDesktopServices::openUrl(QUrl::fromLocalFile(dir.path()));
+}
+
 
 void FileBrowser::openShell()
 {

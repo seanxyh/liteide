@@ -128,22 +128,22 @@ LGPL_EXCEPTION.txt in this package.</source>
     <name>CodeSearchPlugin</name>
     <message>
         <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="78"/>
-        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="90"/>
+        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="89"/>
         <source>Find</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="82"/>
+        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="81"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="85"/>
+        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="84"/>
         <source>Find Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="86"/>
+        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="85"/>
         <source>Find Prev</source>
         <translation type="unfinished"></translation>
     </message>
@@ -313,140 +313,151 @@ LGPL_EXCEPTION.txt in this package.</source>
 <context>
     <name>FileBrowser</name>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="101"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="103"/>
         <source>Synchronize with editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="120"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="122"/>
         <source>open to parent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="162"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="165"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="163"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="166"/>
         <source>New File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="164"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="361"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="366"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="167"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="368"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="373"/>
         <source>Rename File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="165"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="379"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="384"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="168"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="386"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="391"/>
         <source>Remove File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="167"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="170"/>
         <source>Set Folder To Root</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="168"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="171"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="169"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="412"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="418"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="172"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="420"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="426"/>
         <source>Rename Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="170"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="431"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="436"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="173"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="439"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="444"/>
         <source>Remove Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="172"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="175"/>
         <source>Open Terminal Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="203"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="176"/>
+        <source>Open Explorer Here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="218"/>
         <source>FileBrowser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="336"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="340"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="343"/>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="347"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="354"/>
         <source>Create File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="336"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="361"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="343"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="368"/>
         <source>File Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="341"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="348"/>
         <source>The filename is exists!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="348"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="355"/>
         <source>Failed to create the file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="367"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="374"/>
         <source>Failed to rename the file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="380"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="387"/>
         <source>Confirm remove the file and continue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="385"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="392"/>
         <source>Failed to remove the file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="394"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="398"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="399"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="403"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="406"/>
         <source>Create Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="394"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="412"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="399"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="420"/>
         <source>Folder Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="399"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="404"/>
+        <source>The folder name is exists!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="407"/>
         <source>Failed to create the folder!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="419"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="427"/>
         <source>Failed to rename the folder!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="432"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="440"/>
         <source>Confirm remove the foler and continue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="437"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="445"/>
         <source>Failed to remove the folder!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -739,65 +750,81 @@ This file has been removed. Do you want save to file or close editor?</source>
 <context>
     <name>LiteEditor</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="151"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="152"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="152"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="153"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="153"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="154"/>
         <source>Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="154"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="155"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="155"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="156"/>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="156"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="157"/>
         <source>File is writable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="158"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="449"/>
-        <source>Export PDF</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="159"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="473"/>
-        <source>Print Document</source>
+        <source>Export HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="160"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="452"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="479"/>
+        <source>Export PDF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="161"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="503"/>
+        <source>Print Document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="162"/>
         <source>Print Preview Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="223"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="227"/>
         <source>editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="328"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="333"/>
         <source>File Is ReadOnly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="331"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="336"/>
         <source>File Is Writable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="460"/>
+        <source>Can not write file %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="461"/>
+        <source>LiteIDE</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
