@@ -79,7 +79,8 @@ public slots:
     void findNextText();
 #endif
     void updateTip(QString,QStringList);
-    void filePrintPdf();
+    void exportPdf();
+    void exportHtml();
     void filePrint();
     void filePrintPreview();
     void printPreview(QPrinter *printer);
@@ -101,7 +102,8 @@ public:
     QAction *m_copyAct;
     QAction *m_pasteAct;
     QAction *m_lockAct;
-    QAction *m_filePrintPdfAct;
+    QAction *m_exportHtmlAct;
+    QAction *m_exportPdfAct;
     QAction *m_filePrintAct;
     QAction *m_filePrintPreviewAct;
 #ifdef LITEEDITOR_FIND

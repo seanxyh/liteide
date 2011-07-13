@@ -53,6 +53,7 @@
 #include <QTextCodec>
 #include <QDebug>
 #include <QPalette>
+#include <QMessageBox>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -154,8 +155,9 @@ void LiteEditor::createActions()
     m_copyAct = new QAction(QIcon(":/images/copy.png"),tr("Copy"),this);
     m_pasteAct = new QAction(QIcon(":/images/paste.png"),tr("Paste"),this);
     m_lockAct = new QAction(QIcon(":/images/unlock.png"),tr("File is writable"),this);
+    m_exportHtmlAct = new QAction(QIcon(":/images/exporthtml.png"),tr("Export HTML"),this);
 #ifndef QT_NO_PRINTER
-    m_filePrintPdfAct = new QAction(QIcon(":/images/exportpdf.png"),tr("Export PDF"),this);
+    m_exportPdfAct = new QAction(QIcon(":/images/exportpdf.png"),tr("Export PDF"),this);
     m_filePrintAct = new QAction(QIcon(":/images/fileprint.png"),tr("Print Document"),this);
     m_filePrintPreviewAct = new QAction(QIcon(":/images/fileprintpreview.png"),tr("Print Preview Document"),this);
 #endif
@@ -177,8 +179,10 @@ void LiteEditor::createActions()
     connect(m_cutAct,SIGNAL(triggered()),m_editorWidget,SLOT(cut()));
     connect(m_copyAct,SIGNAL(triggered()),m_editorWidget,SLOT(copy()));
     connect(m_pasteAct,SIGNAL(triggered()),m_editorWidget,SLOT(paste()));
+
+    connect(m_exportHtmlAct,SIGNAL(triggered()),this,SLOT(exportHtml()));
 #ifndef QT_NO_PRINTER
-    connect(m_filePrintPdfAct,SIGNAL(triggered()),this,SLOT(filePrintPdf()));
+    connect(m_exportPdfAct,SIGNAL(triggered()),this,SLOT(exportPdf()));
     connect(m_filePrintAct,SIGNAL(triggered()),this,SLOT(filePrint()));
     connect(m_filePrintPreviewAct,SIGNAL(triggered()),this,SLOT(filePrintPreview()));
 #endif
@@ -236,8 +240,9 @@ void LiteEditor::createToolBars()
     m_toolBar->addAction(m_undoAct);
     m_toolBar->addAction(m_redoAct);    
     m_toolBar->addSeparator();
+    m_toolBar->addAction(m_exportHtmlAct);
 #ifndef QT_NO_PRINTER
-    m_toolBar->addAction(m_filePrintPdfAct);
+    m_toolBar->addAction(m_exportPdfAct);
     m_toolBar->addAction(m_filePrintPreviewAct);
     m_toolBar->addAction(m_filePrintAct);
     m_toolBar->addSeparator();
@@ -438,7 +443,32 @@ void LiteEditor::printPreview(QPrinter *printer)
 #endif
 }
 
-void LiteEditor::filePrintPdf()
+void LiteEditor::exportHtml()
+{
+    QString title;
+    if (m_file) {
+        title = QFileInfo(m_file->fileName()).baseName();
+    }
+    QString fileName = QFileDialog::getSaveFileName(m_widget, tr("Export PDF"),
+                                                    title, "*.html");
+    if (!fileName.isEmpty()) {
+        if (QFileInfo(fileName).suffix().isEmpty())
+            fileName.append(".html");
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            QMessageBox::critical(m_widget,
+                                  QString(tr("Can not write file %1")).arg(fileName)
+                                  ,tr("LiteIDE"));
+            return;
+        }
+        QTextCursor cur = m_editorWidget->textCursor();
+        cur.select(QTextCursor::Document);
+        file.write(m_editorWidget->cursorToHtml(cur).toUtf8());
+        file.close();
+    }
+}
+
+void LiteEditor::exportPdf()
 {
 #ifndef QT_NO_PRINTER
 //! [0]
