@@ -21,7 +21,7 @@
 // Module: codesearchplugin.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-7-5
-// $Id: codesearchplugin.cpp,v 1.0 2011-7-6 visualfc Exp $
+// $Id: codesearchplugin.cpp,v 1.0 2011-7-13 visualfc Exp $
 
 #include "codesearchplugin.h"
 #include "liteapi/litefindobj.h"
@@ -75,11 +75,10 @@ bool CodeSearchPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
 
-    m_editorSearchAct = new QAction(tr("Find"),this);
-    m_editorSearchAct->setIcon(QIcon(":/images/search.png"));
+    m_editorSearchAct = new QAction(QIcon(":/images/search.png"),tr("Find"),this);
     m_editorSearchAct->setShortcut(QKeySequence::Find);
 
-    m_editorReplaceAct = new QAction(tr("Replace"),this);
+    m_editorReplaceAct = new QAction(QIcon(":/images/replace.png"),tr("Replace"),this);
     m_editorReplaceAct->setShortcut(QKeySequence::Replace);
 
     m_findNext = new QAction(tr("Find Next"),this);
