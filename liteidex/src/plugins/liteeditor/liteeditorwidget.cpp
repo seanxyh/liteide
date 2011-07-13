@@ -180,9 +180,52 @@ static void convertToPlainText(QString &txt)
     }
 }
 
+QString LiteEditorWidget::cursorToHtml(QTextCursor cursor) const
+{
+    QTextDocument *tempDocument = new QTextDocument;
+    QTextCursor tempCursor(tempDocument);
+    tempCursor.insertFragment(cursor.selection());
+
+    // Apply the additional formats set by the syntax highlighter
+    QTextBlock start = document()->findBlock(cursor.selectionStart());
+    QTextBlock end = document()->findBlock(cursor.selectionEnd());
+    end = end.next();
+
+    const int selectionStart = cursor.selectionStart();
+    const int endOfDocument = tempDocument->characterCount() - 1;
+    for (QTextBlock current = start; current.isValid() && current != end; current = current.next()) {
+        const QTextLayout *layout = current.layout();
+        foreach (const QTextLayout::FormatRange &range, layout->additionalFormats()) {
+            const int start = current.position() + range.start - selectionStart;
+            const int end = start + range.length;
+            if (end <= 0 || start >= endOfDocument)
+                continue;
+            tempCursor.setPosition(qMax(start, 0));
+            tempCursor.setPosition(qMin(end, endOfDocument), QTextCursor::KeepAnchor);
+            tempCursor.setCharFormat(range.format);
+        }
+    }
+
+    // Reset the user states since they are not interesting
+    for (QTextBlock block = tempDocument->begin(); block.isValid(); block = block.next())
+        block.setUserState(-1);
+
+    // Make sure the text appears pre-formatted
+    tempCursor.setPosition(0);
+    tempCursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    QTextBlockFormat blockFormat = tempCursor.blockFormat();
+    blockFormat.setNonBreakableLines(true);
+    tempCursor.setBlockFormat(blockFormat);
+    QString html = tempCursor.selection().toHtml();//("utf-8");
+    html.replace("\t","&nbsp&nbsp&nbsp&nbsp");
+    delete tempDocument;
+    return html;
+}
+
 QMimeData *LiteEditorWidget::createMimeDataFromSelection() const
 {
     QTextCursor cursor = textCursor();
+
     if (!cursor.hasSelection()) {
         return 0;
     }
@@ -191,46 +234,6 @@ QMimeData *LiteEditorWidget::createMimeDataFromSelection() const
     convertToPlainText(text);
     mimeData->setText(text);
     // Copy the selected text as HTML
-    {
-        // Create a new document from the selected text document fragment
-        QTextDocument *tempDocument = new QTextDocument;
-        QTextCursor tempCursor(tempDocument);
-        tempCursor.insertFragment(cursor.selection());
-
-        // Apply the additional formats set by the syntax highlighter
-        QTextBlock start = document()->findBlock(cursor.selectionStart());
-        QTextBlock end = document()->findBlock(cursor.selectionEnd());
-        end = end.next();
-
-        const int selectionStart = cursor.selectionStart();
-        const int endOfDocument = tempDocument->characterCount() - 1;
-        for (QTextBlock current = start; current.isValid() && current != end; current = current.next()) {
-            const QTextLayout *layout = current.layout();
-            foreach (const QTextLayout::FormatRange &range, layout->additionalFormats()) {
-                const int start = current.position() + range.start - selectionStart;
-                const int end = start + range.length;
-                if (end <= 0 || start >= endOfDocument)
-                    continue;
-                tempCursor.setPosition(qMax(start, 0));
-                tempCursor.setPosition(qMin(end, endOfDocument), QTextCursor::KeepAnchor);
-                tempCursor.setCharFormat(range.format);
-            }
-        }
-
-        // Reset the user states since they are not interesting
-        for (QTextBlock block = tempDocument->begin(); block.isValid(); block = block.next())
-            block.setUserState(-1);
-
-        // Make sure the text appears pre-formatted
-        tempCursor.setPosition(0);
-        tempCursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-        QTextBlockFormat blockFormat = tempCursor.blockFormat();
-        blockFormat.setNonBreakableLines(true);
-        tempCursor.setBlockFormat(blockFormat);
-        QString html = tempCursor.selection().toHtml();
-        html.replace("\t","    ");
-        mimeData->setHtml(html);//tempCursor.selection().toHtml());
-        delete tempDocument;
-    }
+    mimeData->setHtml(cursorToHtml(cursor));
     return mimeData;
 }

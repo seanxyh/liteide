@@ -10,5 +10,6 @@
         <file>images/fileprintpreview.png</file>
         <file>images/lock.png</file>
         <file>images/unlock.png</file>
+        <file>images/exporthtml.png</file>
     </qresource>
 </RCC>

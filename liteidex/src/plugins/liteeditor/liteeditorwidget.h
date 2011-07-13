@@ -42,6 +42,8 @@ protected:
     void keyPressEvent(QKeyEvent *e);
     void focusInEvent(QFocusEvent *e);
     virtual QMimeData *createMimeDataFromSelection() const;
+public:
+    QString cursorToHtml(QTextCursor cursor) const;
 signals:
     void completionPrefixChanged(QString);
 public:
