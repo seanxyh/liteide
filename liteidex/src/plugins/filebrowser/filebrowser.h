@@ -65,6 +65,7 @@ protected slots:
     void renameFolder();
     void removeFolder();
     void openShell();
+    void openExplorer();
     void setFolderToRoot();
     void cdUp();
 protected:
@@ -98,6 +99,7 @@ protected:
     QAction *m_openShellAct;
     QAction *m_cdupAct;
     QAction *m_setRootAct;
+    QAction *m_openExplorerAct;
 };
 
 #endif // FILEBROWSER_H
