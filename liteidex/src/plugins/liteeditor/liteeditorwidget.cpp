@@ -28,7 +28,6 @@
 #include <QCompleter>
 #include <QKeyEvent>
 #include <QAbstractItemView>
-#include <QtDebug>
 #include <QApplication>
 #include <QModelIndex>
 #include <QAbstractItemModel>
