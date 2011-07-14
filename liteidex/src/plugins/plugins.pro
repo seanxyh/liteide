@@ -11,6 +11,7 @@ SUBDIRS = \
     litebuild \
     filebrowser \
     codesearch \
+    qsqleditor \
     golangast \
     golangdoc \
     golangfmt \
