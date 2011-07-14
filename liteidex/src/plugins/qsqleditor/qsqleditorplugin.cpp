@@ -24,6 +24,7 @@
 // $Id: qsqleditorplugin.cpp,v 1.0 2011-7-14 visualfc Exp $
 
 #include "qsqleditorplugin.h"
+#include "qsqlfilefactory.h"
 
 QSqlEditorPlugin::QSqlEditorPlugin()
 {
@@ -38,6 +39,12 @@ bool QSqlEditorPlugin::initWithApp(LiteApi::IApplication *app)
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
+
+    QSqlFileFactory *factory = new QSqlFileFactory(app,this);
+    if (factory) {
+        m_liteApp->editorManager()->addFactory(factory);
+    }
+
     return true;
 }
 
