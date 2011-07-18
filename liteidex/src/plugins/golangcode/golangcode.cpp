@@ -25,6 +25,14 @@ GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
     connect(m_process,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
 }
 
+GolangCode::~GolangCode()
+{
+    delete m_process;
+    if (!m_cmd.isEmpty()) {
+        QProcess::startDetached(m_cmd,QStringList() << "close");
+    }
+}
+
 void GolangCode::setBuild(LiteApi::IBuild *build)
 {
     m_build = build;
@@ -49,7 +57,10 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     } else {
         cmd = FileUtil::lookPath("gocode",QProcessEnvironment::systemEnvironment(),true);
     }
-    if (cmd.isEmpty()) {
+    if (!cmd.isEmpty()) {
+        m_cmd = cmd;
+    }
+    if (m_cmd.isEmpty()) {
         return;
     }
 
@@ -69,7 +80,7 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     } else {
         m_process->setProcessEnvironment(QProcessEnvironment::systemEnvironment());
     }
-    m_process->start(cmd,args);
+    m_process->start(m_cmd,args);
 }
 
 void GolangCode::started()

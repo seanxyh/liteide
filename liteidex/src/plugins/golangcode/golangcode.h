@@ -11,6 +11,7 @@ class GolangCode : public QObject
     Q_OBJECT
 public:
     explicit GolangCode(LiteApi::IApplication *app, QObject *parent = 0);
+    ~GolangCode();
     void setCompleter(LiteApi::ICompleter *completer);
     void setBuild(LiteApi::IBuild *build);
 public slots:
@@ -24,6 +25,7 @@ protected:
     QProcess   *m_process;
     QByteArray  m_writeData;
     LiteApi::IBuild *m_build;
+    QString     m_cmd;
 };
 
 #endif // GOLANGCODE_H
