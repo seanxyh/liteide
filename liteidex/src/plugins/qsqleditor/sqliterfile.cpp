@@ -5,11 +5,11 @@
 SQLiteFile::SQLiteFile(LiteApi::IApplication *app, QObject *parent) :
     QSqlDbFile(app,parent)
 {
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
 }
 
 bool SQLiteFile::open(const QString &fileName, const QString &mimeType)
 {
+    m_db = QSqlDatabase::addDatabase("QSQLITE",fileName);
     m_db.setDatabaseName(fileName);
     return m_db.open();
 }

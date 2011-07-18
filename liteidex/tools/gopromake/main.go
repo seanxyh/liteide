@@ -10,7 +10,7 @@ import (
 	"os"
 	"path"
 	"bytes"
-)	
+)
 
 var (
 	proFileName  *string = flag.String("gopro", "", "make go project")
@@ -19,8 +19,8 @@ var (
 	printDep     *bool   = flag.Bool("dep", false, "print packages depends ")
 	showVer      *bool   = flag.Bool("ver", false, "print version ")
 	buildLib     *bool   = flag.Bool("lib", false, "build packages as librarys outside main")
-	goroot		 *string = flag.String("goroot",defGoroot(),"default go root")	
-	clean		 *string = flag.String("clean","","clean project [obj|all]")
+	goroot       *string = flag.String("goroot", defGoroot(), "default go root")
+	clean        *string = flag.String("clean", "", "clean project [obj|all]")
 )
 
 var Usage = func() {
@@ -38,7 +38,7 @@ func exitln(err os.Error) {
 func main() {
 	flag.Parse()
 	fmt.Println("Golang Project Build Tools.")
-	
+
 	if *showVer == true {
 		fmt.Println("Version 1.1, make by visualfc <visualfc@gmail.com>.")
 	}
@@ -57,11 +57,11 @@ func main() {
 		}
 	} else if len(*goFileName) > 0 {
 		var input []byte = []byte(*goFileName)
-		all := bytes.SplitAfter(input, []byte(" "), -1)
+		all := bytes.SplitAfter(input, []byte(" "))
 		pro, err = NewGoProjectWithFiles(all)
 		if err != nil {
 			exitln(err)
-		}	
+		}
 	}
 	if pro == nil {
 		Usage()
@@ -71,7 +71,7 @@ func main() {
 	if len(*goTargetName) > 0 {
 		pro.Values["TARGET"] = []string{*goTargetName}
 	}
-	fmt.Println("Parser Files",pro.Gofiles())
+	fmt.Println("Parser Files", pro.Gofiles())
 
 	files := pro.Gofiles()
 	pro.array = ParserFiles(files)
@@ -83,7 +83,7 @@ func main() {
 	if pro.array.HasMain == false {
 		*buildLib = true
 	}
-	
+
 	if len(*clean) > 0 {
 		if *clean == "obj" || *clean == "all" {
 			err := pro.Clean(*clean)
@@ -95,11 +95,11 @@ func main() {
 			os.Exit(1)
 		}
 		os.Exit(0)
-	}		
+	}
 
 	err = pro.MakeTarget(gobin)
 	if err != nil {
 		exitln(err)
-	} 
+	}
 	os.Exit(0)
 }

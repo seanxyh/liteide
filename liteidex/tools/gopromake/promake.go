@@ -28,7 +28,7 @@ func NewGoProjectWithFiles(files [][]byte) (*GoProject, os.Error) {
 	for _, v := range files {
 		pro.Values["GOFILES"] = append(pro.Values["GOFILES"], string(v))
 	}
-	return pro,nil
+	return pro, nil
 }
 
 func NewGoProject(name string) (pro *GoProject, err os.Error) {
@@ -48,7 +48,7 @@ func NewGoProject(name string) (pro *GoProject, err os.Error) {
 	}
 	all := pre.ReplaceAll(buf[:], []byte(" "))
 	all = bytes.Replace(all, []byte("\r\n"), []byte("\n"), -1)
-	lines := bytes.Split(all, []byte("\n"), -1)
+	lines := bytes.Split(all, []byte("\n"))
 
 	for _, line := range lines {
 		offset := 2
@@ -63,7 +63,7 @@ func NewGoProject(name string) (pro *GoProject, err os.Error) {
 		}
 		if find != -1 {
 			k := bytes.TrimSpace(line[0:find])
-			v := bytes.SplitAfter(line[find+offset:], []byte(" "), -1)
+			v := bytes.SplitAfter(line[find+offset:], []byte(" "))
 			var vall []string
 			if offset == 2 {
 				vall = pro.Values[string(k)]

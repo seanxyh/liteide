@@ -108,7 +108,7 @@ func baseTypeName(typ ast.Expr, showAll bool) string {
 		// a client is as if there were no type name
 		if showAll || t.IsExported() {
 			return t.Name
-		} 
+		}
 	case *ast.StarExpr:
 		return baseTypeName(t.X, showAll)
 	}
@@ -130,7 +130,7 @@ func (doc *docReader) addValue(decl *ast.GenDecl) {
 			switch {
 			case v.Type != nil:
 				// a type is present; determine its name
-				name = baseTypeName(v.Type,doc.showAll)
+				name = baseTypeName(v.Type, doc.showAll)
 			case decl.Tok == token.CONST:
 				// no type is present but we have a constant declaration;
 				// use the previous type name (w/o more type information
@@ -192,7 +192,7 @@ func (doc *docReader) addFunc(fun *ast.FuncDecl) {
 	// determine if it should be associated with a type
 	if fun.Recv != nil {
 		// method
-		typ := doc.lookupTypeDoc(baseTypeName(fun.Recv.List[0].Type,doc.showAll))
+		typ := doc.lookupTypeDoc(baseTypeName(fun.Recv.List[0].Type, doc.showAll))
 		if typ != nil {
 			// exported receiver type
 			setFunc(typ.methods, fun)
@@ -213,7 +213,7 @@ func (doc *docReader) addFunc(fun *ast.FuncDecl) {
 			// exactly one (named or anonymous) result associated
 			// with the first type in result signature (there may
 			// be more than one result)
-			tname := baseTypeName(res.Type,doc.showAll)
+			tname := baseTypeName(res.Type, doc.showAll)
 			typ := doc.lookupTypeDoc(tname)
 			if typ != nil {
 				// named and exported result type
@@ -316,9 +316,9 @@ func (doc *docReader) addFile(src *ast.File) {
 }
 
 
-func NewFileDoc(file *ast.File,showAll bool) *PackageDoc {
+func NewFileDoc(file *ast.File, showAll bool) *PackageDoc {
 	var r docReader
-	r.init(file.Name.Name,showAll)
+	r.init(file.Name.Name, showAll)
 	r.addFile(file)
 	return r.newDoc("", nil)
 }
@@ -326,7 +326,7 @@ func NewFileDoc(file *ast.File,showAll bool) *PackageDoc {
 
 func NewPackageDoc(pkg *ast.Package, importpath string, showAll bool) *PackageDoc {
 	var r docReader
-	r.init(pkg.Name,showAll)
+	r.init(pkg.Name, showAll)
 	filenames := make([]string, len(pkg.Files))
 	i := 0
 	for filename, f := range pkg.Files {
@@ -553,7 +553,7 @@ func (doc *docReader) newDoc(importpath string, filenames []string) *PackageDoc 
 	p := new(PackageDoc)
 	p.PackageName = doc.pkgName
 	p.ImportPath = importpath
-	sort.SortStrings(filenames)
+	sort.Strings(filenames)
 	p.Filenames = filenames
 	p.Doc = CommentText(doc.doc)
 	// makeTypeDocs may extend the list of doc.values and
