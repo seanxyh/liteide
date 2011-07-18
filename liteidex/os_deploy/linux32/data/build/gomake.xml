@@ -6,10 +6,10 @@
 		<action id="Clean" img="go/clean.png" cmd="gomake" args="${PROJECTNAME} clean" save="project" output="true"/>
 		<action id="Nuke" img="go/nuke.png" cmd="gomake" args="${PROJECTNAME} nuke" save="project" output="true"/>
 		<action id="Install" img="go/install.png" cmd="gomake" args="${PROJECTNAME} install" save="project" output="true"/>
-		<action id="Test" img="go/test.png" key="ALT+F5" cmd="gotest" args="${PROJECTNAME}" save="project" output="true" codec="utf-8"/>
-		<action id="Exec" img="go/exec.png" key="F5" cmd="/usr/bin/xterm" args="-e ${LITEAPPDIR}/goexec -w ${WORKDIR} ${TARGETPATH}" output="false"/>
+		<action id="Test" img="go/test.png" key = "ALT+F5" cmd="gotest" args="${PROJECTNAME}" save="project" output="true" codec="utf-8"/>
+		<action id="Exec" img="go/exec.png" key="F5" cmd="/usr/bin/xterm" args="-e ${LITEAPPDIR}/goexec  ${TARGETNAME}" output="false"/>
 		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="" output="true" codec="utf-8"/>
-		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>		
+		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
 		<env id="system" file="go/system.env"/>
 		<env id="linux32" file="go/linux32.env"/>
 		<env id="linux32-arm" file="go/linux32-arm.env"/>
