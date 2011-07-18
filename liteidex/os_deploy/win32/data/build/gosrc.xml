@@ -11,6 +11,7 @@
 		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
 		<env id="system" file="go/system.env"/>
 		<env id="win32" file="go/win32.env"/>
+		<env id="win64" file="go/win64.env"/>
 		<env id="win32-user" file="go/win32-user.env"/>
 	</mime-type>
 </mime-info>

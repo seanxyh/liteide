@@ -3,6 +3,14 @@
 
 #include "liteapi.h"
 #include "qsqldbfile.h"
+#include <QModelIndex>
+#include <QtSql/qsql.h>
+
+namespace Ui {
+    class QSqlEditor;
+}
+
+class QStandardItemModel;
 
 class QSqlEditor : public LiteApi::IEditor
 {
@@ -22,14 +30,25 @@ public:
     virtual LiteApi::IFile *file();
 public:
     void setFile(QSqlDbFile *file);
-signals:
-
-public slots:
+    void loadDatabase();
+protected slots:
+    void dbTreeContextMenuRequested(const QPoint& pt);
+    void editorTable();
+protected:
+    void appendTableItems(QSql::TableType type);
+    QString tableTypeNames(int type) const;
+    QString tableTypeName(int type) const;
 protected:
     LiteApi::IApplication *m_liteApp;
     QSqlDbFile  *m_file;
     QWidget     *m_widget;
+    Ui::QSqlEditor  *ui;
     bool    m_bReadOnly;
+    QStandardItemModel *m_dbModel;
+    QMenu   *m_tableMenu;
+    QAction *m_infoAct;
+    QAction *m_editorAct;
+    QModelIndex m_contextIndex;
 };
 
 #endif // QSQLEDITOR_H

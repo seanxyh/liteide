@@ -25,7 +25,7 @@ func main() {
 	}
 
 	if len(*flagInputFiles) > 0 {
-		var files []string = strings.Split(*flagInputFiles, " ", -1)
+		var files []string = strings.Split(*flagInputFiles, " ")
 		err := PrintFilesTree(files, os.Stdout)
 		if err != nil {
 			fmt.Fprint(os.Stderr, err)
