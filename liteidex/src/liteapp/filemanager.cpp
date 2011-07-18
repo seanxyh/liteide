@@ -140,7 +140,7 @@ QStringList FileManager::recentProjects() const
     return m_liteApp->settings()->value("LiteApp/recentProjectList").toStringList();;
 }
 
-QString FileManager::getFileTarget(const QString &fileName) const
+bool FileManager::targetInfo(const QString &fileName, QString &target, QString &targetPath, QString &workPath) const
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
     QList<IFileFactory*> factoryList;
@@ -149,16 +149,15 @@ QString FileManager::getFileTarget(const QString &fileName) const
     } else {
         factoryList = m_liteApp->editorManager()->factoryList();
     }
-    QString target;
     foreach(LiteApi::IFileFactory *factory, factoryList) {
         if (factory->mimeTypes().contains(mimeType)) {
-            target = factory->target(fileName,mimeType);
-            if (!target.isEmpty()) {
-                break;
+            bool ret = factory->targetInfo(fileName,mimeType,target,targetPath,workPath);
+            if (ret) {
+                return true;
             }
         }
     }
-    return target;
+    return false;
 }
 
 

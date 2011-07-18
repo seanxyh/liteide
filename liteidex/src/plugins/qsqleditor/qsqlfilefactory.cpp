@@ -33,7 +33,7 @@ LiteApi::IFile *QSqlFileFactory::open(const QString &fileName, const QString &mi
     return file;
 }
 
-QString QSqlFileFactory::target(const QString &fileName, const QString &mimetype) const
+bool QSqlFileFactory::targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const
 {
-    return QString();
+    return false;
 }

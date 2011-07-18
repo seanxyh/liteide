@@ -123,11 +123,14 @@ LiteApi::IFile *LiteEditorFileFactory::open(const QString &fileName, const QStri
     return editor->file();
 }
 
-QString LiteEditorFileFactory::target(const QString &fileName, const QString &mimetype) const
+bool LiteEditorFileFactory::targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const
 {
     if (!m_mimeTypes.contains(mimetype)) {
-        return QString();
+        return false;
     }
     QFileInfo info(fileName);
-    return info.absolutePath()+"/"+info.baseName();
+    target = info.absolutePath()+"/"+info.baseName();
+    targetPath = info.absolutePath();
+    workPath = info.absolutePath();
+    return true;
 }

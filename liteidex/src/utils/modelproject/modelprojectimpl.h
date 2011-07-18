@@ -45,9 +45,11 @@ public:
     virtual QIcon icon() const;
 public:
     virtual LiteApi::IFile *file();
-    virtual QStringList fileList() const;
+    virtual QStringList fileNameList() const;
+    virtual QStringList filePathList() const;
     virtual QString fileNameToFullPath(const QString &fileName);
     virtual QString target() const;
+    virtual QString targetPath() const;
     virtual QString workPath() const;
     virtual void load();
 public:

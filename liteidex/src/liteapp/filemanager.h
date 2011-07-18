@@ -53,7 +53,7 @@ public:
     virtual QStringList recentFiles() const;
     virtual QStringList recentProjects() const;
 
-    virtual QString getFileTarget(const QString &fileName) const;
+    virtual bool targetInfo(const QString &fileName, QString &target, QString &targetPath, QString &workPath) const;
 public:
     QMenu *recentFileMenu() const;
     QMenu *recentProjectMenu() const;

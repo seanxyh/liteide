@@ -68,13 +68,14 @@ bool ProfileFile::loadFile(const QString &fileName)
 void ProfileFile::updateModel()
 {
     m_model->clear();
-    m_fileList.clear();
+    m_fileNameList.clear();
+    m_filePathList.clear();
 
     QStandardItem *item = new QStandardItem(QFileInfo(m_fileName).fileName());
     item->setData(ItemProFile);
     item->setIcon(QIcon(":/images/projectitem.png"));
     m_model->appendRow(item);
-    m_fileList.append(m_fileName);
+    m_filePathList.append(m_fileName);
 
     QMap<QString,QString> fileMap;
     fileMap.insert("GOFILES",tr("GOFILES"));
@@ -96,13 +97,32 @@ void ProfileFile::updateModel()
                 fileItem->setData(ItemFile);
                 fileItem->setIcon(QIcon(":/images/fileitem.png"));
                 folder->appendRow(fileItem);
-                m_fileList.append(fileNameToFullPath(file));
+                m_fileNameList.append(file);
+                m_filePathList.append(fileNameToFullPath(file));
             }
         }
     }
 }
 
 QString ProfileFile::target() const
+{
+    QString target = QFileInfo(m_fileName).fileName();
+    QString val = value("TARG");
+    if (!val.isEmpty()) {
+        target = val;
+    }
+    val = value("TARGET");
+    if (!val.isEmpty()) {
+        target = val;
+    }
+    QString dest = value("DESTDIR");
+    if (!dest.isEmpty()) {
+        target = QFileInfo(QDir(dest),target).filePath();
+    }
+    return target;
+}
+
+QString ProfileFile::targetPath() const
 {
     QString target = QFileInfo(m_fileName).fileName();
     QString val = value("TARG");

@@ -53,17 +53,21 @@ protected:
     virtual bool loadFile(const QString &fileName) = 0;
 public:
     virtual QString target() const = 0;
+    virtual QString targetPath() const = 0;
+    virtual QString workPath() const;
     QStandardItemModel *model() const;
     QString value(const QString &key) const;
     QStringList values(const QString &key) const;
-    QStringList fileList() const;
+    QStringList fileNameList() const;
+    QStringList filePathList() const;
     QString fileNameToFullPath(const QString &fileName);
 protected:
     LiteApi::IApplication *m_liteApp;
     QStandardItemModel       *m_model;
     QString     m_rootPath;
     QMap<QString,QStringList>   m_context;
-    QStringList m_fileList;
+    QStringList m_fileNameList;
+    QStringList m_filePathList;
     QString     m_mimeType;
     QString     m_fileName;
     bool        m_bReadOnly;

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
 	<mime-type type="text/x-gopro" id="gopro">
-		<action id="Build" img="go/build.png" key="F7" cmd="gopromake" args="-gopro ${PROJECTPATH}" save="project" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" />
-		<action id="Clean" img="go/clean.png" cmd="gopromake" args="-gopro ${PROJECTPATH} -clean=obj" output="true" codec="utf-8"/>
-		<action id="CleanAll" img="go/cleanall.png" cmd="gopromake" args="-gopro ${PROJECTPATH} -clean=all" output="true" codec="utf-8"/>
-		<action id="Exec" img="go/exec.png" key="F5" cmd="goexec" args="-w ${WORKDIR} ${TARGETPATH}" output="false"/>
+		<action id="Build" img="go/build.png" key="F7" cmd="${LITEAPPDIR}/gopromake" args="-gopro ${PROJECTNAME}" save="project" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" />
+		<action id="Clean" img="go/clean.png" cmd="${LITEAPPDIR}/gopromake" args="-gopro ${PROJECTNAME} -clean=obj" output="true" codec="utf-8"/>
+		<action id="CleanAll" img="go/cleanall.png" cmd="${LITEAPPDIR}/gopromake" args="-gopro ${PROJECTNAME} -clean=all" output="true" codec="utf-8"/>
+		<action id="Exec" img="go/exec.png" key="F5" cmd="${LITEAPPDIR}/goexec" args="${TARGETNAME}" output="false"/>
 		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="" output="true" codec="utf-8"/>
 		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
 		<env id="system" file="go/system.env"/>

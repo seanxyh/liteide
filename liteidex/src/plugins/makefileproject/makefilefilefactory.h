@@ -34,7 +34,7 @@ public:
     MakefileFileFactory(LiteApi::IApplication *app, QObject *parent = 0);
     virtual QStringList mimeTypes() const;
     virtual LiteApi::IFile *open(const QString &fileName, const QString &mimeType);
-    virtual QString target(const QString &fileName, const QString &mimetype) const;
+    virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const;
 protected:
     LiteApi::IApplication *m_liteApp;
     QStringList m_mimeTypes;
