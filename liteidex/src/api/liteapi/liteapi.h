@@ -102,7 +102,7 @@ public:
     IFileFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QStringList mimeTypes() const = 0;
     virtual IFile *open(const QString &fileName, const QString &mimeType) = 0;
-    virtual QString target(const QString &fileName, const QString &mimetype) const = 0;
+    virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const = 0;
 };
 
 class IFileFactoryList
@@ -132,7 +132,7 @@ public:
     virtual QStringList recentFiles() const = 0;
     virtual QStringList recentProjects() const = 0;
 
-    virtual QString getFileTarget(const QString &fileName) const = 0;
+    virtual bool targetInfo(const QString &fileName, QString &target, QString &targetPath, QString &workPath) const = 0;
 signals:
     void fileListChanged();
     void recentProjectsChanged();
@@ -208,9 +208,11 @@ class IProject : public IView
     Q_OBJECT
 public:
     virtual IFile *file() = 0;
-    virtual QStringList fileList() const = 0;
+    virtual QStringList fileNameList() const = 0;
+    virtual QStringList filePathList() const = 0;
     virtual QString fileNameToFullPath(const QString &fileName) = 0;
     virtual QString target() const = 0;
+    virtual QString targetPath() const = 0;
     virtual QString workPath() const = 0;
     virtual void load() = 0;
 signals:

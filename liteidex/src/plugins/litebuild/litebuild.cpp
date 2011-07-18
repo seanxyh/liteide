@@ -122,9 +122,9 @@ void LiteBuild::resetProjectEnv(LiteApi::IProject *project)
             projectName = QFileInfo(projectPath).fileName();
         }
         workDir = project->workPath();
-        targetPath = project->target();
+        targetPath = project->targetPath();
+        targetName = project->target();
         targetDir = QFileInfo(targetPath).absolutePath();
-        targetName = QFileInfo(targetPath).fileName();
     }
     m_liteEnv.insert("${LITEAPPDIR}",m_liteApp->applicationPath());
     m_liteEnv.insert("${PROJECTPATH}",projectPath);
@@ -271,9 +271,7 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
         QString projectDir = QFileInfo(projectPath).absolutePath();
         QString projectName = QFileInfo(projectPath).fileName();
         workDir = projectDir;
-        targetPath = m_liteApp->fileManager()->getFileTarget(projectPath);
-        targetDir = QFileInfo(targetPath).absolutePath();
-        targetName = QFileInfo(targetPath).fileName();
+        m_liteApp->fileManager()->targetInfo(projectPath,targetName,targetPath,workDir);
         m_liteEnv.insert("${LITEAPPDIR}",m_liteApp->applicationPath());
         m_liteEnv.insert("${PROJECTPATH}",projectPath);
         m_liteEnv.insert("${PROJECTDIR}",projectDir);
@@ -447,7 +445,7 @@ void LiteBuild::execAction(const QString &id)
     m_output->plainTextEdit()->moveCursor(QTextCursor::End);
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
     if (!ba->output()) {
-        bool b = QProcess::startDetached(cmd,arguments);
+        bool b = QProcess::startDetached(cmd,arguments,workDir);
         m_output->plainTextEdit()->setReadOnly(true);
         m_output->appendTag0(QString("<action=\"%1\">").arg(id));
         m_output->appendTag1(QString("<cmd=\"%1\"/>").arg(cmd));

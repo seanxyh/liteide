@@ -37,6 +37,7 @@ protected:
     virtual void updateModel();
 public:
     virtual QString target() const;
+    virtual QString targetPath() const;
 };
 
 #endif // MAKEFILEFILE_H

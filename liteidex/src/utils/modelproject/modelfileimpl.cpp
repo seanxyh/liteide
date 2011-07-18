@@ -120,9 +120,14 @@ QStringList ModelFileImpl::values(const QString &key) const
     return m_context.value(key);
 }
 
-QStringList ModelFileImpl::fileList() const
+QStringList ModelFileImpl::fileNameList() const
 {
-    return m_fileList;
+    return m_fileNameList;
+}
+
+QStringList ModelFileImpl::filePathList() const
+{
+    return m_filePathList;
 }
 
 QString ModelFileImpl::fileNameToFullPath(const QString &fileName)
@@ -133,3 +138,7 @@ QString ModelFileImpl::fileNameToFullPath(const QString &fileName)
     return QDir::toNativeSeparators(fullPath);
 }
 
+QString ModelFileImpl::workPath() const
+{
+    return QFileInfo(m_fileName).absolutePath();
+}

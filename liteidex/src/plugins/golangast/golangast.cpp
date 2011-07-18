@@ -33,6 +33,7 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QTimer>
+#include <QDir>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -162,11 +163,13 @@ void GolangAst::projectChanged(LiteApi::IProject *project)
     m_updateFiles.clear();
     m_model->clear();
     if (project) {
-        foreach(QString file, project->fileList()) {
+        foreach(QString file, project->fileNameList()) {
             if (QFileInfo(file).suffix() == "go") {
                 m_updateFiles.append(file);
             }
         }
+        m_workPath = project->workPath();
+        m_process->setWorkingDirectory(project->workPath());
         updateAst();
     } else {
         LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
@@ -184,9 +187,11 @@ void GolangAst::editorChanged(LiteApi::IEditor *editor)
         if (editor) {
             LiteApi::IFile *file = editor->file();
             if (file) {
-                QString fileName = file->fileName();
-                if (QFileInfo(fileName).suffix() == "go") {
-                    m_updateFiles.append(fileName);
+                QFileInfo info(file->fileName());
+                m_workPath = info.absolutePath();
+                m_process->setWorkingDirectory(info.absolutePath());
+                if (info.suffix() == "go") {
+                    m_updateFiles.append(info.fileName());
                 }
             }
             updateAst();
@@ -401,7 +406,8 @@ void GolangAst::doubleClockedTree(QModelIndex proxyIndex)
         }
         return;
     }
-    LiteApi::IEditor *editor = m_liteApp->editorManager()->loadEditor(fileName);
+    QFileInfo info(QDir(m_workPath),fileName);
+    LiteApi::IEditor *editor = m_liteApp->editorManager()->loadEditor(info.filePath());
     if (!editor) {
         return;
     }

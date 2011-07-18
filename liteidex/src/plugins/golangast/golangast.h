@@ -61,6 +61,7 @@ protected:
     QSortFilterProxyModel *proxyModel;
     QProcess *m_process;
     QStringList m_updateFiles;
+    QString m_workPath;
     GolangAstIcon   icons;
     GolangAstIconPriv icons_p;
     bool    m_bEnable;

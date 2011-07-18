@@ -114,9 +114,14 @@ bool ModelProjectImpl::open(const QString &fileName, const QString &mimeType)
     return success;
 }
 
-QStringList ModelProjectImpl::fileList() const
+QStringList ModelProjectImpl::fileNameList() const
 {
-    return m_file->fileList();
+    return m_file->fileNameList();
+}
+
+QStringList ModelProjectImpl::filePathList() const
+{
+    return m_file->filePathList();
 }
 
 QString ModelProjectImpl::fileNameToFullPath(const QString &fileName)
@@ -127,6 +132,11 @@ QString ModelProjectImpl::fileNameToFullPath(const QString &fileName)
 QString ModelProjectImpl::target() const
 {
     return m_file->target();
+}
+
+QString ModelProjectImpl::targetPath() const
+{
+    return m_file->targetPath();
 }
 
 QString ModelProjectImpl::workPath() const
