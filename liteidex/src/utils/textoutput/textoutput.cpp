@@ -45,7 +45,7 @@
 #endif
 //lite_memory_check_end
 
-TextOutEdit::TextOutEdit(QWidget *parent) : QTextEdit(parent)
+TextOutEdit::TextOutEdit(QWidget *parent) : QPlainTextEdit(parent)
 {
 }
 
@@ -70,7 +70,7 @@ void TextOutEdit::keyPressEvent(QKeyEvent *e)
     } else {
         m_inputText += e->text();
     }
-    QTextEdit::keyPressEvent(e);
+    QPlainTextEdit::keyPressEvent(e);
 }
 
 
@@ -116,7 +116,7 @@ void TextOutput::clear()
 void TextOutput::append(const QString &text)
 {
     m_editor->setCurrentCharFormat(m_fmt);
-    m_editor->append(text);
+    m_editor->appendPlainText(text);
 }
 
 void TextOutput::append(const QString &text,const QBrush &foreground)
@@ -124,7 +124,7 @@ void TextOutput::append(const QString &text,const QBrush &foreground)
     QTextCharFormat f = m_fmt;
     f.setForeground(foreground);
     m_editor->setCurrentCharFormat(f);
-    m_editor->append(text);
+    m_editor->appendPlainText(text);
 }
 
 void TextOutput::appendTag0(const QString &text)
@@ -133,7 +133,7 @@ void TextOutput::appendTag0(const QString &text)
     f.setFontWeight(QFont::Bold);
     f.setForeground(Qt::darkBlue);
     m_editor->setCurrentCharFormat(f);
-    m_editor->append(text);
+    m_editor->appendPlainText(text);
 }
 
 void TextOutput::appendTag1(const QString &text)
@@ -141,10 +141,10 @@ void TextOutput::appendTag1(const QString &text)
     QTextCharFormat f = m_fmt;
     f.setForeground(Qt::darkBlue);
     m_editor->setCurrentCharFormat(f);
-    m_editor->append(text);
+    m_editor->appendPlainText(text);
 }
 
-QTextEdit *TextOutput::textEdit()
+QPlainTextEdit *TextOutput::plainTextEdit()
 {
     return m_editor;
 }

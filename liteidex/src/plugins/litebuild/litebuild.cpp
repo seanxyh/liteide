@@ -357,7 +357,7 @@ void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)
 
 void LiteBuild::extFinish(bool error,int exitCode, QString msg)
 {
-    m_output->textEdit()->setReadOnly(true);
+    m_output->plainTextEdit()->setReadOnly(true);
     if (error) {
         m_output->appendTag1(QString("<error msg=\"%1\" />").arg(msg));
     } else {
@@ -444,11 +444,11 @@ void LiteBuild::execAction(const QString &id)
     QString args = m_build->actionArgs(ba,m_liteEnv);
     m_process->setEnvironment(m_build->currentEnv().toStringList());
 
-    m_output->textEdit()->moveCursor(QTextCursor::End);
+    m_output->plainTextEdit()->moveCursor(QTextCursor::End);
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments);
-        m_output->textEdit()->setReadOnly(true);
+        m_output->plainTextEdit()->setReadOnly(true);
         m_output->appendTag0(QString("<action=\"%1\">").arg(id));
         m_output->appendTag1(QString("<cmd=\"%1\"/>").arg(cmd));
         m_output->appendTag1(QString("<args=\"%1\"/>").arg(args));
@@ -456,7 +456,7 @@ void LiteBuild::execAction(const QString &id)
         m_output->appendTag0(QString("</action>"));
         return;
     } else {
-        m_output->textEdit()->setReadOnly(false);
+        m_output->plainTextEdit()->setReadOnly(false);
         m_process->setUserData(0,cmd);
         m_process->setUserData(1,args);
         m_process->setUserData(2,codec);
@@ -487,7 +487,7 @@ void LiteBuild::enterTextBuildOutput(QString text)
 
 void LiteBuild::dbclickBuildOutput()
 {
-    QTextCursor cur = m_output->textEdit()->textCursor();
+    QTextCursor cur = m_output->plainTextEdit()->textCursor();
     QRegExp rep(m_outputRegex);//"([\\w\\d:_\\\\/\\.]+):(\\d+)");
 
     int index = rep.indexIn(cur.block().text());
@@ -506,7 +506,7 @@ void LiteBuild::dbclickBuildOutput()
         return;
 
     cur.select(QTextCursor::LineUnderCursor);
-    m_output->textEdit()->setTextCursor(cur);
+    m_output->plainTextEdit()->setTextCursor(cur);
 
     LiteApi::IProject *project = m_liteApp->projectManager()->currentProject();
     if (project) {

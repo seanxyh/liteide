@@ -29,12 +29,13 @@
 #include <QWidget>
 #include <QTextEdit>
 #include <QToolButton>
+#include <QPlainTextEdit>
 
 class QTextEdit;
 class QToolBar;
 class QLabel;
 
-class TextOutEdit : public QTextEdit
+class TextOutEdit : public QPlainTextEdit
 {
     Q_OBJECT
 public:
@@ -59,7 +60,7 @@ public:
     void appendTag0(const QString &text);
     void appendTag1(const QString &text);
     void updateExistsTextColor(const QBrush &foreground = Qt::gray);
-    QTextEdit *textEdit();
+    QPlainTextEdit *plainTextEdit();
 signals:
     void dbclickEvent();
     void enterText(QString);
