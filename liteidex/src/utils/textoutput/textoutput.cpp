@@ -144,6 +144,11 @@ void TextOutput::appendTag1(const QString &text)
     m_editor->appendPlainText(text);
 }
 
+void TextOutput::moveToEnd()
+{
+    m_editor->moveCursor(QTextCursor::End);
+}
+
 QPlainTextEdit *TextOutput::plainTextEdit()
 {
     return m_editor;
