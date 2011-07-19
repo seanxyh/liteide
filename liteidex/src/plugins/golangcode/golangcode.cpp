@@ -27,10 +27,11 @@ GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
 
 GolangCode::~GolangCode()
 {
-    delete m_process;
     if (!m_cmd.isEmpty()) {
-        QProcess::startDetached(m_cmd,QStringList() << "close");
+        m_process->start(m_cmd,QStringList() << "close",QIODevice::NotOpen);
+        m_process->waitForFinished(200);
     }
+    delete m_process;
 }
 
 void GolangCode::setBuild(LiteApi::IBuild *build)

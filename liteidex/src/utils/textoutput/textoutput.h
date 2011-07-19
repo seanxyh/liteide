@@ -59,6 +59,7 @@ public:
     void append(const QString &text,const QBrush &foreground);
     void appendTag0(const QString &text);
     void appendTag1(const QString &text);
+    void moveToEnd();
     void updateExistsTextColor(const QBrush &foreground = Qt::gray);
     QPlainTextEdit *plainTextEdit();
 signals:
