@@ -1,0 +1,12 @@
+# gopkgview project file
+
+TARGET = gopkgview
+DESTDIR = ../../liteide/bin
+
+GCOPT =
+GLOPT =
+
+GOFILES = \
+	main.go \
+	filesystem.go \
+	dirtrees.go \
