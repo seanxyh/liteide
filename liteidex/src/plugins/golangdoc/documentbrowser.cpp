@@ -35,8 +35,6 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app) :
     m_widget = new QWidget;
 
     m_browser = new QTextBrowser;
-    m_browser->setSearchPaths(QStringList() << m_liteApp->resourcePath());
-    m_browser->setOpenLinks(false);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(0);
