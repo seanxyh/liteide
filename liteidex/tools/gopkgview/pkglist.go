@@ -93,15 +93,14 @@ type Info struct{
 }	
 
 func GetPkgList(root string,templateData string) []byte {	
-	packageHTML := readTemplateData(templateData)
-	if packageHTML == nil {
+	data := readTemplateData(templateData)
+	if data == nil {
 		return nil
 	}		
 	dir := newDirectory(root,nil,-1)
 	if dir == nil {
 		return nil
 	}
-	var info Info
-	info.Dirs = dir.listing(true)
-	return applyTemplate(packageHTML,"package",info)
+	info := Info{Dirs:dir.listing(true)}
+	return applyTemplate(data,"package",info)
 }	

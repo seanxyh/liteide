@@ -102,6 +102,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(app,"LiteApi.BrowserEditorManager");
     if (browserManager) {
         m_docBrowser = new DocumentBrowser(app);
+        m_docBrowser->browser()->setOpenLinks(false);
+        m_docBrowser->browser()->setSearchPaths(QStringList() << m_liteApp->resourcePath());
         connect(m_docBrowser->browser(),SIGNAL(anchorClicked(QUrl)),this,SLOT(anchorClicked(QUrl)));
         m_browserAct = browserManager->addBrowser(m_docBrowser);
         QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
@@ -111,7 +113,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     }
     m_liteApp->dockManager()->addDock(m_widget,tr("GolangDoc"),Qt::LeftDockWidgetArea);
 
-    QString path = m_liteApp->resourcePath()+"/golangdoc/package.html";
+    QString path = m_liteApp->resourcePath()+"/golangdoc/godoc.html";
     QFile file(path);
     if (file.open(QIODevice::ReadOnly)) {
         m_templateData = file.readAll();
@@ -186,7 +188,7 @@ void GolangDoc::findFinish(bool error,int code,QString /*msg*/)
     if (!error && code == 0 && m_docBrowser != 0) {
         QString data = m_templateData;
         if (!data.isEmpty()) {
-            data.replace("{title}",m_findText);
+            data.replace("{title}","Package "+m_findText);
             data.replace("{data}",m_findData);
             m_docBrowser->browser()->setHtml(data);
         } else {
@@ -211,11 +213,19 @@ void GolangDoc::findFinish(bool error,int code,QString /*msg*/)
 
 void GolangDoc::anchorClicked(QUrl url)
 {
-    if (!url.encodedHost().isEmpty()) {
-        return;
-    }
     QString path = url.encodedPath();
-    if (!path.isEmpty() && !m_goroot.isEmpty()) {
+    QFileInfo info(url.toLocalFile());
+    if (info.suffix() == "html") {
+        QString name = m_goroot+"/doc/"+info.fileName();
+        QFile file(name);
+        if (file.open(QIODevice::ReadOnly)) {
+            QString data = m_templateData;
+            QByteArray r = file.readAll();
+            data.replace("{title}",info.fileName());
+            data.replace("{data}",r);
+            m_docBrowser->browser()->setHtml(data);
+        }
+    } else if (info.suffix() == "go") {
         QString fileName = QDir(m_goroot).path()+path;
         LiteApi::IEditor *editor = m_liteApp->editorManager()->loadEditor(fileName);
         if (editor) {
