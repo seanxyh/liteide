@@ -296,7 +296,6 @@ type DirEntry struct {
 	Synopsis string
 }
 
-
 type DirList struct {
 	MaxHeight int // directory tree height, > 0
 	List      []DirEntry
