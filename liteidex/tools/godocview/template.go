@@ -74,12 +74,5 @@ var findHTML = `
 `
 
 var findText = `
-{.section Best}
-:{Path|path-esc}
-{.end}
-{.section Dirs}
-{.repeated section List}
-{Path|path-esc}
-{.end}
-{.end}
+{.section Best}{Path|path-esc}{.end},{.section Dirs}{.repeated section List}{Path|path-esc},{.end}{.end}
 `
