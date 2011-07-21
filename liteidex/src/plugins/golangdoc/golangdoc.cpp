@@ -55,19 +55,17 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp(app),
     m_docBrowser(0)
 {
-    m_process = new ProcessEx(this);
+    m_findProcess = new ProcessEx(this);
+    m_godocProcess = new ProcessEx(this);
 
     m_goroot = m_liteApp->settings()->value("golangdoc/goroot").toString();
 
     m_widget = new QWidget;
-    m_recentModel = new QStringListModel(this);
+    m_findResultModel = new QStringListModel(this);
 
-    m_recentPackages = m_liteApp->settings()->value("golangdoc/RecentPackages").toStringList();
-    m_recentModel->setStringList(m_recentPackages);
-
-    m_recentListView = new QListView;
-    m_recentListView->setEditTriggers(0);
-    m_recentListView->setModel(m_recentModel);
+    m_findResultListView = new QListView;
+    m_findResultListView->setEditTriggers(0);
+    m_findResultListView->setModel(m_findResultModel);
 
     m_findComboBox = new QComboBox;
     m_findComboBox->setEditable(true);
@@ -84,18 +82,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     findLayout->addWidget(new QLabel(tr("Find:")));
     findLayout->addWidget(m_findComboBox);
 
-    QToolButton *clearButton = new QToolButton;
-    clearButton->setText(tr("Clear"));
-    connect(clearButton,SIGNAL(clicked()),this,SLOT(clearRecentPackages()));
-
-    QHBoxLayout *recentHeadLayout = new QHBoxLayout;
-    recentHeadLayout->addWidget(new QLabel(tr("Recent:")));
-    recentHeadLayout->addStretch(1);
-    recentHeadLayout->addWidget(clearButton);
-
     mainLayout->addLayout(findLayout);
-    mainLayout->addLayout(recentHeadLayout);
-    mainLayout->addWidget(m_recentListView);
+    mainLayout->addWidget(m_findResultListView);
     mainLayout->addWidget(m_findResultLabel);
     m_widget->setLayout(mainLayout);
 
@@ -121,22 +109,70 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     }
 
     connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
-    connect(m_process,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
-    connect(m_process,SIGNAL(extFinish(bool,int,QString)),this,SLOT(findFinish(bool,int,QString)));
-    connect(m_recentListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClockedLog(QModelIndex)));
+    connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
+    connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
+    connect(m_findProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
+    connect(m_findProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(findFinish(bool,int,QString)));
+    connect(m_findResultListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClockedLog(QModelIndex)));
 }
 
 GolangDoc::~GolangDoc()
 {
     m_liteApp->settings()->setValue("golangdoc/goroot",m_goroot);
-    m_liteApp->settings()->setValue("golangdoc/RecentPackages",m_recentPackages);
     if (m_docBrowser) {
         delete m_docBrowser;
     }
     delete m_widget;
 }
 
-void GolangDoc::findPackage(QString package)
+
+
+void GolangDoc::findPackage(QString pkgname)
+{
+    LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
+    if (manager) {
+        LiteApi::IBuild *build = manager->currentBuild();
+        if (build) {
+            m_findProcess->setEnvironment(build->currentEnv().toStringList());
+        } else {
+            m_findProcess->setEnvironment(QProcess::systemEnvironment());
+        }
+    }
+    QString cmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/godocview");
+    if (cmd.isEmpty()) {
+        return;
+    }
+    QStringList args;
+    args << "-html=false" << "-find" << pkgname;
+    m_findData.clear();
+    m_findProcess->start(cmd,args);
+}
+
+void GolangDoc::findOutput(QByteArray data,bool bStderr)
+{
+    if (bStderr) {
+        return;
+    }
+    m_findData.append(data);
+}
+
+void GolangDoc::findFinish(bool error,int code,QString /*msg*/)
+{
+    if (!error && code == 0) {
+        QStringList array = QString(m_findData.trimmed()).split(',');
+        if (array.size() >= 1) {
+            QString best = array.at(0);
+            if (best.isEmpty()) {
+                array.removeFirst();
+            } else {
+                godocPackage(best);
+            }
+            m_findResultModel->setStringList(array);
+        }
+    }
+}
+
+void GolangDoc::godocPackage(QString package)
 {
     m_findText = package;
     if (package.isEmpty()) {
@@ -169,39 +205,36 @@ void GolangDoc::findPackage(QString package)
     if (cmd.isEmpty()) {
         return;
     }
-    m_findData.clear();
+    m_godocData.clear();
     QStringList args;
     args << "-html=true" << package.split(" ");
-    m_process->start(cmd,args);
+    m_godocProcess->start(cmd,args);
 }
 
-void GolangDoc::findOutput(QByteArray data,bool bStderr)
+void GolangDoc::godocOutput(QByteArray data,bool bStderr)
 {
     if (bStderr) {
         return;
     }
-    m_findData.append(data);
+    m_godocData.append(data);
 }
 
-void GolangDoc::findFinish(bool error,int code,QString /*msg*/)
+void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
 {
     if (!error && code == 0 && m_docBrowser != 0) {
         QString data = m_templateData;
         if (!data.isEmpty()) {
             data.replace("{title}","Package "+m_findText);
-            data.replace("{data}",m_findData);
+            data.replace("{data}",m_godocData);
             m_docBrowser->browser()->setHtml(data);
         } else {
-            m_docBrowser->browser()->setHtml(m_findData);
+            m_docBrowser->browser()->setHtml(m_godocData);
         }
         m_findResultLabel->setText(QString("GOROOT=%1\nFind package %2").arg(m_goroot).arg(m_findText));
         BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
         if (browserManager) {
             browserManager->setActive(m_docBrowser);
         }
-        m_recentPackages.append(m_findText);
-        m_recentPackages.removeDuplicates();
-        m_recentModel->setStringList(m_recentPackages);
     } else {
         int index = m_findComboBox->findText(m_findText);
         if (index != -1) {
@@ -249,19 +282,13 @@ void GolangDoc::anchorClicked(QUrl url)
     }
 }
 
-void GolangDoc::clearRecentPackages()
-{
-    m_recentPackages.clear();
-    m_recentModel->setStringList(m_recentPackages);
-}
-
 void GolangDoc::doubleClockedLog(QModelIndex index)
 {
     if (!index.isValid()) {
         return;
     }
-    QString text = m_recentModel->data(index,Qt::DisplayRole).toString();
+    QString text = m_findResultModel->data(index,Qt::DisplayRole).toString();
     if (!text.isEmpty()) {
-        findPackage(text);
+        godocPackage(text);
     }
 }
