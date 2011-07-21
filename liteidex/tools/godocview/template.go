@@ -1,21 +1,8 @@
 package main
 
 var packageHTML = `
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <title>The Go Programming Language</title>
-<link rel="stylesheet" href="golangdoc/all.css" type="text/css" media="all" charset="utf-8">
-</head>
-<!--
-	Copyright 2009 The Go Authors. All rights reserved.
-	Use of this source code is governed by a BSD-style
-	license that can be found in the LICENSE file.
--->
-<body>
-<div id="container">
-<div id="topnav">
-<h2 id="title">The Golang Document Package List</h2>
+<!-- Golang Package List -->
+<h2 id="title">Golang Package List</h2>
 {.section Dirs}
 	{# DirList entries are numbers and strings - no need for FSet}
 	<p>
@@ -36,8 +23,6 @@ var packageHTML = `
 	</table>
 	</p>
 {.end}
-</body>
-</html>
 `
 
 var packageText = `
