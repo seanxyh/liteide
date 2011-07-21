@@ -27,6 +27,18 @@ func textFmt(w io.Writer, format string, x ...interface{}) {
 	template.HTMLEscape(w, buf.Bytes())
 }
 
+func pathEscFmt(w io.Writer, format string, x ...interface{}) {
+	switch v := x[0].(type) {
+	case []byte:
+		template.HTMLEscape(w, v)
+	case string:
+		template.HTMLEscape(w, []byte(filepath.ToSlash(v)))
+	default:
+		var buf bytes.Buffer
+		fmt.Fprint(&buf, x)
+		template.HTMLEscape(w, buf.Bytes())
+	}
+}
 
 func htmlEscFmt(w io.Writer, format string, x ...interface{}) {
 	switch v := x[0].(type) {
@@ -58,6 +70,7 @@ func timeFmt(w io.Writer, format string, x ...interface{}) {
 var fmap = template.FormatterMap{
 	"":         textFmt,
 	"html-esc": htmlEscFmt,
+	"path-esc": pathEscFmt,
 	"padding":  paddingFmt,
 	"time":     timeFmt,
 }
@@ -91,60 +104,36 @@ func applyTemplate(t *template.Template, name string, data interface{}) []byte {
 }
 
 type Info struct {
+	Find string
+	Best *DirEntry
 	Dirs *DirList
 }
 
-func (dir *Directory) lookupPkg(pkgname string) string {
-	p := []string{pkgname}
-	if strings.Contains(pkgname, `\`) {
-		p = strings.Split(pkgname, `\`)
-	} else if strings.Contains(pkgname, `/`) {
-		p = strings.Split(pkgname, `/`)
-	}
-	fmt.Println(p)
-	for i := 0; i < len(p); i++ {
-		for j := 0; j < len(dir.Dirs); j++ {
-			if dir.Dirs[j].Name == p[i] {
-				dir = dir.Dirs[j]
-				fmt.Println(dir.Path)
-				break
-			}
-		}
-	}
-	return dir.Name
-}
-
-func FindPkgList(root string, pkgname string) (best string, matchs []string) {
+func FindPkgInfo(root string, pkgname string) *Info {
 	dir := newDirectory(root, nil, -1)
 	if dir == nil {
-		return
+		return nil
 	}
-	info := Info{Dirs: dir.listing(true)}
-	max := len(info.Dirs.List)
+	dirList := dir.listing(true)
+	if pkgname == "*" {
+		return &Info{pkgname, nil, dirList}
+	}
+	var best DirEntry
+	var list []DirEntry
+	max := len(dirList.List)
 	for i := 0; i < max; i++ {
-		name := info.Dirs.List[i].Name
-		path := filepath.ToSlash(info.Dirs.List[i].Path)
-
+		name := dirList.List[i].Name
+		path := filepath.ToSlash(dirList.List[i].Path)
 		if name == pkgname || path == pkgname {
-			best = path
-		} else if strings.HasSuffix(path, "/"+pkgname) {
-			best = path
+			best = dirList.List[i]
 		} else if strings.Contains(path, pkgname) {
-			matchs = append(matchs, path)
+			list = append(list, dirList.List[i])
 		}
 	}
-	return
+	return &Info{pkgname, &best, &DirList{dirList.MaxHeight, list}}
 }
 
-func GetPkgList(root string, templateData string) []byte {
+func (info *Info) GetPkgList(templateData string) []byte {
 	data := readTemplateData(templateData)
-	if data == nil {
-		return nil
-	}
-	dir := newDirectory(root, nil, -1)
-	if dir == nil {
-		return nil
-	}
-	info := Info{Dirs: dir.listing(true)}
-	return applyTemplate(data, "package", info)
+	return applyTemplate(data, "pkglist", info)
 }
