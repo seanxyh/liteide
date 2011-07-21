@@ -1,4 +1,4 @@
-// gopkgview project main.go
+// godocview project main.go
 package main
 
 import (
@@ -10,6 +10,7 @@ import (
 
 var (
 	goroot = flag.String("goroot", runtime.GOROOT(), "Go root directory")
+	subdir = flag.String("subdir", "src/pkg", "Go package subdir")
 	html    = flag.Bool("html", false, "print HTML in command-line mode")
 )
 
@@ -21,6 +22,6 @@ func main() {
 	} else {
 		template = packageText
 	}
-	contents := GetPkgList(filepath.Join(*goroot,"src","pkg"),template)
+	contents := GetPkgList(filepath.Join(*goroot,*subdir),template)
 	fmt.Println(string(contents))
 }

@@ -1,6 +1,6 @@
-# gopkgview project file
+# godocview project file
 
-TARGET = gopkgview
+TARGET = godocview
 DESTDIR = ../../liteide/bin
 
 GCOPT =
