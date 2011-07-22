@@ -15,7 +15,7 @@ var listHTML = `
 	{.repeated section List}
 		<tr>
 		{Depth|padding}
-		<td align="left" colspan="{Height|html-esc}"><a href="{Path|html-esc}">{Name|html-esc}</a></td>
+		<td align="left" colspan="{Height|html-esc}"><a href="{Path|path-esc}">{Name|html-esc}</a></td>
 		<td></td>
 		<td align="left">{Synopsis|html-esc}</td>
 		</tr>
@@ -26,6 +26,7 @@ var listHTML = `
 `
 
 var listText = `
+$list
 {.section Dirs}
 {.repeated section List}
 {Path|path-esc}
@@ -47,23 +48,24 @@ var findHTML = `
 	<td width="25">&nbsp;</td>
 	<th align="left">Synopsis</th>
 	</tr>
-	{.section Best}
-		<tr>
-		<td width="0"></td>
-		<td align="left" colspan="{Height|html-esc}"><a href="{Path|html-esc}">{Path|path-esc}</a></td>
-		<td></td>
-		<td align="left">{Synopsis|html-esc}</td>
-		</tr>
-	{.end}	
 	<tr>
-	<th align="left" colspan="{MaxHeight|html-esc}">Matches</th>
+{.end}	
+{.section Best}
+	<td align="left"><a href="{Best.Path|path-esc}">{@Best.Path|html-esc}</a></td>
+	<td></td>
+	<td align="left">{@Best.Synopsis|html-esc}</td>
+	</tr>
+	<tr>
+{.end}	
+{.section Dirs}
+	<th align="left" colspan="{MaxHeight|html-esc}">Match</th>
 	<td width="25">&nbsp;</td>
 	<th align="left">Synopsis</th>
 	</tr>
 	{.repeated section List}
 		<tr>
-		<td width="0"></td>
-		<td align="left" colspan="{Height|html-esc}"><a href="{Path|html-esc}">{Path|path-esc}</a></td>
+		{Depth|padding}
+		<td align="left" colspan="{Height|html-esc}"><a href="{Path|path-esc}">{Name|html-esc}</a></td>
 		<td></td>
 		<td align="left">{Synopsis|html-esc}</td>
 		</tr>
@@ -72,7 +74,19 @@ var findHTML = `
 	</p>
 {.end}
 `
-
 var findText = `
-{.section Best}{Path|path-esc}{.end},{.section Dirs}{.repeated section List}{Path|path-esc},{.end}{.end}
+$best
+{.section Best}
+{Path|path-esc}
+{.end}
+$list
+{.section Dirs}
+{.repeated section List}
+{Path|path-esc}
+{.end}
+{.end}
+`
+
+var findLite = `
+$find,{.section Best}{Path|path-esc}{.end}{.section Dirs}{.repeated section List},{Path|path-esc}{.end}{.end}
 `

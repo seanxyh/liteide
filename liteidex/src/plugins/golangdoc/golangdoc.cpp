@@ -72,8 +72,6 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_findComboBox->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
     m_findComboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
-    m_findResultLabel = new QLabel;
-
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(4);
 
@@ -84,7 +82,6 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     mainLayout->addLayout(findLayout);
     mainLayout->addWidget(m_findResultListView);
-    mainLayout->addWidget(m_findResultLabel);
     m_widget->setLayout(mainLayout);
 
     BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(app,"LiteApi.BrowserEditorManager");
@@ -107,13 +104,19 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         m_templateData = file.readAll();
         file.close();
     }
+    QString data = m_templateData;
+    if (!data.isEmpty()) {
+        data.replace("{title}","");
+        data.replace("{content}","");
+        m_docBrowser->browser()->setHtml(data);
+    }
 
     connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
     connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
     connect(m_findProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
     connect(m_findProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(findFinish(bool,int,QString)));
-    connect(m_findResultListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClockedLog(QModelIndex)));
+    connect(m_findResultListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickListView(QModelIndex)));
 }
 
 GolangDoc::~GolangDoc()
@@ -143,7 +146,7 @@ void GolangDoc::findPackage(QString pkgname)
         return;
     }
     QStringList args;
-    args << "-html=false" << "-find" << pkgname;
+    args << "-mode=lite" << "-find" << pkgname;
     m_findData.clear();
     m_findProcess->start(cmd,args);
 }
@@ -156,19 +159,26 @@ void GolangDoc::findOutput(QByteArray data,bool bStderr)
     m_findData.append(data);
 }
 
-void GolangDoc::findFinish(bool error,int code,QString /*msg*/)
+void GolangDoc::findFinish(bool error,int code,QString msg)
 {
     if (!error && code == 0) {
         QStringList array = QString(m_findData.trimmed()).split(',');
-        if (array.size() >= 1) {
+        if (array.size() >= 2 && array.at(0) == "$find") {
+            array.removeFirst();
             QString best = array.at(0);
             if (best.isEmpty()) {
                 array.removeFirst();
             } else {
                 godocPackage(best);
             }
-            m_findResultModel->setStringList(array);
+            if (array.isEmpty()) {
+                m_findResultModel->setStringList(QStringList() << "<not find>");
+            } else {
+                m_findResultModel->setStringList(array);
+            }
         }
+    } else {
+        m_findResultModel->setStringList(QStringList() << "<error>");
     }
 }
 
@@ -225,12 +235,11 @@ void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
         QString data = m_templateData;
         if (!data.isEmpty()) {
             data.replace("{title}","Package "+m_findText);
-            data.replace("{data}",m_godocData);
+            data.replace("{content}",m_godocData);
             m_docBrowser->browser()->setHtml(data);
         } else {
             m_docBrowser->browser()->setHtml(m_godocData);
         }
-        m_findResultLabel->setText(QString("GOROOT=%1\nFind package %2").arg(m_goroot).arg(m_findText));
         BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
         if (browserManager) {
             browserManager->setActive(m_docBrowser);
@@ -240,7 +249,6 @@ void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
         if (index != -1) {
             m_findComboBox->removeItem(index);
         }
-        m_findResultLabel->setText(QString("GOROOT=%1\nNot find package %2").arg(m_goroot).arg(m_findText));
     }
 }
 
@@ -248,16 +256,26 @@ void GolangDoc::anchorClicked(QUrl url)
 {
     QString path = url.encodedPath();
     QFileInfo info(url.toLocalFile());
-    if (info.suffix() == "html") {
+    if (url.path() == "/src/pkg/" || url.path() == "/src/cmd/") {
+        QString cmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/godocview");
+        if (cmd.isEmpty()) {
+            return;
+        }
+        QStringList args;
+        args << "-subdir="+path<< "-mode=html" << "-find=*";
+        m_godocData.clear();
+        m_godocProcess->start(cmd,args);
+    } else if (info.suffix() == "html") {
         QString name = m_goroot+"/doc/"+info.fileName();
         QFile file(name);
         if (file.open(QIODevice::ReadOnly)) {
             QString data = m_templateData;
             QByteArray r = file.readAll();
             data.replace("{title}",info.fileName());
-            data.replace("{data}",r);
+            data.replace("{content}",r);
             m_docBrowser->browser()->setHtml(data);
         }
+        return;
     } else if (info.suffix() == "go") {
         QString fileName = QDir(m_goroot).path()+path;
         LiteApi::IEditor *editor = m_liteApp->editorManager()->loadEditor(fileName);
@@ -278,11 +296,15 @@ void GolangDoc::anchorClicked(QUrl url)
                     }
                 }
             }
+            return;
         }
+    }
+    if (url.scheme().isEmpty()) {
+        godocPackage(url.toString());
     }
 }
 
-void GolangDoc::doubleClockedLog(QModelIndex index)
+void GolangDoc::doubleClickListView(QModelIndex index)
 {
     if (!index.isValid()) {
         return;

@@ -13,7 +13,7 @@ var (
 	goroot = flag.String("goroot", runtime.GOROOT(), "Go root directory")
 	subdir = flag.String("subdir", "src/pkg", "Go package sub directory")
 	find   = flag.String("find", "", "find package list, :pkg flag is best match")
-	html   = flag.Bool("html", false, "Print HTML mode")
+	mode   = flag.String("mode", "text", "Print mode [text|html|lite]")
 )
 
 func usage() {
@@ -41,19 +41,31 @@ func main() {
 	var template string
 
 	if *find == "*" {
-		if *html == true {
+		switch *mode {
+		case "html":
 			template = listHTML
-		} else {
+		case "lite":
+			template = findLite
+		case "text":
+			template = listText
+		default:
 			template = listText
 		}
 	} else {
-		if *html == true {
+		switch *mode {
+		case "html":
 			template = findHTML
-		} else {
+		case "lite":
+			template = findLite
+		case "text":
+			template = findText
+		default:
 			template = findText
 		}
 	}
-	
+
 	contents := info.GetPkgList(template)
 	fmt.Println(string(contents))
+	
+	os.Exit(0)
 }
