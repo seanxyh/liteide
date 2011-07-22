@@ -53,7 +53,7 @@ public slots:
     void godocOutput(QByteArray,bool);
     void godocFinish(bool,int,QString);
     void anchorClicked(QUrl);
-    void doubleClockedLog(QModelIndex);
+    void doubleClickListView(QModelIndex);
 protected:
     LiteApi::IApplication   *m_liteApp;
     QWidget *m_widget;
@@ -64,7 +64,6 @@ protected:
     ProcessEx  *m_godocProcess;
     DocumentBrowser *m_docBrowser;
     QAction *m_browserAct;
-    QLabel  *m_findResultLabel;
     QString m_findText;
     QString m_goroot;
     QByteArray  m_godocData;
