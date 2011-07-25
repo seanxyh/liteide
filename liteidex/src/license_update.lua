@@ -85,4 +85,4 @@ function attrdir (path)
 	end
 end
 
-attrdir("./api/liteenvapi")
+attrdir("./plugins")

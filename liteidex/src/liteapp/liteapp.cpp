@@ -422,7 +422,7 @@ void LiteApp::loadSession(const QString &name)
         m_fileManager->openProject(projectName);
     }
     foreach(QString fileName, fileList) {
-        m_fileManager->openEditor(fileName);
+        m_editorManager->loadEditor(fileName);
     }
     if (!editorName.isEmpty()) {
         m_fileManager->openEditor(editorName);
