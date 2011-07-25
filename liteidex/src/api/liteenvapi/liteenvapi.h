@@ -46,14 +46,14 @@ class IEnvManager : public IManager
     Q_OBJECT
 public:
     IEnvManager(QObject *parent = 0) : IManager(parent) {}
-    virtual void addEnv(IEnv *build) = 0;
-    virtual void removeEnv(IEnv *build) = 0;
+    virtual void addEnv(IEnv *env) = 0;
+    virtual void removeEnv(IEnv *env) = 0;
     virtual IEnv *findEnv(const QString &id) = 0;
     virtual QList<IEnv*> envList() const = 0;
     virtual void setCurrentEnv(IEnv *env) = 0;
     virtual IEnv *currentEnv() const = 0;
 signals:
-    void envChanged(LiteApi::IEnv*);
+    void currentEnvChanged(LiteApi::IEnv*);
 };
 
 } //namespace LiteApi
