@@ -199,7 +199,7 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
 
     m_liteApp->extension()->addObject("LiteApi.IEnvManager",this);
 
-    QString id = m_liteApp->settings()->value("LiteEnv/current").toString();
+    QString id = m_liteApp->settings()->value("LiteEnv/current","system").toString();
     if (!id.isEmpty()) {
         envActivated(id);
     }

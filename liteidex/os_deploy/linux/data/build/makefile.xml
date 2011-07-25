@@ -2,10 +2,10 @@
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
 	<mime-type type="text/x-makefile" id="makefile">
 		<action id="Build" img="make/build.png" key="F7" cmd="make" args="${PROJECTNAME} all" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
-		<action id="Rebuild" img="make/rebuild.png" key="CTRL+F7" cmd="make" args="-B ${PROJECTNAME} all" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
+		<action id="Rebuild" img="make/rebuild.png" key="CTRL+F7" cmd="make" args="-B ${PROJECTPATH} all" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
 		<action id="Clean" img="make/clean.png" cmd="make" args="${PROJECTNAME} clean" save="project" output="true"/>
 		<action id="Install" img="make/install.png" cmd="make" args="${PROJECTNAME} install" save="project" output="true"/>
-		<action id="Exec" img="make/exec.png" key="F5" cmd="/usr/X11R6/bin/xterm" args="-e ${LITEAPPDIR}/goexec -w ${WORKDIR} ${TARGETPATH}" output="false"/>
+		<action id="Exec" img="make/exec.png" key="F5" cmd="/usr/bin/xterm" args="-e ${LITEAPPDIR}/goexec -w ${WORKDIR} ${TARGETPATH}" output="false"/>
 		<action id="Run" img="make/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="" output="true" codec="utf-8"/>
 		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
 	</mime-type>
