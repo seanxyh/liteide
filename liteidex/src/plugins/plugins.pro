@@ -5,10 +5,11 @@ TEMPLATE  = subdirs
 
 SUBDIRS = \
     welcome \
+    liteenv \
+    litebuild \
+    liteeditor \
     makefileproject \
     profileproject  \
-    liteeditor \
-    litebuild \
     filebrowser \
     codesearch \
     qsqleditor \
