@@ -27,8 +27,10 @@
 #define GOLANGDOC_H
 
 #include "liteapi.h"
+#include "litebuildapi/litebuildapi.h"
 #include <QUrl>
 #include <QModelIndex>
+#include <QCache>
 
 class QLabel;
 class QListView;
@@ -46,6 +48,8 @@ public:
 signals:
 
 public slots:
+    void buildChanged(LiteApi::IBuild*);
+    void buildEnvChanged(QString);
     void listCmd();
     void listPkg();
     void findPackage(QString name = QString());
@@ -56,6 +60,8 @@ public slots:
     void godocFinish(bool,int,QString);
     void anchorClicked(QUrl);
     void doubleClickListView(QModelIndex);
+protected:
+    void changeProcessEnv();
 protected:
     LiteApi::IApplication   *m_liteApp;
     QWidget *m_widget;
@@ -75,6 +81,10 @@ protected:
     QAction *m_listCmdAct;
     QAction *m_findAct;
     QMenu *m_findMenu;
+    LiteApi::IBuild *m_build;
+    QCache<QString,QString> m_htmlCache;
+    QString m_godocCmd;
+    QString m_findCmd;
 };
 
 #endif // GOLANGDOC_H
