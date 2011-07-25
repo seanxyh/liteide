@@ -82,16 +82,6 @@ BuildAction *Build::findAction(const QString &id)
     return 0;
 }
 
-QStringList Build::envIdList() const
-{
-    return m_envIdList;
-}
-
-QString Build::findEnvFile(const QString &id)
-{
-    return m_idEnvFileMap.value(id);
-}
-
 void Build::setType(const QString &mimeType)
 {
     m_mimeType = mimeType;
@@ -110,12 +100,6 @@ void Build::appendAction(BuildAction *act)
 void Build::appendLookup(BuildLookup *lookup)
 {
     m_lookupList.append(lookup);
-}
-
-void Build::appendEnv(const QString &id, const QString &envFile)
-{
-    m_envIdList.append(id);
-    m_idEnvFileMap.insert(id,envFile);
 }
 
 bool Build::loadBuild(LiteApi::IBuildManager *manager, const QString &fileName)
@@ -169,10 +153,6 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 if (!task.isEmpty()) {
                     act->setTask(task.split(";",QString::SkipEmptyParts));
                 }
-            } else if (reader.name() == "env" && build) {
-                QString id = attrs.value("id").toString();
-                QString envFile = attrs.value("file").toString();
-                build->appendEnv(id,QFileInfo(dir,envFile).canonicalFilePath());
             }
             break;
         case QXmlStreamReader::EndElement:
@@ -200,68 +180,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
     return true;
 }
 
-void Build::setCurrentEnvId(const QString &id)
-{
-    m_buildEnvId = id;
-    m_buildEnv = QProcessEnvironment::systemEnvironment();
-
-    emit buildEnvChanged(id);
-
-    if (id.isEmpty()) {
-        return;
-    }
-
-    QString env = findEnvFile(id);
-    if (!QFile::exists(env)) {
-        return;
-    }
-    QFile f(env);
-    if (!f.open(QIODevice::ReadOnly)) {
-        return;
-    }
-#ifdef Q_OS_WIN
-    QRegExp rx("\\%([\\w]+)\\%");
-#else
-    QRegExp rx("\\$([\\w]+)");
-#endif
-    while (!f.atEnd()) {
-        QString line = f.readLine().trimmed();
-        int pos = line.indexOf("=");
-        if (pos == -1) {
-            continue;
-        }
-        QString key = line.left(pos).trimmed();
-        QString value = line.right(line.length()-pos-1).trimmed();
-        pos = 0;
-        int rep = 0;
-        while (rep++ < 10) {
-            pos = rx.indexIn(value,pos);
-            if (pos == -1) {
-                break;
-            }
-            QString v = m_buildEnv.value(rx.cap(1));
-            if (!v.isEmpty()) {
-                value.replace(pos,rx.cap(0).length(),v);
-                pos = 0;
-            } else {
-                pos += rx.matchedLength();
-            }
-        }
-        m_buildEnv.insert(key,value);
-    }
-}
-
-QString Build::currentEnvId()
-{
-    return m_buildEnvId;
-}
-
-QProcessEnvironment Build::currentEnv() const
-{
-    return m_buildEnv;
-}
-
-QString Build::actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv)
+QString Build::actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env)
 {
     QString cmd = act->cmd();
     QMapIterator<QString,QString> i(liteEnv);
@@ -269,7 +188,7 @@ QString Build::actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv)
         i.next();
         cmd.replace(i.key(),i.value());
     }
-    return FileUtil::lookPath(cmd,m_buildEnv,true);
+    return FileUtil::lookPath(cmd,env,true);
 }
 
 QString Build::actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv)

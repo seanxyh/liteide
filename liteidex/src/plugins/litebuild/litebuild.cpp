@@ -77,12 +77,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
         m_liteApp->extension()->addObject("LiteApi.IBuildManager",m_manager);
     }
     m_toolBar = new QToolBar;
-    m_envCombBox = new QComboBox;
-    QSize sz = m_envCombBox->baseSize();
-    m_envCombBox->setBaseSize(120,sz.height());
-    m_envAct = m_toolBar->addWidget(m_envCombBox);
-    m_envAct->setVisible(false);
-    //m_toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
     m_liteApp->actionManager()->addToolBar(m_toolBar);
     m_toolBar->setObjectName("BuildToolBar");
 
@@ -99,18 +94,29 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     connect(m_process,SIGNAL(extFinish(bool,int,QString)),this,SLOT(extFinish(bool,int,QString)));
     connect(m_output,SIGNAL(dbclickEvent()),this,SLOT(dbclickBuildOutput()));
     connect(m_output,SIGNAL(enterText(QString)),this,SLOT(enterTextBuildOutput(QString)));
-    connect(m_envCombBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(envIndexChanged(QString)));
+
+    currentProjectChanged(m_liteApp->projectManager()->currentProject());
+
+    m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
+    if (m_envManager) {
+        connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
+        currentEnvChanged(m_envManager->currentEnv());
+    }
 }
 
 LiteBuild::~LiteBuild()
 {
     m_liteApp->actionManager()->removeToolBar(m_toolBar);
-    delete m_envCombBox;
     delete m_toolBar;
     delete m_output;
 }
 
-void LiteBuild::resetProjectEnv(LiteApi::IProject *project)
+void LiteBuild::currentEnvChanged(LiteApi::IEnv*)
+{
+    m_process->setEnvironment(m_envManager->currentEnvironment().toStringList());
+}
+
+void LiteBuild::resetLiteEnv(LiteApi::IProject *project)
 {
     QString projectPath,projectDir,projectName;
     QString workDir,targetPath,targetDir,targetName;
@@ -139,7 +145,7 @@ void LiteBuild::resetProjectEnv(LiteApi::IProject *project)
 void LiteBuild::reloadProject()
 {
     LiteApi::IProject *project = (LiteApi::IProject*)sender();
-    resetProjectEnv(project);
+    resetLiteEnv(project);
 }
 
 void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
@@ -153,7 +159,7 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
         }
     }
 
-    resetProjectEnv(project);
+    resetLiteEnv(project);
 
     if (!build) {
         m_liteApp->actionManager()->hideToolBar(m_toolBar);
@@ -170,16 +176,12 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
 
 void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
 {
-   // m_output->clear();
-
     if (m_build == build) {
         return;
     }
     m_build = build;
     m_manager->setCurrentBuild(build);
 
-    m_envCombBox->clear();
-    m_envAct->setVisible(false);
     m_outputRegex.clear();
 
     foreach(QAction *act, m_actions) {
@@ -192,23 +194,6 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
         return;
     }
 
-    QStringList ids = m_build->envIdList();
-    if (!ids.isEmpty()) {
-        m_envAct->setVisible(true);
-        m_liteApp->settings()->beginGroup("BuildEnv");
-        QString envId = m_liteApp->settings()->value(m_build->id()).toString();
-        m_liteApp->settings()->endGroup();
-        int index = ids.indexOf(envId);
-        if (index == -1) {
-            index = 0;
-        }
-        m_envCombBox->blockSignals(true);
-        m_envCombBox->addItems(ids);
-        m_envCombBox->setCurrentIndex(-1);
-        m_envCombBox->blockSignals(false);
-
-        m_envCombBox->setCurrentIndex(index);
-    }
     foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
         QAction *act = m_toolBar->addAction(ba->id());
         if (!ba->key().isEmpty()) {
@@ -290,6 +275,7 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
         m_liteEnv.insert("${TARGETDIR}",targetDir);
         m_liteEnv.insert("${TARGETNAME}",targetName);
     }
+
     if (!build) {
         m_liteApp->actionManager()->hideToolBar(m_toolBar);
         m_liteApp->outputManager()->hideOutput(m_output);
@@ -298,40 +284,6 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
         m_liteApp->outputManager()->showOutput(m_output);
         setCurrentBuild(build);
     }
-}
-
-void LiteBuild::envIndexChanged(QString id)
-{
-    if (id.isEmpty()) {
-        return;
-    }
-
-    if (!m_build) {
-        return;
-    }
-    m_build->setCurrentEnvId(id);
-    m_liteApp->settings()->beginGroup("BuildEnv");
-    m_liteApp->settings()->setValue(m_build->id(),id);
-    m_liteApp->settings()->endGroup();
-
-    m_output->clear();
-    m_output->appendTag0(QString("<ActionList envId=\"%1\">").arg(id));
-    foreach(BuildAction *act, m_build->actionList()) {
-        if (!act->task().isEmpty()) {
-            QString text = QString(" <Action id=\"%1\" task=\"%2\"/>")
-                .arg(act->id())
-                .arg(act->task().join(";"));
-            m_output->appendTag1(text);
-        } else {
-            QString cmd = m_build->actionCommand(act,m_liteEnv);
-            QString text = QString(" <Action id=\"%1\" cmd=\"%2\" _cmd=\"%3\"/>")
-                .arg(act->id())
-                .arg(act->cmd())
-                .arg(cmd);
-            m_output->appendTag1(text);
-        }
-    }
-    m_output->appendTag0(QString("</ActionList>"));
 }
 
 void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)
@@ -451,9 +403,8 @@ void LiteBuild::execAction(const QString &id)
     }
 
     QString workDir = m_liteEnv.value("${WORKDIR}");
-    QString cmd = m_build->actionCommand(ba,m_liteEnv);
+    QString cmd = m_build->actionCommand(ba,m_liteEnv,m_envManager->currentEnvironment());
     QString args = m_build->actionArgs(ba,m_liteEnv);
-    m_process->setEnvironment(m_build->currentEnv().toStringList());
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
     if (!ba->output()) {

@@ -55,4 +55,9 @@ bool LiteBuildPlugin::initWithApp(LiteApi::IApplication *app)
     return true;
 }
 
+QStringList LiteBuildPlugin::dependPluginList() const
+{
+    return QStringList() << "plugin/liteenv";
+}
+
 Q_EXPORT_PLUGIN(LiteBuildPlugin)

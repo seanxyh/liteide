@@ -125,12 +125,7 @@ public:
     virtual QList<BuildAction*> actionList() const = 0;
     virtual QList<BuildLookup*> lookupList() const = 0;
     virtual BuildAction *findAction(const QString &name) = 0;
-    virtual QStringList envIdList() const = 0;
-    virtual QString findEnvFile(const QString &id) = 0;
-    virtual void setCurrentEnvId(const QString &id) = 0;
-    virtual QString currentEnvId() = 0;
-    virtual QProcessEnvironment currentEnv() const = 0;
-    virtual QString actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv) = 0;
+    virtual QString actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env) = 0;
     virtual QString actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv) = 0;
 signals:
     void buildEnvChanged(QString);
