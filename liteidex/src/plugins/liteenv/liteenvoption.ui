@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LiteBuildOption</class>
- <widget class="QWidget" name="LiteBuildOption">
+ <class>LiteEnvOption</class>
+ <widget class="QWidget" name="LiteEnvOption">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>325</height>
+    <width>450</width>
+    <height>338</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>The build config change will take effect after a restart of LiteIDE.</string>
+      <string>The env file change will take effect after a reload env comobox.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

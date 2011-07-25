@@ -18,70 +18,62 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: litebuildoption.cpp
+// Module: liteappoption.cpp
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2011-3-26
-// $Id: litebuildoption.cpp,v 1.0 2011-5-12 visualfc Exp $
+// date: 2011-7-25
+// $Id: liteappoption.cpp,v 1.0 2011-7-25 visualfc Exp $
 
-#include "litebuildoption.h"
-#include "ui_litebuildoption.h"
-#include <QFileSystemModel>
+#include "liteenvoption.h"
+#include "ui_liteenvoption.h"
+#include <QDir>
 #include <QFileInfo>
-#include <QDebug>
-//lite_memory_check_begin
-#if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
-     #define _CRTDBG_MAP_ALLOC
-     #include <stdlib.h>
-     #include <crtdbg.h>
-     #define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ )
-     #define new DEBUG_NEW
-#endif
-//lite_memory_check_end
+#include <QFileSystemModel>
 
-LiteBuildOption::LiteBuildOption(LiteApi::IApplication *app,QObject *parent) :
+LiteEnvOption::LiteEnvOption(LiteApi::IApplication *app,QObject *parent) :
     LiteApi::IOption(parent),
     m_liteApp(app),
     m_widget(new QWidget),
-    ui(new Ui::LiteBuildOption)
+    ui(new Ui::LiteEnvOption)
 {
     ui->setupUi(m_widget);
+
     m_fileModel = new QFileSystemModel(this);
-    QString path = m_liteApp->resourcePath()+"/build";
+    QString path = m_liteApp->resourcePath()+"/environment";
     QModelIndex root = m_fileModel->setRootPath(path);
     ui->fileTreeView->setEditTriggers(0);
     ui->fileTreeView->setModel(m_fileModel);
     ui->fileTreeView->setRootIndex(root);
     ui->fileTreeView->header()->setResizeMode(QHeaderView::ResizeToContents);
     connect(ui->fileTreeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedFile(QModelIndex)));
+
 }
 
-LiteBuildOption::~LiteBuildOption()
+LiteEnvOption::~LiteEnvOption()
 {
-    delete ui;
     delete m_widget;
+    delete ui;
 }
 
-QWidget *LiteBuildOption::widget()
+QWidget *LiteEnvOption::widget()
 {
     return m_widget;
 }
 
-QString LiteBuildOption::displayName() const
+QString LiteEnvOption::displayName() const
 {
-    return "LiteBuild";
+    return "LiteEnv";
 }
 
-QString LiteBuildOption::mimeType() const
+QString LiteEnvOption::mimeType() const
 {
-    return "option/litebuild";
+    return "option/liteenv";
 }
 
-void LiteBuildOption::apply()
+void LiteEnvOption::apply()
 {
-
 }
 
-void LiteBuildOption::doubleClickedFile(QModelIndex index)
+void LiteEnvOption::doubleClickedFile(QModelIndex index)
 {
     if (!index.isValid()) {
         return;
@@ -90,8 +82,7 @@ void LiteBuildOption::doubleClickedFile(QModelIndex index)
     if (!info.isFile()) {
         return;
     }
-    if (info.suffix() == "png") {
-        return;
+    if (info.suffix() == QLatin1String("env")) {
+        m_liteApp->fileManager()->openEditor(info.filePath());
     }
-    m_liteApp->fileManager()->openEditor(info.filePath());
 }

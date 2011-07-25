@@ -47,9 +47,6 @@ public:
     virtual void apply();
 public slots:
     void doubleClickedFile(QModelIndex);
-private slots:
-    void on_refreshButton_clicked();
-
 private:
     LiteApi::IApplication   *m_liteApp;
     QWidget *m_widget;
