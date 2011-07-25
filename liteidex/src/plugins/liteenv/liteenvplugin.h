@@ -30,6 +30,7 @@
 #include "liteapi.h"
 #include <QtPlugin>
 
+class EnvManager;
 class LiteEnvPlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
@@ -37,6 +38,8 @@ class LiteEnvPlugin : public LiteApi::IPlugin
 public:
     LiteEnvPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
+protected:
+    EnvManager *m_envManager;    
 };
 
 #endif // LITEENVPLUGIN_H

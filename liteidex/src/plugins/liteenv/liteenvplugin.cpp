@@ -24,18 +24,24 @@
 // $Id: liteenvplugin.cpp,v 1.0 2011-5-12 visualfc Exp $
 
 #include "liteenvplugin.h"
+#include "envmanager.h"
 
 LiteEnvPlugin::LiteEnvPlugin()
 {
     m_info->setId("plugin/LiteEnv");
     m_info->setName("LiteEnv");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("LiteEnv Plugin");
+    m_info->setInfo("Environment Plugin");
 }
 
 bool LiteEnvPlugin::initWithApp(LiteApi::IApplication *app)
 {
     if (!LiteApi::IPlugin::initWithApp(app)) {
+        return false;
+    }
+
+    m_envManager = new EnvManager(this);
+    if (!m_envManager->initWithApp(app)) {
         return false;
     }
     return true;
