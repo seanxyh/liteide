@@ -18,36 +18,24 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: liteenvplugin.cpp
+// Module: liteenvoptionfactory.h
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2011-3-26
-// $Id: liteenvplugin.cpp,v 1.0 2011-5-12 visualfc Exp $
+// date: 2011-7-25
+// $Id: liteenvoptionfactory.cpp,v 1.0 2011-7-25 visualfc Exp $
 
-#include "liteenvplugin.h"
-#include "envmanager.h"
-#include "liteenvoptionfactory.h"
+#ifndef LITEENVOPTIONFACTORY_H
+#define LITEENVOPTIONFACTORY_H
 
-LiteEnvPlugin::LiteEnvPlugin()
+#include "liteapi.h"
+
+class LiteEnvOptionFactory : public LiteApi::IOptionFactory
 {
-    m_info->setId("plugin/LiteEnv");
-    m_info->setName("LiteEnv");
-    m_info->setAnchor("visualfc");
-    m_info->setInfo("Environment Plugin");
-}
+public:
+    LiteEnvOptionFactory(LiteApi::IApplication *app, QObject *parent);
+    virtual QStringList mimeTypes() const;
+    virtual LiteApi::IOption *create(const QString &mimeType);
+protected:
+    LiteApi::IApplication *m_liteApp;
+};
 
-bool LiteEnvPlugin::initWithApp(LiteApi::IApplication *app)
-{
-    if (!LiteApi::IPlugin::initWithApp(app)) {
-        return false;
-    }
-
-    m_envManager = new EnvManager(this);
-    if (!m_envManager->initWithApp(app)) {
-        return false;
-    }
-    app->optionManager()->addFactory(new LiteEnvOptionFactory(app,this));
-
-    return true;
-}
-
-Q_EXPORT_PLUGIN(LiteEnvPlugin)
+#endif // LITEENVOPTIONFACTORY_H

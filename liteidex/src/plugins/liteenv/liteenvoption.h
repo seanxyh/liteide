@@ -18,36 +18,40 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: liteenvplugin.cpp
+// Module: liteenvoption.h
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2011-3-26
-// $Id: liteenvplugin.cpp,v 1.0 2011-5-12 visualfc Exp $
+// date: 2011-7-25
+// $Id: liteenvoption.h,v 1.0 2011-7-25 visualfc Exp $
 
-#include "liteenvplugin.h"
-#include "envmanager.h"
-#include "liteenvoptionfactory.h"
+#ifndef LITEENVOPTION_H
+#define LITEENVOPTION_H
 
-LiteEnvPlugin::LiteEnvPlugin()
-{
-    m_info->setId("plugin/LiteEnv");
-    m_info->setName("LiteEnv");
-    m_info->setAnchor("visualfc");
-    m_info->setInfo("Environment Plugin");
+#include "liteapi.h"
+#include <QModelIndex>
+
+namespace Ui {
+    class LiteEnvOption;
 }
 
-bool LiteEnvPlugin::initWithApp(LiteApi::IApplication *app)
+class QFileSystemModel;
+class LiteEnvOption : public LiteApi::IOption
 {
-    if (!LiteApi::IPlugin::initWithApp(app)) {
-        return false;
-    }
+    Q_OBJECT
 
-    m_envManager = new EnvManager(this);
-    if (!m_envManager->initWithApp(app)) {
-        return false;
-    }
-    app->optionManager()->addFactory(new LiteEnvOptionFactory(app,this));
+public:
+    explicit LiteEnvOption(LiteApi::IApplication *app, QObject *parent = 0);
+    ~LiteEnvOption();
+    virtual QWidget *widget();
+    virtual QString displayName() const;
+    virtual QString mimeType() const;
+    virtual void apply();
+public slots:
+    void doubleClickedFile(QModelIndex);
+private:
+    LiteApi::IApplication   *m_liteApp;
+    QWidget           *m_widget;
+    Ui::LiteEnvOption *ui;
+    QFileSystemModel *m_fileModel;
+};
 
-    return true;
-}
-
-Q_EXPORT_PLUGIN(LiteEnvPlugin)
+#endif // LITEENVOPTION_H

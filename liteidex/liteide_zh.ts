@@ -161,7 +161,7 @@ LGPL_EXCEPTION.txt in this package.</source>
 <context>
     <name>DocumentBrowser</name>
     <message>
-        <location filename="src/plugins/golangdoc/documentbrowser.cpp" line="62"/>
+        <location filename="src/plugins/golangdoc/documentbrowser.cpp" line="60"/>
         <source>DocumentBrowser</source>
         <translation>文档浏览器</translation>
     </message>
@@ -309,6 +309,24 @@ LGPL_EXCEPTION.txt in this package.</source>
         <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="127"/>
         <source>Close</source>
         <translation>关闭</translation>
+    </message>
+</context>
+<context>
+    <name>EnvManager</name>
+    <message>
+        <location filename="src/plugins/liteenv/envmanager.cpp" line="197"/>
+        <source>LiteEnv</source>
+        <translation>环境设置</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteenv/envmanager.cpp" line="201"/>
+        <source>Environment</source>
+        <translation>环境变量</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteenv/envmanager.cpp" line="203"/>
+        <source>Env:</source>
+        <translation>环境:</translation>
     </message>
 </context>
 <context>
@@ -505,60 +523,60 @@ LGPL_EXCEPTION.txt in this package.</source>
         <translation>历史项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="176"/>
-        <location filename="src/liteapp/filemanager.cpp" line="197"/>
-        <location filename="src/liteapp/filemanager.cpp" line="218"/>
+        <location filename="src/liteapp/filemanager.cpp" line="175"/>
+        <location filename="src/liteapp/filemanager.cpp" line="196"/>
+        <location filename="src/liteapp/filemanager.cpp" line="217"/>
         <source>All Support File (%1)</source>
         <translation>所有支持文件(%1)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="179"/>
-        <location filename="src/liteapp/filemanager.cpp" line="200"/>
-        <location filename="src/liteapp/filemanager.cpp" line="221"/>
+        <location filename="src/liteapp/filemanager.cpp" line="178"/>
+        <location filename="src/liteapp/filemanager.cpp" line="199"/>
+        <location filename="src/liteapp/filemanager.cpp" line="220"/>
         <source>All Files (*)</source>
         <translation>所有文件(*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="262"/>
+        <location filename="src/liteapp/filemanager.cpp" line="261"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="263"/>
+        <location filename="src/liteapp/filemanager.cpp" line="262"/>
         <source>Project &apos;%1&apos; is created.
 Do you want to load?</source>
         <translation>项目文件 &apos;%1&apos;已建立,是否加载?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="279"/>
+        <location filename="src/liteapp/filemanager.cpp" line="278"/>
         <source>Open Project or File</source>
         <translation>打开项目或文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="292"/>
+        <location filename="src/liteapp/filemanager.cpp" line="291"/>
         <source>Open Files</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="305"/>
+        <location filename="src/liteapp/filemanager.cpp" line="304"/>
         <source>Open Project</source>
         <translation>打开项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="357"/>
-        <location filename="src/liteapp/filemanager.cpp" line="373"/>
+        <location filename="src/liteapp/filemanager.cpp" line="356"/>
+        <location filename="src/liteapp/filemanager.cpp" line="372"/>
         <source>&amp;%1 %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="523"/>
+        <location filename="src/liteapp/filemanager.cpp" line="522"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
         <translation>%1
 文件已经被删除，重新保存到文件还是关闭编辑器?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="524"/>
+        <location filename="src/liteapp/filemanager.cpp" line="523"/>
         <source>LiteIDE X</source>
         <translation></translation>
     </message>
@@ -566,7 +584,7 @@ This file has been removed. Do you want save to file or close editor?</source>
 <context>
     <name>GolangAst</name>
     <message>
-        <location filename="src/plugins/golangast/golangast.cpp" line="114"/>
+        <location filename="src/plugins/golangast/golangast.cpp" line="115"/>
         <source>GoAstView</source>
         <translation>Go类浏览器</translation>
     </message>
@@ -574,22 +592,23 @@ This file has been removed. Do you want save to file or close editor?</source>
 <context>
     <name>GolangDoc</name>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="84"/>
-        <source>Find:</source>
-        <translation>查找:</translation>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="73"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="77"/>
+        <source>Find</source>
+        <translation>查找</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="88"/>
-        <source>Clear</source>
-        <translation>清除</translation>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="74"/>
+        <source>List &quot;src/pkg&quot;</source>
+        <translation>列表 &quot;src/pkg&quot;</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="92"/>
-        <source>Recent:</source>
-        <translation>历史:</translation>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="75"/>
+        <source>List &quot;src/cmd&quot;</source>
+        <translation>列表 &quot;src/cmd&quot;</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="112"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="100"/>
         <source>GolangDoc</source>
         <translation>GO文档</translation>
     </message>
@@ -597,7 +616,7 @@ This file has been removed. Do you want save to file or close editor?</source>
 <context>
     <name>GolangFmtPlugin</name>
     <message>
-        <location filename="src/plugins/golangfmt/golangfmtplugin.cpp" line="98"/>
+        <location filename="src/plugins/golangfmt/golangfmtplugin.cpp" line="88"/>
         <source>gofmt</source>
         <translation></translation>
     </message>
@@ -726,7 +745,7 @@ This file has been removed. Do you want save to file or close editor?</source>
 <context>
     <name>LiteBuild</name>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="94"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="89"/>
         <source>LiteBuild</source>
         <translation>编译输出</translation>
     </message>
@@ -739,14 +758,9 @@ This file has been removed. Do you want save to file or close editor?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuildoption.ui" line="47"/>
+        <location filename="src/plugins/litebuild/litebuildoption.ui" line="23"/>
         <source>The build config change will take effect after a restart of LiteIDE.</source>
         <translation>编译配置更改生效,需要重新启动LiteIDE.</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/litebuild/litebuildoption.ui" line="22"/>
-        <source>Refresh</source>
-        <translation>刷新</translation>
     </message>
 </context>
 <context>
@@ -884,6 +898,19 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
+    <name>LiteEnvOption</name>
+    <message>
+        <location filename="src/plugins/liteenv/liteenvoption.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteenv/liteenvoption.ui" line="23"/>
+        <source>The env file change will take effect after a reload env comobox.</source>
+        <translation>环境配置更改生效,需要重新切换环境变量组合框.</translation>
+    </message>
+</context>
+<context>
     <name>LiteOutput</name>
     <message>
         <location filename="src/plugins/litebuild/litebuild.cpp" line="59"/>
@@ -945,22 +972,22 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>MakefileFile</name>
     <message>
-        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="79"/>
+        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="80"/>
         <source>GOFILES</source>
         <translation>GO文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="80"/>
+        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="81"/>
         <source>CGOFILES</source>
         <translation>CGO文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="81"/>
+        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="82"/>
         <source>Headers</source>
         <translation>头文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="82"/>
+        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="83"/>
         <source>Sources</source>
         <translation>源文件</translation>
     </message>
@@ -1097,22 +1124,22 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>ProfileFile</name>
     <message>
-        <location filename="src/plugins/profileproject/profilefile.cpp" line="80"/>
+        <location filename="src/plugins/profileproject/profilefile.cpp" line="81"/>
         <source>GOFILES</source>
         <translation>GO文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/profileproject/profilefile.cpp" line="81"/>
+        <location filename="src/plugins/profileproject/profilefile.cpp" line="82"/>
         <source>CGOFILES</source>
         <translation>CGO文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/profileproject/profilefile.cpp" line="82"/>
+        <location filename="src/plugins/profileproject/profilefile.cpp" line="83"/>
         <source>Headers</source>
         <translation>头文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/profileproject/profilefile.cpp" line="83"/>
+        <location filename="src/plugins/profileproject/profilefile.cpp" line="84"/>
         <source>Sources</source>
         <translation>源文件</translation>
     </message>
@@ -1151,6 +1178,111 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/liteapp/pluginsdialog.cpp" line="56"/>
         <source>FileName</source>
         <translation>文件名称</translation>
+    </message>
+</context>
+<context>
+    <name>QSqlEditor</name>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.ui" line="34"/>
+        <source>SQL </source>
+        <translation>SQL</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="51"/>
+        <source>Infomation</source>
+        <translation>信息</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="52"/>
+        <source>Edit Table</source>
+        <translation>编译表</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="127"/>
+        <source>Tables</source>
+        <translation>表</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="129"/>
+        <source>Views</source>
+        <translation>视图</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="131"/>
+        <source>SystemTables</source>
+        <translation>系统表</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="133"/>
+        <source>AllTables</source>
+        <translation>所有表</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="135"/>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="148"/>
+        <source>Unknow</source>
+        <translation>未知</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="140"/>
+        <source>Table</source>
+        <translation>表</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="142"/>
+        <source>View</source>
+        <translation>查看</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="144"/>
+        <source>SystemTable</source>
+        <translation>系统表</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="146"/>
+        <source>AllTable</source>
+        <translation>所有表</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/qsqleditor.cpp" line="203"/>
+        <source>%1:%2</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>SqlTableModel</name>
+    <message>
+        <location filename="src/plugins/qsqleditor/sqltablemodel.cpp" line="44"/>
+        <source>NULL value</source>
+        <translation>空值</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/sqltablemodel.cpp" line="46"/>
+        <source>{null}</source>
+        <translation>{null}</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/sqltablemodel.cpp" line="56"/>
+        <source>BLOB value</source>
+        <translation>二进制值</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/qsqleditor/sqltablemodel.cpp" line="58"/>
+        <source>{blob}</source>
+        <translation>{blob}</translation>
+    </message>
+</context>
+<context>
+    <name>TableViewWidget</name>
+    <message>
+        <location filename="src/plugins/qsqleditor/tableviewwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
     </message>
 </context>
 <context>
