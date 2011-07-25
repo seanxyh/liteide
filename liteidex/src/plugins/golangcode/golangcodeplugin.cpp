@@ -1,3 +1,28 @@
+/**************************************************************************
+** This file is part of LiteIDE
+**
+** Copyright (c) 2011 LiteIDE Team. All rights reserved.
+**
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Lesser General Public
+** License as published by the Free Software Foundation; either
+** version 2.1 of the License, or (at your option) any later version.
+**
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Lesser General Public License for more details.
+**
+** In addition, as a special exception,  that plugins developed for LiteIDE,
+** are allowed to remain closed sourced and can be distributed under any license .
+** These rights are included in the file LGPL_EXCEPTION.txt in this package.
+**
+**************************************************************************/
+// Module: golangcodeplugin.cpp
+// Creator: visualfc <visualfc@gmail.com>
+// date: 2011-5-19
+// $Id: golangcodeplugin.cpp,v 1.0 2011-7-25 visualfc Exp $
+
 #include "golangcodeplugin.h"
 #include "litefindobj.h"
 #include "liteeditorapi/liteeditorapi.h"
@@ -28,19 +53,14 @@ bool GolangCodePlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
 
-    LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
-    if (manager) {
-        connect(manager,SIGNAL(buildChanged(LiteApi::IBuild*)),this,SLOT(buildChanged(LiteApi::IBuild*)));
-    }
-
     m_code = new GolangCode(app,this);
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     return true;
 }
 
-void GolangCodePlugin::buildChanged(LiteApi::IBuild *build)
+QStringList GolangCodePlugin::dependPluginList() const
 {
-    m_code->setBuild(build);
+    return QStringList() << "plugin/liteenv";
 }
 
 void GolangCodePlugin::currentEditorChanged(LiteApi::IEditor *editor)
