@@ -49,23 +49,29 @@ QProcessEnvironment Env::env() const
     return m_env;
 }
 
-void Env::loadEnv(LiteApi::IEnvManager *manager, const QString &filePath)
+void Env::reload()
 {
-    QFile f(filePath);
+    if (m_filePath.isEmpty()) {
+        return;
+    }
+    QFile f(m_filePath);
     if (!f.open(QIODevice::ReadOnly)) {
         return;
     }
+    m_env = loadEnv(&f);
+    f.close();
+}
 
-    Env *env = new Env(manager);
-    env->m_id = QFileInfo(filePath).baseName();
-
+QProcessEnvironment Env::loadEnv(QIODevice *dev)
+{
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 #ifdef Q_OS_WIN
     QRegExp rx("\\%([\\w]+)\\%");
 #else
     QRegExp rx("\\$([\\w]+)");
 #endif
-    while (!f.atEnd()) {
-        QString line = f.readLine().trimmed();
+    while (!dev->atEnd()) {
+        QString line = dev->readLine().trimmed();
         int pos = line.indexOf("=");
         if (pos == -1) {
             continue;
@@ -79,7 +85,7 @@ void Env::loadEnv(LiteApi::IEnvManager *manager, const QString &filePath)
             if (pos == -1) {
                 break;
             }
-            QString v = env->m_env.value(rx.cap(1));
+            QString v = env.value(rx.cap(1));
             if (!v.isEmpty()) {
                 value.replace(pos,rx.cap(0).length(),v);
                 pos = 0;
@@ -87,8 +93,23 @@ void Env::loadEnv(LiteApi::IEnvManager *manager, const QString &filePath)
                 pos += rx.matchedLength();
             }
         }
-        env->m_env.insert(key,value);
+        env.insert(key,value);
     }
+    return env;
+}
+
+void Env::loadEnv(EnvManager *manager, const QString &filePath)
+{
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly)) {
+        return;
+    }
+
+    Env *env = new Env(manager);
+    env->m_filePath = filePath;
+    env->m_id = QFileInfo(filePath).baseName();
+    env->m_env = loadEnv(&f);
+    f.close();
     manager->addEnv(env);
 }
 
@@ -136,21 +157,10 @@ void EnvManager::setCurrentEnv(LiteApi::IEnv *env)
         return;
     }
     m_curEnv = env;
+    if (m_curEnv) {
+        m_curEnv->reload();
+    }
     emit currentEnvChanged(m_curEnv);
-
-    if (m_curEnv == 0) {
-        return;
-    }
-    if (m_curEnv->id() == m_envCmb->currentText()) {
-        return;
-    }
-
-    for (int i = 0; i < m_envCmb->count(); i++) {
-        if (m_envCmb->itemText(i) == env->id()) {
-            m_envCmb->setCurrentIndex(i);
-            break;
-        }
-    }
 }
 
 LiteApi::IEnv *EnvManager::currentEnv() const
@@ -201,7 +211,7 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
 
     QString id = m_liteApp->settings()->value("LiteEnv/current","system").toString();
     if (!id.isEmpty()) {
-        envActivated(id);
+        this->setCurrentEnvId(id);
     }
 
     m_liteApp->actionManager()->addToolBar(m_toolBar);
@@ -209,6 +219,22 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
 
     return true;
 }
+
+void EnvManager::setCurrentEnvId(const QString &id)
+{
+    LiteApi::IEnv *env = findEnv(id);
+    if (!env) {
+        return;
+    }
+    for (int i = 0; i < m_envCmb->count(); i++) {
+        if (m_envCmb->itemText(i) == id) {
+            m_envCmb->setCurrentIndex(i);
+            break;
+        }
+    }
+    setCurrentEnv(env);
+}
+
 
 void EnvManager::envActivated(QString id)
 {

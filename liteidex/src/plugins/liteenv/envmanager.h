@@ -30,6 +30,7 @@
 
 class QComboBox;
 
+class EnvManager;
 class Env : public LiteApi::IEnv
 {
     Q_OBJECT
@@ -38,8 +39,12 @@ public:
 public:
     virtual QString id() const;
     virtual QProcessEnvironment env() const;
-    static void loadEnv(LiteApi::IEnvManager *manager, const QString &filePath);
+    virtual void reload();
+public:
+    static QProcessEnvironment loadEnv(QIODevice *dev);
+    static void loadEnv(EnvManager *manager, const QString &filePath);
 protected:
+    QString m_filePath;
     QString m_id;
     QProcessEnvironment m_env;
 };
@@ -52,16 +57,17 @@ public:
     ~EnvManager();
 public:
     virtual bool initWithApp(LiteApi::IApplication *app);
-    virtual void addEnv(LiteApi::IEnv *build);
-    virtual void removeEnv(LiteApi::IEnv *build);
-    virtual LiteApi::IEnv *findEnv(const QString &id) const;
     virtual QList<LiteApi::IEnv*> envList() const;
-    virtual void setCurrentEnv(LiteApi::IEnv *env);
+    virtual LiteApi::IEnv *findEnv(const QString &id) const;
+    virtual void setCurrentEnvId(const QString &id);
     virtual LiteApi::IEnv *currentEnv() const;
     virtual QProcessEnvironment currentEnvironment() const;
 protected slots:
     void envActivated(QString);
 public:
+    void setCurrentEnv(LiteApi::IEnv *env);
+    void addEnv(LiteApi::IEnv *build);
+    void removeEnv(LiteApi::IEnv *build);
     void loadEnvFiles(const QString &path);
 protected:
     QList<LiteApi::IEnv*>    m_envList;

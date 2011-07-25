@@ -39,6 +39,7 @@ public:
     virtual ~IEnv() {}
     virtual QString id() const = 0;
     virtual QProcessEnvironment env() const = 0;
+    virtual void reload() = 0;
 };
 
 class IEnvManager : public IManager
@@ -46,11 +47,9 @@ class IEnvManager : public IManager
     Q_OBJECT
 public:
     IEnvManager(QObject *parent = 0) : IManager(parent) {}
-    virtual void addEnv(IEnv *env) = 0;
-    virtual void removeEnv(IEnv *env) = 0;
-    virtual IEnv *findEnv(const QString &id) const = 0;
     virtual QList<IEnv*> envList() const = 0;
-    virtual void setCurrentEnv(IEnv *env) = 0;
+    virtual IEnv *findEnv(const QString &id) const = 0;
+    virtual void setCurrentEnvId(const QString &id) = 0;
     virtual IEnv *currentEnv() const = 0;
     virtual QProcessEnvironment currentEnvironment() const = 0;
 signals:
