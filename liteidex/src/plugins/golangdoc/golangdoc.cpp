@@ -53,7 +53,8 @@
 GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
     m_liteApp(app),
-    m_docBrowser(0)
+    m_docBrowser(0),
+    m_build(0)
 {
     m_findProcess = new ProcessEx(this);
     m_godocProcess = new ProcessEx(this);
@@ -126,6 +127,12 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         m_docBrowser->browser()->setHtml(data);
     }
 
+    LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
+    if (manager) {
+        connect(manager,SIGNAL(buildChanged(LiteApi::IBuild*)),this,SLOT(buildChanged(LiteApi::IBuild*)));
+        buildChanged(manager->currentBuild());
+    }
+
     connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
     connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
@@ -145,6 +152,54 @@ GolangDoc::~GolangDoc()
     }
     delete m_widget;
 }
+
+void GolangDoc::buildChanged(LiteApi::IBuild *build)
+{
+    if (m_build) {
+        disconnect(m_build,0,this,0);
+    }
+    m_build = build;
+    if (m_build) {
+        connect(m_build,SIGNAL(buildEnvChanged(QString)),this,SLOT(buildEnvChanged(QString)));
+    }
+    changeProcessEnv();
+}
+
+void GolangDoc::buildEnvChanged(QString)
+{
+    changeProcessEnv();
+}
+
+void GolangDoc::changeProcessEnv()
+{
+    QString goroot;
+    QString cmd;
+    if (m_build) {
+        m_findProcess->setEnvironment(m_build->currentEnv().toStringList());
+        m_godocProcess->setEnvironment(m_build->currentEnv().toStringList());
+        goroot = m_build->currentEnv().value("GOROOT");
+        QString gobin = m_build->currentEnv().value("GOBIN");
+        if (gobin.isEmpty()) {
+            QString goroot = m_build->currentEnv().value("GOROOT");
+            gobin = goroot+"/bin";
+        }
+        cmd = FileUtil::findExecute(gobin+"/godoc");
+        if (cmd.isEmpty()) {
+            cmd = FileUtil::lookPath("godoc",m_build->currentEnv(),true);
+        }
+    } else {
+        m_findProcess->setEnvironment(QProcess::systemEnvironment());
+        m_godocProcess->setEnvironment(QProcess::systemEnvironment());
+        goroot = QProcessEnvironment::systemEnvironment().value("GOROOT");
+    }
+    if (cmd.isEmpty()) {
+        cmd = FileUtil::lookPath("godoc",QProcessEnvironment::systemEnvironment(),true);
+    }
+    m_goroot = goroot;
+    m_godocCmd = cmd;
+    m_findCmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/godocview");
+}
+
 
 void GolangDoc::listPkg()
 {
@@ -169,16 +224,7 @@ void GolangDoc::listPkg()
 
 void GolangDoc::listCmd()
 {
-    LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
-    if (manager) {
-        LiteApi::IBuild *build = manager->currentBuild();
-        if (build) {
-            m_findProcess->setEnvironment(build->currentEnv().toStringList());
-        } else {
-            m_findProcess->setEnvironment(QProcess::systemEnvironment());
-        }
-    }
-    QString cmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/godocview");
+    QString cmd = m_findCmd;
     if (cmd.isEmpty()) {
         return;
     }
@@ -197,16 +243,7 @@ void GolangDoc::findPackage(QString pkgname)
     if (pkgname.isEmpty()) {
         return;
     }
-    LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
-    if (manager) {
-        LiteApi::IBuild *build = manager->currentBuild();
-        if (build) {
-            m_findProcess->setEnvironment(build->currentEnv().toStringList());
-        } else {
-            m_findProcess->setEnvironment(QProcess::systemEnvironment());
-        }
-    }
-    QString cmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/godocview");
+    QString cmd = m_findCmd;
     if (cmd.isEmpty()) {
         return;
     }
@@ -256,36 +293,22 @@ void GolangDoc::godocPackage(QString package)
     if (package.isEmpty()) {
         return;
     }
-    QString cmd;
-    LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
-    if (manager) {
-        LiteApi::IBuild *build = manager->currentBuild();
-        if (build) {
-            m_goroot = build->currentEnv().value("GOROOT");
-            QString gobin = build->currentEnv().value("GOBIN");
-            if (gobin.isEmpty()) {
-                QString goroot = build->currentEnv().value("GOROOT");
-                gobin = goroot+"/bin";
-            }
-            cmd = FileUtil::findExecute(gobin+"/godoc");
-            if (cmd.isEmpty()) {
-                cmd = FileUtil::lookPath("godoc",build->currentEnv(),true);
-            }
-        }
-    }
-    if (cmd.isEmpty()) {
-        cmd = FileUtil::lookPath("godoc",QProcessEnvironment::systemEnvironment(),true);
-    }
-    if (m_goroot.isEmpty()) {
-        m_goroot = QProcessEnvironment::systemEnvironment().value("GOROOT");
-    }
 
+    QString *html = m_htmlCache[m_findText];
+    if (html && !html->isEmpty()) {
+        m_docBrowser->browser()->setHtml(*html);
+        return;
+    }
+    QString cmd = m_godocCmd;
     if (cmd.isEmpty()) {
         return;
     }
     m_godocData.clear();
     QStringList args;
     args << "-html=true" << package.split(" ");
+    if (m_godocProcess->isRuning()) {
+        m_godocProcess->waitForFinished(200);
+    }
     m_godocProcess->start(cmd,args);
 }
 
@@ -300,14 +323,11 @@ void GolangDoc::godocOutput(QByteArray data,bool bStderr)
 void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
 {
     if (!error && code == 0 && m_docBrowser != 0) {
-        QString data = m_templateData;
-        if (!data.isEmpty()) {
-            data.replace("{title}","Package "+m_findText);
-            data.replace("{content}",m_godocData);
-            m_docBrowser->browser()->setHtml(data);
-        } else {
-            m_docBrowser->browser()->setHtml(m_godocData);
-        }
+        QString *data = new QString(m_templateData);
+        data->replace("{title}","Package "+m_findText);
+        data->replace("{content}",m_godocData);
+        m_htmlCache.insert(m_findText,data);
+        m_docBrowser->browser()->setHtml(*data);
         BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
         if (browserManager) {
             browserManager->setActive(m_docBrowser);
@@ -325,7 +345,13 @@ void GolangDoc::anchorClicked(QUrl url)
     QString path = url.encodedPath();
     QFileInfo info(url.toLocalFile());
     if (url.path() == "/src/pkg/" || url.path() == "/src/cmd/") {
-        QString cmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/godocview");
+        m_findText = url.path();
+        QString *html = m_htmlCache[m_findText];
+        if (html && !html->isEmpty()) {
+            m_docBrowser->browser()->setHtml(*html);
+            return;
+        }
+        QString cmd = m_findCmd;
         if (cmd.isEmpty()) {
             return;
         }
@@ -335,6 +361,12 @@ void GolangDoc::anchorClicked(QUrl url)
         m_godocProcess->start(cmd,args);
     } else if (info.suffix() == "html") {
         QString name = m_goroot+"/doc/"+info.fileName();
+        m_findText = name;
+        QString *html = m_htmlCache[m_findText];
+        if (html && !html->isEmpty()) {
+            m_docBrowser->browser()->setHtml(*html);
+            return;
+        }
         QFile file(name);
         if (file.open(QIODevice::ReadOnly)) {
             QString data = m_templateData;
