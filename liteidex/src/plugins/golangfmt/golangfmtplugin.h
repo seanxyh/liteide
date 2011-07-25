@@ -28,7 +28,6 @@
 
 #include "golangfmt_global.h"
 #include "liteapi.h"
-#include "litebuildapi/litebuildapi.h"
 #include <QtPlugin>
 
 class GolangFmt;
@@ -43,13 +42,10 @@ public:
     virtual QStringList dependPluginList() const;
 protected slots:
     void editorCreated(LiteApi::IEditor*);
-    void buildChanged(LiteApi::IBuild*);
-    void gofmt();
 protected:
     QAction   *m_gofmtAct;
     QToolButton *m_fmtBtn;
     GolangFmt *m_fmt;
-    LiteApi::IBuild *m_build;
 };
 
 #endif // GOLANGFMTPLUGIN_H
