@@ -9,6 +9,6 @@ GLOPT =
 GOFILES = \
 	filesystem.go \
 	dirtrees.go \
-	pkglist.go \
+	godocdir.go \
 	template.go \
 	main.go \

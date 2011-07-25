@@ -34,6 +34,10 @@ $list
 {.end}
 `
 
+var listLite = `
+$list{.section Dirs}{.repeated section List},{Path|path-esc}{.end}{.end}
+`
+
 var findHTML = `
 <!-- Golang Package List -->
 {.section Find}

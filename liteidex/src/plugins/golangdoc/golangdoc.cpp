@@ -72,13 +72,28 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_findComboBox->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
     m_findComboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
+    m_findAct = new QAction(tr("Find"),this);
+    m_listPkgAct = new QAction(tr("List \"src/pkg\""),this);
+    m_listCmdAct = new QAction(tr("List \"src/cmd\""),this);
+
+    m_findMenu = new QMenu(tr("Find"));
+    m_findMenu->addAction(m_findAct);
+    m_findMenu->addSeparator();
+    m_findMenu->addAction(m_listPkgAct);
+    m_findMenu->addAction(m_listCmdAct);
+
+    QToolButton *findBtn = new QToolButton;
+    findBtn->setPopupMode(QToolButton::MenuButtonPopup);
+    findBtn->setDefaultAction(m_findAct);
+    findBtn->setMenu(m_findMenu);
+
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(4);
 
     QHBoxLayout *findLayout = new QHBoxLayout;
     findLayout->setMargin(0);
-    findLayout->addWidget(new QLabel(tr("Find:")));
     findLayout->addWidget(m_findComboBox);
+    findLayout->addWidget(findBtn);
 
     mainLayout->addLayout(findLayout);
     mainLayout->addWidget(m_findResultListView);
@@ -117,6 +132,9 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     connect(m_findProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
     connect(m_findProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(findFinish(bool,int,QString)));
     connect(m_findResultListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickListView(QModelIndex)));
+    connect(m_findAct,SIGNAL(triggered()),this,SLOT(findPackage()));
+    connect(m_listPkgAct,SIGNAL(triggered()),this,SLOT(listPkg()));
+    connect(m_listCmdAct,SIGNAL(triggered()),this,SLOT(listCmd()));
 }
 
 GolangDoc::~GolangDoc()
@@ -128,10 +146,57 @@ GolangDoc::~GolangDoc()
     delete m_widget;
 }
 
+void GolangDoc::listPkg()
+{
+    LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
+    if (manager) {
+        LiteApi::IBuild *build = manager->currentBuild();
+        if (build) {
+            m_findProcess->setEnvironment(build->currentEnv().toStringList());
+        } else {
+            m_findProcess->setEnvironment(QProcess::systemEnvironment());
+        }
+    }
+    QString cmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/godocview");
+    if (cmd.isEmpty()) {
+        return;
+    }
+    QStringList args;
+    args << "-mode=lite" << "-list=src/pkg";
+    m_findData.clear();
+    m_findProcess->start(cmd,args);
+}
+
+void GolangDoc::listCmd()
+{
+    LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
+    if (manager) {
+        LiteApi::IBuild *build = manager->currentBuild();
+        if (build) {
+            m_findProcess->setEnvironment(build->currentEnv().toStringList());
+        } else {
+            m_findProcess->setEnvironment(QProcess::systemEnvironment());
+        }
+    }
+    QString cmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/godocview");
+    if (cmd.isEmpty()) {
+        return;
+    }
+    QStringList args;
+    args << "-mode=lite" << "-list=src/cmd";
+    m_findData.clear();
+    m_findProcess->start(cmd,args);
+}
 
 
 void GolangDoc::findPackage(QString pkgname)
 {
+    if (pkgname.isEmpty()) {
+        pkgname = m_findComboBox->currentText();
+    }
+    if (pkgname.isEmpty()) {
+        return;
+    }
     LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
     if (manager) {
         LiteApi::IBuild *build = manager->currentBuild();
@@ -176,6 +241,9 @@ void GolangDoc::findFinish(bool error,int code,QString msg)
             } else {
                 m_findResultModel->setStringList(array);
             }
+        } else if (array.size() >= 1 && array.at(0) == "$list") {
+            array.removeFirst();
+            m_findResultModel->setStringList(array);
         }
     } else {
         m_findResultModel->setStringList(QStringList() << "<error>");
@@ -262,7 +330,7 @@ void GolangDoc::anchorClicked(QUrl url)
             return;
         }
         QStringList args;
-        args << "-subdir="+path<< "-mode=html" << "-find=*";
+        args << "-mode=html"<< "-list="+url.path();
         m_godocData.clear();
         m_godocProcess->start(cmd,args);
     } else if (info.suffix() == "html") {
