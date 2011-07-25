@@ -422,10 +422,15 @@ void LiteApp::loadSession(const QString &name)
         m_fileManager->openProject(projectName);
     }
     foreach(QString fileName, fileList) {
-        m_editorManager->loadEditor(fileName);
+        m_fileManager->openEditor(fileName);
     }
     if (!editorName.isEmpty()) {
         m_fileManager->openEditor(editorName);
+    } else {
+        QList<IEditor*> editors = m_editorManager->editorList();
+        if (!editors.isEmpty()) {
+            m_editorManager->setCurrentEditor(editors[0]);
+        }
     }
 
     m_mainwindow->restoreState(m_settings->value(session+"_state").toByteArray());
