@@ -28,6 +28,7 @@
 
 #include "liteapi.h"
 #include "litebuildapi/litebuildapi.h"
+#include "liteenvapi/liteenvapi.h"
 #include <QUrl>
 #include <QModelIndex>
 #include <QCache>
@@ -48,8 +49,7 @@ public:
 signals:
 
 public slots:
-    void buildChanged(LiteApi::IBuild*);
-    void buildEnvChanged(QString);
+    void currentEnvChanged(LiteApi::IEnv*);
     void listCmd();
     void listPkg();
     void findPackage(QString name = QString());
@@ -76,12 +76,12 @@ protected:
     QString m_goroot;
     QByteArray  m_godocData;
     QByteArray  m_findData;
-    QByteArray  m_templateData;
+    QString  m_templateData;
     QAction *m_listPkgAct;
     QAction *m_listCmdAct;
     QAction *m_findAct;
     QMenu *m_findMenu;
-    LiteApi::IBuild *m_build;
+    LiteApi::IEnvManager *m_envManager;
     QCache<QString,QString> m_htmlCache;
     QString m_godocCmd;
     QString m_findCmd;

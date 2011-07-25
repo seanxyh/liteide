@@ -6,6 +6,7 @@
 #include <QToolBar>
 #include <QComboBox>
 #include <QLabel>
+#include <QDebug>
 
 Env::Env(QObject *parent) :
     LiteApi::IEnv(parent)
@@ -18,7 +19,7 @@ QString Env::id() const
     return m_id;
 }
 
-QProcessEnvironment Env::currentEnv() const
+QProcessEnvironment Env::env() const
 {
     return m_env;
 }
@@ -132,6 +133,14 @@ LiteApi::IEnv *EnvManager::currentEnv() const
     return m_curEnv;
 }
 
+QProcessEnvironment EnvManager::currentEnvironment() const
+{
+    if (m_curEnv) {
+        return m_curEnv->env();
+    }
+    return QProcessEnvironment::systemEnvironment();
+}
+
 void EnvManager::loadEnvFiles(const QString &path)
 {
     QDir dir = path;
@@ -163,14 +172,15 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
         m_envCmb->addItem(env->id());
     }
 
+    m_liteApp->extension()->addObject("LiteApi.IEnvManager",this);
+
     QString id = m_liteApp->settings()->value("LiteEnv/current").toString();
-    envActivated(id);
+    if (!id.isEmpty()) {
+        envActivated(id);
+    }
 
     m_liteApp->actionManager()->addToolBar(m_toolBar);
     connect(m_envCmb,SIGNAL(activated(QString)),this,SLOT(envActivated(QString)));
-
-
-    m_liteApp->extension()->addObject("LiteApi.IEnvManager",this);
 
     return true;
 }
