@@ -29,6 +29,7 @@
 #include <QObject>
 
 #include "liteapi.h"
+#include "liteenvapi/liteenvapi.h"
 
 class ProcessEx;
 class GolangFmt : public QObject
@@ -36,13 +37,16 @@ class GolangFmt : public QObject
     Q_OBJECT
 public:
     explicit GolangFmt(LiteApi::IApplication *app,QObject *parent = 0);
-    void gofmt(const QString &cmd);
 public slots:
+    void gofmt();
+    void currentEnvChanged(LiteApi::IEnv*);
     void fmtOutput(QByteArray,bool);
     void fmtFinish(bool,int,QString);
 protected:
     LiteApi::IApplication *m_liteApp;
     ProcessEx *m_process;
+    LiteApi::IEnvManager *m_envManager;
+    QString m_gofmtCmd;
     QByteArray m_data;
 };
 

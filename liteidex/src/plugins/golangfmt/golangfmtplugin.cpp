@@ -45,8 +45,7 @@
 //lite_memory_check_end
 
 GolangFmtPlugin::GolangFmtPlugin()
-    : m_fmt(0),
-      m_build(0)
+    : m_fmt(0)
 {
     m_info->setId("plugin/golangfmt");
     m_info->setName("GolangFmt");
@@ -60,21 +59,12 @@ bool GolangFmtPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
-    LiteApi::IBuildManager *manager = LiteApi::findExtensionObject<LiteApi::IBuildManager*>(m_liteApp,"LiteApi.IBuildManager");
-    if (manager) {
-        m_build = manager->currentBuild();
-        connect(manager,SIGNAL(buildChanged(LiteApi::IBuild*)),this,SLOT(buildChanged(LiteApi::IBuild*)));
-    }
+
     return true;
 }
 
 QStringList GolangFmtPlugin::dependPluginList() const{
-    return QStringList() << "plugin/litebuild";
-}
-
-void GolangFmtPlugin::buildChanged(LiteApi::IBuild *build)
-{
-    m_build = build;
+    return QStringList() << "plugin/liteenv";
 }
 
 void GolangFmtPlugin::editorCreated(LiteApi::IEditor *editor)
@@ -98,28 +88,10 @@ void GolangFmtPlugin::editorCreated(LiteApi::IEditor *editor)
         m_gofmtAct = new QAction(QIcon(":/images/gofmt.png"),tr("gofmt"),this);
         m_gofmtAct->setShortcut(QKeySequence("SHIFT+F7"));
         m_gofmtAct->setToolTip("gofmt(Shift+F7)");
-        connect(m_gofmtAct,SIGNAL(triggered()),this,SLOT(gofmt()));
+        connect(m_gofmtAct,SIGNAL(triggered()),m_fmt,SLOT(gofmt()));
     }
     toolBar->addSeparator();
     toolBar->addAction(m_gofmtAct);
 }
-
-void GolangFmtPlugin::gofmt()
-{
-    if (!m_build || !m_fmt) {
-        return;
-    }
-    QString gobin = m_build->currentEnv().value("GOBIN");
-    if (gobin.isEmpty()) {
-        QString goroot = m_build->currentEnv().value("GOROOT");
-        gobin = goroot+"/bin";
-    }
-    QString cmd = FileUtil::findExecute(gobin+"/gofmt");
-    if (cmd.isEmpty()) {
-        cmd = FileUtil::lookPath("gofmt",m_build->currentEnv(),true);
-    }
-    m_fmt->gofmt(cmd);
-}
-
 
 Q_EXPORT_PLUGIN(GolangFmtPlugin)

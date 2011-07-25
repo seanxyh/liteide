@@ -53,11 +53,37 @@ GolangFmt::GolangFmt(LiteApi::IApplication *app,QObject *parent) :
     m_process = new ProcessEx(this);
     connect(m_process,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(fmtOutput(QByteArray,bool)));
     connect(m_process,SIGNAL(extFinish(bool,int,QString)),this,SLOT(fmtFinish(bool,int,QString)));
+
+    m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
+    if (m_envManager) {
+        connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
+        currentEnvChanged(m_envManager->currentEnv());
+    }
 }
 
-void GolangFmt::gofmt(const QString &cmd)
+void GolangFmt::currentEnvChanged(LiteApi::IEnv*)
+{
+    QProcessEnvironment env = m_envManager->currentEnvironment();
+    QString goroot = env.value("GOROOT");
+    QString gobin = env.value("GOBIN");
+    if (!goroot.isEmpty() && gobin.isEmpty()) {
+        gobin = goroot+"/bin";
+    }
+    QString gofmt = FileUtil::findExecute(gobin+"/gofmt");
+    if (gofmt.isEmpty()) {
+        gofmt = FileUtil::lookPath("gofmt",env,true);
+    }
+    m_process->setProcessEnvironment(env);
+    m_gofmtCmd = gofmt;
+}
+
+void GolangFmt::gofmt()
 {
     if (m_process->isRuning()) {
+        return;
+    }
+
+    if (m_gofmtCmd.isEmpty()) {
         return;
     }
 
@@ -80,7 +106,7 @@ void GolangFmt::gofmt(const QString &cmd)
     args << fileName;
     m_data.clear();;
     m_process->setUserData(0,fileName);
-    m_process->start(cmd,args);
+    m_process->start(m_gofmtCmd,args);
 }
 
 void GolangFmt::fmtOutput(QByteArray data,bool stdErr)
