@@ -1,3 +1,8 @@
+--- 2011.7.25
+Ver x6 0.9375
+* add LiteEnv plugin: LiteIDE System Environment
+* add tools/godocview : find package
+
 --- 2011.7.8
 Ver x5 0.78125
 * add CodeSearch plugin : Editor Search and Replace
