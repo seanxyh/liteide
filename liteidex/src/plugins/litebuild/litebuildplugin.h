@@ -38,6 +38,8 @@ class LiteBuildPlugin : public LiteApi::IPlugin
 public:
     LiteBuildPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
+    virtual QStringList dependPluginList() const;
+protected:
     LiteBuild *m_build;
  };
 

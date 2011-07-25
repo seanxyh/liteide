@@ -27,6 +27,7 @@
 #define LITEBUILD_H
 
 #include "liteapi.h"
+#include "liteenvapi/liteenvapi.h"
 #include "litebuildapi/litebuildapi.h"
 
 class BuildManager;
@@ -40,8 +41,9 @@ public:
     explicit LiteBuild(LiteApi::IApplication *app, QObject *parent = 0);
     virtual ~LiteBuild();
     void setCurrentBuild(LiteApi::IBuild *build);
-    void resetProjectEnv(LiteApi::IProject *project);
+    void resetLiteEnv(LiteApi::IProject *project);
 public slots:
+    void currentEnvChanged(LiteApi::IEnv*);
     void currentProjectChanged(LiteApi::IProject*);
     void reloadProject();
     void currentEditorChanged(LiteApi::IEditor*);
@@ -52,14 +54,12 @@ public slots:
     void stopAction();
     void dbclickBuildOutput();
     void enterTextBuildOutput(QString);
-    void envIndexChanged(QString);
 protected:
     LiteApi::IApplication   *m_liteApp;
     BuildManager    *m_manager;
     LiteApi::IBuild *m_build;
+    LiteApi::IEnvManager *m_envManager;
     QToolBar    *m_toolBar;
-    QComboBox   *m_envCombBox;
-    QAction     *m_envAct;
     QList<QAction*> m_actions;
     QMap<QString,QString> m_liteEnv;
     ProcessEx *m_process;
