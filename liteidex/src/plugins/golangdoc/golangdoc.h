@@ -46,7 +46,9 @@ public:
 signals:
 
 public slots:
-    void findPackage(QString);
+    void listCmd();
+    void listPkg();
+    void findPackage(QString name = QString());
     void findOutput(QByteArray,bool);
     void findFinish(bool,int,QString);
     void godocPackage(QString);
@@ -69,6 +71,10 @@ protected:
     QByteArray  m_godocData;
     QByteArray  m_findData;
     QByteArray  m_templateData;
+    QAction *m_listPkgAct;
+    QAction *m_listCmdAct;
+    QAction *m_findAct;
+    QMenu *m_findMenu;
 };
 
 #endif // GOLANGDOC_H

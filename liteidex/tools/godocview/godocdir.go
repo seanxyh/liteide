@@ -1,4 +1,4 @@
-// gopkgview project pkglist.go
+// gopkgview project godocdir.go
 package main
 
 import (
@@ -108,6 +108,75 @@ type Info struct {
 	Best *DirEntry
 	Dirs *DirList
 }
+
+type GodocDir struct {
+	pkg *Directory
+	cmd *Directory
+}
+
+func NewSourceDir(goroot string) *GodocDir {
+	pkg := newDirectory(filepath.Join(goroot, "src", "pkg"), nil, -1)
+	cmd := newDirectory(filepath.Join(goroot, "src", "cmd"), nil, -1)
+	return &GodocDir{pkg, cmd}
+}
+
+func (dir *GodocDir) FindInfo(name string) *Info {
+	max1, best1, list1 := FindDir(dir.pkg, name)
+	max2, best2, list2 := FindDir(dir.cmd, name)
+	var maxHeight int
+	if max1 >= max2 {
+		maxHeight = max1
+	} else {
+		maxHeight = max2
+	}
+	var best *DirEntry
+	if best1 != nil {
+		best = best1
+		if best2 != nil {
+			list2 = append(list2,*best2)
+		}	
+	} else {
+		best = best2
+	}
+	return &Info{name, best, &DirList{maxHeight, appendList(list1, list2)}}
+}
+
+func FindDir(dir *Directory, pkgname string) (maxHeight int, best *DirEntry, list []DirEntry) {
+	if dir == nil {
+		return
+	}
+	dirList := dir.listing(true)
+	max := len(dirList.List)
+	maxHeight = dirList.MaxHeight
+
+	for i := 0; i < max; i++ {
+		name := dirList.List[i].Name
+		path := filepath.ToSlash(dirList.List[i].Path)
+		if name == pkgname || path == pkgname {
+			best = &dirList.List[i]
+		} else if strings.Contains(path, pkgname) {
+			list = append(list, dirList.List[i])
+		}
+	}
+	return
+}
+
+func appendList(list1, list2 []DirEntry) []DirEntry {
+	list := list1
+	max := len(list2)
+	for i := 0; i < max; i++ {
+		list = append(list, list2[i])
+	}
+	return list
+}
+
+func NewListInfo(root string) *Info {
+	dir := newDirectory(root, nil, -1)
+	if dir == nil {
+		return nil
+	}
+	return &Info{"", nil, dir.listing(true)}
+}	
 
 func FindPkgInfo(root string, pkgname string) *Info {
 	dir := newDirectory(root, nil, -1)
