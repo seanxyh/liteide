@@ -1,9 +1,34 @@
+/**************************************************************************
+** This file is part of LiteIDE
+**
+** Copyright (c) 2011 LiteIDE Team. All rights reserved.
+**
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Lesser General Public
+** License as published by the Free Software Foundation; either
+** version 2.1 of the License, or (at your option) any later version.
+**
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Lesser General Public License for more details.
+**
+** In addition, as a special exception,  that plugins developed for LiteIDE,
+** are allowed to remain closed sourced and can be distributed under any license .
+** These rights are included in the file LGPL_EXCEPTION.txt in this package.
+**
+**************************************************************************/
+// Module: golangcode.h
+// Creator: visualfc <visualfc@gmail.com>
+// date: 2011-5-19
+// $Id: golangcode.h,v 1.0 2011-7-25 visualfc Exp $
+
 #ifndef GOLANGCODE_H
 #define GOLANGCODE_H
 
 #include "liteapi.h"
 #include "liteeditorapi/liteeditorapi.h"
-#include "litebuildapi/litebuildapi.h"
+#include "liteenvapi/liteenvapi.h"
 
 class QProcess;
 class GolangCode : public QObject
@@ -13,8 +38,8 @@ public:
     explicit GolangCode(LiteApi::IApplication *app, QObject *parent = 0);
     ~GolangCode();
     void setCompleter(LiteApi::ICompleter *completer);
-    void setBuild(LiteApi::IBuild *build);
 public slots:
+    void currentEnvChanged(LiteApi::IEnv*);
     void prefixChanged(QTextCursor,QString);
     void started();
     void finished(int,QProcess::ExitStatus);
@@ -24,8 +49,9 @@ protected:
     QString     m_prefix;
     QProcess   *m_process;
     QByteArray  m_writeData;
-    LiteApi::IBuild *m_build;
-    QString     m_cmd;
+    LiteApi::IEnvManager *m_envManager;
+    QString     m_gocodeCmd;
+    bool        m_bLoad;
 };
 
 #endif // GOLANGCODE_H

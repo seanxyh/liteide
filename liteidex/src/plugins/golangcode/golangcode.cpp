@@ -1,5 +1,31 @@
+/**************************************************************************
+** This file is part of LiteIDE
+**
+** Copyright (c) 2011 LiteIDE Team. All rights reserved.
+**
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Lesser General Public
+** License as published by the Free Software Foundation; either
+** version 2.1 of the License, or (at your option) any later version.
+**
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Lesser General Public License for more details.
+**
+** In addition, as a special exception,  that plugins developed for LiteIDE,
+** are allowed to remain closed sourced and can be distributed under any license .
+** These rights are included in the file LGPL_EXCEPTION.txt in this package.
+**
+**************************************************************************/
+// Module: golangcode.cpp
+// Creator: visualfc <visualfc@gmail.com>
+// date: 2011-5-19
+// $Id: golangcode.cpp,v 1.0 2011-7-25 visualfc Exp $
+
 #include "golangcode.h"
 #include "fileutil/fileutil.h"
+#include "liteapi/litefindobj.h"
 #include <QProcess>
 #include <QTextDocument>
 #include <QAbstractItemView>
@@ -17,26 +43,54 @@
 GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
     m_liteApp(app),
-    m_completer(0),
-    m_build(0)
+    m_completer(0)
 {
     m_process = new QProcess(this);
     connect(m_process,SIGNAL(started()),this,SLOT(started()));
     connect(m_process,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
+
+    m_gocodeCmd = m_liteApp->settings()->value("golangcode/cmd").toString();
+    m_bLoad = false;
+    m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
+    if (m_envManager) {
+        connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
+        currentEnvChanged(m_envManager->currentEnv());
+    }
 }
 
 GolangCode::~GolangCode()
 {
-    if (!m_cmd.isEmpty()) {
-        m_process->start(m_cmd,QStringList() << "close",QIODevice::NotOpen);
+    if (!m_gocodeCmd.isEmpty()) {
+        m_liteApp->settings()->setValue("golangcode/cmd",m_gocodeCmd);
+        m_process->start(m_gocodeCmd,QStringList() << "close");
         m_process->waitForFinished(200);
     }
     delete m_process;
 }
 
-void GolangCode::setBuild(LiteApi::IBuild *build)
+void GolangCode::currentEnvChanged(LiteApi::IEnv*)
 {
-    m_build = build;
+    QProcessEnvironment env = m_envManager->currentEnvironment();
+    QString goroot = env.value("GOROOT");
+    QString gobin = env.value("GOBIN");
+    if (!goroot.isEmpty() && gobin.isEmpty()) {
+        gobin = goroot+"/bin";
+    }
+    QString gocode = FileUtil::findExecute(gobin+"/gocode");
+    if (gocode.isEmpty()) {
+        gocode = FileUtil::lookPath("gocode",env,true);
+    }
+    if (!FileUtil::compareFile(m_gocodeCmd,gocode)) {
+        if (!m_gocodeCmd.isEmpty()) {
+            m_process->start(m_gocodeCmd,QStringList() << "close");
+            m_process->waitForFinished(200);
+        }
+    }
+    m_process->setProcessEnvironment(env);
+    m_gocodeCmd = gocode;
+    if (!m_gocodeCmd.isEmpty()) {
+        m_process->start(m_gocodeCmd);
+    }
 }
 
 void GolangCode::setCompleter(LiteApi::ICompleter *completer)
@@ -52,16 +106,7 @@ void GolangCode::setCompleter(LiteApi::ICompleter *completer)
 
 void GolangCode::prefixChanged(QTextCursor cur,QString pre)
 {
-    QString cmd;
-    if (m_build) {
-        cmd =  FileUtil::lookPath("gocode",m_build->currentEnv(),true);
-    } else {
-        cmd = FileUtil::lookPath("gocode",QProcessEnvironment::systemEnvironment(),true);
-    }
-    if (!cmd.isEmpty()) {
-        m_cmd = cmd;
-    }
-    if (m_cmd.isEmpty()) {
+    if (m_gocodeCmd.isEmpty()) {
         return;
     }
 
@@ -76,22 +121,25 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     m_writeData = src.toUtf8();
     m_prefix = pre;
 
-    if (m_build){
-        m_process->setProcessEnvironment(m_build->currentEnv());
-    } else {
-        m_process->setProcessEnvironment(QProcessEnvironment::systemEnvironment());
-    }
-    m_process->start(m_cmd,args);
+    m_process->start(m_gocodeCmd,args);
 }
 
 void GolangCode::started()
 {
+    if (m_writeData.isEmpty()) {
+        return;
+    }
     m_process->write(m_writeData);
     m_process->closeWriteChannel();
 }
 
 void GolangCode::finished(int,QProcess::ExitStatus)
 {
+    if (m_writeData.isEmpty()) {
+        return;
+    }
+    m_writeData.clear();
+
     QString read = m_process->readAllStandardOutput();
     QStringList all = read.split('\n');
     //func,,Fprint,,func(w io.Writer, a ...interface{}) (n int, error os.Error)

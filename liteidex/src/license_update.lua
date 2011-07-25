@@ -56,8 +56,8 @@ function update_head(file,name)
 	local w_info = string.gsub(info,"$FILENAME",name)
 	w_info = string.gsub(w_info,"$ANCHOR","visualfc")
 	w_info = string.gsub(w_info,"$EMAIL","<visualfc@gmail.com>")
-	w_info = string.gsub(w_info,"$DATE","2011-7-7")
-	w_info = string.gsub(w_info,"$UPDATE","2011-7-8")
+	w_info = string.gsub(w_info,"$DATE","2011-7-25")
+	w_info = string.gsub(w_info,"$UPDATE","2011-7-25")
 	f:write(license..w_info..string.sub(data,i,#data))
 	f:close()
 	print(file)
@@ -85,4 +85,4 @@ function attrdir (path)
 	end
 end
 
--- attrdir("./plugins/golangdoc")
+attrdir("./api/liteenvapi")
