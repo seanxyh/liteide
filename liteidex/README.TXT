@@ -5,7 +5,7 @@ Introduction:
 
 Project:	LiteIDE
 Author:	visualfc (earthworm)
-Version:	x5 (v0.78125)
+Version:	x6 (v0.9375)
 Website:	http://code.google.com/liteide
 
 Features:
