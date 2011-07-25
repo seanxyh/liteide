@@ -38,7 +38,7 @@ public:
     IEnv(QObject *parent = 0): QObject(parent) {}
     virtual ~IEnv() {}
     virtual QString id() const = 0;
-    virtual QProcessEnvironment currentEnv() const = 0;
+    virtual QProcessEnvironment env() const = 0;
 };
 
 class IEnvManager : public IManager
@@ -52,6 +52,7 @@ public:
     virtual QList<IEnv*> envList() const = 0;
     virtual void setCurrentEnv(IEnv *env) = 0;
     virtual IEnv *currentEnv() const = 0;
+    virtual QProcessEnvironment currentEnvironment() const = 0;
 signals:
     void currentEnvChanged(LiteApi::IEnv*);
 };

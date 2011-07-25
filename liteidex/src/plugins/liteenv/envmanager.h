@@ -12,7 +12,7 @@ public:
     Env(QObject *parent = 0);
 public:
     virtual QString id() const;
-    virtual QProcessEnvironment currentEnv() const;
+    virtual QProcessEnvironment env() const;
     static void loadEnv(LiteApi::IEnvManager *manager, const QString &filePath);
 protected:
     QString m_id;
@@ -33,6 +33,7 @@ public:
     virtual QList<LiteApi::IEnv*> envList() const;
     virtual void setCurrentEnv(LiteApi::IEnv *env);
     virtual LiteApi::IEnv *currentEnv() const;
+    virtual QProcessEnvironment currentEnvironment() const;
 protected slots:
     void envActivated(QString);
 public:

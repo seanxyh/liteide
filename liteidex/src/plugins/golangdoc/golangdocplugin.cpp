@@ -56,7 +56,7 @@ bool GolangDocPlugin::initWithApp(LiteApi::IApplication *app)
 
 QStringList GolangDocPlugin::dependPluginList() const
 {
-    return QStringList() << "plugin/litebuild";
+    return QStringList() << "plugin/liteenv";
 }
 
 void GolangDocPlugin::currentEditorChanged(LiteApi::IEditor *editor)
