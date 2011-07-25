@@ -62,8 +62,10 @@ GolangCode::~GolangCode()
 {
     if (!m_gocodeCmd.isEmpty()) {
         m_liteApp->settings()->setValue("golangcode/cmd",m_gocodeCmd);
-        m_process->start(m_gocodeCmd,QStringList() << "close");
-        m_process->waitForFinished(200);
+        if (m_bLoad) {
+            m_process->start(m_gocodeCmd,QStringList() << "close");
+            m_process->waitForFinished(200);
+        }
     }
     delete m_process;
 }
@@ -84,13 +86,11 @@ void GolangCode::currentEnvChanged(LiteApi::IEnv*)
         if (!m_gocodeCmd.isEmpty()) {
             m_process->start(m_gocodeCmd,QStringList() << "close");
             m_process->waitForFinished(200);
+            m_bLoad = false;
         }
     }
     m_process->setProcessEnvironment(env);
     m_gocodeCmd = gocode;
-    if (!m_gocodeCmd.isEmpty()) {
-        m_process->start(m_gocodeCmd);
-    }
 }
 
 void GolangCode::setCompleter(LiteApi::ICompleter *completer)
@@ -126,6 +126,7 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
 
 void GolangCode::started()
 {
+    m_bLoad = true;
     if (m_writeData.isEmpty()) {
         return;
     }
