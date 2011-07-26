@@ -21,7 +21,7 @@
 // Module: liteeditor.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteeditor.cpp,v 1.0 2011-7-13 visualfc Exp $
+// $Id: liteeditor.cpp,v 1.0 2011-7-26 visualfc Exp $
 
 #include "liteeditor.h"
 #include "liteeditorwidget.h"
@@ -372,11 +372,26 @@ void LiteEditor::applyOption(QString id)
     if (id != "option/liteeditor") {
         return;
     }
+
+    bool autoIndent = m_liteApp->settings()->value("editor/autoindent",true).toBool();
+    bool autoBraces = m_liteApp->settings()->value("editor/autobraces",true).toBool();
+    bool lineNumberVisible = m_liteApp->settings()->value("editor/linenumbervisible",true).toBool();
+
+    m_editorWidget->setAutoIndent(autoIndent);
+    m_editorWidget->setAutoBraces(autoBraces);
+    m_editorWidget->setLineNumberVisible(lineNumberVisible);
+
     QString fontFamily = m_liteApp->settings()->value("editor/family","Courier").toString();
     int fontSize = m_liteApp->settings()->value("editor/fontsize",12).toInt();
+    bool antialias = m_liteApp->settings()->value("editor/antialias",true).toBool();
     QFont font = m_editorWidget->font();
     font.setFamily(fontFamily);
     font.setPointSize(fontSize);
+    if (antialias) {
+        font.setStyleStrategy(QFont::PreferAntialias);
+    } else {
+        font.setStyleStrategy(QFont::NoAntialias);
+    }
     m_editorWidget->setFont(font);
     m_editorWidget->setTabWidth(4);
 

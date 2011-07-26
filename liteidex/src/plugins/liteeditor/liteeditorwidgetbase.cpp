@@ -21,7 +21,7 @@
 // Module: liteeditorwidgetbase.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteeditorwidgetbase.cpp,v 1.0 2011-5-12 visualfc Exp $
+// $Id: liteeditorwidgetbase.cpp,v 1.0 2011-7-26 visualfc Exp $
 
 #include "liteeditorwidgetbase.h"
 //#include "basetextdocumentlayout.h"
@@ -96,6 +96,7 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     m_lastSaveRevision = 0;
     m_extraAreaSelectionNumber = -1;
     m_autoIndent = true;
+    m_autoBraces = true;
     setTabWidth(4);
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(slotUpdateExtraAreaWidth()));
@@ -440,6 +441,39 @@ void LiteEditorWidgetBase::keyPressEvent(QKeyEvent *e)
 {
     bool ro = isReadOnly();
 
+    QChar mr;
+    switch (e->key()) {
+        case '{':
+            mr = '}';
+            break;
+        case '(':
+            mr = ')';
+            break;
+        case '[':
+            mr = ']';
+            break;
+        case '\'':
+            mr = '\'';
+            break;
+        case '\"':
+            mr = '\"';
+            break;
+    }
+    if (!mr.isNull() && m_autoBraces) {
+        QPlainTextEdit::keyPressEvent(e);
+        QTextCursor cursor = textCursor();
+        int pos = cursor.positionInBlock();
+        QString text = cursor.block().text();
+        if (pos <= text.length() && text.at(pos) != mr) {
+            cursor.beginEditBlock();
+            pos = cursor.position();
+            cursor.insertText(mr);
+            cursor.setPosition(pos);
+            cursor.endEditBlock();
+            setTextCursor(cursor);
+        }
+        return;
+    }
     if ( e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return ) {
         if (m_autoIndent) {
             indentEnter(textCursor());
