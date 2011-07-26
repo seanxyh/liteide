@@ -21,7 +21,7 @@
 // Module: liteeditoroption.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteeditoroption.cpp,v 1.0 2011-5-12 visualfc Exp $
+// $Id: liteeditoroption.cpp,v 1.0 2011-7-26 visualfc Exp $
 
 #include "liteeditoroption.h"
 #include "ui_liteeditoroption.h"
@@ -53,6 +53,9 @@ LiteEditorOption::LiteEditorOption(LiteApi::IApplication *app,QObject *parent) :
     m_fontFamily = m_liteApp->settings()->value("editor/family","Courier").toString();
     m_fontSize = m_liteApp->settings()->value("editor/fontsize",12).toInt();
 
+    bool antialias = m_liteApp->settings()->value("editor/antialias",true).toBool();
+    ui->antialiasCheckBox->setChecked(antialias);
+
     const int idx = families.indexOf(m_fontFamily);
     ui->familyComboBox->setCurrentIndex(idx);
 
@@ -71,6 +74,14 @@ LiteEditorOption::LiteEditorOption(LiteApi::IApplication *app,QObject *parent) :
     if (index >= 0 && index < ui->styleComboBox->count()) {
         ui->styleComboBox->setCurrentIndex(index);
     }
+
+    bool autoIndent = m_liteApp->settings()->value("editor/autoindent",true).toBool();
+    bool autoBraces = m_liteApp->settings()->value("editor/autobraces",true).toBool();
+    bool lineNumberVisible = m_liteApp->settings()->value("editor/linenumbervisible",true).toBool();
+
+    ui->autoIndentCheckBox->setChecked(autoIndent);
+    ui->autoBracesCheckBox->setChecked(autoBraces);
+    ui->lineNumberVisibleCheckBox->setChecked(lineNumberVisible);
 
     connect(ui->editPushButton,SIGNAL(clicked()),this,SLOT(editStyleFile()));
 }
@@ -102,9 +113,19 @@ void LiteEditorOption::apply()
         }
     }
     QString style = ui->styleComboBox->currentText();
+    bool autoIndent = ui->autoIndentCheckBox->isChecked();
+    bool autoBraces = ui->autoBracesCheckBox->isChecked();
+    bool lineNumberVisible = ui->lineNumberVisibleCheckBox->isChecked();
+    bool antialias = ui->antialiasCheckBox->isChecked();
+
     m_liteApp->settings()->setValue("editor/family",m_fontFamily);
     m_liteApp->settings()->setValue("editor/fontsize",m_fontSize);
+    m_liteApp->settings()->setValue("editor/antialias",antialias);
     m_liteApp->settings()->setValue("editor/style",style);
+    m_liteApp->settings()->setValue("editor/autoindent",autoIndent);
+    m_liteApp->settings()->setValue("editor/autobraces",autoBraces);
+    m_liteApp->settings()->setValue("editor/linenumbervisible",lineNumberVisible);
+
 }
 
 LiteEditorOption::~LiteEditorOption()

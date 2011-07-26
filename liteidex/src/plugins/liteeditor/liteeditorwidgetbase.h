@@ -21,7 +21,7 @@
 // Module: liteeditorwidgetbase.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteeditorwidgetbase.h,v 1.0 2011-5-12 visualfc Exp $
+// $Id: liteeditorwidgetbase.h,v 1.0 2011- 7-26 visualfc Exp $
 
 #ifndef LITEEDITORWIDGETBASE_H
 #define LITEEDITORWIDGETBASE_H
@@ -59,15 +59,37 @@ public slots:
     void gotoLineEnd();
     void gotoLineEndWithSelection();
 public:
+    void setAutoIndent(bool b){
+        m_autoIndent = b;
+    }
+    void setAutoBraces(bool b) {
+        m_autoBraces = b;
+    }
+    void setLineNumberVisible(bool b) {
+        m_lineNumbersVisible = b;
+        slotUpdateExtraAreaWidth();
+    }
+    bool autoIndent() {
+        return m_autoIndent;
+    }
+    bool autoBraces() {
+        return m_autoBraces;
+    }
+    bool lineNumberVisialbe() {
+        return m_lineNumbersVisible;
+    }
+protected:
     void keyPressEvent(QKeyEvent *e);
     void indentBlock(QTextBlock block, bool bIndent);
     void indentCursor(QTextCursor cur, bool bIndent);
     void indentText(QTextCursor cur, bool bIndent);
     void indentEnter(QTextCursor cur);
+protected:
     QWidget *m_extraArea;
     bool m_lineNumbersVisible;
     bool m_marksVisible;
     bool m_autoIndent;
+    bool m_autoBraces;
     int m_lastSaveRevision;
     int m_extraAreaSelectionNumber;
 };
