@@ -27,8 +27,8 @@
 #define BROWSEREDITORMANAGER_H
 
 #include "liteapi.h"
+#include "browsereditorimpl.h"
 
-class BrowserEditorImpl;
 class BrowserEditorManager : public LiteApi::IManager
 {
     Q_OBJECT

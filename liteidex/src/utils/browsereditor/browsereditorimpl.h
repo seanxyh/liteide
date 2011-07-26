@@ -30,7 +30,6 @@
 
 class BrowserEditorImpl : public LiteApi::IEditor
 {
-    Q_OBJECT
 public:
     BrowserEditorImpl(QObject *parent = 0);
     virtual QWidget *widget();
