@@ -158,6 +158,7 @@ class IEditor : public IView
 {
     Q_OBJECT
 public:
+    IEditor(QObject *parent = 0) : IView(parent) {}
     virtual bool open(const QString &fileName,const QString &mimeType) = 0;
     virtual bool save() = 0;
     virtual void setReadOnly(bool b) = 0;

@@ -67,7 +67,7 @@ bool ColorStyleScheme::load(const QString &fileName)
     return load(&file,fileName);
 }
 
-bool ColorStyleScheme::load(QIODevice *dev, const QString &fileName)
+bool ColorStyleScheme::load(QIODevice *dev, const QString &/*fileName*/)
 {
     QXmlStreamReader reader(dev);
     QXmlStreamAttributes attrs;

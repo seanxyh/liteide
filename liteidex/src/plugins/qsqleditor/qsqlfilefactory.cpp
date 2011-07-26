@@ -58,7 +58,7 @@ LiteApi::IFile *QSqlFileFactory::open(const QString &fileName, const QString &mi
     return file;
 }
 
-bool QSqlFileFactory::targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const
+bool QSqlFileFactory::targetInfo(const QString &/*fileName*/, const QString &/*mimetype*/, QString &/*target*/, QString &/*targetPath*/, QString &/*workPath*/) const
 {
     return false;
 }

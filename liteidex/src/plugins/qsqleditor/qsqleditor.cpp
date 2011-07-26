@@ -84,7 +84,7 @@ QString QSqlEditor::displayName() const
     return QString("");
 }
 
-bool QSqlEditor::open(const QString &fileName,const QString &mimeType)
+bool QSqlEditor::open(const QString &/*fileName*/,const QString &/*mimeType*/)
 {
     return false;
 }

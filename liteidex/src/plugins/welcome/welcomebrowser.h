@@ -33,15 +33,17 @@ namespace Ui {
     class WelcomeWidget;
 }
 
+class DocumentBrowser;
+class QStandardItemModel;
 class WelcomeBrowser : public BrowserEditorImpl
 {
     Q_OBJECT
 public:
     WelcomeBrowser(LiteApi::IApplication *app);
     virtual ~WelcomeBrowser();
-    virtual QString displayName() const;
     virtual QWidget *widget();
 public slots:
+    void openLiteDoument(QModelIndex);
     void openRecentProjectList(QModelIndex);
     void openRecentFileList(QModelIndex);
     void recentProjectsChanged();
@@ -52,6 +54,9 @@ protected:
     Ui::WelcomeWidget *ui;
     QStringListModel    *m_recentProjectsModel;
     QStringListModel    *m_recentFilesModel;
+    QStandardItemModel  *m_docModel;
+    DocumentBrowser     *m_docBrowser;
+    QAction             *m_browserAct;
 };
 
 #endif // WELCOMEBROWSER_H

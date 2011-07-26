@@ -65,12 +65,12 @@ protected:
 protected:
     LiteApi::IApplication   *m_liteApp;
     QWidget *m_widget;
+    DocumentBrowser *m_docBrowser;
     QStringListModel *m_findResultModel;
     QListView *m_findResultListView;
     QComboBox *m_findComboBox;
     ProcessEx  *m_findProcess;
     ProcessEx  *m_godocProcess;
-    DocumentBrowser *m_docBrowser;
     QAction *m_browserAct;
     QString m_findText;
     QString m_goroot;

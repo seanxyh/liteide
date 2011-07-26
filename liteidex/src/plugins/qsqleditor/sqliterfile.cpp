@@ -32,7 +32,7 @@ SQLiteFile::SQLiteFile(LiteApi::IApplication *app, QObject *parent) :
 {
 }
 
-bool SQLiteFile::open(const QString &fileName, const QString &mimeType)
+bool SQLiteFile::open(const QString &fileName, const QString &/*mimeType*/)
 {
     m_db = QSqlDatabase::addDatabase("QSQLITE",fileName);
     m_db.setDatabaseName(fileName);

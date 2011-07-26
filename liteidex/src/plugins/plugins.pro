@@ -4,7 +4,7 @@
 TEMPLATE  = subdirs
 
 SUBDIRS = \
-    welcome \
+#    welcome \
     liteenv \
     litebuild \
     liteeditor \
@@ -14,6 +14,6 @@ SUBDIRS = \
     codesearch \
     qsqleditor \
     golangast \
-    golangdoc \
     golangfmt \
     golangcode \
+    golangdoc \
