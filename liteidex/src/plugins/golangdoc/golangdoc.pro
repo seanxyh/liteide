@@ -1,11 +1,11 @@
 TARGET = golangdoc
 TEMPLATE = lib
 
-include (../../liteideplugin.pri)
-include (../../utils/fileutil/fileutil.pri)
-include (../../utils/processex/processex.pri)
-include (../../utils/browsereditor/browsereditor.pri)
-include (../../utils/documentbrowser/documentbrowser.pri)
+include(../../liteideplugin.pri)
+include(../../utils/browsereditor/browsereditor.pri)
+include(../../utils/documentbrowser/documentbrowser.pri)
+include(../../utils/fileutil/fileutil.pri)
+include(../../utils/processex/processex.pri)
 
 DEFINES += GOLANGDOC_LIBRARY
 

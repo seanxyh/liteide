@@ -25,6 +25,18 @@
 
 #include "welcomebrowser.h"
 #include "ui_welcomewidget.h"
+#include "liteapi/litefindobj.h"
+#include "browsereditor/browsereditormanager.h"
+#include "documentbrowser/documentbrowser.h"
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QHeaderView>
+#include <QMenu>
+#include <QDir>
+#include <QFileInfo>
+#include <QAction>
+#include <QFile>
+#include <QTextBrowser>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -42,6 +54,8 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app)
       m_widget(new QWidget),
       ui (new Ui::WelcomeWidget)
 {
+    setDisplayName(tr("Welcome"));
+
     ui->setupUi(m_widget);
 
     m_recentProjectsModel = new QStringListModel(this);
@@ -54,6 +68,27 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app)
     m_recentFilesModel->setStringList(m_liteApp->fileManager()->recentFiles());
     ui->recentFileslistView->setEditTriggers(0);
 
+    m_docModel = new QStandardItemModel(0,2,this);
+    ui->docTreeView->setModel(m_docModel);
+    ui->docTreeView->setEditTriggers(0);
+    ui->docTreeView->setHeaderHidden(true);
+    ui->docTreeView->header()->setResizeMode(0,QHeaderView::ResizeToContents);
+
+    QDir dir(m_liteApp->resourcePath()+"/liteidedoc");
+    QFileInfoList infoList = dir.entryInfoList(QDir::Files|QDir::NoSymLinks);
+    foreach (QFileInfo info, infoList) {
+        m_docModel->appendRow(QList<QStandardItem*>()
+                              << new QStandardItem(info.baseName())
+                              << new QStandardItem(info.filePath()));
+    }
+
+    m_docBrowser = new DocumentBrowser(m_liteApp);
+    m_docBrowser->setDisplayName(tr("LiteDocBrowser"));
+    BrowserEditorManager *browserManger = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
+    if (browserManger) {
+        m_browserAct = browserManger->addBrowser(m_docBrowser);
+    }
+
     connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
     connect(ui->openFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openFiles()));
     connect(ui->openProjectButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openProjects()));
@@ -63,17 +98,13 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app)
     connect(m_liteApp->fileManager(),SIGNAL(recentProjectsChanged()),this,SLOT(recentProjectsChanged()));
     connect(m_liteApp->fileManager(),SIGNAL(recentFilesChanged()),this,SLOT(recentFilesChanged()));
     connect(ui->optionsButton,SIGNAL(clicked()),m_liteApp->optionManager(),SLOT(exec()));
+    connect(ui->docTreeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openLiteDoument(QModelIndex)));
 }
 
 WelcomeBrowser::~WelcomeBrowser()
 {
    delete ui;
    delete m_widget;
-}
-
-QString WelcomeBrowser::displayName() const
-{
-    return tr("Welcome");
 }
 
 QWidget *WelcomeBrowser::widget()
@@ -107,4 +138,28 @@ void WelcomeBrowser::openRecentFileList(QModelIndex index)
 void WelcomeBrowser::recentFilesChanged()
 {
     m_recentFilesModel->setStringList(m_liteApp->fileManager()->recentFiles());
+}
+
+void WelcomeBrowser::openLiteDoument(QModelIndex index)
+{
+    if (!index.isValid()) {
+        return;
+    }
+    QModelIndex i = m_docModel->index(index.row(),1);
+    if (!i.isValid()) {
+        return;
+    }
+    QFileInfo info(i.data().toString());
+    QFile f(info.filePath());
+    if (!f.open(QIODevice::ReadOnly)) {
+        return;
+    }
+    QByteArray data = f.readAll();
+    f.close();
+    m_docBrowser->browser()->setText(QString::fromUtf8(data,data.size()));
+
+    BrowserEditorManager *browserManger = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
+    if (browserManger) {
+        browserManger->setActive(m_docBrowser);
+    }
 }

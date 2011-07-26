@@ -35,6 +35,11 @@
 #endif
 //lite_memory_check_end
 
+BrowserEditorImpl::BrowserEditorImpl(QObject *parent) :
+    LiteApi::IEditor(parent)
+{
+}
+
 QWidget *BrowserEditorImpl::widget()
 {
     return 0;
@@ -42,7 +47,12 @@ QWidget *BrowserEditorImpl::widget()
 
 QString BrowserEditorImpl::displayName() const
 {
-    return QString();
+    return m_displayName;
+}
+
+void BrowserEditorImpl::setDisplayName(const QString &name)
+{
+    m_displayName = name;
 }
 
 QIcon BrowserEditorImpl::icon() const

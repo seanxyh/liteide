@@ -3,6 +3,7 @@ TEMPLATE = lib
 
 include(../../liteideplugin.pri)
 include(../../utils/browsereditor/browsereditor.pri)
+include(../../utils/documentbrowser/documentbrowser.pri)
 
 DEFINES += WELCOME_LIBRARY
 

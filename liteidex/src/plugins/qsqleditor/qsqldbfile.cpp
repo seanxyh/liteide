@@ -39,17 +39,17 @@ QSqlDbFile::~QSqlDbFile()
     }
 }
 
-bool QSqlDbFile::open(const QString &fileName, const QString &mimeType)
+bool QSqlDbFile::open(const QString &/*fileName*/, const QString &/*mimeType*/)
 {
     return false;
 }
 
-bool QSqlDbFile::reload(bool externalModify)
+bool QSqlDbFile::reload(bool /*externalModify*/)
 {
     return false;
 }
 
-bool QSqlDbFile::save(const QString &fileName)
+bool QSqlDbFile::save(const QString &/*fileName*/)
 {
     return false;
 }

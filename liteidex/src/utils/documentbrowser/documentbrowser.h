@@ -37,11 +37,10 @@ class DocumentBrowser : public BrowserEditorImpl
 {
     Q_OBJECT
 public:
-    DocumentBrowser(LiteApi::IApplication *app);
+    explicit DocumentBrowser(LiteApi::IApplication *app, QObject *parent = 0);
     ~DocumentBrowser();
+public:
     virtual QWidget *widget();
-    virtual QString displayName() const;
-    virtual QIcon icon() const;
     QTextBrowser *browser();
     bool findText(bool findBackward);
 public slots:

@@ -53,8 +53,7 @@
 
 GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
-    m_liteApp(app),
-    m_docBrowser(0)
+    m_liteApp(app)
 {
     m_findProcess = new ProcessEx(this);
     m_godocProcess = new ProcessEx(this);
@@ -101,6 +100,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->dockManager()->addDock(m_widget,tr("GolangDoc"),Qt::LeftDockWidgetArea);
 
     m_docBrowser = new DocumentBrowser(m_liteApp);
+    m_docBrowser->setDisplayName(tr("GodocBrowser"));
     m_docBrowser->browser()->setOpenLinks(false);
 
     BrowserEditorManager *browserManger = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
@@ -154,7 +154,7 @@ GolangDoc::~GolangDoc()
     delete m_widget;
 }
 
-void GolangDoc::currentEnvChanged(LiteApi::IEnv *e)
+void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
 {
     QProcessEnvironment env = m_envManager->currentEnvironment();
     QString goroot = env.value("GOROOT");

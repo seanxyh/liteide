@@ -32,6 +32,7 @@ class BrowserEditorImpl : public LiteApi::IEditor
 {
     Q_OBJECT
 public:
+    BrowserEditorImpl(QObject *parent = 0);
     virtual QWidget *widget();
     virtual QString displayName() const;
     virtual QIcon icon() const;
@@ -42,6 +43,10 @@ public:
     virtual bool isReadOnly() const;
     virtual bool isModified() const;
     virtual LiteApi::IFile *file();
+
+    virtual void setDisplayName(const QString &name);
+protected:
+    QString m_displayName;
 };
 
 #endif //BROWSEREDITORIMPL_H

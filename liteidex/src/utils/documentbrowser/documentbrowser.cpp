@@ -35,7 +35,8 @@
 #include <QAction>
 #include <QRegExp>
 
-DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app) :
+DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
+    BrowserEditorImpl(parent),
     m_liteApp(app)
 {
     m_widget = new QWidget;
@@ -105,16 +106,6 @@ DocumentBrowser::~DocumentBrowser()
 QWidget *DocumentBrowser::widget()
 {
     return m_widget;
-}
-
-QString DocumentBrowser::displayName() const
-{
-    return tr("GodocBrowser");
-}
-
-QIcon DocumentBrowser::icon() const
-{
-    return QIcon();
 }
 
 QTextBrowser *DocumentBrowser::browser()
