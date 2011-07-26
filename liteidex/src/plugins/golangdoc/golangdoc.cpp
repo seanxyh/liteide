@@ -176,6 +176,9 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv *e)
     m_goroot = goroot;
     m_godocCmd = godoc;
     m_findCmd = find;
+
+    m_findProcess->setEnvironment(env.toStringList());
+    m_godocProcess->setEnvironment(env.toStringList());
 }
 
 void GolangDoc::listPkg()
