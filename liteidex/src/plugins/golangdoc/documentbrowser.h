@@ -21,14 +21,18 @@
 // Module: documentbrowser.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-7-7
-// $Id: documentbrowser.h,v 1.0 2011-7-7 visualfc Exp $
+// $Id: documentbrowser.h,v 1.0 2011-7-26 visualfc Exp $
 
 #ifndef DOCUMENTBROWSER_H
 #define DOCUMENTBROWSER_H
 
 #include "browsereditor/browsereditorimpl.h"
+#include <QUrl>
 
 class QTextBrowser;
+class QComboBox;
+class QToolButton;
+class QCheckBox;
 class DocumentBrowser : public BrowserEditorImpl
 {
     Q_OBJECT
@@ -39,10 +43,23 @@ public:
     virtual QString displayName() const;
     virtual QIcon icon() const;
     QTextBrowser *browser();
+    bool findText(bool findBackward);
+public slots:
+    void highlighted(QUrl);
+    void activatedFindText(QString);
+    void findNext();
+    void findPrev();
 protected:
     LiteApi::IApplication   *m_liteApp;
     QWidget *m_widget;
-    QTextBrowser *m_browser;
+    QTextBrowser *m_textBrowser;
+    QStatusBar   *m_statusBar;
+    QComboBox    *m_findComboBox;
+    QCheckBox    *m_matchCaseCheckBox;
+    QCheckBox    *m_matchWordCheckBox;
+    QCheckBox    *m_useRegexCheckBox;
+    QAction     *m_findNextAct;
+    QAction     *m_findPrevAct;
 };
 
 #endif // DOCUMENTBROWSER_H
