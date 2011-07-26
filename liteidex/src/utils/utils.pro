@@ -15,5 +15,6 @@ SUBDIRS = \
     wordapi \
     processex \
     colorstyle \
+    documentbrowser \
 
 
