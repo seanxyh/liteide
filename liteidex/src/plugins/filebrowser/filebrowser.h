@@ -58,6 +58,7 @@ public slots:
     void treeViewContextMenuRequested(const QPoint &pos);
 protected slots:
     void openFile();
+    void openEditor();
     void newFile();
     void renameFile();
     void removeFile();
@@ -90,6 +91,7 @@ protected:
     QMenu   *m_folderMenu;
     QMenu   *m_rootMenu;
     QAction *m_openFileAct;
+    QAction *m_openEditorAct;
     QAction *m_newFileAct;
     QAction *m_removeFileAct;
     QAction *m_renameFileAct;

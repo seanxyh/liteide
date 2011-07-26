@@ -54,8 +54,10 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app)
     m_recentFilesModel->setStringList(m_liteApp->fileManager()->recentFiles());
     ui->recentFileslistView->setEditTriggers(0);
 
+    connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
+    connect(ui->openFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openFiles()));
     connect(ui->openProjectButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openProjects()));
-    connect(ui->newProjectButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
+    connect(ui->openEditorButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openEditors()));
     connect(ui->recentProjectslistView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openRecentProjectList(QModelIndex)));
     connect(ui->recentFileslistView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openRecentFileList(QModelIndex)));
     connect(m_liteApp->fileManager(),SIGNAL(recentProjectsChanged()),this,SLOT(recentProjectsChanged()));
