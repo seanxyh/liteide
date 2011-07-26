@@ -61,7 +61,7 @@ public slots:
     void anchorClicked(QUrl);
     void doubleClickListView(QModelIndex);
 protected:
-    void changeProcessEnv();
+    void activeBrowser();
 protected:
     LiteApi::IApplication   *m_liteApp;
     QWidget *m_widget;

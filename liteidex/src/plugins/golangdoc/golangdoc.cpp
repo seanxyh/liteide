@@ -48,6 +48,7 @@
 #include <QTextCursor>
 #include <QGroupBox>
 #include <QToolButton>
+#include <QTextCodec>
 #include <QDebug>
 
 GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
@@ -181,6 +182,14 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv *e)
     m_godocProcess->setEnvironment(env.toStringList());
 }
 
+void GolangDoc::activeBrowser()
+{
+    BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
+    if (browserManager) {
+        browserManager->setActive(m_docBrowser);
+    }
+}
+
 void GolangDoc::listPkg()
 {
     if (m_findCmd.isEmpty()) {
@@ -263,8 +272,9 @@ void GolangDoc::godocPackage(QString package)
     }
 
     QString *html = m_htmlCache[m_findText];
-    if (html && !html->isEmpty()) {
+    if (html && !html->isEmpty()) {        
         m_docBrowser->browser()->setHtml(*html);
+        activeBrowser();
         return;
     }
     if (m_godocCmd.isEmpty()) {
@@ -296,10 +306,7 @@ void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
         data->replace("{content}",m_godocData);
         m_htmlCache.insert(m_findText,data);
         m_docBrowser->browser()->setHtml(*data);
-        BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
-        if (browserManager) {
-            browserManager->setActive(m_docBrowser);
-        }
+        activeBrowser();
     } else {
         int index = m_findComboBox->findText(m_findText);
         if (index != -1) {
@@ -338,9 +345,10 @@ void GolangDoc::anchorClicked(QUrl url)
         if (file.open(QIODevice::ReadOnly)) {
             QString *data = new QString(m_templateData);
             QByteArray r = file.readAll();
+            file.close();
             data->replace("{goroot}",m_goroot);
-            data->replace("{title}",info.fileName());
-            data->replace("{content}",r);
+            data->replace("{title}",name);
+            data->replace("{content}",QString::fromUtf8(r,r.size()));
             m_htmlCache.insert(name,data);
             m_docBrowser->browser()->setHtml(*data);
         }

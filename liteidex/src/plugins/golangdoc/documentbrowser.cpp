@@ -57,7 +57,7 @@ QWidget *DocumentBrowser::widget()
 
 QString DocumentBrowser::displayName() const
 {
-    return tr("DocumentBrowser");
+    return tr("GodocBrowser");
 }
 
 QIcon DocumentBrowser::icon() const
