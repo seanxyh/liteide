@@ -163,6 +163,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_rootMenu = new QMenu;
 
     m_openFileAct = new QAction(tr("Open File"),this);
+    m_openEditorAct = new QAction(tr("Open Editor"),this);
     m_newFileAct = new QAction(tr("New File"),this);
     m_renameFileAct = new QAction(tr("Rename File"),this);
     m_removeFileAct = new QAction(tr("Remove File"),this);
@@ -176,6 +177,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_openExplorerAct = new QAction(tr("Open Explorer Here"),this);
 
     m_fileMenu->addAction(m_openFileAct);
+    m_fileMenu->addAction(m_openEditorAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_newFileAct);
     m_fileMenu->addAction(m_renameFileAct);
@@ -203,6 +205,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_rootMenu->addAction(m_openExplorerAct);
 
     connect(m_openFileAct,SIGNAL(triggered()),this,SLOT(openFile()));
+    connect(m_openEditorAct,SIGNAL(triggered()),this,SLOT(openEditor()));
     connect(m_newFileAct,SIGNAL(triggered()),this,SLOT(newFile()));
     connect(m_renameFileAct,SIGNAL(triggered()),this,SLOT(renameFile()));
     connect(m_removeFileAct,SIGNAL(triggered()),this,SLOT(removeFile()));
@@ -260,7 +263,7 @@ void FileBrowser::doubleClickedTreeView(QModelIndex proxyIndex)
     if (fileName.isEmpty()) {
         return;
     }
-    m_liteApp->fileManager()->openEditor(fileName);
+    m_liteApp->fileManager()->openFile(fileName);
 }
 
 void FileBrowser::activatedFilter(QString filter)
@@ -333,6 +336,14 @@ void FileBrowser::openFile()
     QString fileName = m_fileModel->filePath(m_contextIndex);
     if (!fileName.isEmpty()) {
         m_liteApp->fileManager()->openFile(fileName);
+    }
+}
+
+void FileBrowser::openEditor()
+{
+    QString fileName = m_fileModel->filePath(m_contextIndex);
+    if (!fileName.isEmpty()) {
+        m_liteApp->fileManager()->openEditor(fileName);
     }
 }
 
