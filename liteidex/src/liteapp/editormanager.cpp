@@ -81,8 +81,12 @@ QWidget *EditorManager::widget()
 void EditorManager::editorTabChanged(int /*index*/)
 {
     QWidget *w = m_editorTabWidget->currentWidget();
-    IEditor *ed = m_widgetEditorMap.value(w,0);
-    this->setCurrentEditor(ed);
+    if (w == 0) {
+        this->setCurrentEditor(0);
+    } else {
+        IEditor *ed = m_widgetEditorMap.value(w,0);
+        this->setCurrentEditor(ed);
+    }
 }
 
 void EditorManager::editorTabCloseRequested(int index)
@@ -90,22 +94,6 @@ void EditorManager::editorTabCloseRequested(int index)
     QWidget *w = m_editorTabWidget->widget(index);
     IEditor *ed = m_widgetEditorMap.value(w,0);
     closeEditor(ed);
-}
-
-void EditorManager::addEditorHelper(IEditor *editor, bool autoRelease)
-{
-    QWidget *w = m_widgetEditorMap.key(editor);
-    if (w == 0) {
-        w = editor->widget();
-        if (w == 0) {
-            return;
-        }
-        m_editorTabWidget->addTab(w,QIcon(),editor->name(),editor->displayName());
-        m_widgetEditorMap.insert(w,editor);
-        emit editorCreated(editor);
-        connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(modificationChanged(bool)));
-    }
-    setCurrentEditor(editor);
 }
 
 QList<IEditor*> EditorManager::sortedEditorList() const
@@ -120,12 +108,22 @@ QList<IEditor*> EditorManager::sortedEditorList() const
     return editorList;
 }
 
-void EditorManager::addAutoReleaseEditor(IEditor *editor)
+void EditorManager::addEditor(IEditor *editor)
 {
-    addEditorHelper(editor,true);
+    QWidget *w = m_widgetEditorMap.key(editor);
+    if (w == 0) {
+        w = editor->widget();
+        if (w == 0) {
+            return;
+        }
+        m_editorTabWidget->addTab(w,QIcon(),editor->name(),editor->displayName());
+        m_widgetEditorMap.insert(w,editor);
+        emit editorCreated(editor);
+        connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(modificationChanged(bool)));
+    }
 }
 
-QAction *EditorManager::addBrowser(IEditor *editor)
+QAction *EditorManager::registerBrowser(IEditor *editor)
 {
     QAction *act = new QAction(editor->name(),this);
     act->setCheckable(true);
@@ -145,28 +143,6 @@ void EditorManager::activeBrowser(IEditor *editor)
         act->toggle();
     }
     setCurrentEditor(editor);
-}
-
-IEditor *EditorManager::loadEditor(const QString &fileName)
-{
-    foreach(IEditor *editor, editorList()) {
-        if (!editor->file()) {
-            continue;
-        }
-        if (FileUtil::compareFile(editor->file()->fileName(),fileName)) {
-            return editor;
-        }
-    }
-    m_liteApp->fileManager()->openEditor(fileName);
-    foreach(IEditor *editor, editorList()) {
-        if (!editor->file()) {
-            continue;
-        }
-        if (FileUtil::compareFile(editor->file()->fileName(),fileName)) {
-            return editor;
-        }
-    }
-    return 0;
 }
 
 bool EditorManager::closeEditor(IEditor *editor)
@@ -348,29 +324,25 @@ QStringList EditorManager::mimeTypeList() const
     return types;
 }
 
-IEditor *EditorManager::createEditor(const QString &fileName, const QString &mimeType)
+IEditor *EditorManager::openEditor(const QString &fileName, const QString &mimeType)
 {
-    IEditor *ed = 0;
     QList<IEditor*> editors = m_widgetEditorMap.values();
     foreach(IEditor *editor, editors) {
         if (!editor->file()) {
             continue;
         }
         if (FileUtil::compareFile(editor->file()->fileName(),fileName)) {
-            ed = editor;
+            return editor;
+        }
+    }
+    IEditor *ed = 0;
+    foreach (IEditorFactory *factory, m_factoryList) {
+        if (factory->mimeTypes().contains(mimeType)) {
+            ed = factory->open(fileName,mimeType);
             break;
         }
     }
     if (ed == 0) {
-        foreach (IEditorFactory *factory, m_factoryList) {
-            if (factory->mimeTypes().contains(mimeType)) {
-                ed = factory->open(fileName,mimeType);
-                break;
-            }
-        }
-    }
-    if (ed == 0) {
-        //open on default.editor
         QString type = "text/liteide.default.editor";
         foreach (IEditorFactory *factory, m_factoryList) {
             if (factory->mimeTypes().contains(type)) {
@@ -380,7 +352,7 @@ IEditor *EditorManager::createEditor(const QString &fileName, const QString &mim
         }
     }
     if (ed) {
-        addAutoReleaseEditor(ed);
+        addEditor(ed);
     }
     return ed;
 }
@@ -392,7 +364,8 @@ void EditorManager::toggleBrowserAction(bool b)
         IEditor *editor = m_browserActionMap.key(act);
         if (editor) {
             if (b) {
-                addEditorHelper(editor,false);
+                addEditor(editor);
+                setCurrentEditor(editor);
             } else {
                 closeEditor(editor);
             }

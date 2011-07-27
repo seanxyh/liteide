@@ -493,9 +493,8 @@ void LiteBuild::dbclickBuildOutput()
         }
     }
 
-    LiteApi::IEditor *editor = m_liteApp->editorManager()->loadEditor(fileName);
+    LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName);
     if (editor) {
-        m_liteApp->editorManager()->setCurrentEditor(editor);
         editor->widget()->setFocus();
         LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
         if (textEditor) {

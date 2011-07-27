@@ -41,7 +41,7 @@ public:
     ~EditorManager();
     virtual bool initWithApp(IApplication *app);
 public:
-    virtual IEditor *createEditor(const QString &fileName, const QString &mimeType);
+    virtual IEditor *openEditor(const QString &fileName, const QString &mimeType);
     virtual void addFactory(IEditorFactory *factory);
     virtual void removeFactory(IEditorFactory *factory);
     virtual QList<IEditorFactory*>  factoryList() const;
@@ -51,12 +51,9 @@ public:
     virtual IEditor *currentEditor() const;
     virtual void setCurrentEditor(IEditor *editor);
     virtual QList<IEditor*> editorList() const;
-    virtual void addAutoReleaseEditor(IEditor *editor);
-    virtual IEditor *loadEditor(const QString &fileName);
-    virtual QAction *addBrowser(IEditor *editor);
+    virtual void addEditor(IEditor *editor);
+    virtual QAction *registerBrowser(IEditor *editor);
     virtual void activeBrowser(IEditor *editor);
-protected:
-    void addEditorHelper(IEditor *editor, bool autoRelease);
 public:
     QList<IEditor*> sortedEditorList() const;
 public slots:

@@ -112,7 +112,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_docBrowser->setDisplayName(tr("Golang Document Browser"));
     m_docBrowser->browser()->setOpenLinks(false);
 
-    m_browserAct = m_liteApp->editorManager()->addBrowser(m_docBrowser);
+    m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
     QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
     if (menu) {
         menu->addAction(m_browserAct);
@@ -359,10 +359,9 @@ void GolangDoc::anchorClicked(QUrl url)
         return;
     } else if (info.suffix() == "go") {
         QString fileName = QDir(m_goroot).path()+path;
-        LiteApi::IEditor *editor = m_liteApp->editorManager()->loadEditor(fileName);
+        LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName);
         if (editor) {
             editor->setReadOnly(true);
-            m_liteApp->editorManager()->setCurrentEditor(editor);
             QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
             if (ed && url.hasQueryItem("s")) {
                 QStringList pos = url.queryItemValue("s").split(":");
