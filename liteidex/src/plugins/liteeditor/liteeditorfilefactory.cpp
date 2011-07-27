@@ -104,6 +104,7 @@ LiteApi::IFile *LiteEditorFileFactory::open(const QString &fileName, const QStri
     }
 
     QTextDocument *doc = editor->m_editorWidget->document();
+    qDebug() << mimeType;
     TextEditor::SyntaxHighlighter *h = m_kate->create(doc,mimeType);
     if (h) {
         editor->extension()->addObject("TextEditor::SyntaxHighlighter",h);

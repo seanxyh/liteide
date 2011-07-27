@@ -79,11 +79,15 @@ IMimeType *MimeTypeManager::findMimeType(const QString &type) const
 QString MimeTypeManager::findFileMimeType(const QString &fileName) const
 {
     QString type;
+    QString find = QFileInfo(fileName).suffix();
+    if (find.isEmpty()) {
+        find = QFileInfo(fileName).fileName();
+    } else {
+        find = "*."+find;
+    }
     foreach (IMimeType *mimeType, m_mimeTypeList) {
         foreach (QString pattern, mimeType->globPatterns()) {
-            QRegExp rx(pattern);
-            rx.setPatternSyntax(QRegExp::Wildcard);
-            if (rx.indexIn(fileName) != -1) {
+            if (find.compare(pattern,Qt::CaseInsensitive) == 0) {
                 type = mimeType->type();
                 break;
             }
