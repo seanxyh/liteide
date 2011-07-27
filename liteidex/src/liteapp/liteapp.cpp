@@ -34,7 +34,6 @@
 #include "mimetypemanager.h"
 #include "optionmanager.h"
 #include "mainwindow.h"
-#include "browsereditor/browsereditormanager.h"
 #include "liteappoptionfactory.h"
 
 #include <QApplication>
@@ -67,9 +66,7 @@ LiteApp::LiteApp()
       m_dockManager(new DockManager),
       m_outputManager(new OutputManager),
       m_mimeTypeManager(new MimeTypeManager),
-      m_optionManager(new OptionManager),
-      m_browserManager(new BrowserEditorManager)
-
+      m_optionManager(new OptionManager)
 {
     m_mimeTypeManager->initWithApp(this);
     m_pluginManager->initWithApp(this);
@@ -80,7 +77,6 @@ LiteApp::LiteApp()
     m_dockManager->initWithApp(this);
     m_outputManager->initWithApp(this);
     m_optionManager->initWithApp(this);
-    m_browserManager->initWithApp(this);
     m_mainwindow->init();
 
     m_extension->addObject("LiteApi.IMimeTypeManager",m_mimeTypeManager);
@@ -91,7 +87,6 @@ LiteApp::LiteApp()
     m_extension->addObject("LiteApi.IOutputManager",m_outputManager);
     m_extension->addObject("LiteApi.IOptoinManager",m_optionManager);
     m_extension->addObject("LiteApi.QMainWindow",m_mainwindow);
-    m_extension->addObject("LiteApi.BrowserEditorManager",m_browserManager);
 
     //add actions
     connect(m_projectManager,SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(currentProjectChanged(LiteApi::IProject*)));
@@ -116,7 +111,7 @@ LiteApp::LiteApp()
     m_outputManager->addOutuput(m_logOutput,tr("Console"));
     connect(m_logOutput,SIGNAL(hideOutput()),m_outputManager,SLOT(setCurrentOutput()));
 
-    m_optionAct = m_browserManager->addBrowser(m_optionManager->browser());
+    m_optionAct = m_editorManager->addBrowser(m_optionManager->browser());
     m_viewMenu->addAction(m_optionAct);
     m_optionManager->setAction(m_optionAct);
 
@@ -144,8 +139,6 @@ IExtension *LiteApp::extension()
 void LiteApp::cleanup()
 {
     delete m_liteAppOptionFactory;
-
-    delete m_browserManager;
     delete m_projectManager;
     delete m_editorManager;
     delete m_fileManager;
@@ -153,8 +146,8 @@ void LiteApp::cleanup()
     delete m_actionManager;
     delete m_dockManager;
     delete m_outputManager;
-    delete m_optionManager;
     delete m_mimeTypeManager;
+    delete m_optionManager;
     delete m_extension;
     delete m_logOutput;
     delete m_mainwindow;

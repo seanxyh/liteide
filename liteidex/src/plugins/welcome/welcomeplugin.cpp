@@ -47,20 +47,9 @@ WelcomePlugin::WelcomePlugin() : m_welcome(0)
     m_info->setInfo("LiteIDE Welcome");
 }
 
-WelcomePlugin::~WelcomePlugin()
-{
-    if (m_welcome) {
-        delete m_welcome;
-    }
-}
-
 void WelcomePlugin::home()
 {
-    BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
-    if (!browserManager) {
-        return;
-    }
-    browserManager->setActive(m_welcome);
+    m_liteApp->editorManager()->activeBrowser(m_welcome);
 }
 
 bool WelcomePlugin::initWithApp(LiteApi::IApplication *app)
@@ -69,12 +58,8 @@ bool WelcomePlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
 
-    BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(app,"LiteApi.BrowserEditorManager");
-    if (!browserManager) {
-        return false;
-    }
-    m_welcome = new WelcomeBrowser(app);
-    m_welcomeAct = browserManager->addBrowser(m_welcome);
+    m_welcome = new WelcomeBrowser(app,this);
+    m_welcomeAct = m_liteApp->editorManager()->addBrowser(m_welcome);
     QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
     if (menu) {
         menu->addAction(m_welcomeAct);

@@ -10,7 +10,6 @@ include (../utils/fileutil/fileutil.pri)
 include (../utils/mimetype/mimetype.pri)
 include (../utils/textoutput/textoutput.pri)
 include (../utils/extension/extension.pri)
-include (../utils/browsereditor/browsereditor.pri)
 
 QT       += core gui xml
 

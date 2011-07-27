@@ -28,9 +28,8 @@
 
 #include "welcome_global.h"
 #include "liteapi.h"
-#include <QtPlugin>
-#include "browsereditor/browsereditormanager.h"
 #include "welcomebrowser.h"
+#include <QtPlugin>
 
 class WelcomePlugin : public LiteApi::IPlugin
 {
@@ -38,7 +37,6 @@ class WelcomePlugin : public LiteApi::IPlugin
     Q_INTERFACES(LiteApi::IPlugin)
 public:
     WelcomePlugin();
-    ~WelcomePlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
 protected slots:
     void home();

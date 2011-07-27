@@ -59,7 +59,7 @@ QWidget *LiteEnvOption::widget()
     return m_widget;
 }
 
-QString LiteEnvOption::displayName() const
+QString LiteEnvOption::name() const
 {
     return "LiteEnv";
 }

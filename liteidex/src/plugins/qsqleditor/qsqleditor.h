@@ -45,13 +45,14 @@ public:
     ~QSqlEditor();
 public:
     virtual QWidget *widget();
-    virtual QString displayName() const;
+    virtual QString name() const;
 public:
     virtual bool open(const QString &fileName,const QString &mimeType);
     virtual bool save();
     virtual void setReadOnly(bool b);
     virtual bool isReadOnly() const;
     virtual bool isModified() const;
+    virtual QString displayName() const;
     virtual LiteApi::IFile *file();
 public:
     void setFile(QSqlDbFile *file);

@@ -80,7 +80,7 @@ QWidget *LiteAppOption::widget()
     return m_widget;
 }
 
-QString LiteAppOption::displayName() const
+QString LiteAppOption::name() const
 {
     return "LiteApp";
 }

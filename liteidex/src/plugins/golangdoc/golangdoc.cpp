@@ -28,7 +28,6 @@
 #include "litebuildapi/litebuildapi.h"
 #include "processex/processex.h"
 #include "fileutil/fileutil.h"
-#include "browsereditor/browsereditormanager.h"
 #include "documentbrowser/documentbrowser.h"
 
 #include <QListView>
@@ -99,17 +98,15 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     m_liteApp->dockManager()->addDock(m_widget,tr("GolangDoc"),Qt::LeftDockWidgetArea);
 
-    m_docBrowser = new DocumentBrowser(m_liteApp);
-    m_docBrowser->setDisplayName(tr("GodocBrowser"));
+    m_docBrowser = new DocumentBrowser(m_liteApp,this);
+    m_docBrowser->setName(tr("GodocBrowser"));
+    m_docBrowser->setDisplayName(tr("Golang Document Browser"));
     m_docBrowser->browser()->setOpenLinks(false);
 
-    BrowserEditorManager *browserManger = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
-    if (browserManger) {
-        m_browserAct = browserManger->addBrowser(m_docBrowser);
-        QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
-        if (menu) {
-            menu->addAction(m_browserAct);
-        }
+    m_browserAct = m_liteApp->editorManager()->addBrowser(m_docBrowser);
+    QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
+    if (menu) {
+        menu->addAction(m_browserAct);
     }
 
     QString path = m_liteApp->resourcePath()+"/golangdoc/godoc.html";
@@ -184,10 +181,7 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
 
 void GolangDoc::activeBrowser()
 {
-    BrowserEditorManager *browserManager = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
-    if (browserManager) {
-        browserManager->setActive(m_docBrowser);
-    }
+    m_liteApp->editorManager()->activeBrowser(m_docBrowser);
 }
 
 void GolangDoc::listPkg()

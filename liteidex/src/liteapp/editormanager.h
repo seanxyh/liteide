@@ -38,6 +38,7 @@ class EditorManager : public IEditorManager
 {
     Q_OBJECT
 public:
+    ~EditorManager();
     virtual bool initWithApp(IApplication *app);
 public:
     virtual IFile *createFile(const QString &fileName, const QString &mimeType);
@@ -50,9 +51,10 @@ public:
     virtual IEditor *currentEditor() const;
     virtual void setCurrentEditor(IEditor *editor);
     virtual QList<IEditor*> editorList() const;
-    virtual void addEditor(IEditor *editor);
     virtual void addAutoReleaseEditor(IEditor *editor);
     virtual IEditor *loadEditor(const QString &fileName);
+    virtual QAction *addBrowser(IEditor *editor);
+    virtual void activeBrowser(IEditor *editor);
 protected:
     void addEditorHelper(IEditor *editor, bool autoRelease);
 public:
@@ -71,11 +73,12 @@ protected:
     QMap<QWidget *, IEditor *> m_widgetEditorMap;
     QPointer<IEditor> m_currentEditor;
     QList<IFileFactory*>    m_factoryList;
-    QList<IEditor*> m_autoReleaseEditorList;
+    QMap<IEditor*,QAction*>   m_browserActionMap;
  protected slots:
     void editorTabChanged(int);
     void editorTabCloseRequested(int);
     void modificationChanged(bool);
+    void toggleBrowserAction(bool);
 };
 
 #endif // EDITORMANAGER_H

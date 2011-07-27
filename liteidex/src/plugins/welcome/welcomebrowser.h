@@ -26,7 +26,7 @@
 #ifndef WELCOMEBROWSER_H
 #define WELCOMEBROWSER_H
 
-#include "browsereditor/browsereditorimpl.h"
+#include "liteapi.h"
 #include <QStringListModel>
 
 namespace Ui {
@@ -35,13 +35,15 @@ namespace Ui {
 
 class DocumentBrowser;
 class QStandardItemModel;
-class WelcomeBrowser : public BrowserEditorImpl
+class WelcomeBrowser : public LiteApi::IBrowserEditor
 {
     Q_OBJECT
 public:
-    WelcomeBrowser(LiteApi::IApplication *app);
+    WelcomeBrowser(LiteApi::IApplication *app, QObject *parent);
     virtual ~WelcomeBrowser();
     virtual QWidget *widget();
+    virtual QString name() const;
+    virtual QString displayName() const;
 public slots:
     void loadDocFiles();
     void loadRecentProjects();

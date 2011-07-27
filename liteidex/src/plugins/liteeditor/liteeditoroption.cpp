@@ -91,7 +91,7 @@ QWidget *LiteEditorOption::widget()
     return m_widget;
 }
 
-QString LiteEditorOption::displayName() const
+QString LiteEditorOption::name() const
 {
     return "LiteEditor";
 }

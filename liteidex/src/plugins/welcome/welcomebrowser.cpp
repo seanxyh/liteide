@@ -26,7 +26,6 @@
 #include "welcomebrowser.h"
 #include "ui_welcomewidget.h"
 #include "liteapi/litefindobj.h"
-#include "browsereditor/browsereditormanager.h"
 #include "documentbrowser/documentbrowser.h"
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -49,13 +48,12 @@
 #endif
 //lite_memory_check_end
 
-WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app)
-    : m_liteApp(app),
+WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
+    : LiteApi::IBrowserEditor(parent),
+      m_liteApp(app),
       m_widget(new QWidget),
       ui (new Ui::WelcomeWidget)
 {
-    setDisplayName(tr("Welcome"));
-
     ui->setupUi(m_widget);
 
     m_recentProjectsModel = new QStandardItemModel(0,2,this);
@@ -69,7 +67,7 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app)
     //ui->recentProjectsTreeView->header()->setStretchLastSection(true);
 
     m_recentFilesModel = new QStandardItemModel(0,2,this);
-    ui->recentFilesTreeView->setModel(m_recentProjectsModel);
+    ui->recentFilesTreeView->setModel(m_recentFilesModel);
     ui->recentFilesTreeView->setRootIsDecorated(false);
     ui->recentFilesTreeView->setEditTriggers(0);
     ui->recentFilesTreeView->setHeaderHidden(true);
@@ -84,12 +82,9 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app)
     ui->docTreeView->setTextElideMode(Qt::ElideMiddle);
     ui->docTreeView->header()->setResizeMode(0,QHeaderView::ResizeToContents);
 
-    m_docBrowser = new DocumentBrowser(m_liteApp);
-    m_docBrowser->setDisplayName(tr("DocBrowser"));
-    BrowserEditorManager *browserManger = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
-    if (browserManger) {
-        m_browserAct = browserManger->addBrowser(m_docBrowser);
-    }
+    m_docBrowser = new DocumentBrowser(m_liteApp,this);
+    m_docBrowser->setName(tr("DocBrowser"));
+    m_browserAct = m_liteApp->editorManager()->addBrowser(m_docBrowser);
 
     connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
     connect(ui->openFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openFiles()));
@@ -116,6 +111,16 @@ WelcomeBrowser::~WelcomeBrowser()
 QWidget *WelcomeBrowser::widget()
 {
     return m_widget;
+}
+
+QString WelcomeBrowser::name() const
+{
+    return tr("Welcome");
+}
+
+QString WelcomeBrowser::displayName() const
+{
+    return tr("Welcome to LiteIDE");
 }
 
 static void resizeTreeView(QTreeView *treeView)
@@ -209,7 +214,7 @@ void WelcomeBrowser::openLiteDoument(QModelIndex index)
     if (data.isEmpty()) {
         return;
     }
-    m_docBrowser->setDisplayName(info.fileName());
+    m_docBrowser->setName(info.fileName());
     if (info.suffix().toLower() == ".html" ||
             info.suffix().toLower() == ".htm") {
         m_docBrowser->browser()->setText(QString::fromUtf8(data,data.size()));
@@ -217,8 +222,5 @@ void WelcomeBrowser::openLiteDoument(QModelIndex index)
         m_docBrowser->browser()->setText(QString::fromUtf8(data,data.size()));
     }
 
-    BrowserEditorManager *browserManger = LiteApi::findExtensionObject<BrowserEditorManager*>(m_liteApp,"LiteApi.BrowserEditorManager");
-    if (browserManger) {
-        browserManger->setActive(m_docBrowser);
-    }
+    m_liteApp->editorManager()->activeBrowser(m_docBrowser);
 }

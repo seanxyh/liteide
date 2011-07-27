@@ -61,7 +61,7 @@ QWidget *FileBrowserOption::widget()
     return m_widget;
 }
 
-QString FileBrowserOption::displayName() const
+QString FileBrowserOption::name() const
 {
     return "FileBrowser";
 }

@@ -120,7 +120,7 @@ void ProjectManager::setCurrentProject(IProject *project)
         m_mainLayout->addWidget(m_currentProject->widget());
         m_liteApp->dockManager()->showDock(m_widget);
         m_currentProject->load();
-        m_liteApp->appendConsole("ProjectManager","loadProject",project->displayName());
+        m_liteApp->appendConsole("ProjectManager","loadProject",project->name());
     }
     emit currentProjectChanged(project);
 }
@@ -189,7 +189,7 @@ void ProjectManager::closeProjectHelper(IProject *project)
         m_liteApp->dockManager()->hideDock(m_widget);
     }
 
-    m_liteApp->appendConsole("ProjectManager","closeProject",cur->displayName());
+    m_liteApp->appendConsole("ProjectManager","closeProject",cur->name());
 
     delete cur;
 }
