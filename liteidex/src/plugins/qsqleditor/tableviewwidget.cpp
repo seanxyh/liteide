@@ -29,6 +29,15 @@
 #include "sqltablemodel.h"
 #include "sqlitemdelegate.h"
 #include <QTableWidgetItem>
+//lite_memory_check_begin
+#if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
+     #define _CRTDBG_MAP_ALLOC
+     #include <stdlib.h>
+     #include <crtdbg.h>
+     #define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ )
+     #define new DEBUG_NEW
+#endif
+//lite_memory_check_end
 
 TableViewWidget::TableViewWidget(QSqlDatabase &db, QWidget *parent) :
     QWidget(parent),
