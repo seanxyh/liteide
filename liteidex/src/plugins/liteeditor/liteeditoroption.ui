@@ -132,7 +132,7 @@
       <item>
        <widget class="QCheckBox" name="autoBracesCheckBox">
         <property name="text">
-         <string>automatically insert brackets</string>
+         <string>Auto complete brackets [] () {} &quot;&quot; ''</string>
         </property>
        </widget>
       </item>
