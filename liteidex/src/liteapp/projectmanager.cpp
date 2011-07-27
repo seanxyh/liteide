@@ -62,31 +62,35 @@ QWidget *ProjectManager::widget()
     return m_widget;
 }
 
-IFile *ProjectManager::createFile(const QString &fileName, const QString &mimeType)
+IProject *ProjectManager::createProject(const QString &fileName, const QString &mimeType)
 {
     if (m_currentProject && m_currentProject->file()->fileName() == fileName) {
-        return m_currentProject->file();
+        return m_currentProject;
     }
-    IFile *file = 0;
-    foreach (IFileFactory *factory , m_factoryList) {
+    IProject *project = 0;
+    foreach (IProjectFactory *factory , m_factoryList) {
         if (factory->mimeTypes().contains(mimeType)) {
-            file = factory->open(fileName,mimeType);
+            project = factory->open(fileName,mimeType);
+            if (project) {
+                setCurrentProject(project);
+                break;
+            }
         }
     }
-    return file;
+    return project;
 }
 
-void ProjectManager::addFactory(IFileFactory *factory)
+void ProjectManager::addFactory(IProjectFactory *factory)
 {
     m_factoryList.append(factory);
 }
 
-void ProjectManager::removeFactory(IFileFactory *factory)
+void ProjectManager::removeFactory(IProjectFactory *factory)
 {
     m_factoryList.removeOne(factory);
 }
 
-QList<IFileFactory*> ProjectManager::factoryList() const
+QList<IProjectFactory*> ProjectManager::factoryList() const
 {
     return m_factoryList;
 }
@@ -94,7 +98,7 @@ QList<IFileFactory*> ProjectManager::factoryList() const
 QStringList ProjectManager::mimeTypeList() const
 {
     QStringList types;
-    foreach(IFileFactory *factory, m_factoryList) {
+    foreach(IProjectFactory *factory, m_factoryList) {
         types.append(factory->mimeTypes());
     }
     return types;

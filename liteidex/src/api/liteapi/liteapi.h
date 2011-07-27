@@ -37,6 +37,10 @@
 namespace LiteApi {
 
 class IApplication;
+class IManager;
+class IFile;
+class IProject;
+class IEditor;
 
 class IManager : public QObject
 {
@@ -95,24 +99,24 @@ signals:
     void reloaded();
 };
 
-class IFileFactory : public QObject
+class IEditorFactory : public QObject
 {
     Q_OBJECT
 public:
-    IFileFactory(QObject *parent = 0) : QObject(parent) {}
+    IEditorFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QStringList mimeTypes() const = 0;
-    virtual IFile *open(const QString &fileName, const QString &mimeType) = 0;
+    virtual IEditor *open(const QString &fileName, const QString &mimeType) = 0;
     virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const = 0;
 };
 
-class IFileFactoryList
+class IProjectFactory : public QObject
 {
+    Q_OBJECT
 public:
-    virtual IFile *createFile(const QString &fileName, const QString &mimeType) = 0;
-    virtual void addFactory(IFileFactory *factory) = 0;
-    virtual void removeFactory(IFileFactory *factory) = 0;
-    virtual QList<IFileFactory*> factoryList() const = 0;
-    virtual QStringList mimeTypeList() const = 0;
+    IProjectFactory(QObject *parent = 0) : QObject(parent) {}
+    virtual QStringList mimeTypes() const = 0;
+    virtual IProject *open(const QString &fileName, const QString &mimeType) = 0;
+    virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const = 0;
 };
 
 class IFileManager : public IManager
@@ -122,8 +126,8 @@ public:
     IFileManager(QObject *parent = 0) : IManager(parent) {}
 
     virtual bool openFile(const QString &fileName) = 0;
-    virtual bool openEditor(const QString &fileName) = 0;
-    virtual bool openProject(const QString &fileName) = 0;
+    virtual IEditor *openEditor(const QString &fileName) = 0;
+    virtual IProject *openProject(const QString &fileName) = 0;
     // recent files
     virtual void addRecentFile(const QString &fileName) = 0;
     virtual void addRecentProject(const QString &fileName) = 0;
@@ -181,11 +185,16 @@ public:
     virtual void gotoLine(int line, int column) = 0;
 };
 
-class IEditorManager : public IManager, public IFileFactoryList
+class IEditorManager : public IManager
 {
     Q_OBJECT
 public:
     IEditorManager(QObject *parent = 0) : IManager(parent) {}
+    virtual IEditor *createEditor(const QString &fileName, const QString &mimeType) = 0;
+    virtual void addFactory(IEditorFactory *factory) = 0;
+    virtual void removeFactory(IEditorFactory *factory) = 0;
+    virtual QList<IEditorFactory*> factoryList() const = 0;
+    virtual QStringList mimeTypeList() const = 0;
     virtual QWidget *widget() = 0;
     virtual IEditor *currentEditor() const = 0;
     virtual void setCurrentEditor(IEditor *editor) = 0;
@@ -267,11 +276,16 @@ signals:
     void applyOption(QString);
 };
 
-class IProjectManager : public IManager, public IFileFactoryList
+class IProjectManager : public IManager
 {
     Q_OBJECT
 public:
     IProjectManager(QObject *parent = 0) : IManager(parent) {}
+    virtual IProject *createProject(const QString &fileName, const QString &mimeType) = 0;
+    virtual void addFactory(IProjectFactory *factory) = 0;
+    virtual void removeFactory(IProjectFactory *factory) = 0;
+    virtual QList<IProjectFactory*> factoryList() const = 0;
+    virtual QStringList mimeTypeList() const = 0;
     virtual void setCurrentProject(IProject *project) = 0;
     virtual IProject *currentProject() const = 0;
     virtual QList<IEditor*> editorList(IProject *project) const = 0;

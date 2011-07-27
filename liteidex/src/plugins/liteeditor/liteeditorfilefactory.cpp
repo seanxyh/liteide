@@ -45,7 +45,7 @@
 //lite_memory_check_end
 
 LiteEditorFileFactory::LiteEditorFileFactory(LiteApi::IApplication *app, QObject *parent)
-    : LiteApi::IFileFactory(parent),
+    : LiteApi::IEditorFactory(parent),
       m_liteApp(app)
 {
     m_mimeTypes.append("text/x-gosrc");
@@ -95,7 +95,7 @@ void LiteEditorFileFactory::colorStyleChanged()
     }
 }
 
-LiteApi::IFile *LiteEditorFileFactory::open(const QString &fileName, const QString &mimeType)
+LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QString &mimeType)
 {
     LiteEditor *editor = new LiteEditor(m_liteApp);
     if (!editor->open(fileName,mimeType)) {
@@ -104,7 +104,6 @@ LiteApi::IFile *LiteEditorFileFactory::open(const QString &fileName, const QStri
     }
 
     QTextDocument *doc = editor->m_editorWidget->document();
-    qDebug() << mimeType;
     TextEditor::SyntaxHighlighter *h = m_kate->create(doc,mimeType);
     if (h) {
         editor->extension()->addObject("TextEditor::SyntaxHighlighter",h);
@@ -120,8 +119,7 @@ LiteApi::IFile *LiteEditorFileFactory::open(const QString &fileName, const QStri
             wordCompleter->appendItems(wordApi->wordList(),false);
         }        
     }
-    m_liteApp->editorManager()->addAutoReleaseEditor(editor);
-    return editor->file();
+    return editor;
 }
 
 bool LiteEditorFileFactory::targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const

@@ -143,17 +143,24 @@ QStringList FileManager::recentProjects() const
 bool FileManager::targetInfo(const QString &fileName, QString &target, QString &targetPath, QString &workPath) const
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
-    QList<IFileFactory*> factoryList;
     if (m_liteApp->projectManager()->mimeTypeList().contains(mimeType)) {
-        factoryList = m_liteApp->projectManager()->factoryList();
+        QList<IProjectFactory*> factoryList = m_liteApp->projectManager()->factoryList();
+        foreach(LiteApi::IProjectFactory *factory, factoryList) {
+            if (factory->mimeTypes().contains(mimeType)) {
+                bool ret = factory->targetInfo(fileName,mimeType,target,targetPath,workPath);
+                if (ret) {
+                    return true;
+                }
+            }
+        }
     } else {
-        factoryList = m_liteApp->editorManager()->factoryList();
-    }
-    foreach(LiteApi::IFileFactory *factory, factoryList) {
-        if (factory->mimeTypes().contains(mimeType)) {
-            bool ret = factory->targetInfo(fileName,mimeType,target,targetPath,workPath);
-            if (ret) {
-                return true;
+        QList<IEditorFactory*> factoryList = m_liteApp->editorManager()->factoryList();
+        foreach(LiteApi::IEditorFactory *factory, factoryList) {
+            if (factory->mimeTypes().contains(mimeType)) {
+                bool ret = factory->targetInfo(fileName,mimeType,target,targetPath,workPath);
+                if (ret) {
+                    return true;
+                }
             }
         }
     }
@@ -315,37 +322,36 @@ bool FileManager::openFile(const QString &fileName)
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
     if (m_liteApp->projectManager()->mimeTypeList().contains(mimeType)) {
-        return openProject(fileName);
+        return openProject(fileName) != 0;
     } else {
-        return openEditor(fileName);
+        return openEditor(fileName) != 0;
     }
+    return false;
 }
 
-bool FileManager::openEditor(const QString &fileName)
+IEditor *FileManager::openEditor(const QString &fileName)
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
-    qDebug() << "openEditor" << mimeType;
 
-    IFile *file = m_liteApp->editorManager()->createFile(fileName,mimeType);
-    if (file && !file->fileName().isEmpty()) {
+    IEditor *editor = m_liteApp->editorManager()->createEditor(fileName,mimeType);
+    if (editor && editor->file()) {
         addRecentFile(fileName);
     } else {
         removeRecentFile(fileName);
     }
-    return false;
+    return editor;
 }
 
-bool FileManager::openProject(const QString &fileName)
+IProject *FileManager::openProject(const QString &fileName)
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
-    IFile *file = m_liteApp->projectManager()->createFile(fileName,mimeType);
-    if (file && !file->fileName().isEmpty()) {
+    IProject *project = m_liteApp->projectManager()->createProject(fileName,mimeType);
+    if (project && project->file()) {
         addRecentProject(fileName);
-        return true;
     } else {
         removeRecentProject(fileName);
     }
-    return false;
+    return project;
 }
 
 void FileManager::updateRecentFileActions()

@@ -41,10 +41,10 @@ public:
     ~EditorManager();
     virtual bool initWithApp(IApplication *app);
 public:
-    virtual IFile *createFile(const QString &fileName, const QString &mimeType);
-    virtual void addFactory(IFileFactory *factory);
-    virtual void removeFactory(IFileFactory *factory);
-    virtual QList<IFileFactory*>  factoryList() const;
+    virtual IEditor *createEditor(const QString &fileName, const QString &mimeType);
+    virtual void addFactory(IEditorFactory *factory);
+    virtual void removeFactory(IEditorFactory *factory);
+    virtual QList<IEditorFactory*>  factoryList() const;
     virtual QStringList mimeTypeList() const;
 public:
     virtual QWidget *widget();
@@ -72,7 +72,7 @@ protected:
     LiteTabWidget *m_editorTabWidget;
     QMap<QWidget *, IEditor *> m_widgetEditorMap;
     QPointer<IEditor> m_currentEditor;
-    QList<IFileFactory*>    m_factoryList;
+    QList<IEditorFactory*>    m_factoryList;
     QMap<IEditor*,QAction*>   m_browserActionMap;
  protected slots:
     void editorTabChanged(int);

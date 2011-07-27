@@ -28,12 +28,12 @@
 
 #include "liteapi.h"
 
-class MakefileFileFactory : public LiteApi::IFileFactory
+class MakefileFileFactory : public LiteApi::IProjectFactory
 {
 public:
     MakefileFileFactory(LiteApi::IApplication *app, QObject *parent = 0);
     virtual QStringList mimeTypes() const;
-    virtual LiteApi::IFile *open(const QString &fileName, const QString &mimeType);
+    virtual LiteApi::IProject *open(const QString &fileName, const QString &mimeType);
     virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const;
 protected:
     LiteApi::IApplication *m_liteApp;
