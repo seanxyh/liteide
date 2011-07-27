@@ -44,7 +44,7 @@ class ProjectManager : public IProjectManager
 public:
     ProjectManager();
     ~ProjectManager();
-    virtual IProject *createProject(const QString &fileName, const QString &mimeType);
+    virtual IProject *openProject(const QString &fileName, const QString &mimeType);
     virtual void addFactory(IProjectFactory *factory);
     virtual void removeFactory(IProjectFactory *factory);
     virtual QList<IProjectFactory*> factoryList() const;

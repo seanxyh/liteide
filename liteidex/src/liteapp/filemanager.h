@@ -43,7 +43,7 @@ public:
     virtual ~FileManager();
 public:
     virtual bool openFile(const QString &fileName);
-    virtual IEditor *openEditor(const QString &fileName);
+    virtual IEditor *openEditor(const QString &fileName, bool bActive = true);
     virtual IProject *openProject(const QString &fileName);
 
     virtual void addRecentFile(const QString &fileName);

@@ -122,7 +122,7 @@ void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
     if (!error && code == 0) {
         QString fileName = m_process->userData(0).toString();
         if (!fileName.isEmpty()) {
-            LiteApi::IEditor *editor = m_liteApp->editorManager()->loadEditor(fileName);
+            LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName);
             if (editor) {
                 QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
                 QTextCodec *codec = QTextCodec::codecForName("utf-8");

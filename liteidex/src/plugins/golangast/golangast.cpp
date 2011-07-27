@@ -407,11 +407,10 @@ void GolangAst::doubleClockedTree(QModelIndex proxyIndex)
         return;
     }
     QFileInfo info(QDir(m_workPath),fileName);
-    LiteApi::IEditor *editor = m_liteApp->editorManager()->loadEditor(info.filePath());
+    LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(info.filePath());
     if (!editor) {
         return;
     }
-    m_liteApp->editorManager()->setCurrentEditor(editor);
     editor->widget()->setFocus();
     LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
     if (!textEditor) {

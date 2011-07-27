@@ -329,11 +329,14 @@ bool FileManager::openFile(const QString &fileName)
     return false;
 }
 
-IEditor *FileManager::openEditor(const QString &fileName)
+IEditor *FileManager::openEditor(const QString &fileName, bool bActive)
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
 
-    IEditor *editor = m_liteApp->editorManager()->createEditor(fileName,mimeType);
+    IEditor *editor = m_liteApp->editorManager()->openEditor(fileName,mimeType);
+    if (editor && bActive) {
+        m_liteApp->editorManager()->setCurrentEditor(editor);
+    }
     if (editor && editor->file()) {
         addRecentFile(fileName);
     } else {
@@ -345,7 +348,7 @@ IEditor *FileManager::openEditor(const QString &fileName)
 IProject *FileManager::openProject(const QString &fileName)
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
-    IProject *project = m_liteApp->projectManager()->createProject(fileName,mimeType);
+    IProject *project = m_liteApp->projectManager()->openProject(fileName,mimeType);
     if (project && project->file()) {
         addRecentProject(fileName);
     } else {

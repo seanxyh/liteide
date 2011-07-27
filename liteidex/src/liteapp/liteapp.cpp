@@ -111,7 +111,7 @@ LiteApp::LiteApp()
     m_outputManager->addOutuput(m_logOutput,tr("Console"));
     connect(m_logOutput,SIGNAL(hideOutput()),m_outputManager,SLOT(setCurrentOutput()));
 
-    m_optionAct = m_editorManager->addBrowser(m_optionManager->browser());
+    m_optionAct = m_editorManager->registerBrowser(m_optionManager->browser());
     m_viewMenu->addAction(m_optionAct);
     m_optionManager->setAction(m_optionAct);
 
@@ -411,17 +411,11 @@ void LiteApp::loadSession(const QString &name)
         m_fileManager->openProject(projectName);
     }
     foreach(QString fileName, fileList) {
-        m_fileManager->openEditor(fileName);
+        m_fileManager->openEditor(fileName,false);
     }
     if (!editorName.isEmpty()) {
-        m_fileManager->openEditor(editorName);
-    } else {
-        QList<IEditor*> editors = m_editorManager->editorList();
-        if (!editors.isEmpty()) {
-            m_editorManager->setCurrentEditor(editors[0]);
-        }
+        m_fileManager->openEditor(editorName,true);
     }
-
     m_mainwindow->restoreState(m_settings->value(session+"_state").toByteArray());
 }
 

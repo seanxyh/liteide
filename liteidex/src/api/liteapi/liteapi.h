@@ -126,7 +126,7 @@ public:
     IFileManager(QObject *parent = 0) : IManager(parent) {}
 
     virtual bool openFile(const QString &fileName) = 0;
-    virtual IEditor *openEditor(const QString &fileName) = 0;
+    virtual IEditor *openEditor(const QString &fileName, bool bActive = true) = 0;
     virtual IProject *openProject(const QString &fileName) = 0;
     // recent files
     virtual void addRecentFile(const QString &fileName) = 0;
@@ -190,7 +190,7 @@ class IEditorManager : public IManager
     Q_OBJECT
 public:
     IEditorManager(QObject *parent = 0) : IManager(parent) {}
-    virtual IEditor *createEditor(const QString &fileName, const QString &mimeType) = 0;
+    virtual IEditor *openEditor(const QString &fileName, const QString &mimeType) = 0;
     virtual void addFactory(IEditorFactory *factory) = 0;
     virtual void removeFactory(IEditorFactory *factory) = 0;
     virtual QList<IEditorFactory*> factoryList() const = 0;
@@ -199,9 +199,8 @@ public:
     virtual IEditor *currentEditor() const = 0;
     virtual void setCurrentEditor(IEditor *editor) = 0;
     virtual QList<IEditor*> editorList() const = 0;
-    virtual void addAutoReleaseEditor(IEditor *editor) = 0;
-    virtual IEditor *loadEditor(const QString &fileName) = 0;
-    virtual QAction *addBrowser(IEditor *editor) = 0;
+    virtual void addEditor(IEditor *editor) = 0;
+    virtual QAction *registerBrowser(IEditor *editor) = 0;
     virtual void activeBrowser(IEditor *editor) = 0;
 public slots:
     virtual bool saveEditor(IEditor *editor = 0) = 0;
@@ -281,7 +280,7 @@ class IProjectManager : public IManager
     Q_OBJECT
 public:
     IProjectManager(QObject *parent = 0) : IManager(parent) {}
-    virtual IProject *createProject(const QString &fileName, const QString &mimeType) = 0;
+    virtual IProject *openProject(const QString &fileName, const QString &mimeType) = 0;
     virtual void addFactory(IProjectFactory *factory) = 0;
     virtual void removeFactory(IProjectFactory *factory) = 0;
     virtual QList<IProjectFactory*> factoryList() const = 0;

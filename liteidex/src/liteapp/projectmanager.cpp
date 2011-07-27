@@ -62,7 +62,7 @@ QWidget *ProjectManager::widget()
     return m_widget;
 }
 
-IProject *ProjectManager::createProject(const QString &fileName, const QString &mimeType)
+IProject *ProjectManager::openProject(const QString &fileName, const QString &mimeType)
 {
     if (m_currentProject && m_currentProject->file()->fileName() == fileName) {
         return m_currentProject;
@@ -72,10 +72,12 @@ IProject *ProjectManager::createProject(const QString &fileName, const QString &
         if (factory->mimeTypes().contains(mimeType)) {
             project = factory->open(fileName,mimeType);
             if (project) {
-                setCurrentProject(project);
                 break;
             }
         }
+    }
+    if (project) {
+        setCurrentProject(project);
     }
     return project;
 }
