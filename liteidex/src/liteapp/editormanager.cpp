@@ -324,17 +324,17 @@ QList<IEditor*> EditorManager::editorList() const
     return m_widgetEditorMap.values();
 }
 
-void EditorManager::addFactory(IFileFactory *factory)
+void EditorManager::addFactory(IEditorFactory *factory)
 {
     m_factoryList.append(factory);
 }
 
-void EditorManager::removeFactory(IFileFactory *factory)
+void EditorManager::removeFactory(IEditorFactory *factory)
 {
     m_factoryList.removeOne(factory);
 }
 
-QList<IFileFactory*>  EditorManager::factoryList() const
+QList<IEditorFactory*>  EditorManager::factoryList() const
 {
     return m_factoryList;
 }
@@ -342,45 +342,47 @@ QList<IFileFactory*>  EditorManager::factoryList() const
 QStringList EditorManager::mimeTypeList() const
 {
     QStringList types;
-    foreach(IFileFactory *factory, m_factoryList) {
+    foreach(IEditorFactory *factory, m_factoryList) {
         types.append(factory->mimeTypes());
     }
     return types;
 }
 
-IFile *EditorManager::createFile(const QString &fileName, const QString &mimeType)
+IEditor *EditorManager::createEditor(const QString &fileName, const QString &mimeType)
 {
-    IFile *file = 0;
+    IEditor *ed = 0;
     QList<IEditor*> editors = m_widgetEditorMap.values();
     foreach(IEditor *editor, editors) {
         if (!editor->file()) {
             continue;
         }
         if (FileUtil::compareFile(editor->file()->fileName(),fileName)) {
-            file = editor->file();
-            setCurrentEditor(editor);
+            ed = editor;
             break;
         }
     }
-    if (file == 0) {
-        foreach (IFileFactory *factory, m_factoryList) {
+    if (ed == 0) {
+        foreach (IEditorFactory *factory, m_factoryList) {
             if (factory->mimeTypes().contains(mimeType)) {
-                file = factory->open(fileName,mimeType);
+                ed = factory->open(fileName,mimeType);
                 break;
             }
         }
     }
-    if (file == 0) {
+    if (ed == 0) {
         //open on default.editor
         QString type = "text/liteide.default.editor";
-        foreach (IFileFactory *factory, m_factoryList) {
+        foreach (IEditorFactory *factory, m_factoryList) {
             if (factory->mimeTypes().contains(type)) {
-                file = factory->open(fileName,type);
+                ed = factory->open(fileName,type);
                 break;
             }
         }
     }
-    return file;
+    if (ed) {
+        addAutoReleaseEditor(ed);
+    }
+    return ed;
 }
 
 void EditorManager::toggleBrowserAction(bool b)

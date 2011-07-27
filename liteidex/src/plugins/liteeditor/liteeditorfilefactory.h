@@ -31,13 +31,13 @@
 
 class WordApiManager;
 class LiteEditor;
-class LiteEditorFileFactory : public LiteApi::IFileFactory
+class LiteEditorFileFactory : public LiteApi::IEditorFactory
 {
     Q_OBJECT
 public:
     LiteEditorFileFactory(LiteApi::IApplication *app, QObject *parent);
     virtual QStringList mimeTypes() const;
-    virtual LiteApi::IFile *open(const QString &fileName, const QString &mimeType);
+    virtual LiteApi::IEditor *open(const QString &fileName, const QString &mimeType);
     virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const;
 public slots:
     void colorStyleChanged();

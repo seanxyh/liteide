@@ -38,7 +38,7 @@
 //lite_memory_check_end
 
 MakefileFileFactory::MakefileFileFactory(LiteApi::IApplication *app, QObject *parent)
-    : LiteApi::IFileFactory(parent),
+    : LiteApi::IProjectFactory(parent),
       m_liteApp(app)
 {
     m_mimeTypes.append("text/x-makefile");
@@ -49,7 +49,7 @@ QStringList MakefileFileFactory::mimeTypes() const
     return m_mimeTypes;
 }
 
-LiteApi::IFile *MakefileFileFactory::open(const QString &fileName, const QString &mimeType)
+LiteApi::IProject *MakefileFileFactory::open(const QString &fileName, const QString &mimeType)
 {
     if (!m_mimeTypes.contains(mimeType)) {
         return 0;
@@ -60,8 +60,7 @@ LiteApi::IFile *MakefileFileFactory::open(const QString &fileName, const QString
         delete project;
         return 0;
     }
-    m_liteApp->projectManager()->setCurrentProject(project);
-    return project->file();
+    return project;
 }
 
 bool MakefileFileFactory::targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const

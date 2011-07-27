@@ -44,10 +44,10 @@ class ProjectManager : public IProjectManager
 public:
     ProjectManager();
     ~ProjectManager();
-    virtual IFile *createFile(const QString &fileName, const QString &mimeType);
-    virtual void addFactory(IFileFactory *factory);
-    virtual void removeFactory(IFileFactory *factory);
-    virtual QList<IFileFactory*> factoryList() const;
+    virtual IProject *createProject(const QString &fileName, const QString &mimeType);
+    virtual void addFactory(IProjectFactory *factory);
+    virtual void removeFactory(IProjectFactory *factory);
+    virtual QList<IProjectFactory*> factoryList() const;
     virtual QStringList mimeTypeList() const;
 public:
     virtual void setCurrentProject(IProject *project);
@@ -61,7 +61,7 @@ protected:
     virtual void closeProjectHelper(IProject *project);
 protected:
     QPointer<IProject>      m_currentProject;
-    QList<IFileFactory*>    m_factoryList;
+    QList<IProjectFactory*>    m_factoryList;
     QWidget                 *m_widget;
     QVBoxLayout             *m_mainLayout;
 };
