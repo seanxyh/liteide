@@ -84,6 +84,7 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("DocBrowser"));
+    m_docBrowser->setDisplayName(tr("LiteIDE Document Browser"));
     m_browserAct = m_liteApp->editorManager()->addBrowser(m_docBrowser);
 
     connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));

@@ -310,7 +310,6 @@ void LiteApp::createActions()
     m_closeProjectAct = new QAction(QIcon(":/images/closeproject.png"),tr("Close Project"),m_mainwindow);
     m_saveAct = new QAction(QIcon(":/images/save.png"),tr("Save"),m_mainwindow);
     m_saveAct->setShortcut(QKeySequence::Save);
-    m_saveAsAct = new QAction(tr("Save As"),m_mainwindow);
     m_saveAllAct = new QAction(QIcon(":/images/saveall.png"),tr("Save All"),m_mainwindow);
 
     m_exitAct = new QAction(tr("Exit"),m_mainwindow);
@@ -327,7 +326,6 @@ void LiteApp::createActions()
     connect(m_saveProjectAct,SIGNAL(triggered()),m_projectManager,SLOT(saveProject()));
     connect(m_closeProjectAct,SIGNAL(triggered()),m_projectManager,SLOT(closeProject()));
     connect(m_saveAct,SIGNAL(triggered()),m_editorManager,SLOT(saveEditor()));
-    connect(m_saveAsAct,SIGNAL(triggered()),m_editorManager,SLOT(saveEditorAs()));
     connect(m_saveAllAct,SIGNAL(triggered()),m_editorManager,SLOT(saveAllEditors()));
     connect(m_exitAct,SIGNAL(triggered()),m_mainwindow,SLOT(close()));
     connect(m_aboutAct,SIGNAL(triggered()),m_mainwindow,SLOT(about()));
@@ -351,7 +349,6 @@ void LiteApp::createMenus()
     m_fileMenu->addAction(m_closeProjectAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_saveAct);
-    m_fileMenu->addAction(m_saveAsAct);
     m_fileMenu->addAction(m_saveAllAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addMenu(m_fileManager->recentFileMenu());
@@ -392,7 +389,6 @@ void LiteApp::currentEditorChanged(IEditor *editor)
 {
     bool b = (editor != 0);
     m_saveAct->setEnabled(b);
-    m_saveAsAct->setEnabled(b);
     m_saveAllAct->setEnabled(b);
     m_closeAct->setEnabled(b);
     m_closeAllAct->setEnabled(b);
