@@ -324,6 +324,8 @@ bool FileManager::openFile(const QString &fileName)
 bool FileManager::openEditor(const QString &fileName)
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
+    qDebug() << "openEditor" << mimeType;
+
     IFile *file = m_liteApp->editorManager()->createFile(fileName,mimeType);
     if (file && !file->fileName().isEmpty()) {
         addRecentFile(fileName);

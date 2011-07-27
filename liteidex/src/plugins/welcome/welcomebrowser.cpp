@@ -84,7 +84,7 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("DocBrowser"));
-    m_docBrowser->setDisplayName(tr("LiteIDE Document Browser"));
+    m_docBrowser->setDisplayName(tr("Document Browser"));
     m_browserAct = m_liteApp->editorManager()->addBrowser(m_docBrowser);
 
     connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
@@ -132,12 +132,13 @@ static void resizeTreeView(QTreeView *treeView)
 void WelcomeBrowser::loadDocFiles()
 {
     m_docModel->clear();
-    QDir dir(m_liteApp->resourcePath()+"/liteidedoc");
+    QDir dir(m_liteApp->resourcePath()+"/doc");
     QFileInfoList infoList = dir.entryInfoList(QDir::Files|QDir::NoSymLinks);
     foreach (QFileInfo info, infoList) {
         m_docModel->appendRow(QList<QStandardItem*>()
                               << new QStandardItem(info.baseName())
-                              << new QStandardItem(info.filePath()));
+                              << new QStandardItem(QDir::toNativeSeparators(info.filePath()))
+                              );
     }
     resizeTreeView(ui->docTreeView);
 }
@@ -149,8 +150,9 @@ void WelcomeBrowser::loadRecentProjects()
     foreach (QString file, recentProjects) {
         QFileInfo info(file);
         m_recentProjectsModel->appendRow(QList<QStandardItem*>()
-                              << new QStandardItem(info.fileName())
-                              << new QStandardItem(info.filePath()));
+                                         << new QStandardItem(info.fileName())
+                                         << new QStandardItem(QDir::toNativeSeparators(info.filePath()))
+                                         );
     }
     resizeTreeView(ui->recentProjectsTreeView);
 }
@@ -162,8 +164,9 @@ void WelcomeBrowser::loadRecentFiles()
     foreach (QString file, files) {
         QFileInfo info(file);
         m_recentFilesModel->appendRow(QList<QStandardItem*>()
-                              << new QStandardItem(info.fileName())
-                              << new QStandardItem(info.filePath()));
+                                      << new QStandardItem(info.fileName())
+                                      << new QStandardItem(QDir::toNativeSeparators(info.filePath()))
+                                      );
     }
     resizeTreeView(ui->recentFilesTreeView);
 }
@@ -188,7 +191,7 @@ void WelcomeBrowser::openRecentFile(QModelIndex index)
     if (!index.isValid()) {
         return;
     }
-    QModelIndex i = m_recentProjectsModel->index(index.row(),1);
+    QModelIndex i = m_recentFilesModel->index(index.row(),1);
     if (!i.isValid()) {
         return;
     }
