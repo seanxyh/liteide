@@ -49,6 +49,15 @@
 #include <QToolButton>
 #include <QTextCodec>
 #include <QDebug>
+//lite_memory_check_begin
+#if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
+     #define _CRTDBG_MAP_ALLOC
+     #include <stdlib.h>
+     #include <crtdbg.h>
+     #define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ )
+     #define new DEBUG_NEW
+#endif
+//lite_memory_check_end
 
 GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
@@ -148,6 +157,7 @@ GolangDoc::~GolangDoc()
     if (m_docBrowser) {
         delete m_docBrowser;
     }
+    delete m_findMenu;
     delete m_widget;
 }
 
