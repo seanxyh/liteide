@@ -131,8 +131,8 @@ void MainWindow::dropEvent(QDropEvent *event)
 void MainWindow::currentEditorChanged(IEditor *editor)
 {
     QString title = "LiteIDE";
-    if (editor && editor->file()) {
-        title += " - " + editor->file()->fileName();
+    if (editor && !editor->displayName().isEmpty()) {
+        title += " - " + editor->displayName();
         if (editor->isModified()) {
             title += " * ";
         }
@@ -145,8 +145,8 @@ void MainWindow::editorModifyChanged(bool b)
 {
     IEditor *editor = (IEditor*)sender();
     QString title = "LiteIDE";
-    if (editor) {
-        title += " - " + editor->file()->fileName();
+    if (editor && !editor->displayName().isEmpty()) {
+        title += " - " + editor->displayName();
         if (b == true) {
             title += " * ";
         }

@@ -49,6 +49,11 @@
 #endif
 //lite_memory_check_end
 
+EditorManager::~EditorManager()
+{
+    m_browserActionMap.clear();
+}
+
 bool EditorManager::initWithApp(IApplication *app)
 {
     if (!IEditorManager::initWithApp(app)) {
@@ -95,17 +100,8 @@ void EditorManager::addEditorHelper(IEditor *editor, bool autoRelease)
         if (w == 0) {
             return;
         }
-        QString tip;
-        if (editor && editor->file()) {
-            tip = editor->file()->fileName();
-        } else {
-            tip = editor->displayName();
-        }
-        m_editorTabWidget->addTab(w,QIcon(),editor->displayName(),tip);
+        m_editorTabWidget->addTab(w,QIcon(),editor->name(),editor->displayName());
         m_widgetEditorMap.insert(w,editor);
-        if (autoRelease) {
-            m_autoReleaseEditorList.append(editor);
-        }
         emit editorCreated(editor);
         connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(modificationChanged(bool)));
     }
@@ -129,9 +125,26 @@ void EditorManager::addAutoReleaseEditor(IEditor *editor)
     addEditorHelper(editor,true);
 }
 
-void EditorManager::addEditor(IEditor *editor)
+QAction *EditorManager::addBrowser(IEditor *editor)
 {
-    addEditorHelper(editor,false);
+    QAction *act = new QAction(editor->name(),this);
+    act->setCheckable(true);
+    act->setChecked(false);
+    connect(act,SIGNAL(toggled(bool)),this,SLOT(toggleBrowserAction(bool)));
+    m_browserActionMap.insert(editor,act);
+    return act;
+}
+
+void EditorManager::activeBrowser(IEditor *editor)
+{
+    QAction *act = m_browserActionMap.value(editor);
+    if (!act) {
+        return;
+    }
+    if (!act->isChecked()) {
+        act->toggle();
+    }
+    setCurrentEditor(editor);
 }
 
 IEditor *EditorManager::loadEditor(const QString &fileName)
@@ -182,11 +195,17 @@ bool EditorManager::closeEditor(IEditor *editor)
     m_editorTabWidget->removeTab(index);
     m_widgetEditorMap.remove(cur->widget());
 
-    index = m_autoReleaseEditorList.indexOf(cur);
-    if (index >= 0) {
-        m_autoReleaseEditorList.removeAt(index);
-        delete cur;
+    QMapIterator<IEditor*,QAction*> i(m_browserActionMap);
+    while (i.hasNext()) {
+        i.next();
+        if (i.key() == cur) {
+            i.value()->blockSignals(true);
+            i.value()->setChecked(false);
+            i.value()->blockSignals(false);
+            return true;
+        }
     }
+    delete cur;
     return true;
 }
 
@@ -364,11 +383,26 @@ IFile *EditorManager::createFile(const QString &fileName, const QString &mimeTyp
     return file;
 }
 
+void EditorManager::toggleBrowserAction(bool b)
+{
+    QAction *act = (QAction*)sender();
+    if (act) {
+        IEditor *editor = m_browserActionMap.key(act);
+        if (editor) {
+            if (b) {
+                addEditorHelper(editor,false);
+            } else {
+                closeEditor(editor);
+            }
+        }
+    }
+}
+
 void EditorManager::modificationChanged(bool b)
 {
     IEditor *editor = static_cast<IEditor*>(sender());
     if (editor) {
-        QString text = editor->displayName();
+        QString text = editor->name();
         if (b) {
             text += " *";
         }

@@ -26,21 +26,25 @@
 #ifndef DOCUMENTBROWSER_H
 #define DOCUMENTBROWSER_H
 
-#include "browsereditor/browsereditorimpl.h"
+#include "liteapi.h"
 #include <QUrl>
 
 class QTextBrowser;
 class QComboBox;
 class QToolButton;
 class QCheckBox;
-class DocumentBrowser : public BrowserEditorImpl
+class DocumentBrowser : public LiteApi::IBrowserEditor
 {
     Q_OBJECT
 public:
-    explicit DocumentBrowser(LiteApi::IApplication *app, QObject *parent = 0);
+    explicit DocumentBrowser(LiteApi::IApplication *app, QObject *parent);
     ~DocumentBrowser();
 public:
     virtual QWidget *widget();
+    virtual QString name() const;
+    virtual QString displayName() const;
+    void setName(const QString &t);
+    void setDisplayName(const QString &t);
     QTextBrowser *browser();
     bool findText(bool findBackward);
 public slots:
@@ -59,6 +63,8 @@ protected:
     QCheckBox    *m_useRegexCheckBox;
     QAction     *m_findNextAct;
     QAction     *m_findPrevAct;
+    QString     m_name;
+    QString     m_displayName;
 };
 
 #endif // DOCUMENTBROWSER_H

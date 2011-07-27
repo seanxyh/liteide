@@ -42,19 +42,12 @@ OptionManager::OptionManager()
 {
 }
 
-OptionManager::~OptionManager()
-{
-    if (m_browser) {
-        delete m_browser;
-    }
-}
-
 bool OptionManager::initWithApp(IApplication *app)
 {
     if (!IManager::initWithApp(app)) {
         return false;
     }
-    m_browser = new OptionsBrowser(app);
+    m_browser = new OptionsBrowser(app,this);
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_browser,SIGNAL(applyOption(QString)),this,SIGNAL(applyOption(QString)));
     return true;
@@ -93,7 +86,7 @@ QList<IOptionFactory*> OptionManager::factoryList() const
     return m_factoryList;
 }
 
-BrowserEditorImpl *OptionManager::browser()
+IEditor *OptionManager::browser()
 {
     return m_browser;
 }

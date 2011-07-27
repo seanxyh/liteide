@@ -37,12 +37,11 @@ class OptionManager : public IOptionManager
     Q_OBJECT
 public:
     OptionManager();
-    ~OptionManager();
     virtual bool initWithApp(IApplication *app);
     virtual void addFactory(IOptionFactory *factory);
     virtual void removeFactory(IOptionFactory *factory);
     virtual QList<IOptionFactory*> factoryList() const;
-    BrowserEditorImpl *browser();
+    IEditor *browser();
     void setAction(QAction *act);
 public slots:
     virtual void exec();

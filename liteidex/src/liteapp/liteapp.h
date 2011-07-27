@@ -43,7 +43,6 @@ class ActionManager;
 class MimeTypeManager;
 class OptionManager;
 class QSettings;
-class BrowserEditorManager;
 class LiteAppOptionFactory;
 
 class LiteApp : public IApplication
@@ -102,7 +101,6 @@ protected:
     MimeTypeManager *m_mimeTypeManager;
     OptionManager   *m_optionManager;
     TextOutput    *m_logOutput;
-    BrowserEditorManager *m_browserManager;
     LiteAppOptionFactory *m_liteAppOptionFactory;
     QString         m_pluginPath;
     QString         m_resourcePath;

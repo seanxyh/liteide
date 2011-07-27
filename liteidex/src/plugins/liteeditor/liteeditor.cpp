@@ -284,7 +284,7 @@ QWidget *LiteEditor::widget()
     return m_widget;
 }
 
-QString LiteEditor::displayName() const
+QString LiteEditor::name() const
 {
     return QFileInfo(m_file->fileName()).fileName();
 }
@@ -344,7 +344,18 @@ bool LiteEditor::isReadOnly() const
 
 bool LiteEditor::isModified() const
 {
+    if (!m_file) {
+        return false;
+    }
     return m_file->document()->isModified();
+}
+
+QString LiteEditor::displayName() const
+{
+    if (!m_file) {
+        return QString();
+    }
+    return m_file->fileName();
 }
 
 LiteApi::IFile *LiteEditor::file()

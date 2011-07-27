@@ -41,7 +41,7 @@ public:
     virtual ~ModelProjectImpl();
 public:
     virtual QWidget *widget();
-    virtual QString displayName() const;
+    virtual QString name() const;
     virtual QIcon icon() const;
 public:
     virtual LiteApi::IFile *file();

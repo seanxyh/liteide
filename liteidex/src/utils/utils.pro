@@ -7,7 +7,6 @@ CONFIG   += ordered
 SUBDIRS = \
     fileutil \
     mimetype \
-    browsereditor \
     extension \
     textoutput \
     symboltreeview \

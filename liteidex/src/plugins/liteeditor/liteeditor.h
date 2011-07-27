@@ -55,7 +55,7 @@ public:
     void createToolBars();
     virtual LiteApi::IExtension *extension();
     virtual QWidget *widget();
-    virtual QString displayName() const;
+    virtual QString name() const;
     virtual QIcon icon() const;
 
     virtual bool createNew(const QString &contents);
@@ -64,6 +64,7 @@ public:
     virtual void setReadOnly(bool b);
     virtual bool isReadOnly() const;
     virtual bool isModified() const;
+    virtual QString displayName() const;
     virtual LiteApi::IFile *file();
 
     virtual int line() const;

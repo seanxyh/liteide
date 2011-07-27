@@ -66,7 +66,7 @@ QWidget *LiteBuildOption::widget()
     return m_widget;
 }
 
-QString LiteBuildOption::displayName() const
+QString LiteBuildOption::name() const
 {
     return "LiteBuild";
 }

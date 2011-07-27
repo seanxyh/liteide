@@ -79,7 +79,7 @@ QWidget *ModelProjectImpl::widget()
     return m_widget;
 }
 
-QString ModelProjectImpl::displayName() const
+QString ModelProjectImpl::name() const
 {
     return QFileInfo(m_file->fileName()).fileName();
 }

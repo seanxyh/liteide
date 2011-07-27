@@ -21,7 +21,7 @@
 // Module: liteapi.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: liteapi.h,v 1.0 2011-6-28 visualfc Exp $
+// $Id: liteapi.h,v 1.0 2011-7-27 visualfc Exp $
 
 #ifndef __LITEAPI_H__
 #define __LITEAPI_H__
@@ -150,7 +150,7 @@ class IView : public IObject
 public:
     IView(QObject *parent = 0) : IObject(parent) {}
     virtual QWidget *widget() = 0;
-    virtual QString displayName() const = 0;
+    virtual QString name() const = 0;
     virtual QIcon icon() const { return QIcon(); }
 };
 
@@ -164,7 +164,8 @@ public:
     virtual void setReadOnly(bool b) = 0;
     virtual bool isReadOnly() const = 0;
     virtual bool isModified() const = 0;
-    virtual IFile *file() = 0;
+    virtual QString displayName() const = 0;
+    virtual IFile *file() { return 0; }
 signals:
     void modificationChanged(bool);
     void contentsChanged();
@@ -174,6 +175,7 @@ class ITextEditor : public IEditor
 {
     Q_OBJECT
 public:
+    ITextEditor(QObject *parent = 0) : IEditor(parent) {}
     virtual int line() const = 0;
     virtual int column() const = 0;
     virtual void gotoLine(int line, int column) = 0;
@@ -188,9 +190,10 @@ public:
     virtual IEditor *currentEditor() const = 0;
     virtual void setCurrentEditor(IEditor *editor) = 0;
     virtual QList<IEditor*> editorList() const = 0;
-    virtual void addEditor(IEditor *editor) = 0;
     virtual void addAutoReleaseEditor(IEditor *editor) = 0;
     virtual IEditor *loadEditor(const QString &fileName) = 0;
+    virtual QAction *addBrowser(IEditor *editor) = 0;
+    virtual void activeBrowser(IEditor *editor) = 0;
 public slots:
     virtual bool saveEditor(IEditor *editor = 0) = 0;
     virtual bool saveEditorAs(IEditor *editor = 0) = 0;
@@ -202,6 +205,18 @@ signals:
     void editorCreated(LiteApi::IEditor *editor);
     void editorAboutToClose(LiteApi::IEditor *editor);
     void editorSaved(LiteApi::IEditor *editor);
+};
+
+class IBrowserEditor : public IEditor
+{
+    Q_OBJECT
+public:
+    IBrowserEditor(QObject *parent = 0)  : IEditor(parent) {}
+    virtual bool open(const QString &fileName,const QString &mimeType) { return false; }
+    virtual bool save() { return false; }
+    virtual void setReadOnly(bool b) {}
+    virtual bool isReadOnly() const { return true; }
+    virtual bool isModified() const { return false; }
 };
 
 class IProject : public IView

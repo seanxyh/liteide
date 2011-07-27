@@ -29,21 +29,21 @@
 #include <QWidget>
 
 #include "liteapi.h"
-#include "browsereditor/browsereditorimpl.h"
 
 namespace Ui {
     class OptionsWidget;
 }
 
 class QListWidgetItem;
-class OptionsBrowser : public BrowserEditorImpl
+class OptionsBrowser : public LiteApi::IBrowserEditor
 {
     Q_OBJECT
 public:
-    explicit OptionsBrowser(LiteApi::IApplication *app);
+    explicit OptionsBrowser(LiteApi::IApplication *app, QObject *parent);
     ~OptionsBrowser();
-    virtual QString displayName() const;
     virtual QWidget *widget();
+    virtual QString name() const;
+    virtual QString displayName() const;
     void addOption(LiteApi::IOption *opt);
 signals:
     void applyOption(QString);

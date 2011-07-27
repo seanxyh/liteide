@@ -36,7 +36,7 @@
 #include <QRegExp>
 
 DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
-    BrowserEditorImpl(parent),
+    LiteApi::IBrowserEditor(parent),
     m_liteApp(app)
 {
     m_widget = new QWidget;
@@ -106,6 +106,26 @@ DocumentBrowser::~DocumentBrowser()
 QWidget *DocumentBrowser::widget()
 {
     return m_widget;
+}
+
+QString DocumentBrowser::name() const
+{
+    return m_name;
+}
+
+QString DocumentBrowser::displayName() const
+{
+    return m_displayName;
+}
+
+void DocumentBrowser::setName(const QString &t)
+{
+    m_name = t;
+}
+
+void DocumentBrowser::setDisplayName(const QString &t)
+{
+    m_displayName = t;
 }
 
 QTextBrowser *DocumentBrowser::browser()

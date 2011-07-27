@@ -76,7 +76,7 @@ QWidget *QSqlEditor::widget()
     return m_widget;
 }
 
-QString QSqlEditor::displayName() const
+QString QSqlEditor::name() const
 {
     if (m_file) {
         return m_file->fileName();
@@ -107,6 +107,14 @@ bool QSqlEditor::isReadOnly() const
 bool QSqlEditor::isModified() const
 {
     return false;
+}
+
+QString QSqlEditor::displayName() const
+{
+    if (!m_file) {
+        return QString();
+    }
+    return m_file->fileName();
 }
 
 LiteApi::IFile *QSqlEditor::file()

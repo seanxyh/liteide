@@ -38,7 +38,8 @@
 #endif
 //lite_memory_check_end
 
-OptionsBrowser::OptionsBrowser(LiteApi::IApplication *app) :
+OptionsBrowser::OptionsBrowser(LiteApi::IApplication *app, QObject *parent) :
+    LiteApi::IBrowserEditor(parent),
     m_liteApp(app),
     m_widget(new QWidget),
     ui(new Ui::OptionsWidget)
@@ -54,14 +55,19 @@ OptionsBrowser::~OptionsBrowser()
     delete m_widget;
 }
 
-QString OptionsBrowser::displayName() const
+QWidget *OptionsBrowser::widget()
+{
+    return m_widget;
+}
+
+QString OptionsBrowser::name() const
 {
     return tr("Options");
 }
 
-QWidget *OptionsBrowser::widget()
+QString OptionsBrowser::displayName() const
 {
-    return m_widget;
+    return tr("Options");
 }
 
 void OptionsBrowser::addOption(LiteApi::IOption *opt)
@@ -72,7 +78,7 @@ void OptionsBrowser::addOption(LiteApi::IOption *opt)
 
     QListWidgetItem *item = new QListWidgetItem;
     item->setIcon(opt->icon());
-    item->setText(opt->displayName());
+    item->setText(opt->name());
     item->setTextAlignment(Qt::AlignLeft);// | Qt::AlignHCenter);
     item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
@@ -93,7 +99,7 @@ void OptionsBrowser::itemSelectionChanged()
     LiteApi::IOption *opt = m_widgetOptionMap.value(item);
     if (opt) {
         ui->stackedWidget->setCurrentWidget(opt->widget());
-        ui->infoLabel->setText(QString("Name : %1    MimeType : %2").arg(opt->displayName()).arg(opt->mimeType()));
+        ui->infoLabel->setText(QString("Name : %1    MimeType : %2").arg(opt->name()).arg(opt->mimeType()));
     }
 }
 
