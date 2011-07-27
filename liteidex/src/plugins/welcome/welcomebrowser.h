@@ -43,17 +43,18 @@ public:
     virtual ~WelcomeBrowser();
     virtual QWidget *widget();
 public slots:
+    void loadDocFiles();
+    void loadRecentProjects();
+    void loadRecentFiles();
     void openLiteDoument(QModelIndex);
-    void openRecentProjectList(QModelIndex);
-    void openRecentFileList(QModelIndex);
-    void recentProjectsChanged();
-    void recentFilesChanged();
+    void openRecentProject(QModelIndex);
+    void openRecentFile(QModelIndex);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
     Ui::WelcomeWidget *ui;
-    QStringListModel    *m_recentProjectsModel;
-    QStringListModel    *m_recentFilesModel;
+    QStandardItemModel  *m_recentProjectsModel;
+    QStandardItemModel  *m_recentFilesModel;
     QStandardItemModel  *m_docModel;
     DocumentBrowser     *m_docBrowser;
     QAction             *m_browserAct;
