@@ -56,6 +56,7 @@ public:
     virtual void activeBrowser(IEditor *editor);
 protected:
     void addEditor(IEditor *editor);
+    bool eventFilter(QObject *target, QEvent *event);
 public:
     QList<IEditor*> sortedEditorList() const;
 public slots:
