@@ -48,6 +48,7 @@
 #include <QGroupBox>
 #include <QToolButton>
 #include <QTextCodec>
+#include <QDesktopServices>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -125,7 +126,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         file.close();
     }
 
-    connect(m_docBrowser->browser(),SIGNAL(anchorClicked(QUrl)),this,SLOT(anchorClicked(QUrl)));
+    connect(m_docBrowser->browser(),SIGNAL(anchorClicked(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
     connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
@@ -319,10 +320,14 @@ void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
     }
 }
 
-void GolangDoc::anchorClicked(QUrl url)
+void GolangDoc::openUrl(QUrl url)
 {
+    if (!url.isRelative()) {
+        QDesktopServices::openUrl(url);
+        return;
+    }
     QString path = url.encodedPath();
-    QFileInfo info(url.toLocalFile());
+    QFileInfo info(url.toLocalFile());        
     if (url.path() == "/src/pkg/" || url.path() == "/src/cmd/") {
         m_findText = url.path();
         QString *html = m_htmlCache[m_findText];
@@ -359,6 +364,10 @@ void GolangDoc::anchorClicked(QUrl url)
         return;
     } else if (info.suffix() == "go") {
         QString fileName = QDir(m_goroot).path()+path;
+        if (!QFile::exists(fileName)) {
+            godocPackage(url.toString());
+            return;
+        }
         LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName);
         if (editor) {
             editor->setReadOnly(true);
@@ -378,10 +387,14 @@ void GolangDoc::anchorClicked(QUrl url)
             }
             return;
         }
+    } else if (info.suffix() == "pdf") {
+        QString name = m_goroot+"/doc/"+info.fileName();
+        if (QFile::exists(name)) {
+            QDesktopServices::openUrl(QUrl::fromLocalFile(name));
+            return;
+        }
     }
-    if (url.scheme().isEmpty()) {
-        godocPackage(url.toString());
-    }
+    godocPackage(url.toString());
 }
 
 void GolangDoc::doubleClickListView(QModelIndex index)

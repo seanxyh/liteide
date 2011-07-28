@@ -226,5 +226,7 @@ void WelcomeBrowser::openLiteDoument(QModelIndex index)
 
 void WelcomeBrowser::openDocumentUrl(const QUrl &url)
 {
-    QDesktopServices::openUrl(url);
+    if (!url.isRelative()) {
+        QDesktopServices::openUrl(url);
+    }
 }

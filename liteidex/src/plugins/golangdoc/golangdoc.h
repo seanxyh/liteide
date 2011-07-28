@@ -58,7 +58,7 @@ public slots:
     void godocPackage(QString);
     void godocOutput(QByteArray,bool);
     void godocFinish(bool,int,QString);
-    void anchorClicked(QUrl);
+    void openUrl(QUrl);
     void doubleClickListView(QModelIndex);
 protected:
     void activeBrowser();
