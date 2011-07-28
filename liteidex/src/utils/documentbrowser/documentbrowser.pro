@@ -4,6 +4,8 @@ CONFIG += staticlib
 
 include (../../liteideutils.pri)
 
-SOURCES += documentbrowser.cpp
+SOURCES += documentbrowser.cpp \
+    documentbrowserfactory.cpp
 
-HEADERS += documentbrowser.h
+HEADERS += documentbrowser.h \
+    documentbrowserfactory.h

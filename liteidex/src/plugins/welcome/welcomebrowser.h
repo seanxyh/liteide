@@ -34,6 +34,7 @@ namespace Ui {
 }
 
 class DocumentBrowser;
+class DocumentBrowserFactory;
 class QStandardItemModel;
 class WelcomeBrowser : public LiteApi::IBrowserEditor
 {
@@ -58,8 +59,7 @@ protected:
     QStandardItemModel  *m_recentProjectsModel;
     QStandardItemModel  *m_recentFilesModel;
     QStandardItemModel  *m_docModel;
-    DocumentBrowser     *m_docBrowser;
-    QAction             *m_browserAct;
+    DocumentBrowserFactory *m_docBrowserFactory;
 };
 
 #endif // WELCOMEBROWSER_H

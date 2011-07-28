@@ -32,6 +32,8 @@
 #include <QTextDocument>
 #include <QTextCursor>
 #include <QRegExp>
+#include <QDebug>
+
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -115,6 +117,7 @@ bool EditorReplaceDialog::replaceFind()
     if (m_find.isNull()) {
         return false;
     }
+
     QString text = m_find.selectedText();
     QString text1 = text;
     QString text2;

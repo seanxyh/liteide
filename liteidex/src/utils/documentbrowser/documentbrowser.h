@@ -41,7 +41,9 @@ public:
     ~DocumentBrowser();
 public:
     virtual QWidget *widget();
+    virtual bool open(const QString &fileName,const QString &mimeType);
     virtual QString name() const;
+    virtual QString fileName() const;
     virtual QString mimeType() const;
     void setName(const QString &t);
     void setFileName(const QString &t);
@@ -65,6 +67,7 @@ protected:
     QAction     *m_findPrevAct;
     QString     m_name;
     QString     m_fileName;
+    QString     m_mimeType;
 };
 
 #endif // DOCUMENTBROWSER_H

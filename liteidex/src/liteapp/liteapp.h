@@ -114,6 +114,7 @@ protected:
     QAction     *m_saveProjectAct;
     QAction     *m_closeProjectAct;
     QAction     *m_saveAct;
+    QAction     *m_saveAsAct;
     QAction     *m_saveAllAct;
     QAction     *m_exitAct;
     QAction     *m_optionAct;

@@ -95,7 +95,7 @@ void GolangFmt::gofmt()
     if (fileName.isEmpty()) {
         return;
     }
-    if (editor->isModified()) {
+    if (editor->isModified() && !editor->isReadOnly()) {
         m_liteApp->editorManager()->saveEditor(editor);
     }
     QStringList args;
