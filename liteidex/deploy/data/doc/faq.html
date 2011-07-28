@@ -93,6 +93,15 @@ $ export PATH=$HOME/go/bin:$PATH
 $ make install
 </pre>
 
+<h3 id="gocode_load">load gocode incorrect</h3>
+<p>Test gocode status (my = my computer name)</p>
+<pre>
+$ gocode status
+dial unix /tmp/acrserver.my: dial unix /tmp/acrserver.my: connection refused
+$ rm /tmp/acrserver.my 
+</pre>
+<p>Reload LiteIDE</p>
+
 <h3 id="godoc_find">GolangDoc find</h3>
 <p>example input "zip"</p>
 <pre>
