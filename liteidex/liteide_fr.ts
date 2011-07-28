@@ -656,12 +656,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <source>GodocBrowser</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="112"/>
-        <source>GodocBrowser</source>
-        <oldsource>Golang Document Browser</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>GolangFmtPlugin</name>
@@ -716,6 +710,11 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <message>
         <location filename="src/liteapp/liteapp.cpp" line="311"/>
         <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="313"/>
+        <source>Save As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -843,12 +842,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="158"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="500"/>
         <source>Export HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="160"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="500"/>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="527"/>
         <source>Export PDF</source>
         <translation type="unfinished"></translation>

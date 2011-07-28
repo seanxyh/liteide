@@ -497,7 +497,7 @@ void LiteEditor::exportHtml()
     if (m_file) {
         title = QFileInfo(m_file->fileName()).baseName();
     }
-    QString fileName = QFileDialog::getSaveFileName(m_widget, tr("Export PDF"),
+    QString fileName = QFileDialog::getSaveFileName(m_widget, tr("Export HTML"),
                                                     title, "*.html");
     if (!fileName.isEmpty()) {
         if (QFileInfo(fileName).suffix().isEmpty())
