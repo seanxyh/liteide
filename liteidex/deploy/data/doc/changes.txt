@@ -1,4 +1,4 @@
-==== 2011.7.26 Ver x6 0.9375 ====
+==== 2011.7.28 Ver x6 0.9375 ====
  * LiteEnv : new plugin, liteide enviroment setup
 
  * Welcome : add LiteIDE document browser
