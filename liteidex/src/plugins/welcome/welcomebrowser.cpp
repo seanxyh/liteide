@@ -226,7 +226,12 @@ void WelcomeBrowser::openLiteDoument(QModelIndex index)
 
 void WelcomeBrowser::openDocumentUrl(const QUrl &url)
 {
-    if (!url.isRelative()) {
+    if (!url.scheme().isEmpty() && url.scheme() != "file") {
         QDesktopServices::openUrl(url);
+    } else {
+        QTextBrowser *browser = (QTextBrowser*)sender();
+        if (browser) {
+            browser->setSource(url);
+        }
     }
 }
