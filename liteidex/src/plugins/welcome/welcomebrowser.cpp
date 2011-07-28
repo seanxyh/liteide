@@ -134,7 +134,9 @@ void WelcomeBrowser::loadDocFiles()
 {
     m_docModel->clear();
     QDir dir(m_liteApp->resourcePath()+"/doc");
-    QFileInfoList infoList = dir.entryInfoList(QDir::Files|QDir::NoSymLinks);
+    QStringList filter;
+    filter << "*.html" << "*.txt" << "*.lgpl";
+    QFileInfoList infoList = dir.entryInfoList(filter,QDir::Files|QDir::NoSymLinks);
     foreach (QFileInfo info, infoList) {
         m_docModel->appendRow(QList<QStandardItem*>()
                               << new QStandardItem(info.baseName())
