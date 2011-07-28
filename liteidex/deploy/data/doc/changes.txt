@@ -1,0 +1,91 @@
+==== 2011.7.26 Ver x6 0.9375 ====
+ * LiteEnv : add new plugin, liteide enviroment
+ * GolangDoc : add godoc /src/pkg/ and /src/cmd/ tree
+ * GolangDoc : add document text search
+ * LiteEditor : add export html file
+ * FileBrowser : add menu item desktop explorer
+ * LiteEditor : add enable automatic insert brackets
+ * LiteEditor : add option :  display  and behavior
+ * GolangDoc : add go/doc/ document browser
+ * FileBrowser : fix context menu popup on root
+ * LiteBuild : fix ouput html format to plaintext
+ * LiteBuild : fix build does not handle spaces in file paths
+ * GolangCode : fix application exit gocode close
+ * LiteBuild : fix output append \n->next append
+ * LiteBuild : fix enviroment depend of LiteBuild
+ * LiteApp : fix session load last editor or welcome page
+
+==== 2011.7.7 x5 v0.78125 ====
+ * add CodeSearch plugin : Editor Search and Replace
+ * add GolangDoc plugin : Golang Package Find
+ * add Search and Replace Regex: (Colo)(u)(r) -> \1\3
+ * add FileBorwser top dir setup
+ * add LiteEditor Copy Syntax Color support (HTML mimedata)
+ * add LiteEditor ReadOnly
+ * add MainWindow all DockWidget saveState
+ * add EditorManager CTRL+TAB switch
+ * update tools/gopromake to r58
+ * update tools/goexec to r58
+ * update tools/goastview to r58
+ * fix filebrowser rename show oldname
+ * fix ENV c:/go/bin;%PATH% order, GOBIN is priority
+ * fix FileBrowser sort incorrect on MACOSX
+ * fix GoFmt reload editor display pos keep
+ * fix Editor Close Ask BUG ret==SaveAll
+ * fix Editor word writed ,compelter only one match auto hide
+
+==== 2011.6.30 x4 v0.625 ====
+ * add interface zh_cn
+ * add filebrowser pluing add/change/remove 
+ * add editor color style scheme setup
+ * add editor codec check/reload
+ * add editor pdf export
+ * add editor print and preview
+ * editor style line LRLF of source
+ * kate go.xml support "number" style
+ * liteapp last session save/load
+
+==== 2011.6.21 x3 v0.46875 ====
+ * add file browser plugin
+ * source editor pre link project build
+ * source editor outside modify/remove watcher
+
+==== 2011.5.20 x2 v0.3125 ====
+ * add gocode plugin
+ * add build/makefile
+ * add build/lua stdoutput:setvbuf("no")
+ * fix build task stop on error
+ * fix build process write \n
+
+==== 2011.5.12 x1 v0.15625 ====
+ * New LiteIDE X version
+
+=== Old version ===
+
+==== 2011.2.25  v0.2.1 ====
+ * add build on MacOSX10.6
+ * support Makefile and .pro project
+ * project support GCOPT and GLOPT
+ * global option page
+ * global output pane
+ * set GOROOT option
+ * run shell
+ * run debug
+ * run process can write
+ * run process can kill
+ * clean project opt temp or all
+ * new project wizard : .pro/package/Makefile
+ * new example goinfo, how to use local or search package
+
+
+==== 2011.1.25 v0.1.8 ====
+ * goastview plugin
+
+==== 2011.1.18 v0.1.6 ====
+ * add build on Linux64
+
+==== 2011.1.12 v0.1.5 ====
+  * build error and jump to source line
+
+==== 2010.1.11 v0.1.2 ====
+  * gopromake use goroutines
