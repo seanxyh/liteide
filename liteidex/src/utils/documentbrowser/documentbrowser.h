@@ -42,9 +42,9 @@ public:
 public:
     virtual QWidget *widget();
     virtual QString name() const;
-    virtual QString displayName() const;
+    virtual QString mimeType() const;
     void setName(const QString &t);
-    void setDisplayName(const QString &t);
+    void setFileName(const QString &t);
     QTextBrowser *browser();
     bool findText(bool findBackward);
 public slots:
@@ -64,7 +64,7 @@ protected:
     QAction     *m_findNextAct;
     QAction     *m_findPrevAct;
     QString     m_name;
-    QString     m_displayName;
+    QString     m_fileName;
 };
 
 #endif // DOCUMENTBROWSER_H

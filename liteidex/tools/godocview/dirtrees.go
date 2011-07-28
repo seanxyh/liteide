@@ -17,7 +17,6 @@ import (
 	"unicode"
 )
 
-
 type Directory struct {
 	Depth int
 	Path  string // includes Name

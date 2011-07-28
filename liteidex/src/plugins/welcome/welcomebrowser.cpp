@@ -84,7 +84,7 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("DocBrowser"));
-    m_docBrowser->setDisplayName(tr("Document Browser"));
+    m_docBrowser->setFileName(tr("Document Browser"));
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
 
     connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
@@ -119,9 +119,9 @@ QString WelcomeBrowser::name() const
     return tr("Welcome");
 }
 
-QString WelcomeBrowser::displayName() const
+QString WelcomeBrowser::mimeType() const
 {
-    return tr("Welcome to LiteIDE");
+    return "browser/welcome";
 }
 
 static void resizeTreeView(QTreeView *treeView)

@@ -65,9 +65,9 @@ QString OptionsBrowser::name() const
     return tr("Options");
 }
 
-QString OptionsBrowser::displayName() const
+QString OptionsBrowser::mimeType() const
 {
-    return tr("Options");
+    return "browser/options";
 }
 
 void OptionsBrowser::addOption(LiteApi::IOption *opt)

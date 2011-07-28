@@ -151,8 +151,8 @@ void ModelProjectImpl::editorSaved(LiteApi::IEditor *editor)
         return;
     }
 
-    if (FileUtil::compareFile(editor->file()->fileName(),m_file->fileName())) {
-        bool success = m_file->reload(false);
+    if (FileUtil::compareFile(editor->fileName(),m_file->fileName())) {
+        bool success = m_file->reload();
         if (success) {
             m_tree->expandAll();
         }

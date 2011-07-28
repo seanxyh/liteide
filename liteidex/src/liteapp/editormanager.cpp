@@ -116,7 +116,7 @@ void EditorManager::addEditor(IEditor *editor)
         if (w == 0) {
             return;
         }
-        m_editorTabWidget->addTab(w,QIcon(),editor->name(),editor->displayName());
+        m_editorTabWidget->addTab(w,QIcon(),editor->name(),editor->fileName());
         m_widgetEditorMap.insert(w,editor);
         emit editorCreated(editor);
         connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(modificationChanged(bool)));
@@ -157,8 +157,8 @@ bool EditorManager::closeEditor(IEditor *editor)
         return false;
     }
 
-    if (cur->isModified()) {
-        QString text = QString(tr("%1 is modified.")).arg(cur->file()->fileName());
+    if (cur->isModified() && !cur->isReadOnly()) {
+        QString text = QString(tr("%1 is modified.")).arg(cur->fileName());
         int ret = QMessageBox::question(m_editorTabWidget,tr("Save Modify"),text,QMessageBox::Save | QMessageBox::No | QMessageBox::Cancel);
         if (ret == QMessageBox::Cancel) {
             return false;
@@ -193,25 +193,12 @@ bool EditorManager::saveEditor(IEditor *editor)
     } else {
         cur = m_currentEditor;
     }
-    if (cur == 0) {
-        return false;
+
+    if (cur && cur->save()) {
+        emit editorSaved(cur);
+        return true;
     }
-
-    IFile *file = cur->file();
-    if (!file) {
-        return false;
-    }
-
-    const QString &fileName = file->fileName();
-
-    if (fileName.isEmpty())
-        return saveEditorAs(cur);    
-
-    bool b = file->save(fileName);
-
-    emit editorSaved(cur);
-
-    return b;
+    return false;
 }
 
 bool EditorManager::saveEditorAs(IEditor *editor)
@@ -225,11 +212,11 @@ bool EditorManager::saveEditorAs(IEditor *editor)
     if (cur == 0) {
         return false;
     }
-    IFile *file = cur->file();
-    if (!file) {
+    QString fileName = cur->fileName();
+    if (fileName.isEmpty()) {
         return false;
     }
-    QString fileName = file->fileName();
+
     QFileInfo info(fileName);
     QStringList filter;
     QString ext = info.suffix();
@@ -239,13 +226,13 @@ bool EditorManager::saveEditorAs(IEditor *editor)
     filter.append(tr("All Files (*)"));
     QString path = info.absolutePath();
     QString saveFileName = QFileDialog::getSaveFileName(m_liteApp->mainWindow(),tr("Save As"),path,filter.join(";;"));
-    if (saveFileName.isEmpty()) {
+    if (FileUtil::compareFile(fileName,saveFileName,false)) {
         return false;
     }
-    if (!cur->file()->save(saveFileName)) {
+    if (!cur->saveAs(saveFileName)) {
         return false;
     }
-    m_liteApp->fileManager()->openEditor(saveFileName);
+    emit currentEditorChanged(editor);
     return true;
 }
 
@@ -295,6 +282,18 @@ void EditorManager::setCurrentEditor(IEditor *editor)
     emit currentEditorChanged(editor);
 }
 
+IEditor *EditorManager::findEditor(const QString &fileName, bool canonical) const
+{
+    QMapIterator<QWidget *, IEditor *> i(m_widgetEditorMap);
+    while (i.hasNext()) {
+        i.next();
+        if (FileUtil::compareFile(i.value()->fileName(),fileName,canonical)) {
+            return i.value();
+        }
+    }
+    return 0;
+}
+
 QList<IEditor*> EditorManager::editorList() const
 {
     return m_widgetEditorMap.values();
@@ -326,35 +325,33 @@ QStringList EditorManager::mimeTypeList() const
 
 IEditor *EditorManager::openEditor(const QString &fileName, const QString &mimeType)
 {
-    QList<IEditor*> editors = m_widgetEditorMap.values();
-    foreach(IEditor *editor, editors) {
-        if (!editor->file()) {
-            continue;
-        }
-        if (FileUtil::compareFile(editor->file()->fileName(),fileName)) {
-            return editor;
-        }
+    IEditor *editor = findEditor(fileName,true);
+    if (editor) {
+        return editor;
     }
-    IEditor *ed = 0;
     foreach (IEditorFactory *factory, m_factoryList) {
         if (factory->mimeTypes().contains(mimeType)) {
-            ed = factory->open(fileName,mimeType);
-            break;
-        }
-    }
-    if (ed == 0) {
-        QString type = "text/liteide.default.editor";
-        foreach (IEditorFactory *factory, m_factoryList) {
-            if (factory->mimeTypes().contains(type)) {
-                ed = factory->open(fileName,type);
+            editor = factory->open(fileName,mimeType);
+            if (editor) {
                 break;
             }
         }
     }
-    if (ed) {
-        addEditor(ed);
+    if (editor == 0) {
+        QString type = "text/liteide.default.editor";
+        foreach (IEditorFactory *factory, m_factoryList) {
+            if (factory->mimeTypes().contains(type)) {
+                editor = factory->open(fileName,type);
+                if (editor) {
+                    break;
+                }
+            }
+        }
     }
-    return ed;
+    if (editor) {
+        addEditor(editor);
+    }
+    return editor;
 }
 
 void EditorManager::toggleBrowserAction(bool b)

@@ -66,11 +66,8 @@ void GolangAstPlugin::checkEnableGolangAst()
         }
     } else {
         LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
-        if (editor) {
-            LiteApi::IFile *file = editor->file();
-            if (file && file->mimeType() == "text/x-gosrc") {
-                active = true;
-            }
+        if (editor && editor->mimeType() == "text/x-gosrc") {
+            active = true;
         }
     }
     if (active) {

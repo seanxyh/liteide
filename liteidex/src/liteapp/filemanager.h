@@ -63,7 +63,7 @@ public:
 protected:
     void updateRecentFileActions();
     void updateRecentProjectActions();
-    void updateFileState(IFile *file);
+    void updateFileState(const QString &fileName);
 public slots:
     void newFile();
     void openFiles();
@@ -82,7 +82,7 @@ protected:
     QStringList          m_recentFiles;
     NewFileDialog        *m_newFileDialog;
     QFileSystemWatcher   *m_fileWatcher;
-    QMap<QString,FileStateItem> m_fileStateMap;
+    QMap<QString,QDateTime> m_fileStateMap;
     QStringList          m_changedFiles;
     bool                 m_checkActivated;
 protected:    

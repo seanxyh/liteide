@@ -185,9 +185,9 @@ void GolangAst::editorChanged(LiteApi::IEditor *editor)
         m_updateFiles.clear();
         m_model->clear();
         if (editor) {
-            LiteApi::IFile *file = editor->file();
-            if (file) {
-                QFileInfo info(file->fileName());
+            QString fileName = editor->fileName();
+            if (!fileName.isEmpty()) {
+                QFileInfo info(fileName);
                 m_workPath = info.absolutePath();
                 m_process->setWorkingDirectory(info.absolutePath());
                 if (info.suffix() == "go") {
@@ -202,12 +202,9 @@ void GolangAst::editorChanged(LiteApi::IEditor *editor)
 void GolangAst::editorSaved(LiteApi::IEditor *editor)
 {
     if (editor) {
-        LiteApi::IFile *file = editor->file();
-        if (file) {
-            QString fileName = file->fileName();
-            if (m_updateFiles.contains(fileName)) {
-                updateAst();
-            }
+        QString fileName = editor->fileName();
+        if (!fileName.isEmpty() && m_updateFiles.contains(fileName)) {
+            updateAst();
         }
     }
 }

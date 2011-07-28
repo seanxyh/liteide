@@ -122,9 +122,9 @@ QString DocumentBrowser::name() const
     return m_name;
 }
 
-QString DocumentBrowser::displayName() const
+QString DocumentBrowser::mimeType() const
 {
-    return m_displayName;
+    return "browser/document";
 }
 
 void DocumentBrowser::setName(const QString &t)
@@ -132,9 +132,9 @@ void DocumentBrowser::setName(const QString &t)
     m_name = t;
 }
 
-void DocumentBrowser::setDisplayName(const QString &t)
+void DocumentBrowser::setFileName(const QString &t)
 {
-    m_displayName = t;
+    m_fileName = t;
 }
 
 QTextBrowser *DocumentBrowser::browser()

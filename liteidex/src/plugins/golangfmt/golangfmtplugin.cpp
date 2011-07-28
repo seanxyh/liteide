@@ -72,11 +72,7 @@ void GolangFmtPlugin::editorCreated(LiteApi::IEditor *editor)
     if (!editor) {
         return;
     }
-    LiteApi::IFile *file = editor->file();
-    if (!file) {
-        return;
-    }
-    if (file->mimeType() != "text/x-gosrc") {
+    if (editor->mimeType() != "text/x-gosrc") {
         return;
     }
     QToolBar *toolBar = LiteApi::findExtensionObject<QToolBar*>(editor,"LiteApi.QToolBar");

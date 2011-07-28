@@ -279,11 +279,7 @@ void FileBrowser::currentEditorChanged(LiteApi::IEditor *editor)
     if (!editor) {
         return;
     }
-    LiteApi::IFile *file = editor->file();
-    if (!file) {
-        return;
-    }
-    QString fileName = file->fileName();
+    QString fileName = editor->fileName();
     if (fileName.isEmpty()) {
         return;
     }

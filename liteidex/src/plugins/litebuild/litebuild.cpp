@@ -221,12 +221,12 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
 
     LiteApi::IBuild *build = 0;
     if (editor) {
-        LiteApi::IFile *file = editor->file();
-        if (file) {
-            editorPath = file->fileName();
+        QString fileName = editor->fileName();
+        if (!fileName.isEmpty()) {
+            editorPath = fileName;
             editorDir = QFileInfo(editorPath).absolutePath();
             editorName = QFileInfo(editorPath).fileName();
-            build = m_manager->findBuild(file->mimeType());
+            build = m_manager->findBuild(editor->mimeType());
         }
         workDir = editorDir;
         targetDir = editorDir;
@@ -394,12 +394,16 @@ void LiteBuild::execAction(const QString &id)
     if (!ba->regex().isEmpty()) {
         m_outputRegex = ba->regex();
     }
-
+    LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
     if (ba->save() == "project") {
-        m_liteApp->editorManager()->saveEditor();
+        if (editor && editor->isModified()) {
+            m_liteApp->editorManager()->saveEditor();
+        }
         m_liteApp->projectManager()->saveProject();
     } else if(ba->save() == "editor") {
-        m_liteApp->editorManager()->saveEditor();
+        if (editor && editor->isModified()) {
+            m_liteApp->editorManager()->saveEditor();
+        }
     }
 
     QString workDir = m_liteEnv.value("${WORKDIR}");

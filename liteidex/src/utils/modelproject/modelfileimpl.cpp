@@ -61,17 +61,10 @@ bool ModelFileImpl::open(const QString &fileName, const QString &mimeType)
     return !m_context.isEmpty();
 }
 
-bool ModelFileImpl::reload(bool externalModify)
+bool ModelFileImpl::reload()
 {
     if (m_fileName.isEmpty()) {
         return false;
-    }
-    if (externalModify) {
-        QString text = QString(tr("%1\nThis file has been modified outside of the liteide. Do you want to reload it?")).arg(m_fileName);
-        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
-        if (ret != QMessageBox::Yes) {
-            return false;
-        }
     }
     bool ret = open(m_fileName,m_mimeType);
     if (ret) {

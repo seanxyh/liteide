@@ -142,10 +142,7 @@ QList<IEditor*> ProjectManager::editorList(IProject *project) const
     if (project) {
         foreach (QString fileName, project->filePathList()) {
              foreach(IEditor *editor, m_liteApp->editorManager()->editorList()) {
-                 if (!editor->file()) {
-                     continue;
-                 }
-                if (FileUtil::compareFile(editor->file()->fileName(),fileName)) {
+                if (FileUtil::compareFile(editor->fileName(),fileName)) {
                     editors << editor;
                     break;
                 }

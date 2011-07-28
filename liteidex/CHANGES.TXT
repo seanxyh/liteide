@@ -1,4 +1,4 @@
---- 2011.7.26 Ver x6 0.9375
+--- 2011.7.28 Ver x6 0.9375
 * LiteEnv : add new plugin, liteide enviroment
 * GolangDoc : add godoc /src/pkg/ and /src/cmd/ tree
 * GolangDoc : add document text search

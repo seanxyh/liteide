@@ -60,11 +60,14 @@ public:
 
     virtual bool createNew(const QString &contents);
     virtual bool open(const QString &fileName, const QString &mimeType);
+    virtual bool reload();
     virtual bool save();
+    virtual bool saveAs(const QString &fileName);
     virtual void setReadOnly(bool b);
     virtual bool isReadOnly() const;
     virtual bool isModified() const;
-    virtual QString displayName() const;
+    virtual QString fileName() const;
+    virtual QString mimeType() const;
     virtual LiteApi::IFile *file();
 
     virtual int line() const;

@@ -71,11 +71,8 @@ QStringList GolangDocPlugin::dependPluginList() const
 void GolangDocPlugin::currentEditorChanged(LiteApi::IEditor *editor)
 {
     bool active = false;
-    if (editor) {
-        LiteApi::IFile *file = editor->file();
-        if (file &&file->mimeType() == "text/x-gosrc") {
-            active = true;
-        }
+    if (editor && editor->mimeType() == "text/x-gosrc") {
+        active = true;
     }
 }
 

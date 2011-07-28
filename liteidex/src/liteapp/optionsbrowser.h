@@ -43,7 +43,7 @@ public:
     ~OptionsBrowser();
     virtual QWidget *widget();
     virtual QString name() const;
-    virtual QString displayName() const;
+    virtual QString mimeType() const;
     void addOption(LiteApi::IOption *opt);
 signals:
     void applyOption(QString);

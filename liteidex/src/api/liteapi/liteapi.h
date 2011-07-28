@@ -89,7 +89,7 @@ public:
     virtual ~IFile() { }
 
     virtual bool open(const QString &fileName, const QString &mimeType) = 0;
-    virtual bool reload(bool externalModify) = 0;
+    virtual bool reload() = 0;
     virtual bool save(const QString &fileName) = 0;
     virtual bool isReadOnly() const = 0;
     virtual QString fileName() const = 0;
@@ -164,12 +164,14 @@ class IEditor : public IView
 public:
     IEditor(QObject *parent = 0) : IView(parent) {}
     virtual bool open(const QString &fileName,const QString &mimeType) = 0;
+    virtual bool reload() = 0;
     virtual bool save() = 0;
+    virtual bool saveAs(const QString &fileName) = 0;
     virtual void setReadOnly(bool b) = 0;
     virtual bool isReadOnly() const = 0;
     virtual bool isModified() const = 0;
-    virtual QString displayName() const = 0;
-    virtual IFile *file() { return 0; }
+    virtual QString fileName() const = 0;
+    virtual QString mimeType() const = 0;
 signals:
     void modificationChanged(bool);
     void contentsChanged();
@@ -198,8 +200,8 @@ public:
     virtual QWidget *widget() = 0;
     virtual IEditor *currentEditor() const = 0;
     virtual void setCurrentEditor(IEditor *editor) = 0;
+    virtual IEditor *findEditor(const QString &fileName, bool canonical) const = 0;
     virtual QList<IEditor*> editorList() const = 0;
-    virtual void addEditor(IEditor *editor) = 0;
     virtual QAction *registerBrowser(IEditor *editor) = 0;
     virtual void activeBrowser(IEditor *editor) = 0;
 public slots:
@@ -221,10 +223,13 @@ class IBrowserEditor : public IEditor
 public:
     IBrowserEditor(QObject *parent = 0)  : IEditor(parent) {}
     virtual bool open(const QString &fileName,const QString &mimeType) { return false; }
+    virtual bool reload() { return false; }
     virtual bool save() { return false; }
+    virtual bool saveAs(const QString &fileName){ return false; }
     virtual void setReadOnly(bool b) {}
     virtual bool isReadOnly() const { return true; }
     virtual bool isModified() const { return false; }
+    virtual QString fileName() const { return QString(); }
 };
 
 class IProject : public IView
