@@ -1,6 +1,7 @@
 #!/bin/sh
 cp -v LICENSE.LGPL liteide/bin
 cp -v LGPL_EXCEPTION.TXT liteide/bin
+cp -v README.TXT liteide/bin
 cp -r -v deploy/data/* liteide/bin/LiteIDE.app/Contents/Resources
 cp -r -v os_deploy/macosx/data/* liteide/bin/LiteIDE.app/Contents/Resources
 
