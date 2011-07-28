@@ -87,16 +87,12 @@ class IFile : public QObject
 public:
     IFile(QObject *parent = 0) : QObject(parent) {}
     virtual ~IFile() { }
-
     virtual bool open(const QString &fileName, const QString &mimeType) = 0;
     virtual bool reload() = 0;
     virtual bool save(const QString &fileName) = 0;
     virtual bool isReadOnly() const = 0;
     virtual QString fileName() const = 0;
     virtual QString mimeType() const = 0;
-signals:
-    void aboutToReload();
-    void reloaded();
 };
 
 class IEditorFactory : public QObject
@@ -175,6 +171,7 @@ public:
 signals:
     void modificationChanged(bool);
     void contentsChanged();
+    void reloaded();
 };
 
 class ITextEditor : public IEditor
