@@ -174,11 +174,6 @@ void DocumentBrowser::setName(const QString &t)
     m_name = t;
 }
 
-void DocumentBrowser::setFileName(const QString &t)
-{
-    m_fileName = t;
-}
-
 QTextBrowser *DocumentBrowser::browser()
 {
     return m_textBrowser;

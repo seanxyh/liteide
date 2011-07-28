@@ -49,7 +49,6 @@ public:
     virtual QString fileName() const;
     virtual QString mimeType() const;
     void setName(const QString &t);
-    void setFileName(const QString &t);
     virtual QTextBrowser *browser();
     bool findText(bool findBackward);
 public slots:
