@@ -104,6 +104,8 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
         m_codecComboBox->addItem(codec->name(), codec->mibEnum());
     }
     connect(m_codecComboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(codecComboBoxChanged(QString)));
+
+    m_editorWidget->installEventFilter(m_liteApp->editorManager());
 }
 
 LiteEditor::~LiteEditor()

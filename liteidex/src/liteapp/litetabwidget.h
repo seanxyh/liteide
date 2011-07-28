@@ -68,8 +68,6 @@ protected slots:
     void selectListActGroup(QAction*);
     void tabCurrentChanged(int);
 protected:
-    virtual void keyPressEvent(QKeyEvent *e);
-protected:
     QToolBar        *m_headerToolBar;
     QTabBar         *m_tabBar;
     QToolButton     *m_listButton;

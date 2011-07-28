@@ -105,6 +105,7 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->settings()->endGroup();
 
     m_extension->addObject("LiteApi.IDocumentBrowser",this);
+    m_textBrowser->installEventFilter(m_liteApp->editorManager());
 }
 
 DocumentBrowser::~DocumentBrowser()

@@ -35,6 +35,10 @@
 #include <QVBoxLayout>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QEvent>
+#include <QKeyEvent>
+#include <QTabBar>
+#include <QApplication>
 #include <QDebug>
 #include "litetabwidget.h"
 #include "fileutil/fileutil.h"
@@ -59,6 +63,7 @@ bool EditorManager::initWithApp(IApplication *app)
     if (!IEditorManager::initWithApp(app)) {
         return false;
     }
+
     m_widget = new QWidget;
     m_editorTabWidget = new LiteTabWidget;
 
@@ -70,6 +75,8 @@ bool EditorManager::initWithApp(IApplication *app)
     connect(m_editorTabWidget,SIGNAL(currentChanged(int)),this,SLOT(editorTabChanged(int)));
     connect(m_editorTabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(editorTabCloseRequested(int)));
     connect(m_editorTabWidget,SIGNAL(tabAddRequest()),this,SIGNAL(tabAddRequest()));
+
+    m_editorTabWidget->installEventFilter(this);
     return true;
 }
 
@@ -121,6 +128,24 @@ void EditorManager::addEditor(IEditor *editor)
         emit editorCreated(editor);
         connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(modificationChanged(bool)));
     }
+}
+
+bool EditorManager::eventFilter(QObject *target, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *e = static_cast<QKeyEvent*>(event);
+        if (e->modifiers() == Qt::CTRL &&
+                e->key() == Qt::Key_Tab) {
+            int index = m_editorTabWidget->tabBar()->currentIndex();
+            index++;
+            if (index >= m_editorTabWidget->tabBar()->count()) {
+                index = 0;
+            }
+            m_editorTabWidget->setCurrentIndex(index);
+            return true;
+        }
+    }
+    return IEditorManager::eventFilter(target,event);
 }
 
 QAction *EditorManager::registerBrowser(IEditor *editor)
