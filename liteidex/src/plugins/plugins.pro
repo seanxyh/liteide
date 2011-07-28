@@ -12,8 +12,8 @@ SUBDIRS = \
     profileproject  \
     filebrowser \
     codesearch \
-    qsqleditor \
     golangast \
     golangfmt \
     golangcode \
     golangdoc \
+#    qsqleditor \
