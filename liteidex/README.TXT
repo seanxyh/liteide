@@ -1,23 +1,24 @@
-Welcome to LiteIDE X 
+Welcome to LiteIDE X
 
 Introduction:
-	LiteIDE is a simple, open source, cross-platform IDE. 
+	LiteIDE is a simple, open source, cross-platform IDE.
 
 Project: LiteIDE
 Author : visualfc
 Website: http://code.google.com/p/golangide
 Source : http://code.google.com/p/liteide
-Group : http://groups.google.com/group/liteide-dev 
+Group : http://groups.google.com/group/liteide-dev
 
 Features:
-	Plugins Extension System
-	File Based Build System
-	Multi Build Environment System
-	Kate Syntax And Style Scheme
-	WordApi Completer Helper
-	Golang astview gocode and godoc. 
+	Plugins extension system
+	Mime type based system
+	Multi environment system
+	Multi build system
+	Kate syntax and style scheme
+	WordApi completer helper
+	Golang helper astview gocode and godoc
 
 System:
-	WIN32
+	Windows
 	Linux
-	MacOSX 
+	MacOSX

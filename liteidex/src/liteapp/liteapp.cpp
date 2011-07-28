@@ -55,7 +55,7 @@
 //lite_memory_check_end
 
 LiteApp::LiteApp()
-    : m_settings(new QSettings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteapp",this)),
+    : m_settings(new QSettings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteide",this)),
       m_extension(new Extension),
       m_mainwindow(new MainWindow(this)),
       m_actionManager(new ActionManager),
