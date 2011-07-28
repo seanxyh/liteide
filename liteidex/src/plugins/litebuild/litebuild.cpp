@@ -121,12 +121,9 @@ void LiteBuild::resetLiteEnv(LiteApi::IProject *project)
     QString projectPath,projectDir,projectName;
     QString workDir,targetPath,targetDir,targetName;
     if (project) {
-        LiteApi::IFile *file = project->file();
-        if (file) {
-            projectPath = file->fileName();
-            projectDir = QFileInfo(projectPath).absolutePath();
-            projectName = QFileInfo(projectPath).fileName();
-        }
+        projectPath = project->fileName();
+        projectDir = QFileInfo(projectPath).absolutePath();
+        projectName = QFileInfo(projectPath).fileName();
         workDir = project->workPath();
         targetPath = project->targetPath();
         targetName = project->target();
@@ -153,10 +150,7 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
     LiteApi::IBuild *build = 0;
     if (project) {
         connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
-        LiteApi::IFile *file = project->file();
-        if (file) {
-            build =  m_manager->findBuild(file->mimeType());
-        }
+        build =  m_manager->findBuild(project->mimeType());
     }
 
     resetLiteEnv(project);

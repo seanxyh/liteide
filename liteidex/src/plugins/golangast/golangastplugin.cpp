@@ -58,12 +58,9 @@ void GolangAstPlugin::checkEnableGolangAst()
 {
     bool active = false;
     LiteApi::IProject *project = m_liteApp->projectManager()->currentProject();
-    if (project) {
-        LiteApi::IFile *file = project->file();
-        if (file && (file->mimeType() == "text/x-gopro" ||
-                     file->mimeType() == "text/x-gomake") ) {
-            active = true;
-        }
+    if (project && (project->mimeType() == "text/x-gopro" ||
+                    project->mimeType() == "text/x-gomake" ) ) {
+        active = true;
     } else {
         LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
         if (editor && editor->mimeType() == "text/x-gosrc") {

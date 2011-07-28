@@ -236,7 +236,8 @@ class IProject : public IView
 {
     Q_OBJECT
 public:
-    virtual IFile *file() = 0;
+    virtual QString fileName() const = 0;
+    virtual QString mimeType() const = 0;
     virtual QStringList fileNameList() const = 0;
     virtual QStringList filePathList() const = 0;
     virtual QString fileNameToFullPath(const QString &fileName) = 0;
