@@ -27,19 +27,22 @@
 #define DOCUMENTBROWSER_H
 
 #include "liteapi.h"
+#include "docbrowserapi/docbrowserapi.h"
 #include <QUrl>
 
 class QTextBrowser;
 class QComboBox;
 class QToolButton;
 class QCheckBox;
-class DocumentBrowser : public LiteApi::IBrowserEditor
+class Extension;
+class DocumentBrowser : public LiteApi::IDocumentBrowser
 {
     Q_OBJECT
 public:
     explicit DocumentBrowser(LiteApi::IApplication *app, QObject *parent);
     ~DocumentBrowser();
 public:
+    virtual LiteApi::IExtension *extension();
     virtual QWidget *widget();
     virtual bool open(const QString &fileName,const QString &mimeType);
     virtual QString name() const;
@@ -47,7 +50,7 @@ public:
     virtual QString mimeType() const;
     void setName(const QString &t);
     void setFileName(const QString &t);
-    QTextBrowser *browser();
+    virtual QTextBrowser *browser();
     bool findText(bool findBackward);
 public slots:
     void highlighted(QUrl);
@@ -56,6 +59,7 @@ public slots:
     void findPrev();
 protected:
     LiteApi::IApplication   *m_liteApp;
+    Extension     *m_extension;
     QWidget *m_widget;
     QTextBrowser *m_textBrowser;
     QStatusBar   *m_statusBar;

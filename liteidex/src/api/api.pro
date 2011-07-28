@@ -9,3 +9,4 @@ SUBDIRS = \
     liteenvapi  \
     litebuildapi \
     liteeditorapi \
+    docbrowserapi \

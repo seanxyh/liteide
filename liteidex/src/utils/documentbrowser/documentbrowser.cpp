@@ -24,6 +24,7 @@
 // $Id: documentbrowser.cpp,v 1.0 2011-7-26 visualfc Exp $
 
 #include "documentbrowser.h"
+#include "extension/extension.h"
 
 #include <QTextBrowser>
 #include <QVBoxLayout>
@@ -49,9 +50,10 @@
 //lite_memory_check_end
 
 DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
-    LiteApi::IBrowserEditor(parent),
+    LiteApi::IDocumentBrowser(parent),
     m_liteApp(app)
 {
+    m_extension = new Extension;
     m_widget = new QWidget;
 
     m_textBrowser = new QTextBrowser;
@@ -101,6 +103,8 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_matchCaseCheckBox->setChecked(m_liteApp->settings()->value("matchcase",true).toBool());
     m_useRegexCheckBox->setChecked(m_liteApp->settings()->value("useregex",false).toBool());
     m_liteApp->settings()->endGroup();
+
+    m_extension->addObject("LiteApi.IDocumentBrowser",this);
 }
 
 DocumentBrowser::~DocumentBrowser()
@@ -114,6 +118,14 @@ DocumentBrowser::~DocumentBrowser()
     if (m_widget) {
         delete m_widget;
     }
+    if (m_extension) {
+        delete m_extension;
+    }
+}
+
+LiteApi::IExtension *DocumentBrowser::extension()
+{
+    return m_extension;
 }
 
 bool DocumentBrowser::open(const QString &fileName,const QString &mimeType)

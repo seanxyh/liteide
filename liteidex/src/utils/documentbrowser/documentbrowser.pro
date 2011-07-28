@@ -3,6 +3,8 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 include (../../liteideutils.pri)
+include(../../api/docbrowserapi/docbrowserapi.pri)
+include (../extension/extension.pri)
 
 SOURCES += documentbrowser.cpp \
     documentbrowserfactory.cpp

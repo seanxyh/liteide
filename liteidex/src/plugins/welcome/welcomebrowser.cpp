@@ -26,6 +26,7 @@
 #include "welcomebrowser.h"
 #include "ui_welcomewidget.h"
 #include "liteapi/litefindobj.h"
+#include "docbrowserapi/docbrowserapi.h"
 #include "documentbrowser/documentbrowser.h"
 #include "documentbrowser/documentbrowserfactory.h"
 #include <QStandardItemModel>
@@ -37,6 +38,7 @@
 #include <QAction>
 #include <QFile>
 #include <QTextBrowser>
+#include <QDesktopServices>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -214,5 +216,15 @@ void WelcomeBrowser::openLiteDoument(QModelIndex index)
     LiteApi::IEditor *editor = m_liteApp->editorManager()->openEditor(fileName,"liteide/x-browser");
     if (editor) {
         m_liteApp->editorManager()->setCurrentEditor(editor);
+        LiteApi::IDocumentBrowser *browser = LiteApi::findExtensionObject<LiteApi::IDocumentBrowser*>(editor,"LiteApi.IDocumentBrowser");
+        if (browser) {
+            browser->browser()->setOpenLinks(false);
+            connect(browser->browser(),SIGNAL(anchorClicked(QUrl)),this,SLOT(openDocumentUrl(QUrl)));
+        }
     }
+}
+
+void WelcomeBrowser::openDocumentUrl(const QUrl &url)
+{
+    QDesktopServices::openUrl(url);
 }
