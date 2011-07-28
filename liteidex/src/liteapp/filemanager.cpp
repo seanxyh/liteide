@@ -346,7 +346,7 @@ IProject *FileManager::openProject(const QString &fileName)
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
     IProject *project = m_liteApp->projectManager()->openProject(fileName,mimeType);
-    if (project && project->file()) {
+    if (project) {
         addRecentProject(fileName);
     } else {
         removeRecentProject(fileName);

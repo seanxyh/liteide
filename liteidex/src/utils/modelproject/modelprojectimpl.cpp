@@ -94,6 +94,23 @@ LiteApi::IFile *ModelProjectImpl::file()
     return m_file;
 }
 
+QString ModelProjectImpl::fileName() const
+{
+    if (m_file) {
+        return m_file->fileName();
+    }
+    return QString();
+}
+
+QString ModelProjectImpl::mimeType() const
+{
+    if (m_file) {
+        return m_file->mimeType();
+    }
+    return QString();
+}
+
+
 void ModelProjectImpl::setModelFile(ModelFileImpl *file)
 {
     if (m_file == file) {

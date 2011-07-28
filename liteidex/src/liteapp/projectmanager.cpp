@@ -64,7 +64,7 @@ QWidget *ProjectManager::widget()
 
 IProject *ProjectManager::openProject(const QString &fileName, const QString &mimeType)
 {
-    if (m_currentProject && m_currentProject->file()->fileName() == fileName) {
+    if (m_currentProject && m_currentProject->fileName() == fileName) {
         return m_currentProject;
     }
     IProject *project = 0;

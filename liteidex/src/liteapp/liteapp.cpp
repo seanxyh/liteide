@@ -438,8 +438,8 @@ void LiteApp::saveSession(const QString &name)
     QString projectName;
     QString editorName;
     IProject *project = m_projectManager->currentProject();
-    if (project && project->file()) {
-        projectName = project->file()->fileName();
+    if (project) {
+        projectName = project->fileName();
     }
     IEditor *editor = m_editorManager->currentEditor();
     if (editor) {
