@@ -51,20 +51,6 @@
 #endif
 //lite_memory_check_end
 
-
-struct FileStateItem
-{
-    FileStateItem() : file(0)
-    {
-    }
-    FileStateItem(const QDateTime &m, IFile *f) :
-        modified(m),file(f)
-    {
-    }
-    QDateTime modified;
-    IFile     *file;
-};
-
 bool FileManager::initWithApp(IApplication *app)
 {
     if (!IFileManager::initWithApp(app)) {

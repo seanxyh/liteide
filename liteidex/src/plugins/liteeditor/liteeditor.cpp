@@ -319,7 +319,11 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
 
 bool LiteEditor::reload()
 {
-    return open(fileName(),mimeType());
+    bool success = open(fileName(),mimeType());
+    if (success) {
+        emit reloaded();
+    }
+    return success;
 }
 
 bool LiteEditor::save()
@@ -569,6 +573,7 @@ void LiteEditor::codecComboBoxChanged(QString codec)
     }
     bool success = m_file->reloadByCodec(codec);
     if (success) {
+        emit reloaded();
         m_editorWidget->initLoadDocument();
     }
     return;

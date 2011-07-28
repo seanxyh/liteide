@@ -86,20 +86,12 @@ bool LiteEditorFile::save(const QString &fileName)
 bool LiteEditorFile::reloadByCodec(const QString &codecName)
 {
     setTextCodec(codecName);
-    bool ret = open(m_fileName,m_mimeType,false);
-    if (ret) {
-        emit reloaded();
-    }
-    return ret;
+    return open(m_fileName,m_mimeType,false);
 }
 
 bool LiteEditorFile::reload()
 {
-    bool ret = open(m_fileName,m_mimeType);
-    if (ret) {
-        emit reloaded();
-    }
-    return ret;
+    return open(m_fileName,m_mimeType);
 }
 
 QString LiteEditorFile::mimeType() const

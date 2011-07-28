@@ -66,12 +66,7 @@ bool ModelFileImpl::reload()
     if (m_fileName.isEmpty()) {
         return false;
     }
-    bool ret = open(m_fileName,m_mimeType);
-    if (ret) {
-        updateModel();
-        emit reloaded();
-    }
-    return ret;
+    return open(m_fileName,m_mimeType);
 }
 
 bool ModelFileImpl::isReadOnly() const

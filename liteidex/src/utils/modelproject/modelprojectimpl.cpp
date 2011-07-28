@@ -117,7 +117,6 @@ void ModelProjectImpl::setModelFile(ModelFileImpl *file)
         return;
     }
     m_file = file;
-    connect(file,SIGNAL(reloaded()),this,SIGNAL(reloaded()));
     m_tree->setModel(m_file->model());
 }
 
@@ -171,7 +170,9 @@ void ModelProjectImpl::editorSaved(LiteApi::IEditor *editor)
     if (FileUtil::compareFile(editor->fileName(),m_file->fileName())) {
         bool success = m_file->reload();
         if (success) {
+            m_file->updateModel();
             m_tree->expandAll();
+            emit reloaded();
         }
     }
 }
