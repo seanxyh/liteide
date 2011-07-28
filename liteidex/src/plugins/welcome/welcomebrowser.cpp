@@ -27,6 +27,7 @@
 #include "ui_welcomewidget.h"
 #include "liteapi/litefindobj.h"
 #include "documentbrowser/documentbrowser.h"
+#include "documentbrowser/documentbrowserfactory.h"
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QHeaderView>
@@ -82,11 +83,6 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
     ui->docTreeView->setTextElideMode(Qt::ElideMiddle);
     ui->docTreeView->header()->setResizeMode(0,QHeaderView::ResizeToContents);
 
-    m_docBrowser = new DocumentBrowser(m_liteApp,this);
-    m_docBrowser->setName(tr("DocBrowser"));
-    m_docBrowser->setFileName(tr("Document Browser"));
-    m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
-
     connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
     connect(ui->openFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openFiles()));
     connect(ui->openProjectButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openProjects()));
@@ -97,6 +93,9 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
     connect(m_liteApp->fileManager(),SIGNAL(recentFilesChanged()),this,SLOT(loadRecentFiles()));
     connect(ui->optionsButton,SIGNAL(clicked()),m_liteApp->optionManager(),SLOT(exec()));
     connect(ui->docTreeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openLiteDoument(QModelIndex)));
+
+    m_docBrowserFactory = new DocumentBrowserFactory(m_liteApp,this);
+    m_liteApp->editorManager()->addFactory(m_docBrowserFactory);
 
     loadRecentProjects();
     loadRecentFiles();
@@ -208,23 +207,12 @@ void WelcomeBrowser::openLiteDoument(QModelIndex index)
     if (!i.isValid()) {
         return;
     }
-    QFileInfo info(i.data().toString());
-    QFile f(info.filePath());
-    if (!f.open(QIODevice::ReadOnly)) {
+    QString fileName = i.data().toString();
+    if (fileName.isEmpty()) {
         return;
     }
-    QByteArray data = f.readAll();
-    f.close();
-    if (data.isEmpty()) {
-        return;
+    LiteApi::IEditor *editor = m_liteApp->editorManager()->openEditor(fileName,"liteide/x-browser");
+    if (editor) {
+        m_liteApp->editorManager()->setCurrentEditor(editor);
     }
-    m_docBrowser->setName(info.fileName());
-    if (info.suffix().toLower() == ".html" ||
-            info.suffix().toLower() == ".htm") {
-        m_docBrowser->browser()->setText(QString::fromUtf8(data,data.size()));
-    } else {
-        m_docBrowser->browser()->setText(QString::fromUtf8(data,data.size()));
-    }
-
-    m_liteApp->editorManager()->activeBrowser(m_docBrowser);
 }

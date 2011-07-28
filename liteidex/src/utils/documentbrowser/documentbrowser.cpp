@@ -34,6 +34,10 @@
 #include <QCheckBox>
 #include <QAction>
 #include <QRegExp>
+#include <QFile>
+#include <QFileInfo>
+#include <QDir>
+
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -112,6 +116,27 @@ DocumentBrowser::~DocumentBrowser()
     }
 }
 
+bool DocumentBrowser::open(const QString &fileName,const QString &mimeType)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+    m_mimeType = mimeType;
+    QFileInfo info(fileName);
+    QString htmlType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
+    m_name = info.fileName();
+    m_fileName = QDir::toNativeSeparators(fileName);
+    if (htmlType == "text/html") {
+        m_textBrowser->setSource(QUrl::fromLocalFile(fileName));
+    } else {
+        QByteArray data = file.readAll();
+        m_textBrowser->setText(QString::fromUtf8(data,data.size()));
+    }
+    file.close();
+    return true;
+}
+
 QWidget *DocumentBrowser::widget()
 {
     return m_widget;
@@ -122,9 +147,14 @@ QString DocumentBrowser::name() const
     return m_name;
 }
 
+QString DocumentBrowser::fileName() const
+{
+    return m_fileName;
+}
+
 QString DocumentBrowser::mimeType() const
 {
-    return "browser/document";
+    return m_mimeType;
 }
 
 void DocumentBrowser::setName(const QString &t)

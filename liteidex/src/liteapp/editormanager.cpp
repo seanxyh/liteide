@@ -232,7 +232,13 @@ bool EditorManager::saveEditorAs(IEditor *editor)
     if (!cur->saveAs(saveFileName)) {
         return false;
     }
-    emit currentEditorChanged(editor);
+    QWidget *w = m_widgetEditorMap.key(cur,0);
+    if(w) {
+        int index = m_editorTabWidget->indexOf(w);
+        m_editorTabWidget->setTabText(index,cur->name());
+    }
+
+    emit currentEditorChanged(cur);
     return true;
 }
 
@@ -338,7 +344,7 @@ IEditor *EditorManager::openEditor(const QString &fileName, const QString &mimeT
         }
     }
     if (editor == 0) {
-        QString type = "text/liteide.default.editor";
+        QString type = "liteide/default.editor";
         foreach (IEditorFactory *factory, m_factoryList) {
             if (factory->mimeTypes().contains(type)) {
                 editor = factory->open(fileName,type);

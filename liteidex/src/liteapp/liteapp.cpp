@@ -310,6 +310,8 @@ void LiteApp::createActions()
     m_closeProjectAct = new QAction(QIcon(":/images/closeproject.png"),tr("Close Project"),m_mainwindow);
     m_saveAct = new QAction(QIcon(":/images/save.png"),tr("Save"),m_mainwindow);
     m_saveAct->setShortcut(QKeySequence::Save);
+    m_saveAsAct = new QAction(tr("Save As..."),m_mainwindow);
+    m_saveAsAct->setShortcut(QKeySequence::SaveAs);
     m_saveAllAct = new QAction(QIcon(":/images/saveall.png"),tr("Save All"),m_mainwindow);
 
     m_exitAct = new QAction(tr("Exit"),m_mainwindow);
@@ -326,6 +328,7 @@ void LiteApp::createActions()
     connect(m_saveProjectAct,SIGNAL(triggered()),m_projectManager,SLOT(saveProject()));
     connect(m_closeProjectAct,SIGNAL(triggered()),m_projectManager,SLOT(closeProject()));
     connect(m_saveAct,SIGNAL(triggered()),m_editorManager,SLOT(saveEditor()));
+    connect(m_saveAsAct,SIGNAL(triggered()),m_editorManager,SLOT(saveEditorAs()));
     connect(m_saveAllAct,SIGNAL(triggered()),m_editorManager,SLOT(saveAllEditors()));
     connect(m_exitAct,SIGNAL(triggered()),m_mainwindow,SLOT(close()));
     connect(m_aboutAct,SIGNAL(triggered()),m_mainwindow,SLOT(about()));
@@ -349,6 +352,7 @@ void LiteApp::createMenus()
     m_fileMenu->addAction(m_closeProjectAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_saveAct);
+    m_fileMenu->addAction(m_saveAsAct);
     m_fileMenu->addAction(m_saveAllAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addMenu(m_fileManager->recentFileMenu());
@@ -393,6 +397,7 @@ void LiteApp::currentEditorChanged(IEditor *editor)
         connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(editorModifyChanged(bool)));
     }
     m_saveAct->setEnabled(b && editor->isModified() && !editor->isReadOnly());
+    m_saveAsAct->setEnabled(editor && !editor->fileName().isEmpty());
     m_saveAllAct->setEnabled(b);
     m_closeAct->setEnabled(b);
     m_closeAllAct->setEnabled(b);
@@ -441,14 +446,18 @@ void LiteApp::saveSession(const QString &name)
     if (project) {
         projectName = project->fileName();
     }
-    IEditor *editor = m_editorManager->currentEditor();
-    if (editor) {
-        editorName = editor->fileName();
-    }
 
     QStringList fileList;
     foreach (IEditor* ed,m_editorManager->sortedEditorList()) {
-        if (!ed->fileName().isEmpty()) {
+        if (ed->mimeType().indexOf("liteide/") == 0) {
+            continue;
+        }
+        if (ed->fileName().isEmpty()) {
+            continue;
+        }
+        if (ed == m_editorManager->currentEditor()) {
+            editorName = ed->fileName();
+        } else {
             fileList.append(ed->fileName());
         }
     }
