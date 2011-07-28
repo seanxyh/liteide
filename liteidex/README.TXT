@@ -5,8 +5,8 @@ Introduction:
 
 Project: LiteIDE
 Author : visualfc
-Website: http://code.google.com/golangide
-Source : http://code.google.com/liteide
+Website: http://code.google.com/p/golangide
+Source : http://code.google.com/p/liteide
 Group : http://groups.google.com/group/liteide-dev 
 
 Features:
