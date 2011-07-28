@@ -53,7 +53,7 @@ bool QSqlDbFile::open(const QString &/*fileName*/, const QString &/*mimeType*/)
     return false;
 }
 
-bool QSqlDbFile::reload(bool /*externalModify*/)
+bool QSqlDbFile::reload()
 {
     return false;
 }

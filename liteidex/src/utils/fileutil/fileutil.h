@@ -34,7 +34,7 @@
 
 struct FileUtil
 {
-    static bool compareFile(const QString &fileName1, const QString &fileName2);
+    static bool compareFile(const QString &fileName1, const QString &fileName2, bool canonical = true);
     static QStringList removeFiles(const QStringList &files);
     static QStringList removeWorkDir(const QString &workDir, const QStringList &filters);
     static QMap<QString,QStringList> readFileContext(QIODevice *dev);

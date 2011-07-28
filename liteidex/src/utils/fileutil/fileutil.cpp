@@ -39,9 +39,15 @@
 #endif
 //lite_memory_check_end
 
-bool FileUtil::compareFile(const QString &fileName1, const QString &fileName2)
+bool FileUtil::compareFile(const QString &fileName1, const QString &fileName2, bool canonical)
 {
-    return QFileInfo(fileName1).canonicalFilePath() == QFileInfo(fileName2).canonicalFilePath();
+    if (fileName1.isEmpty() || fileName2.isEmpty()) {
+        return false;
+    }
+    if (canonical) {
+        return QFileInfo(fileName1).canonicalFilePath() == QFileInfo(fileName2).canonicalFilePath();
+    }
+    return QFileInfo(fileName1).filePath() == QFileInfo(fileName2).filePath();
 }
 
 QStringList FileUtil::removeFiles(const QStringList &files)

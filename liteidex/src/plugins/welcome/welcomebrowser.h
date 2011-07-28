@@ -43,7 +43,7 @@ public:
     virtual ~WelcomeBrowser();
     virtual QWidget *widget();
     virtual QString name() const;
-    virtual QString displayName() const;
+    virtual QString mimeType() const;
 public slots:
     void loadDocFiles();
     void loadRecentProjects();

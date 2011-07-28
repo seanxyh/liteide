@@ -69,7 +69,7 @@ bool LiteEditorFile::save(const QString &fileName)
     if (!file.open(QFile::WriteOnly | QIODevice::Truncate)) {
         return false;
     }
-
+    m_fileName = fileName;
     QString text = m_document->toPlainText();
     if (m_lineTerminatorMode == CRLFLineTerminator)
         text.replace(QLatin1Char('\n'), QLatin1String("\r\n"));
@@ -85,13 +85,6 @@ bool LiteEditorFile::save(const QString &fileName)
 
 bool LiteEditorFile::reloadByCodec(const QString &codecName)
 {
-    if (m_document->isModified()) {
-        QString text = QString(tr("Cancel file %1 modify and reload ?")).arg(m_fileName);
-        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
-        if (ret != QMessageBox::Yes) {
-            return false;
-        }
-    }
     setTextCodec(codecName);
     bool ret = open(m_fileName,m_mimeType,false);
     if (ret) {
@@ -100,21 +93,8 @@ bool LiteEditorFile::reloadByCodec(const QString &codecName)
     return ret;
 }
 
-bool LiteEditorFile::reload(bool externalModify)
+bool LiteEditorFile::reload()
 {
-    if (externalModify) {
-        QString text = QString(tr("%1\nThis file has been modified outside of the liteide. Do you want to reload it?")).arg(m_fileName);
-        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
-        if (ret != QMessageBox::Yes) {
-            return false;
-        }
-    } else if (m_document->isModified()) {
-        QString text = QString(tr("Cancel file %1 modify and reload ?")).arg(m_fileName);
-        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
-        if (ret != QMessageBox::Yes) {
-            return false;
-        }
-    }
     bool ret = open(m_fileName,m_mimeType);
     if (ret) {
         emit reloaded();

@@ -109,7 +109,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("GodocBrowser"));
-    m_docBrowser->setDisplayName(tr("Golang Document Browser"));
+    m_docBrowser->setFileName(tr("Golang Document Browser"));
     m_docBrowser->browser()->setOpenLinks(false);
 
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);

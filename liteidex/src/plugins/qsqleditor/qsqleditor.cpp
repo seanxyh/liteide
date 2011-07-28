@@ -98,7 +98,17 @@ bool QSqlEditor::open(const QString &/*fileName*/,const QString &/*mimeType*/)
     return false;
 }
 
+bool QSqlEditor::reload()
+{
+    return false;
+}
+
 bool QSqlEditor::save()
+{
+    return false;
+}
+
+bool QSqlEditor::saveAs(const QString &/*fileName*/)
 {
     return false;
 }
@@ -118,12 +128,20 @@ bool QSqlEditor::isModified() const
     return false;
 }
 
-QString QSqlEditor::displayName() const
+QString QSqlEditor::fileName() const
 {
     if (!m_file) {
         return QString();
     }
     return m_file->fileName();
+}
+
+QString QSqlEditor::mimeType() const
+{
+    if (!m_file) {
+        return QString();
+    }
+    return m_file->mimeType();
 }
 
 LiteApi::IFile *QSqlEditor::file()

@@ -317,12 +317,22 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
     return success;
 }
 
+bool LiteEditor::reload()
+{
+    return open(fileName(),mimeType());
+}
+
 bool LiteEditor::save()
 {
     if (m_bReadOnly) {
         return false;
     }
     return m_file->save(m_file->fileName());
+}
+
+bool LiteEditor::saveAs(const QString &fileName)
+{
+    return m_file->save(fileName);
 }
 
 void LiteEditor::setReadOnly(bool b)
@@ -350,12 +360,20 @@ bool LiteEditor::isModified() const
     return m_file->document()->isModified();
 }
 
-QString LiteEditor::displayName() const
+QString LiteEditor::fileName() const
 {
     if (!m_file) {
         return QString();
     }
     return m_file->fileName();
+}
+
+QString LiteEditor::mimeType() const
+{
+    if (!m_file) {
+        return QString();
+    }
+    return m_file->mimeType();
 }
 
 LiteApi::IFile *LiteEditor::file()
@@ -539,6 +557,16 @@ void LiteEditor::filePrint()
 
 void LiteEditor::codecComboBoxChanged(QString codec)
 {
+    if (!m_file) {
+        return;
+    }
+    if (m_file->document()->isModified()) {
+        QString text = QString(tr("Cancel file %1 modify and reload ?")).arg(m_file->fileName());
+        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
+        if (ret != QMessageBox::Yes) {
+            return;
+        }
+    }
     bool success = m_file->reloadByCodec(codec);
     if (success) {
         m_editorWidget->initLoadDocument();

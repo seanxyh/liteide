@@ -91,11 +91,7 @@ void GolangFmt::gofmt()
     if (!editor) {
         return;
     }
-    LiteApi::IFile *file = editor->file();
-    if (!file) {
-        return;
-    }
-    QString fileName = QFileInfo(file->fileName()).canonicalFilePath();
+    QString fileName = editor->fileName();
     if (fileName.isEmpty()) {
         return;
     }

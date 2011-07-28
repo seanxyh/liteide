@@ -86,6 +86,7 @@ public:
 protected slots:
     void currentProjectChanged(LiteApi::IProject *project);
     void currentEditorChanged(LiteApi::IEditor *editor);
+    void editorModifyChanged(bool);
     void cleanup();
 protected:
     QSettings       *m_settings;

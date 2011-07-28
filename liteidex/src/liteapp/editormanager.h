@@ -50,10 +50,12 @@ public:
     virtual QWidget *widget();
     virtual IEditor *currentEditor() const;
     virtual void setCurrentEditor(IEditor *editor);
+    virtual IEditor *findEditor(const QString &fileName, bool canonical) const;
     virtual QList<IEditor*> editorList() const;
-    virtual void addEditor(IEditor *editor);
     virtual QAction *registerBrowser(IEditor *editor);
     virtual void activeBrowser(IEditor *editor);
+protected:
+    void addEditor(IEditor *editor);
 public:
     QList<IEditor*> sortedEditorList() const;
 public slots:

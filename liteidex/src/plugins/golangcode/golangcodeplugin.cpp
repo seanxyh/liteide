@@ -65,14 +65,7 @@ QStringList GolangCodePlugin::dependPluginList() const
 
 void GolangCodePlugin::currentEditorChanged(LiteApi::IEditor *editor)
 {
-    QString mimeType;
-    if (editor) {
-        LiteApi::IFile *file = editor->file();
-        if (file) {
-            mimeType = file->mimeType();
-        }
-    }
-    if (mimeType == "text/x-gosrc") {
+    if (editor && editor->mimeType() == "text/x-gosrc") {
         LiteApi::ICompleter *completer = LiteApi::findExtensionObject<LiteApi::ICompleter*>(editor,"LiteApi.ICompleter");
         m_code->setCompleter(completer);
     } else {

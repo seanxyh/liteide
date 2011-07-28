@@ -42,7 +42,7 @@ public:
     };
 public:
     virtual bool open(const QString &fileName, const QString &mimeType);
-    virtual bool reload(bool externalModify);
+    virtual bool reload();
     virtual bool save(const QString &fileName);
     virtual bool isReadOnly() const;
     virtual QString fileName() const;

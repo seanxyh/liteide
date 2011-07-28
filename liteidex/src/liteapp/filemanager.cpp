@@ -251,10 +251,7 @@ void FileManager::newFile()
     } else {
         IEditor *editor = m_liteApp->editorManager()->currentEditor();
         if (editor) {
-            IFile *file = editor->file();
-            if (file) {
-                location = QFileInfo(file->fileName()).absolutePath();
-            }
+            location = QFileInfo(editor->fileName()).absolutePath();
         }
     }
     QDir dir(location);
@@ -337,7 +334,7 @@ IEditor *FileManager::openEditor(const QString &fileName, bool bActive)
     if (editor && bActive) {
         m_liteApp->editorManager()->setCurrentEditor(editor);
     }
-    if (editor && editor->file()) {
+    if (editor) {
         addRecentFile(fileName);
     } else {
         removeRecentFile(fileName);
@@ -468,43 +465,45 @@ void FileManager::removeRecentProject(const QString &_fileName)
     emit recentProjectsChanged();
 }
 
-void FileManager::updateFileState(IFile *file)
+void FileManager::updateFileState(const QString &fileName)
 {
-    if (!file) {
-        return;
-    }
-    QString fileName = file->fileName();
     if (fileName.isEmpty()) {
         return;
     }
-    m_fileStateMap.insert(fileName,FileStateItem(QFileInfo(fileName).lastModified(),file));
+    m_fileStateMap.insert(fileName,QFileInfo(fileName).lastModified());
 }
 
 void FileManager::editorCreated(LiteApi::IEditor *editor)
 {
-    LiteApi::IFile *file = editor->file();
-    if (file && !file->fileName().isEmpty()) {
-        updateFileState(file);
-        m_fileWatcher->addPath(file->fileName());
+    if (!editor) {
+        return;
+    }
+    QString fileName = editor->fileName();
+    if (!fileName.isEmpty()) {
+        updateFileState(fileName);
+        m_fileWatcher->addPath(fileName);
     }
 }
 
 void FileManager::editorAboutToClose(LiteApi::IEditor *editor)
 {
-    IFile *file = editor->file();
-    if (file && !file->fileName().isEmpty()) {
-        m_fileStateMap.remove(file->fileName());
-        m_changedFiles.removeOne(file->fileName());
-        m_fileWatcher->removePath(file->fileName());
+    if (!editor) {
+        return;
+    }
+    QString fileName = editor->fileName();
+    if (!fileName.isEmpty()) {
+        m_fileStateMap.remove(fileName);
+        m_changedFiles.removeAll(fileName);
+        m_fileWatcher->removePath(fileName);
     }
 }
 
 void FileManager::editorSaved(LiteApi::IEditor *editor)
 {
-    IFile *file = editor->file();
-    if (file) {
-        updateFileState(file);
+    if (!editor) {
+        return;
     }
+    updateFileState(editor->fileName());
 }
 
 void FileManager::fileChanged(QString fileName)
@@ -528,30 +527,34 @@ void FileManager::checkForReload()
         if (!QFile::exists(fileName)) {
             //remove
             if (m_fileStateMap.contains(fileName)) {
-                FileStateItem item = m_fileStateMap.value(fileName);
-                LiteApi::IFile *file = item.file;
-                QString text = QString(tr("%1\nThis file has been removed. Do you want save to file or close editor?")).arg(file->fileName());
-                int ret = QMessageBox::question(m_liteApp->mainWindow(),tr("LiteIDE X"),text,QMessageBox::Save |QMessageBox::Close | QMessageBox::Cancel,QMessageBox::Save);
-                if (ret == QMessageBox::Save) {
-                    file->save(file->fileName());
-                    m_fileWatcher->addPath(file->fileName());
-                } else if (ret == QMessageBox::Close) {
-                    foreach (LiteApi::IEditor *editor ,m_liteApp->editorManager()->editorList()) {
-                        if (editor->file() == file) {
+                if (!fileName.isEmpty()) {
+                    LiteApi::IEditor *editor = m_liteApp->editorManager()->findEditor(fileName,false);
+                    if (editor) {
+                        QString text = QString(tr("%1\nThis file has been removed. Do you want save to file or close editor?")).arg(fileName);
+                        int ret = QMessageBox::question(m_liteApp->mainWindow(),tr("LiteIDE X"),text,QMessageBox::Save |QMessageBox::Close | QMessageBox::Cancel,QMessageBox::Save);
+                        if (ret == QMessageBox::Save) {
+                            if (m_liteApp->editorManager()->saveEditor(editor)) {
+                                m_fileWatcher->addPath(fileName);
+                            }
+                        } else if (ret == QMessageBox::Close) {
                             m_liteApp->editorManager()->closeEditor(editor);
-                            break;
                         }
                     }
                 }
             }
         } else {
-            QDateTime modified = QFileInfo(fileName).lastModified();
             if (m_fileStateMap.contains(fileName)) {
-                FileStateItem item = m_fileStateMap.value(fileName);
-                if (item.modified >= modified) {
-                    continue;
-                } else {
-                    item.file->reload(true);
+                LiteApi::IEditor *editor = m_liteApp->editorManager()->findEditor(fileName,true);
+                if (editor) {
+                    QDateTime lastModified = QFileInfo(fileName).lastModified();
+                    QDateTime modified = m_fileStateMap.value(fileName);
+                    if (lastModified > modified) {
+                        QString text = QString(tr("%1\nThis file has been modified outside of the liteide. Do you want to reload it?")).arg(fileName);
+                        int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
+                        if (ret == QMessageBox::Yes) {
+                            editor->reload();
+                        }
+                    }
                 }
             }
         }
