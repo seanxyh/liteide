@@ -716,6 +716,11 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>保存</translation>
     </message>
     <message>
+        <location filename="src/liteapp/liteapp.cpp" line="313"/>
+        <source>Save As...</source>
+        <translation>另存为...</translation>
+    </message>
+    <message>
         <location filename="src/liteapp/liteapp.cpp" line="315"/>
         <source>Save All</source>
         <oldsource>Save As</oldsource>
@@ -840,12 +845,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="158"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="500"/>
         <source>Export HTML</source>
         <translation>输出HTML文档</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="160"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="500"/>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="527"/>
         <source>Export PDF</source>
         <translation>输出PDF文档</translation>
