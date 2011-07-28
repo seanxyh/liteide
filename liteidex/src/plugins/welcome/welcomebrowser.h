@@ -52,6 +52,7 @@ public slots:
     void openLiteDoument(QModelIndex);
     void openRecentProject(QModelIndex);
     void openRecentFile(QModelIndex);
+    void openDocumentUrl(const QUrl &url);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
