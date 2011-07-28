@@ -242,7 +242,7 @@ void GolangDoc::findOutput(QByteArray data,bool bStderr)
     m_findData.append(data);
 }
 
-void GolangDoc::findFinish(bool error,int code,QString msg)
+void GolangDoc::findFinish(bool error,int code,QString /*msg*/)
 {
     if (!error && code == 0) {
         QStringList array = QString(m_findData.trimmed()).split(',');

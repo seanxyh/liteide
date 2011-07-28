@@ -403,7 +403,7 @@ void LiteApp::currentEditorChanged(IEditor *editor)
     m_closeAllAct->setEnabled(b);
 }
 
-void LiteApp::editorModifyChanged(bool b)
+void LiteApp::editorModifyChanged(bool /*b*/)
 {
     IEditor *editor = (IEditor*)sender();
     if (editor && editor->isModified() && !editor->isReadOnly()) {

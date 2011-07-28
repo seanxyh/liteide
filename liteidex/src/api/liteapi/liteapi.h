@@ -102,7 +102,7 @@ public:
     IEditorFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QStringList mimeTypes() const = 0;
     virtual IEditor *open(const QString &fileName, const QString &mimeType) = 0;
-    virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const  { return false; }
+    virtual bool targetInfo(const QString &/*fileName*/, const QString &/*mimetype*/, QString &/*target*/, QString &/*targetPath*/, QString &/*workPath*/) const  { return false; }
 };
 
 class IProjectFactory : public QObject
@@ -219,11 +219,11 @@ class IBrowserEditor : public IEditor
     Q_OBJECT
 public:
     IBrowserEditor(QObject *parent = 0)  : IEditor(parent) {}
-    virtual bool open(const QString &fileName,const QString &mimeType) { return false; }
+    virtual bool open(const QString &/*fileName*/,const QString &/*mimeType*/) { return false; }
     virtual bool reload() { return false; }
     virtual bool save() { return false; }
-    virtual bool saveAs(const QString &fileName){ return false; }
-    virtual void setReadOnly(bool b) {}
+    virtual bool saveAs(const QString &/*fileName*/){ return false; }
+    virtual void setReadOnly(bool /*b*/) {}
     virtual bool isReadOnly() const { return true; }
     virtual bool isModified() const { return false; }
     virtual QString fileName() const { return QString(); }
