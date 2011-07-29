@@ -87,7 +87,7 @@ int  main(int argc, char *argv[])
 
     QTranslator translator;
     QTranslator qtTranslator;
-    const QSettings settings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteapp");
+    const QSettings settings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteide");
     QString locale = QLocale::system().name();
     locale = settings.value("General/Language",locale).toString();
     if (!locale.isEmpty()) {
