@@ -111,6 +111,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("GodocBrowser"));
     m_docBrowser->browser()->setOpenLinks(false);
+    m_docBrowser->browser()->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/golangdoc");
 
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
     QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
