@@ -35,6 +35,25 @@
 #endif
 //lite_memory_check_end
 
+/*
+tools/goastview/packageview.go
+const (
+        tag_package      = "p"
+        tag_type         = "t"
+        tag_struct       = "s"
+        tag_interface    = "i"
+        tag_value        = "v"
+        tag_const        = "c"
+        tag_func         = "f"
+        tag_value_folder = "+v"
+        tag_const_folder = "+c"
+        tag_func_folder  = "+f"
+        tag_type_method  = "tm"
+        tag_type_factor  = "tf"
+        tag_type_value   = "tv"
+)
+*/
+
 GolangAstIconPublic::GolangAstIconPublic() :
     iconPackage(QIcon(":/images/package.png")),
     iconType(QIcon(":/images/type.png")),
@@ -46,7 +65,9 @@ GolangAstIconPublic::GolangAstIconPublic() :
     iconVars(QIcon(":/images/vars.png")),
     iconConst(QIcon(":/images/const.png")),
     iconConsts(QIcon(":/images/consts.png")),
-    iconMethod(QIcon(":/images/method.png")),
+    iconTypeMethod(QIcon(":/images/type_method.png")),
+    iconTypeFactor(QIcon(":/images/type_factor.png")),
+    iconTypeVar(QIcon(":/images/type_var.png")),
     iconGofile(QIcon(":/images/gofile.png")),
     iconMakefile(QIcon(":/images/makefile.png")),
     iconProfile(QIcon(":/images/project.png"))
@@ -68,18 +89,20 @@ QIcon GolangAstIconPublic::iconFromTag(const QString &tag) const
         return iconVar;
     else if (tag == "c")
         return iconConst;
-    else if (tag == "v_")
-        return iconVars;
-    else if (tag == "c_")
-        return iconConsts;
     else if (tag == "f")
         return iconFunc;
-    else if (tag == "f_")
+    else if (tag == "+v")
+        return iconVars;
+    else if (tag == "+c")
+        return iconConsts;
+    else if (tag == "+f")
         return iconFuncs;
-    else if (tag == "m")
-        return iconMethod;
-    else if (tag == "a")
-        return iconFunc;
+    else if (tag == "tm")
+        return iconTypeMethod;
+    else if (tag == "tf")
+        return iconTypeFactor;
+    else if (tag == "tv")
+        return iconTypeVar;
     return QIcon();
 }
 
@@ -94,7 +117,9 @@ GolangAstIconPrivate::GolangAstIconPrivate() :
     iconVars(QIcon(":/images/vars.png")),
     iconConst(QIcon(":/images/const_p.png")),
     iconConsts(QIcon(":/images/consts.png")),
-    iconMethod(QIcon(":/images/method_p.png"))
+    iconTypeMethod(QIcon(":/images/type_method_p.png")),
+    iconTypeFactor(QIcon(":/images/type_factor_p.png")),
+    iconTypeVar(QIcon(":/images/type_var_p.png"))
 {
 
 }
@@ -113,18 +138,20 @@ QIcon GolangAstIconPrivate::iconFromTag(const QString &tag) const
         return iconVar;
     else if (tag == "c")
         return iconConst;
-    else if (tag == "v_")
-        return iconVars;
-    else if (tag == "c_")
-        return iconConsts;
     else if (tag == "f")
         return iconFunc;
-    else if (tag == "f_")
+    else if (tag == "+v")
+        return iconVars;
+    else if (tag == "+c")
+        return iconConsts;
+    else if (tag == "+f")
         return iconFuncs;
-    else if (tag == "m")
-        return iconMethod;
-    else if (tag == "a")
-        return iconFunc;
+    else if (tag == "tm")
+        return iconTypeMethod;
+    else if (tag == "tf")
+        return iconTypeFactor;
+    else if (tag == "tv")
+        return iconTypeVar;
     return QIcon();
 }
 

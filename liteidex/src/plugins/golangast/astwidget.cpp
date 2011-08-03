@@ -100,6 +100,56 @@ GolangAstItem *AstWidget::astItemFromIndex(QModelIndex index)
     return (GolangAstItem*)m_model->itemFromIndex(i);
 }
 
+static QString tagName(const QString &tag)
+{
+    /*
+    tools/goastview/packageview.go
+    const (
+            tag_package      = "p"
+            tag_type         = "t"
+            tag_struct       = "s"
+            tag_interface    = "i"
+            tag_value        = "v"
+            tag_const        = "c"
+            tag_func         = "f"
+            tag_value_folder = "+v"
+            tag_const_folder = "+c"
+            tag_func_folder  = "+f"
+            tag_type_method  = "tm"
+            tag_type_factor  = "tf"
+            tag_type_value   = "tv"
+    )
+    */
+    if (tag == "p") {
+        return "package";
+    } else if (tag == "t") {
+        return "type";
+    } else if (tag == "s") {
+        return "struct";
+    } else if (tag == "i") {
+        return "interface";
+    } else if (tag == "v") {
+        return "value";
+    } else if (tag == "c") {
+        return "const";
+    } else if (tag == "f") {
+        return "func";
+    } else if (tag == "+v") {
+        return "value folder";
+    } else if (tag == "+c") {
+        return "const folder";
+    } else if (tag == "+f") {
+        return "func folder";
+    } else if (tag == "tm") {
+        return "method";
+    } else if (tag == "tf") {
+        return "factory";
+    } else if (tag == "tv") {
+        return "field";
+    }
+    return QString();
+}
+
 // level,tag,name,index,x,y
 void AstWidget::updateModel(const QByteArray &data)
 {
@@ -158,6 +208,11 @@ void AstWidget::updateModel(const QByteArray &data)
         } else {
             item->setIcon(GolangAstIcon::instance()->iconFromTag(tag));
         }
+        if (tag.at(0) == '+') {
+            item->setToolTip(QString("%1").arg(tagName(tag)));
+        } else {
+            item->setToolTip(QString("%1 : %2").arg(tagName(tag)).arg(name));
+        }
         if (info.size() >= 6) {
             int index = info[3].toInt(&ok);
             if (ok && index >= 0 && index < indexFiles.size()) {
@@ -182,7 +237,7 @@ void AstWidget::updateModel(const QByteArray &data)
     }
 
     //load state
-    this->expandToDepth(1);
+    this->expandToDepth(0);
 
     QListIterator<QStringList> ie(expands);
     while (ie.hasNext()) {

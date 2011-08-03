@@ -22,12 +22,13 @@ const (
 	tag_interface    = "i"
 	tag_value        = "v"
 	tag_const        = "c"
-	tag_value_folder = "v_"
-	tag_const_folder = "c_"
 	tag_func         = "f"
-	tag_func_folder  = "f_"
-	tag_type_method  = "m"
-	tag_type_factor  = "a"
+	tag_value_folder = "+v"
+	tag_const_folder = "+c"
+	tag_func_folder  = "+f"
+	tag_type_method  = "tm"
+	tag_type_factor  = "tf"
+	tag_type_value   = "tv"
 )
 
 type PackageView struct {
@@ -135,7 +136,6 @@ func NewFilePackageSource(filename string, f *os.File) (*PackageView, os.Error) 
 
 func (p *PackageView) PrintFuncs(w io.Writer, funcs []*doc.FuncDoc, level int, tag string, tag_folder string) {
 	if len(tag_folder) > 0 && len(funcs) > 0 {
-
 		fmt.Fprintf(w, "%d,%s,Functions\n", level, tag_folder)
 		level++
 	}
@@ -168,7 +168,6 @@ func (p *PackageView) PrintVars(w io.Writer, vars []*doc.ValueDoc, level int, ta
 		}
 	}
 }
-
 func (p *PackageView) PrintTypes(w io.Writer, types []*doc.TypeDoc, level int) {
 	for _, d := range types {
 		if d.Type == nil {
@@ -182,39 +181,39 @@ func (p *PackageView) PrintTypes(w io.Writer, types []*doc.TypeDoc, level int) {
 		}
 		pos := p.fset.Position(d.Type.Pos())
 		fmt.Fprintf(w, "%d,%s,%s,%s\n", level, tag, d.Type.Name, p.posText(pos))
-		p.PrintTypeFields(w,d.Decl,level+1)
+		p.PrintTypeFields(w, d.Decl, level+1)
 		p.PrintFuncs(w, d.Factories, level+1, tag_type_factor, "")
 		p.PrintFuncs(w, d.Methods, level+1, tag_type_method, "")
-		//p.PrintVars(w, d.Vars, level, tag_value, tag_value_folder)
+		p.PrintVars(w, d.Vars, level, tag_value, tag_value_folder)
 	}
 }
 
 func (p *PackageView) PrintTypeFields(w io.Writer, decl *ast.GenDecl, level int) {
-	spec,ok := decl.Specs[0].(*ast.TypeSpec)
+	spec, ok := decl.Specs[0].(*ast.TypeSpec)
 	if ok == false {
 		return
 	}
 	switch d := spec.Type.(type) {
-		case *ast.StructType:
-			for _, list := range d.Fields.List {
-				if list.Names == nil {
-					continue
-				}
-				for _, m := range list.Names {
-					pos := p.fset.Position(m.Pos())
-					fmt.Fprintf(w, "%d,%s,%s,%s\n", level, tag_value, m.Name, p.posText(pos))
-				}
-			}		
-		case *ast.InterfaceType:
-			for _, list := range d.Methods.List {
-				if list.Names == nil {
-					continue
-				}
-				for _, m := range list.Names {
-					pos := p.fset.Position(m.Pos())
-					fmt.Fprintf(w, "%d,%s,%s,%s\n", level, tag_func, m.Name, p.posText(pos))
-				}
-			}		
+	case *ast.StructType:
+		for _, list := range d.Fields.List {
+			if list.Names == nil {
+				continue
+			}
+			for _, m := range list.Names {
+				pos := p.fset.Position(m.Pos())
+				fmt.Fprintf(w, "%d,%s,%s,%s\n", level, tag_type_value, m.Name, p.posText(pos))
+			}
+		}
+	case *ast.InterfaceType:
+		for _, list := range d.Methods.List {
+			if list.Names == nil {
+				continue
+			}
+			for _, m := range list.Names {
+				pos := p.fset.Position(m.Pos())
+				fmt.Fprintf(w, "%d,%s,%s,%s\n", level, tag_type_method, m.Name, p.posText(pos))
+			}
+		}
 	}
 }
 
