@@ -90,6 +90,8 @@ protected:
     bool m_marksVisible;
     bool m_autoIndent;
     bool m_autoBraces;
+    bool m_bLastBraces;
+    QChar m_lastBraces;
     int m_lastSaveRevision;
     int m_extraAreaSelectionNumber;
 };

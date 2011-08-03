@@ -97,6 +97,7 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     m_extraAreaSelectionNumber = -1;
     m_autoIndent = true;
     m_autoBraces = true;
+    m_bLastBraces = false;
     setTabWidth(4);
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(slotUpdateExtraAreaWidth()));
@@ -440,7 +441,14 @@ void LiteEditorWidgetBase::gotoLineEndWithSelection()
 void LiteEditorWidgetBase::keyPressEvent(QKeyEvent *e)
 {
     bool ro = isReadOnly();
-
+    if (m_bLastBraces == true && e->key() == m_lastBraces) {
+        QTextCursor cursor = textCursor();
+        cursor.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor);
+        setTextCursor(cursor);
+        m_bLastBraces = false;
+        return;
+    }
+    m_lastBraces = false;
     QChar mr;
     switch (e->key()) {
         case '{':
@@ -464,16 +472,19 @@ void LiteEditorWidgetBase::keyPressEvent(QKeyEvent *e)
         QTextCursor cursor = textCursor();
         int pos = cursor.positionInBlock();
         QString text = cursor.block().text();
-        if (pos <= text.length() && text.at(pos) != mr) {
+        if (pos == text.length() || text.at(pos).isSpace()) {
             cursor.beginEditBlock();
             pos = cursor.position();
             cursor.insertText(mr);
             cursor.setPosition(pos);
             cursor.endEditBlock();
             setTextCursor(cursor);
+            m_bLastBraces = true;
+            m_lastBraces = mr;
         }
         return;
     }
+
     if ( e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return ) {
         if (m_autoIndent) {
             indentEnter(textCursor());
