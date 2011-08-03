@@ -8,12 +8,15 @@ DEFINES += GOLANGAST_LIBRARY
 
 SOURCES += golangastplugin.cpp \
     golangast.cpp \
-    golangasticon.cpp
+    golangasticon.cpp \
+    astwidget.cpp
 
 HEADERS += golangastplugin.h\
         golangast_global.h \
     golangast.h \
-    golangasticon.h
+    golangasticon.h \
+    astwidget.h \
+    golangastitem.h
 
 RESOURCES += \
     golangast.qrc

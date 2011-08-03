@@ -35,7 +35,7 @@
 #endif
 //lite_memory_check_end
 
-GolangAstIcon::GolangAstIcon() :
+GolangAstIconPublic::GolangAstIconPublic() :
     iconPackage(QIcon(":/images/package.png")),
     iconType(QIcon(":/images/type.png")),
     iconStruct(QIcon(":/images/struct.png")),
@@ -53,7 +53,8 @@ GolangAstIcon::GolangAstIcon() :
 {
 
 }
-QIcon GolangAstIcon::iconFromTag(const QString &tag) const
+
+QIcon GolangAstIconPublic::iconFromTag(const QString &tag) const
 {
     if (tag == "p")
         return iconPackage;
@@ -82,7 +83,7 @@ QIcon GolangAstIcon::iconFromTag(const QString &tag) const
     return QIcon();
 }
 
-GolangAstIconPriv::GolangAstIconPriv() :
+GolangAstIconPrivate::GolangAstIconPrivate() :
     iconPackage(QIcon(":/images/package.png")),
     iconType(QIcon(":/images/type_p.png")),
     iconStruct(QIcon(":/images/struct_p.png")),
@@ -97,7 +98,8 @@ GolangAstIconPriv::GolangAstIconPriv() :
 {
 
 }
-QIcon GolangAstIconPriv::iconFromTag(const QString &tag) const
+
+QIcon GolangAstIconPrivate::iconFromTag(const QString &tag) const
 {
     if (tag == "p")
         return iconPackage;
@@ -126,3 +128,20 @@ QIcon GolangAstIconPriv::iconFromTag(const QString &tag) const
     return QIcon();
 }
 
+GolangAstIcon::GolangAstIcon()
+{
+}
+
+GolangAstIcon *GolangAstIcon::instance()
+{
+    static GolangAstIcon icons;
+    return &icons;
+}
+
+QIcon GolangAstIcon::iconFromTag(const QString &tag, bool pub) const
+{
+    if (pub) {
+        return icons.iconFromTag(tag);
+    }
+    return icons_p.iconFromTag(tag);
+}
