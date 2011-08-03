@@ -154,7 +154,7 @@ void AstWidget::updateModel(const QByteArray &data)
         }
         item->setText(name);
         if (name.at(0).isLower()) {
-            item->setIcon(GolangAstIcon::instance()->iconFromTag(tag));
+            item->setIcon(GolangAstIcon::instance()->iconFromTag(tag,false));
         } else {
             item->setIcon(GolangAstIcon::instance()->iconFromTag(tag));
         }
