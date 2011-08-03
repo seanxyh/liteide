@@ -203,7 +203,8 @@ void GolangAst::editorSaved(LiteApi::IEditor *editor)
 {
     if (editor) {
         QString fileName = editor->fileName();
-        if (!fileName.isEmpty() && m_updateFiles.contains(fileName)) {
+        QFileInfo info(fileName);
+        if (!fileName.isEmpty() && m_updateFiles.contains(info.fileName())) {
             updateAst();
         }
     }
