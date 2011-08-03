@@ -28,10 +28,10 @@
 
 #include <QIcon>
 
-class GolangAstIcon
+class GolangAstIconPublic
 {
 public:
-    GolangAstIcon();
+    GolangAstIconPublic();
     QIcon iconFromTag(const QString &tag) const;
 protected:
     QIcon   iconPackage;
@@ -51,10 +51,10 @@ public:
     QIcon   iconProfile;
 };
 
-class GolangAstIconPriv
+class GolangAstIconPrivate
 {
 public:
-    GolangAstIconPriv();
+    GolangAstIconPrivate();
     QIcon iconFromTag(const QString &tag) const;
 protected:
     QIcon   iconPackage;
@@ -70,5 +70,15 @@ protected:
     QIcon   iconMethod;
 };
 
+class GolangAstIcon
+{
+public:
+    static GolangAstIcon *instance();
+    QIcon iconFromTag(const QString &tag, bool pub = true) const;
+protected:
+    GolangAstIcon();
+    GolangAstIconPrivate icons_p;
+    GolangAstIconPublic  icons;
+};
 
 #endif // GOLANGASTICON_H

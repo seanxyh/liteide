@@ -28,11 +28,12 @@
 
 #include "liteapi.h"
 #include "symboltreeview/symboltreeview.h"
-#include "golangasticon.h"
 #include <QProcess>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 
+class QStackedWidget;
+class AstWidget;
 class GolangAst : public QObject
 {
     Q_OBJECT
@@ -45,27 +46,30 @@ signals:
 
 public slots:
     void projectChanged(LiteApi::IProject*);
+    void editorCreated(LiteApi::IEditor*);
+    void editorAboutToClose(LiteApi::IEditor *editor);
     void editorChanged(LiteApi::IEditor*);
     void editorSaved(LiteApi::IEditor*);
     void finishedProcess(int,QProcess::ExitStatus);
     void updateAst();
     void updateAstNow();
     void visibilityChanged(bool);
-    void doubleClockedTree(QModelIndex);
+    void doubleClickedTree(QModelIndex);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
     QTimer  *m_timer;
-    SymbolTreeView  *m_tree;
-    QStandardItemModel *m_model;
-    QSortFilterProxyModel *proxyModel;
     QProcess *m_process;
-    QStringList m_updateFiles;
+    QStringList m_updateFileNames;
+    QStringList m_updateFilePaths;
+    QStringList m_processFiles;
     QString m_workPath;
-    GolangAstIcon   icons;
-    GolangAstIconPriv icons_p;
     bool    m_bEnable;
     bool    m_bVisible;
+    QStackedWidget *m_stackedWidget;
+    AstWidget *m_projectAstWidget;
+    LiteApi::IEditor *m_currentEditor;
+    QMap<LiteApi::IEditor*,AstWidget*> m_editorAstWidgetMap;
 };
 
 #endif // GOLANGAST_H
