@@ -182,9 +182,39 @@ func (p *PackageView) PrintTypes(w io.Writer, types []*doc.TypeDoc, level int) {
 		}
 		pos := p.fset.Position(d.Type.Pos())
 		fmt.Fprintf(w, "%d,%s,%s,%s\n", level, tag, d.Type.Name, p.posText(pos))
+		p.PrintTypeFields(w,d.Decl,level+1)
 		p.PrintFuncs(w, d.Factories, level+1, tag_type_factor, "")
 		p.PrintFuncs(w, d.Methods, level+1, tag_type_method, "")
-		p.PrintVars(w, d.Vars, level, tag_value, tag_value_folder)
+		//p.PrintVars(w, d.Vars, level, tag_value, tag_value_folder)
+	}
+}
+
+func (p *PackageView) PrintTypeFields(w io.Writer, decl *ast.GenDecl, level int) {
+	spec,ok := decl.Specs[0].(*ast.TypeSpec)
+	if ok == false {
+		return
+	}
+	switch d := spec.Type.(type) {
+		case *ast.StructType:
+			for _, list := range d.Fields.List {
+				if list.Names == nil {
+					continue
+				}
+				for _, m := range list.Names {
+					pos := p.fset.Position(m.Pos())
+					fmt.Fprintf(w, "%d,%s,%s,%s\n", level, tag_value, m.Name, p.posText(pos))
+				}
+			}		
+		case *ast.InterfaceType:
+			for _, list := range d.Methods.List {
+				if list.Names == nil {
+					continue
+				}
+				for _, m := range list.Names {
+					pos := p.fset.Position(m.Pos())
+					fmt.Fprintf(w, "%d,%s,%s,%s\n", level, tag_func, m.Name, p.posText(pos))
+				}
+			}		
 	}
 }
 
