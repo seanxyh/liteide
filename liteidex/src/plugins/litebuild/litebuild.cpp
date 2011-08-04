@@ -413,6 +413,10 @@ void LiteBuild::execAction(const QString &id)
     QString args = m_build->actionArgs(ba,m_liteEnv);
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
+
+    if (m_output->plainTextEdit()->document()->lineCount() > 1024) {
+        m_output->clear();
+    }
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,workDir);
         m_output->plainTextEdit()->setReadOnly(true);
