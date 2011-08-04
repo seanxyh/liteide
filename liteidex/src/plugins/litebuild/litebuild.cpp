@@ -102,6 +102,8 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
         currentEnvChanged(m_envManager->currentEnv());
     }
+    m_bLastOutput = false;
+    m_liteApp->outputManager()->showOutput(m_output);
 }
 
 LiteBuild::~LiteBuild()
@@ -272,11 +274,17 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
 
     if (!build) {
         m_liteApp->actionManager()->hideToolBar(m_toolBar);
-        m_liteApp->outputManager()->hideOutput(m_output);
+        if (m_liteApp->outputManager()->currentOutput() == m_output) {
+            m_liteApp->outputManager()->setCurrentOutput();
+            m_bLastOutput = true;
+        }
     } else {
         m_liteApp->actionManager()->showToolBar(m_toolBar);
-        m_liteApp->outputManager()->showOutput(m_output);
         setCurrentBuild(build);
+        if (m_bLastOutput) {
+            m_bLastOutput = false;
+            m_liteApp->outputManager()->setCurrentOutput(m_output);
+        }
     }
 }
 

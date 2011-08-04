@@ -143,6 +143,9 @@ void OutputManager::hideOutput(QWidget *w)
 
 QWidget *OutputManager::currentOutput()
 {
+    if (m_lastOutputAct == NULL) {
+        return 0;
+    }
     return m_stackedWidget->currentWidget();
 }
 

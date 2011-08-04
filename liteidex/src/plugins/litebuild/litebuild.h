@@ -64,6 +64,7 @@ protected:
     QMap<QString,QString> m_liteEnv;
     ProcessEx *m_process;
     LiteOutput *m_output;
+    bool        m_bLastOutput;
     QString     m_outputRegex;
 };
 
