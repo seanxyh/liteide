@@ -101,6 +101,7 @@ void GolangCode::setCompleter(LiteApi::ICompleter *completer)
     m_completer = completer;
     if (m_completer) {
         connect(m_completer,SIGNAL(prefixChanged(QTextCursor,QString)),this,SLOT(prefixChanged(QTextCursor,QString)));
+        connect(m_completer,SIGNAL(wordCompleted(QString,QStringList)),this,SLOT(wordCompleted(QString,QStringList)));
     }
 }
 
@@ -109,7 +110,7 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     if (m_gocodeCmd.isEmpty()) {
         return;
     }
-
+    m_lastPrefix = pre;
     if (pre.right(1) != ".") {
         return;
     }
@@ -124,6 +125,11 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     m_process->start(m_gocodeCmd,args);
 }
 
+void GolangCode::wordCompleted(QString,QStringList)
+{
+    m_prefix.clear();
+}
+
 void GolangCode::started()
 {
     m_bLoad = true;
@@ -132,14 +138,19 @@ void GolangCode::started()
     }
     m_process->write(m_writeData);
     m_process->closeWriteChannel();
+    m_writeData.clear();
 }
 
 void GolangCode::finished(int,QProcess::ExitStatus)
 {
-    if (m_writeData.isEmpty()) {
+    if (m_prefix.isEmpty()) {
         return;
     }
-    m_writeData.clear();
+
+    if (m_prefix != m_lastPrefix) {
+        m_prefix.clear();
+        return;
+    }
 
     QString read = m_process->readAllStandardOutput();
     QStringList all = read.split('\n');
@@ -167,7 +178,9 @@ void GolangCode::finished(int,QProcess::ExitStatus)
             }
         }
     }
+    m_prefix.clear();
     if (n >= 1) {
+        m_completer->completer()->model()->sort(0);
         m_completer->show();
     }
 }
