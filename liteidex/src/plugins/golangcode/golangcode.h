@@ -41,12 +41,14 @@ public:
 public slots:
     void currentEnvChanged(LiteApi::IEnv*);
     void prefixChanged(QTextCursor,QString);
+    void wordCompleted(QString,QStringList);
     void started();
     void finished(int,QProcess::ExitStatus);
 protected:
     LiteApi::IApplication *m_liteApp;
     LiteApi::ICompleter   *m_completer;
     QString     m_prefix;
+    QString     m_lastPrefix;
     QProcess   *m_process;
     QByteArray  m_writeData;
     LiteApi::IEnvManager *m_envManager;
