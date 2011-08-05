@@ -117,6 +117,7 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
         LiteApi::IWordApi *wordApi = m_manager->findWordApi(mimeType);
         if (wordApi && wordApi->loadApi()) {
             wordCompleter->appendItems(wordApi->wordList(),false);
+            wordCompleter->completer()->model()->sort(0);
         }        
     }
     return editor;
