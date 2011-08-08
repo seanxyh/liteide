@@ -39,9 +39,12 @@ public:
     GolangAstPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
 protected slots:
+    void visibilityChanged(bool);
     void checkEnableGolangAst();
 protected:
     GolangAst *m_golangAst;
+    bool    m_bVisible;
+    bool    m_bEnable;
 };
 
 #endif // GOLANGASTPLUGIN_H

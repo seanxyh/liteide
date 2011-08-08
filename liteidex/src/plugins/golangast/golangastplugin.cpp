@@ -24,6 +24,7 @@
 // $Id: golangastplugin.cpp,v 1.0 2011-7-5 visualfc Exp $
 
 #include "golangastplugin.h"
+#include <QDockWidget>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -49,13 +50,27 @@ bool GolangAstPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
     m_golangAst = new GolangAst(m_liteApp,this);
+    QDockWidget *dock = m_liteApp->dockManager()->addDock(m_golangAst->widget(),tr("GoAstView"));
+    connect(dock,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(checkEnableGolangAst()));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(checkEnableGolangAst()));
+
+    m_bVisible = dock->isVisible();
+    m_bEnable = false;
     return true;
+}
+
+void GolangAstPlugin::visibilityChanged(bool b)
+{
+    m_bVisible = b;
+    checkEnableGolangAst();
 }
 
 void GolangAstPlugin::checkEnableGolangAst()
 {
+    if (!m_bVisible) {
+        return;
+    }
     bool active = false;
     LiteApi::IProject *project = m_liteApp->projectManager()->currentProject();
     if (project && (project->mimeType() == "text/x-gopro" ||
@@ -67,15 +82,9 @@ void GolangAstPlugin::checkEnableGolangAst()
             active = true;
         }
     }
-    if (active) {
-        if (m_golangAst == 0) {
-            m_golangAst = new GolangAst(m_liteApp,this);
-        }
-        m_golangAst->setEnable(true);
-    } else {
-        if (m_golangAst) {
-            m_golangAst->setEnable(false);
-        }
+    if (active != m_bEnable) {
+        m_bEnable = active;
+        m_golangAst->setEnable(m_bEnable);
     }
 }
 
