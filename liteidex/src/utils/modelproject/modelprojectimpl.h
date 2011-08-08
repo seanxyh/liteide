@@ -26,7 +26,7 @@
 #ifndef MODELPROJECTIMPL_H
 #define MODELPROJECTIMPL_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QModelIndex>
 #include <QPointer>
 

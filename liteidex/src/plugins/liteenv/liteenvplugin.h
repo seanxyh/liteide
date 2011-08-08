@@ -27,7 +27,7 @@
 #define LITEENVPLUGIN_H
 
 #include "liteenv_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class EnvManager;

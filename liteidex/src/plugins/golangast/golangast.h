@@ -26,7 +26,7 @@
 #ifndef GOLANGAST_H
 #define GOLANGAST_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "symboltreeview/symboltreeview.h"
 #include <QProcess>
 #include <QStandardItemModel>

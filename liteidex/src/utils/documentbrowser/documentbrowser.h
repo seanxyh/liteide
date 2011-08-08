@@ -26,7 +26,7 @@
 #ifndef DOCUMENTBROWSER_H
 #define DOCUMENTBROWSER_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "docbrowserapi/docbrowserapi.h"
 #include <QUrl>
 

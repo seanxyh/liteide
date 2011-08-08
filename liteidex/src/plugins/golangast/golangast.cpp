@@ -24,7 +24,7 @@
 // $Id: golangast.cpp,v 1.0 2011-7-5 visualfc Exp $
 
 #include "golangast.h"
-#include "litefindobj.h"
+#include "liteapi/litefindobj.h"
 #include "golangastitem.h"
 #include "golangasticon.h"
 #include "astwidget.h"

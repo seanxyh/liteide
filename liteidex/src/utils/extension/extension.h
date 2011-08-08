@@ -26,7 +26,7 @@
 #ifndef EXTENSION_H
 #define EXTENSION_H
 
-#include "liteobj.h"
+#include "liteapi/liteobj.h"
 
 class Extension : public LiteApi::IExtension
 {

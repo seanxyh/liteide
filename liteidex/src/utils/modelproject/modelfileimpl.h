@@ -26,7 +26,7 @@
 #ifndef MODELFILEIMPL_H
 #define MODELFILEIMPL_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class QStandardItemModel;
 class ModelFileImpl : public LiteApi::IFile

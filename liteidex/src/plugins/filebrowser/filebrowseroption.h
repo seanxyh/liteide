@@ -26,7 +26,7 @@
 #ifndef FILEBROWSEROPTION_H
 #define FILEBROWSEROPTION_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 namespace Ui {
     class FileBrowserOption;

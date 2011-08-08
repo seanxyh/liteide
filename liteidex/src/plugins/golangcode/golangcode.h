@@ -26,7 +26,7 @@
 #ifndef GOLANGCODE_H
 #define GOLANGCODE_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "liteeditorapi/liteeditorapi.h"
 #include "liteenvapi/liteenvapi.h"
 

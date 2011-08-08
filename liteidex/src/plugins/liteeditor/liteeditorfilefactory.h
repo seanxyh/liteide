@@ -26,7 +26,7 @@
 #ifndef LITEEDITORFILEFACTORY_H
 #define LITEEDITORFILEFACTORY_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "qtc_texteditor/katehighlighter.h"
 
 class WordApiManager;

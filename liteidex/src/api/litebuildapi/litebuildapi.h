@@ -26,7 +26,7 @@
 #ifndef __LITEBUILDAPI_H__
 #define __LITEBUILDAPI_H__
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QProcessEnvironment>
 
 namespace LiteApi {

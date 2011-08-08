@@ -26,7 +26,7 @@
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
 
-#include "../liteapi/liteapi.h"
+#include "liteapi/liteapi.h"
 
 using namespace LiteApi;
 

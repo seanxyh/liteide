@@ -26,7 +26,7 @@
 #ifndef __LITEENVAPI_H__
 #define __LITEENVAPI_H__
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QProcessEnvironment>
 
 namespace LiteApi {

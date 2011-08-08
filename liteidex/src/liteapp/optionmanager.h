@@ -26,7 +26,7 @@
 #ifndef OPTIONMANAGER_H
 #define OPTIONMANAGER_H
 
-#include "../liteapi/liteapi.h"
+#include "liteapi/liteapi.h"
 
 using namespace LiteApi;
 

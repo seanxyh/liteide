@@ -27,7 +27,7 @@
 #define FILEBROWSERPLUGIN_H
 
 #include "filebrowser_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class FileBrowser;

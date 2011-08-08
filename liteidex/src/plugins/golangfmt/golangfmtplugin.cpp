@@ -24,8 +24,8 @@
 // $Id: golangfmtplugin.cpp,v 1.0 2011-5-12 visualfc Exp $
 
 #include "golangfmtplugin.h"
-#include "litefindobj.h"
 #include "golangfmt.h"
+#include "liteapi/litefindobj.h"
 #include "fileutil/fileutil.h"
 
 #include <QToolBar>

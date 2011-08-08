@@ -27,7 +27,7 @@
 #define LITEEDITORPLUGIN_H
 
 #include "liteeditor_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class LiteEditorPlugin : public LiteApi::IPlugin

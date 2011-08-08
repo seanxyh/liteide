@@ -3,6 +3,8 @@ include (../liteide.pri)
 DESTDIR = $$IDE_LIB_PATH
 LIBS += -L$$DESTDIR
 
+INCLUDEPATH += $$IDE_SOURCE_TREE/src/api
+
 isEmpty(TARGET) {
     error("liteideapi.pri: You must provide a TARGET")
 }

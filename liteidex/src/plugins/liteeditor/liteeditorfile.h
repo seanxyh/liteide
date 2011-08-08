@@ -26,7 +26,7 @@
 #ifndef LITEEDITORFILE_H
 #define LITEEDITORFILE_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class QTextDocument;
 class LiteEditorFile : public LiteApi::IFile

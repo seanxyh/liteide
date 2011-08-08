@@ -26,7 +26,7 @@
 #ifndef LITEENVOPTIONFACTORY_H
 #define LITEENVOPTIONFACTORY_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class LiteEnvOptionFactory : public LiteApi::IOptionFactory
 {

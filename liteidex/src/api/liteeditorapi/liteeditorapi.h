@@ -26,7 +26,7 @@
 #ifndef __LITEEDITORAPI_H__
 #define __LITEEDITORAPI_H__
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QTextCursor>
 #include <QCompleter>
 

@@ -27,7 +27,7 @@
 #define MAKEFILEPROJECTPLUGIN_H
 
 #include "makefileproject_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class MakefileProjectPlugin : public LiteApi::IPlugin

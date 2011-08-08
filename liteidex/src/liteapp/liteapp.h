@@ -26,7 +26,7 @@
 #ifndef LITEAPP_H
 #define LITEAPP_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "textoutput/textoutput.h"
 #include "extension/extension.h"
 

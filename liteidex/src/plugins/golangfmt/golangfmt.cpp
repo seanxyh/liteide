@@ -25,6 +25,9 @@
 
 #include "golangfmt.h"
 #include "fileutil/fileutil.h"
+#include "processex/processex.h"
+#include "liteapi/litefindobj.h"
+
 #include <QDebug>
 #include <QProcess>
 #include <QFileInfo>
@@ -34,8 +37,6 @@
 #include <QTextBlock>
 #include <QScrollBar>
 
-#include "processex/processex.h"
-#include "litefindobj.h"
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC

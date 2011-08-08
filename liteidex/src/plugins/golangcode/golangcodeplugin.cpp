@@ -24,7 +24,7 @@
 // $Id: golangcodeplugin.cpp,v 1.0 2011-7-25 visualfc Exp $
 
 #include "golangcodeplugin.h"
-#include "litefindobj.h"
+#include "liteapi/litefindobj.h"
 #include "liteeditorapi/liteeditorapi.h"
 #include "fileutil/fileutil.h"
 #include "golangcode.h"

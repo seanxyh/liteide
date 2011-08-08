@@ -26,7 +26,7 @@
 #ifndef LITEEDITOROPTIONFACTORY_H
 #define LITEEDITOROPTIONFACTORY_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class LiteEditorOptionFactory : public LiteApi::IOptionFactory
 {

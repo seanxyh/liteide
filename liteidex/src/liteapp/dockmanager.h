@@ -26,7 +26,7 @@
 #ifndef DOCKMANAGER_H
 #define DOCKMANAGER_H
 
-#include "../liteapi/liteapi.h"
+#include "liteapi/liteapi.h"
 
 using namespace LiteApi;
 

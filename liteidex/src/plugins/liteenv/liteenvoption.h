@@ -26,7 +26,7 @@
 #ifndef LITEENVOPTION_H
 #define LITEENVOPTION_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QModelIndex>
 
 namespace Ui {

@@ -26,7 +26,7 @@
 #ifndef PROJECTMANAGER_H
 #define PROJECTMANAGER_H
 
-#include "../liteapi/liteapi.h"
+#include "liteapi/liteapi.h"
 
 #include <QPointer>
 

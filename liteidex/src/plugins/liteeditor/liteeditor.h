@@ -26,7 +26,7 @@
 #ifndef LITEEDITOR_H
 #define LITEEDITOR_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "extension/extension.h"
 #include <QSet>
 #include <QHash>

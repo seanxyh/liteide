@@ -26,7 +26,7 @@
 #ifndef MAKEFILEFILEFACTORY_H
 #define MAKEFILEFILEFACTORY_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class MakefileFileFactory : public LiteApi::IProjectFactory
 {
