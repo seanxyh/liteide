@@ -26,7 +26,7 @@
 #ifndef FILEBROWSER_H
 #define FILEBROWSER_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QModelIndex>
 
 class QComboBox;

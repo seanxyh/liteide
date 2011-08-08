@@ -26,7 +26,7 @@
 #ifndef LITEAPPOPTION_H
 #define LITEAPPOPTION_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 namespace Ui {
     class LiteAppOption;

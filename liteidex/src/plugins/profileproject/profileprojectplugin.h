@@ -27,7 +27,7 @@
 #define PROFILEPROJECTPLUGIN_H
 
 #include "profileproject_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class ProfileProjectPlugin : public LiteApi::IPlugin

@@ -26,7 +26,7 @@
 #ifndef GOLANGDOC_H
 #define GOLANGDOC_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "litebuildapi/litebuildapi.h"
 #include "liteenvapi/liteenvapi.h"
 #include <QUrl>

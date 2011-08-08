@@ -27,7 +27,7 @@
 #define CODESEARCHPLUGIN_H
 
 #include "codesearch_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class EditorSearchDialog;

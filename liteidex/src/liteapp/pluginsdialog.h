@@ -27,7 +27,7 @@
 #define PLUGINSDIALOG_H
 
 #include <QDialog>
-#include "../liteapi/liteapi.h"
+#include "liteapi/liteapi.h"
 
 namespace Ui {
     class PluginsDialog;

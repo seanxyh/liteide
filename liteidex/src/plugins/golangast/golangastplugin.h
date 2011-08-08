@@ -27,7 +27,7 @@
 #define GOLANGASTPLUGIN_H
 
 #include "golangast_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "golangast.h"
 #include <QtPlugin>
 

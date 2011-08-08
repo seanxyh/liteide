@@ -26,7 +26,7 @@
 #ifndef LITEBUILDOPTION_H
 #define LITEBUILDOPTION_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QModelIndex>
 
 namespace Ui {

@@ -28,7 +28,7 @@
 
 #include <QWidget>
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 namespace Ui {
     class OptionsWidget;

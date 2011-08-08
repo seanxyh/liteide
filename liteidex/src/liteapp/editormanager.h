@@ -26,7 +26,7 @@
 #ifndef EDITORMANAGER_H
 #define EDITORMANAGER_H
 
-#include "../liteapi/liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QPointer>
 
 using namespace LiteApi;

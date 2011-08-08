@@ -26,7 +26,7 @@
 #ifndef LITEBUILDOPTIONFACTORY_H
 #define LITEBUILDOPTIONFACTORY_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class LiteBuildOptionFactory : public LiteApi::IOptionFactory
 {

@@ -26,7 +26,7 @@
 #ifndef LITEAPI_MIMETYPE_H
 #define LITEAPI_MIMETYPE_H
 
-#include "../liteapi/liteapi.h"
+#include "liteapi/liteapi.h"
 
 class MimeType : public LiteApi::IMimeType
 {

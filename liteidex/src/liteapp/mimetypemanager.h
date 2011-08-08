@@ -26,7 +26,7 @@
 #ifndef MIMETYPEMANAGER_H
 #define MIMETYPEMANAGER_H
 
-#include "../liteapi/liteapi.h"
+#include "liteapi/liteapi.h"
 
 using namespace LiteApi;
 

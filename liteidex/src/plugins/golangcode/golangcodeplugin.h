@@ -27,7 +27,7 @@
 #define GOLANGCODEPLUGIN_H
 
 #include "golangcode_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class GolangCode;

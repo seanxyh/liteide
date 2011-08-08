@@ -26,7 +26,7 @@
 #ifndef PROFILEFILEFACTORY_H
 #define PROFILEFILEFACTORY_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class ProfileFileFactory : public LiteApi::IProjectFactory
 {

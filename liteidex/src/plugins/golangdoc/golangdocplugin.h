@@ -27,7 +27,7 @@
 #define GOLANGDOCPLUGIN_H
 
 #include "golangdoc_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class GolangDoc;

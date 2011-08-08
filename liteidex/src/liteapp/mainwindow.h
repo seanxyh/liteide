@@ -26,8 +26,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QMainWindow>
-#include "../liteapi/liteapi.h"
+#include "liteapi/liteapi.h"
 
 using namespace LiteApi;
 class QSplitter;

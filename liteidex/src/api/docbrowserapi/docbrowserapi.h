@@ -26,7 +26,7 @@
 #ifndef __LITEDOCBROWSERAPI_H__
 #define __LITEDOCBROWSERAPI_H__
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QTextBrowser>
 
 namespace LiteApi {

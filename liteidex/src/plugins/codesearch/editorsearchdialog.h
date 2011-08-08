@@ -29,7 +29,7 @@
 
 #include <QDialog>
 #include <QTextCursor>
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class QPlainTextEdit;
 

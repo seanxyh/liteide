@@ -27,7 +27,7 @@
 #define GOLANGFMTPLUGIN_H
 
 #include "golangfmt_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class GolangFmt;

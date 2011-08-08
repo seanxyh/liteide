@@ -26,7 +26,7 @@
 #ifndef LITEBUILD_H
 #define LITEBUILD_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "liteenvapi/liteenvapi.h"
 #include "litebuildapi/litebuildapi.h"
 

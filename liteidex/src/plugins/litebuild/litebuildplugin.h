@@ -27,7 +27,7 @@
 #define LITEBUILDPLUGIN_H
 
 #include "litebuild_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QtPlugin>
 
 class LiteBuild;

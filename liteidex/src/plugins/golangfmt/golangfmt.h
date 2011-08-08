@@ -28,7 +28,7 @@
 
 #include <QObject>
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "liteenvapi/liteenvapi.h"
 
 class ProcessEx;

@@ -27,7 +27,7 @@
 #define WELCOMEPLUGIN_H
 
 #include "welcome_global.h"
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include "welcomebrowser.h"
 #include <QtPlugin>
 

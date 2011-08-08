@@ -26,7 +26,7 @@
 #ifndef FILEBROWSEROPTIONFACTORY_H
 #define FILEBROWSEROPTIONFACTORY_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class FileBrowserOptionFactory : public LiteApi::IOptionFactory
 {

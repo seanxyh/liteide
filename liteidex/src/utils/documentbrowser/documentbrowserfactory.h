@@ -1,7 +1,7 @@
 #ifndef DOCUMENTBROWSERFACTORY_H
 #define DOCUMENTBROWSERFACTORY_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 
 class DocumentBrowserFactory : public LiteApi::IEditorFactory
 {

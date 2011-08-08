@@ -26,7 +26,7 @@
 #ifndef WELCOMEBROWSER_H
 #define WELCOMEBROWSER_H
 
-#include "liteapi.h"
+#include "liteapi/liteapi.h"
 #include <QStringListModel>
 
 namespace Ui {
