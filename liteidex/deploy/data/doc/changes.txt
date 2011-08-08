@@ -1,6 +1,13 @@
+==== 2011.8 Ver x7 1.09375 ====
+ * GolangDoc : fix doc css
+ * LiteBuild : auto clean output if line more than 1024
+ * LiteEditor : word compelter sorted
+ * LiteEditor : auto braces last state check
+ * GolangAst : show struct field
+ * GolangAst : editor state keep self
+
 ==== 2011.7.28 Ver x6 0.9375 ====
  * LiteEnv : new plugin, liteide enviroment setup
-
  * Welcome : add LiteIDE document browser
  * GolangDoc : add package find, example input "zip" and find
  * GolangDoc : add godoc /src/pkg/ and /src/cmd/ tree
