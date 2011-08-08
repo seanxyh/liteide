@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>622</width>
-    <height>539</height>
+    <width>450</width>
+    <height>469</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -122,7 +122,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="liteapp.qrc">:/images/logo/qian.png</pixmap>
+          <pixmap resource="liteapp.qrc">:/images/logo/kun.png</pixmap>
          </property>
         </widget>
        </item>

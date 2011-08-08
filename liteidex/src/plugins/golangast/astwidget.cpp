@@ -29,6 +29,8 @@
 
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QFont>
+
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -169,6 +171,7 @@ void AstWidget::updateModel(const QByteArray &data)
     QMap<int,QStandardItem*> items;
     QStringList indexFiles;
     bool ok = false;
+    bool bmain = false;
     QMap<QString,GolangAstItem*> level1NameItemMap;
     foreach (QByteArray line, array) {
         QList<QByteArray> info = line.split(',');
@@ -190,6 +193,13 @@ void AstWidget::updateModel(const QByteArray &data)
         if (level == 0) {
             level1NameItemMap.clear();
         }
+        if (tag == "p") {
+            if (name == "main") {
+                bmain = true;
+            } else {
+                bmain = false;
+            }
+        }
         GolangAstItem *item = 0;
         if (level == 1) {
             item = level1NameItemMap.value(name);
@@ -203,7 +213,7 @@ void AstWidget::updateModel(const QByteArray &data)
             level1NameItemMap.insert(name,item);
         }
         item->setText(name);
-        if (name.at(0).isLower()) {
+        if (!bmain && (name.at(0).isLower() || name.at(0) == '_')) {
             item->setIcon(GolangAstIcon::instance()->iconFromTag(tag,false));
         } else {
             item->setIcon(GolangAstIcon::instance()->iconFromTag(tag));
