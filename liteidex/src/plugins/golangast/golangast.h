@@ -42,6 +42,7 @@ public:
     ~GolangAst();
     void setEnable(bool b);
     void updateModel(const QByteArray &data);
+    QWidget *widget();
 signals:
 
 public slots:
@@ -53,7 +54,6 @@ public slots:
     void finishedProcess(int,QProcess::ExitStatus);
     void updateAst();
     void updateAstNow();
-    void visibilityChanged(bool);
     void doubleClickedTree(QModelIndex);
 protected:
     LiteApi::IApplication *m_liteApp;
@@ -64,8 +64,6 @@ protected:
     QStringList m_updateFilePaths;
     QStringList m_processFiles;
     QString m_workPath;
-    bool    m_bEnable;
-    bool    m_bVisible;
     QStackedWidget *m_stackedWidget;
     AstWidget *m_projectAstWidget;
     LiteApi::IEditor *m_currentEditor;

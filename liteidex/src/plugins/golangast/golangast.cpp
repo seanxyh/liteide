@@ -70,10 +70,6 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     m_process = new QProcess(this);
 
     m_timer = new QTimer(this);
-    m_bEnable = false;
-    m_bVisible = true;
-    QDockWidget *widget = m_liteApp->dockManager()->addDock(m_widget,tr("GoAstView"),Qt::LeftDockWidgetArea);
-    connect(widget,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_liteApp->editorManager(),SIGNAL(editorAboutToClose(LiteApi::IEditor*)),this,SLOT(editorAboutToClose(LiteApi::IEditor*)));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(projectChanged(LiteApi::IProject*)));
@@ -83,6 +79,7 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     connect(m_timer,SIGNAL(timeout()),this,SLOT(updateAstNow()));
     connect(m_projectAstWidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedTree(QModelIndex)));
 
+    m_stackedWidget->setVisible(false);
     m_liteApp->extension()->addObject("GoAstView.Widget",m_widget);
 }
 
@@ -96,29 +93,20 @@ GolangAst::~GolangAst()
     delete m_widget;
 }
 
+QWidget *GolangAst::widget()
+{
+    return m_widget;
+}
+
 void GolangAst::setEnable(bool b)
 {
-    if (m_bEnable == b) {
-        return;
-    }
-    m_bEnable = b;
-    if (b && m_bVisible) {
-        // m_liteApp->dockManager()->showDock(m_widget);
+    if (b) {
+        m_stackedWidget->setVisible(true);
         projectChanged(m_liteApp->projectManager()->currentProject());
         editorChanged(m_liteApp->editorManager()->currentEditor());
         updateAst();
     } else {
-        // m_liteApp->dockManager()->hideDock(m_widget);
-    }
-}
-
-void GolangAst::visibilityChanged(bool b)
-{
-    if (m_bEnable) {
-        m_bVisible = b;
-        if (b) {
-            updateAst();
-        }
+        m_stackedWidget->setVisible(false);
     }
 }
 
@@ -224,9 +212,6 @@ void GolangAst::editorSaved(LiteApi::IEditor *editor)
 
 void GolangAst::updateAst()
 {
-    if (!m_bVisible) {
-        return;
-    }
     m_timer->start(1000);
 }
 
