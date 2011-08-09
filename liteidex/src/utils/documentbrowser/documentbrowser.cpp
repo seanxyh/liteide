@@ -29,14 +29,17 @@
 #include <QTextBrowser>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QScrollBar>
 #include <QStatusBar>
 #include <QComboBox>
+#include <QToolBar>
 #include <QToolButton>
 #include <QCheckBox>
 #include <QAction>
 #include <QRegExp>
 #include <QFile>
 #include <QFileInfo>
+#include <QTextCodec>
 #include <QDir>
 
 //lite_memory_check_begin
@@ -57,6 +60,23 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_widget = new QWidget;
 
     m_textBrowser = new QTextBrowser;
+    m_textBrowser->setOpenExternalLinks(false);
+    m_textBrowser->setOpenLinks(false);
+
+    m_toolBar = new QToolBar;
+    m_toolBar->setIconSize(QSize(16,16));
+
+    m_backwardAct = new QAction(QIcon(":/images/backward.png"),tr("Backward"),this);
+    m_forwardAct = new QAction(QIcon(":/images/forward.png"),tr("Forward"),this);
+    m_toolBar->addAction(m_backwardAct);
+    m_toolBar->addAction(m_forwardAct);
+
+    m_urlComboBox = new QComboBox;
+    m_urlComboBox->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+
+    m_toolBar->addSeparator();
+    m_toolBar->addWidget(m_urlComboBox);
+
 
     m_statusBar = new QStatusBar;
 
@@ -89,14 +109,21 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
+    mainLayout->addWidget(m_toolBar);
     mainLayout->addWidget(m_textBrowser);
     mainLayout->addWidget(m_statusBar);
     m_widget->setLayout(mainLayout);
 
     connect(m_textBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));
+    connect(m_textBrowser,SIGNAL(anchorClicked(QUrl)),this,SIGNAL(requestUrl(QUrl)));
+    connect(m_backwardAct,SIGNAL(triggered()),this,SLOT(backward()));
+    connect(m_forwardAct,SIGNAL(triggered()),this,SLOT(forward()));
     connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(activatedFindText(QString)));
     connect(m_findNextAct,SIGNAL(triggered()),this,SLOT(findNext()));
     connect(m_findPrevAct,SIGNAL(triggered()),this,SLOT(findPrev()));
+    connect(m_urlComboBox,SIGNAL(activated(QString)),this,SLOT(activatedUrl(QString)));
+    connect(this,SIGNAL(backwardAvailable(bool)),m_backwardAct,SLOT(setEnabled(bool)));
+    connect(this,SIGNAL(forwardAvailable(bool)),m_forwardAct,SLOT(setEnabled(bool)));
 
     m_liteApp->settings()->beginGroup("documentbrowser");
     m_matchWordCheckBox->setChecked(m_liteApp->settings()->value("matchword",true).toBool());
@@ -106,6 +133,9 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_extension->addObject("LiteApi.IDocumentBrowser",this);
     m_textBrowser->installEventFilter(m_liteApp->editorManager());
+
+    emit backwardAvailable(false);
+    emit forwardAvailable(false);
 }
 
 DocumentBrowser::~DocumentBrowser()
@@ -140,11 +170,13 @@ bool DocumentBrowser::open(const QString &fileName,const QString &mimeType)
     QString htmlType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
     m_name = info.fileName();
     m_fileName = QDir::toNativeSeparators(fileName);
+    QByteArray ba = file.readAll();
     if (htmlType == "text/html") {
-        m_textBrowser->setSource(QUrl::fromLocalFile(fileName));
+        QTextCodec *codec = QTextCodec::codecForHtml(ba);
+        setUrlHtml(QUrl::fromLocalFile(fileName),codec->toUnicode(ba));
     } else {
-        QByteArray data = file.readAll();
-        m_textBrowser->setText(QString::fromUtf8(data,data.size()));
+        QTextCodec *codec = QTextCodec::codecForLocale();
+        setUrlHtml(QUrl::fromLocalFile(fileName),codec->toUnicode(ba),false);
     }
     file.close();
     return true;
@@ -173,11 +205,6 @@ QString DocumentBrowser::mimeType() const
 void DocumentBrowser::setName(const QString &t)
 {
     m_name = t;
-}
-
-QTextBrowser *DocumentBrowser::browser()
-{
-    return m_textBrowser;
 }
 
 void DocumentBrowser::highlighted(QUrl url)
@@ -230,4 +257,138 @@ bool DocumentBrowser::findText(bool findBackward)
     }
     m_statusBar->showMessage("end find");
     return false;
+}
+
+void DocumentBrowser::setSearchPaths(const QStringList &paths)
+{
+    m_textBrowser->setSearchPaths(paths);
+}
+
+QUrl DocumentBrowser::resolveUrl(const QUrl &url) const
+{
+    if (!url.isRelative())
+        return url;
+
+    // For the second case QUrl can merge "#someanchor" with "foo.html"
+    // correctly to "foo.html#someanchor"
+    if (!(m_url.isRelative()
+          || (m_url.scheme() == QLatin1String("file")
+              && !QFileInfo(m_url.toLocalFile()).isAbsolute()))
+          || (url.hasFragment() && url.path().isEmpty())) {
+        return m_url.resolved(url);
+    }
+
+    // this is our last resort when current url and new url are both relative
+    // we try to resolve against the current working directory in the local
+    // file system.
+    QFileInfo fi(m_url.toLocalFile());
+    if (fi.exists()) {
+        return QUrl::fromLocalFile(fi.absolutePath() + QDir::separator()).resolved(url);
+    }
+
+    return url;
+}
+
+void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data)
+{
+    setUrlHtml(url,data,false);
+}
+
+void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data,bool html)
+{
+    const HistoryEntry &historyEntry = createHistoryEntry();
+    if (html) {
+        m_textBrowser->setHtml(data);
+    } else {
+        m_textBrowser->setText(data);
+    }
+    m_url = resolveUrl(url);
+    if (!url.fragment().isEmpty()) {
+        m_textBrowser->scrollToAnchor(url.fragment());
+    } else {
+        m_textBrowser->horizontalScrollBar()->setValue(0);
+        m_textBrowser->verticalScrollBar()->setValue(0);
+    }
+
+    int index = m_urlComboBox->findText(m_url.toString());
+    if (index == -1) {
+        m_urlComboBox->addItem(m_url.toString());
+        index = m_urlComboBox->count()-1;
+    }
+    m_urlComboBox->setCurrentIndex(index);
+
+    if (!m_backwardStack.isEmpty() && url == m_backwardStack.top().url)
+    {
+        restoreHistoryEntry(m_backwardStack.top());
+        return;
+    }
+
+    if (!m_backwardStack.isEmpty()) {
+        m_backwardStack.top() = historyEntry;
+    }
+
+    HistoryEntry entry;
+    entry.url = url;
+    m_backwardStack.push(entry);
+
+    emit backwardAvailable(m_backwardStack.count() > 1);
+
+    if (!m_forwardStack.isEmpty() && url == m_forwardStack.top().url) {
+        m_forwardStack.pop();
+        emit forwardAvailable(m_forwardStack.count() > 0);
+    } else {
+        m_forwardStack.clear();
+        emit forwardAvailable(false);
+    }
+}
+
+void DocumentBrowser::activatedUrl(QString text)
+{
+    if (text.isEmpty()) {
+        return;
+    }
+    QUrl url(text);
+    requestUrl(url);
+}
+
+DocumentBrowser::HistoryEntry DocumentBrowser::createHistoryEntry() const
+{
+    HistoryEntry entry;
+    entry.url = m_url;
+    entry.hpos = m_textBrowser->horizontalScrollBar()->value();
+    entry.vpos = m_textBrowser->verticalScrollBar()->value();
+    return entry;
+}
+
+void DocumentBrowser::restoreHistoryEntry(const HistoryEntry &entry)
+{
+    m_url = entry.url;
+    m_textBrowser->horizontalScrollBar()->setValue(entry.hpos);
+    m_textBrowser->verticalScrollBar()->setValue(entry.vpos);
+}
+
+void DocumentBrowser::backward()
+{
+    if (m_backwardStack.count() <= 1) {
+        return;
+    }
+    m_forwardStack.push(createHistoryEntry());
+    m_backwardStack.pop();
+    emit requestUrl(m_backwardStack.top().url);
+    emit backwardAvailable(m_backwardStack.count() > 1);
+    emit forwardAvailable(true);
+}
+
+void DocumentBrowser::forward()
+{
+    if (m_forwardStack.isEmpty()) {
+        return;
+    }
+    if (!m_backwardStack.isEmpty()) {
+        m_backwardStack.top() = createHistoryEntry();
+    }
+    m_backwardStack.push(m_forwardStack.pop());
+    emit requestUrl(m_backwardStack.top().url);
+    emit backwardAvailable(true);
+    emit forwardAvailable(m_forwardStack.count() > 0);
 }

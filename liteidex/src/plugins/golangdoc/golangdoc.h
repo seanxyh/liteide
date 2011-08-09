@@ -64,6 +64,7 @@ protected:
     void activeBrowser();
 protected:
     LiteApi::IApplication   *m_liteApp;
+    QUrl     m_lastUrl;
     QWidget *m_widget;
     DocumentBrowser *m_docBrowser;
     QStringListModel *m_findResultModel;
@@ -82,7 +83,6 @@ protected:
     QAction *m_findAct;
     QMenu *m_findMenu;
     LiteApi::IEnvManager *m_envManager;
-    QCache<QString,QString> m_htmlCache;
     QString m_godocCmd;
     QString m_findCmd;
 };
