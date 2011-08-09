@@ -220,8 +220,7 @@ void WelcomeBrowser::openLiteDoument(QModelIndex index)
         m_liteApp->editorManager()->setCurrentEditor(editor);
         LiteApi::IDocumentBrowser *browser = LiteApi::findExtensionObject<LiteApi::IDocumentBrowser*>(editor,"LiteApi.IDocumentBrowser");
         if (browser) {
-            browser->browser()->setOpenLinks(false);
-            connect(browser->browser(),SIGNAL(anchorClicked(QUrl)),this,SLOT(openDocumentUrl(QUrl)));
+            connect(browser,SIGNAL(requestUrl(QUrl)),this,SLOT(openDocumentUrl(QUrl)));
         }
     }
 }
@@ -231,9 +230,9 @@ void WelcomeBrowser::openDocumentUrl(const QUrl &url)
     if (!url.scheme().isEmpty() && url.scheme() != "file") {
         QDesktopServices::openUrl(url);
     } else {
-        QTextBrowser *browser = (QTextBrowser*)sender();
+        LiteApi::IDocumentBrowser *browser = (LiteApi::IDocumentBrowser*)sender();
         if (browser) {
-            browser->setSource(url);
+            //browser->setUrlHtml(url);
         }
     }
 }

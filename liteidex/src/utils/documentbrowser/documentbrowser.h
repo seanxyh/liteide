@@ -28,6 +28,7 @@
 
 #include "liteapi/liteapi.h"
 #include "docbrowserapi/docbrowserapi.h"
+#include <QStack>
 #include <QUrl>
 
 class QTextBrowser;
@@ -35,6 +36,7 @@ class QComboBox;
 class QToolButton;
 class QCheckBox;
 class Extension;
+
 class DocumentBrowser : public LiteApi::IDocumentBrowser
 {
     Q_OBJECT
@@ -49,18 +51,40 @@ public:
     virtual QString fileName() const;
     virtual QString mimeType() const;
     void setName(const QString &t);
-    virtual QTextBrowser *browser();
     bool findText(bool findBackward);
+    QUrl resolveUrl(const QUrl &url) const;
+public:
+    virtual void setSearchPaths(const QStringList &paths);
+    virtual void setUrlHtml(const QUrl &url,const QString &html);
+public slots:
+    virtual void backward();
+    virtual void forward();
 public slots:
     void highlighted(QUrl);
     void activatedFindText(QString);
     void findNext();
     void findPrev();
+    void activatedUrl(QString);
 protected:
+    struct HistoryEntry {
+        HistoryEntry()
+            : hpos(0), vpos(0)
+        {}
+        QUrl url;
+        int hpos;
+        int vpos;
+    };
+    HistoryEntry createHistoryEntry() const;
+    void restoreHistoryEntry(const HistoryEntry &entry);
+    void setUrlHtml(const QUrl &url,const QString &data,bool html);
     LiteApi::IApplication   *m_liteApp;
     Extension     *m_extension;
     QWidget *m_widget;
     QTextBrowser *m_textBrowser;
+    QToolBar     *m_toolBar;
+    QAction      *m_backwardAct;
+    QAction      *m_forwardAct;
+    QComboBox    *m_urlComboBox;
     QStatusBar   *m_statusBar;
     QComboBox    *m_findComboBox;
     QCheckBox    *m_matchCaseCheckBox;
@@ -71,6 +95,9 @@ protected:
     QString     m_name;
     QString     m_fileName;
     QString     m_mimeType;
+    QUrl        m_url;
+    QStack<HistoryEntry> m_backwardStack;
+    QStack<HistoryEntry> m_forwardStack;
 };
 
 #endif // DOCUMENTBROWSER_H

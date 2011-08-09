@@ -36,7 +36,15 @@ class IDocumentBrowser : public IBrowserEditor
     Q_OBJECT
 public:
     IDocumentBrowser(QObject *parent) : IBrowserEditor(parent) {}
-    virtual QTextBrowser *browser() = 0;
+    virtual void setSearchPaths(const QStringList &paths) = 0;
+    virtual void setUrlHtml(const QUrl &url,const QString &html) = 0;
+signals:
+    void requestUrl(const QUrl &url);
+    void forwardAvailable(bool available);
+    void backwardAvailable(bool available);
+public slots:
+    virtual void backward() = 0;
+    virtual void forward() = 0;
 };
 
 }

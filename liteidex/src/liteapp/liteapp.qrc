@@ -30,5 +30,7 @@
         <file>images/logo/space.png</file>
         <file>images/logo/xun.png</file>
         <file>images/logo/zhen.png</file>
+        <file>images/backward.png</file>
+        <file>images/forward.png</file>
     </qresource>
 </RCC>

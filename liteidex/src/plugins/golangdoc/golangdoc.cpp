@@ -110,8 +110,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("GodocBrowser"));
-    m_docBrowser->browser()->setOpenLinks(false);
-    m_docBrowser->browser()->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/golangdoc");
+    m_docBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/golangdoc");
 
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
     QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
@@ -126,7 +125,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         file.close();
     }
 
-    connect(m_docBrowser->browser(),SIGNAL(anchorClicked(QUrl)),this,SLOT(openUrl(QUrl)));
+    connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
     connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
@@ -143,13 +142,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         currentEnvChanged(m_envManager->currentEnv());
     }
 
-    QString data = m_templateData;
-    if (!data.isEmpty()) {
-        data.replace("{goroot}",m_goroot);
-        data.replace("{title}","");
-        data.replace("{content}","");
-        m_docBrowser->browser()->setHtml(data);
-    }
+    openUrl(QUrl("/src/docs.html"));
 }
 
 GolangDoc::~GolangDoc()
@@ -179,9 +172,6 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
         find = FileUtil::lookPath("godocview",env,true);
     }
 
-    if (m_goroot != goroot) {
-        m_htmlCache.clear();
-    }
     m_goroot = goroot;
     m_godocCmd = godoc;
     m_findCmd = find;
@@ -276,12 +266,6 @@ void GolangDoc::godocPackage(QString package)
         return;
     }
 
-    QString *html = m_htmlCache[m_findText];
-    if (html && !html->isEmpty()) {        
-        m_docBrowser->browser()->setHtml(*html);
-        activeBrowser();
-        return;
-    }
     if (m_godocCmd.isEmpty()) {
         return;
     }
@@ -291,6 +275,7 @@ void GolangDoc::godocPackage(QString package)
     if (m_godocProcess->isRuning()) {
         m_godocProcess->waitForFinished(200);
     }
+    m_lastUrl = QUrl(package);
     m_godocProcess->start(m_godocCmd,args);
 }
 
@@ -305,12 +290,11 @@ void GolangDoc::godocOutput(QByteArray data,bool bStderr)
 void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
 {
     if (!error && code == 0 && m_docBrowser != 0) {
-        QString *data = new QString(m_templateData);
-        data->replace("{goroot}",m_goroot);
-        data->replace("{title}","Package "+m_findText);
-        data->replace("{content}",m_godocData);
-        m_htmlCache.insert(m_findText,data);
-        m_docBrowser->browser()->setHtml(*data);
+        QString data = m_templateData;
+        data.replace("{goroot}",m_goroot);
+        data.replace("{title}","Package "+m_findText);
+        data.replace("{content}",m_godocData);
+        m_docBrowser->setUrlHtml(m_lastUrl,data);
         activeBrowser();
     } else {
         int index = m_findComboBox->findText(m_findText);
@@ -322,6 +306,8 @@ void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
 
 void GolangDoc::openUrl(QUrl url)
 {
+    m_lastUrl = url;
+    qDebug() << m_lastUrl;
     if (!url.isRelative() &&url.scheme() != "file") {
         QDesktopServices::openUrl(url);
         return;
@@ -330,11 +316,6 @@ void GolangDoc::openUrl(QUrl url)
     QFileInfo info(url.toLocalFile());        
     if (url.path() == "/src/pkg/" || url.path() == "/src/cmd/") {
         m_findText = url.path();
-        QString *html = m_htmlCache[m_findText];
-        if (html && !html->isEmpty()) {
-            m_docBrowser->browser()->setHtml(*html);
-            return;
-        }
         if (m_findCmd.isEmpty()) {
             return;
         }
@@ -345,21 +326,21 @@ void GolangDoc::openUrl(QUrl url)
     } else if (info.suffix() == "html") {
         QString name = m_goroot+"/doc/"+info.fileName();
         m_findText = name;
-        QString *html = m_htmlCache[m_findText];
-        if (html && !html->isEmpty()) {
-            m_docBrowser->browser()->setHtml(*html);
-            return;
-        }
         QFile file(name);
         if (file.open(QIODevice::ReadOnly)) {
-            QString *data = new QString(m_templateData);
+            QString data = m_templateData;
             QByteArray r = file.readAll();
             file.close();
-            data->replace("{goroot}",m_goroot);
-            data->replace("{title}",name);
-            data->replace("{content}",QString::fromUtf8(r,r.size()));
-            m_htmlCache.insert(name,data);
-            m_docBrowser->browser()->setHtml(*data);
+            QTextCodec *codec = QTextCodec::codecForName("utf-8");
+            codec = QTextCodec::codecForHtml(r,codec);
+            data.replace("{goroot}",m_goroot);
+            data.replace("{title}",name);
+            if (codec) {
+                data.replace("{content}",codec->toUnicode(r));
+            } else {
+                data.replace("{content}",QString::fromUtf8(r,r.size()));
+            }
+            m_docBrowser->setUrlHtml(url,data);
         }
         return;
     } else if (info.suffix() == "go") {
