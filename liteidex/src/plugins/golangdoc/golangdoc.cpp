@@ -307,7 +307,7 @@ void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
 void GolangDoc::openUrl(QUrl url)
 {
     m_lastUrl = url;
-    qDebug() << m_lastUrl;
+
     if (!url.isRelative() &&url.scheme() != "file") {
         QDesktopServices::openUrl(url);
         return;
