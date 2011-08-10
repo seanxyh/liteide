@@ -1,5 +1,6 @@
 TARGET = golangdoc
 TEMPLATE = lib
+QT += xml
 
 include(../../liteideplugin.pri)
 include(../../utils/documentbrowser/documentbrowser.pri)

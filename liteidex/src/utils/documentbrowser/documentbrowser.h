@@ -60,6 +60,7 @@ public slots:
     virtual void backward();
     virtual void forward();
 public slots:
+    void anchorClicked(QUrl);
     void highlighted(QUrl);
     void activatedFindText(QString);
     void findNext();

@@ -61,10 +61,12 @@ public slots:
     void openUrl(QUrl);
     void doubleClickListView(QModelIndex);
 protected:
+    void updateDoc(const QUrl &url, const QByteArray &ba, const QString &header = QString(), bool toNav = true);
     void activeBrowser();
 protected:
     LiteApi::IApplication   *m_liteApp;
     QUrl     m_lastUrl;
+    QString  m_lastHeader;
     QWidget *m_widget;
     DocumentBrowser *m_docBrowser;
     QStringListModel *m_findResultModel;
@@ -73,7 +75,6 @@ protected:
     ProcessEx  *m_findProcess;
     ProcessEx  *m_godocProcess;
     QAction *m_browserAct;
-    QString m_findText;
     QString m_goroot;
     QByteArray  m_godocData;
     QByteArray  m_findData;
