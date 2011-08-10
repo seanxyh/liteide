@@ -67,6 +67,7 @@ protected:
     LiteApi::IApplication   *m_liteApp;
     QUrl     m_lastUrl;
     QString  m_lastHeader;
+    bool     m_lastNav;
     QWidget *m_widget;
     DocumentBrowser *m_docBrowser;
     QStringListModel *m_findResultModel;
