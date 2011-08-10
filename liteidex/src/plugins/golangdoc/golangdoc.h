@@ -48,12 +48,13 @@ public:
     ~GolangDoc();
 public:
     struct LastInfo {
-        LastInfo() : nav(true) {}
+        LastInfo() : nav(true),isFile(true) {}
         QUrl url;
         QString pkgName;
         QString filePath;
         QString header;
         bool nav;
+        bool isFile;
     };
 
 public slots:
