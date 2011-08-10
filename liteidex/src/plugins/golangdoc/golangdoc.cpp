@@ -219,8 +219,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
         currentEnvChanged(m_envManager->currentEnv());
     }
-
-    openUrl(QUrl("docs.html"));
+    m_lastNav = true;
+    openUrl(QUrl("/doc/docs.html"));
 }
 
 GolangDoc::~GolangDoc()
@@ -354,6 +354,7 @@ void GolangDoc::godocPackage(QString package)
     }
     m_lastUrl = QUrl(package);
     m_lastHeader = "Package "+package;
+    m_lastNav = true;
     m_godocProcess->start(m_godocCmd,args);
 }
 
@@ -368,7 +369,7 @@ void GolangDoc::godocOutput(QByteArray data,bool bStderr)
 void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
 {
     if (!error && code == 0 && m_docBrowser != 0) {
-        updateDoc(m_lastUrl,m_godocData,m_lastHeader);
+        updateDoc(m_lastUrl,m_godocData,m_lastHeader,m_lastNav);
     }
 }
 
@@ -399,6 +400,7 @@ void GolangDoc::openUrl(QUrl url)
 {
     m_lastUrl = url;
     m_lastHeader.clear();
+    m_lastNav = true;
 
     if (!url.isRelative() &&url.scheme() != "file") {
         QDesktopServices::openUrl(url);
@@ -421,6 +423,7 @@ void GolangDoc::openUrl(QUrl url)
             QDir dir = i.dir();
             if (dir.dirName() == "pkg" || dir.dirName() == "cmd") {
                 m_lastHeader = "Directory" + url.path();
+                m_lastNav = false;
                 if (m_findCmd.isEmpty()) {
                     return;
                 }

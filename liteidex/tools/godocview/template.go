@@ -2,7 +2,13 @@ package main
 
 var listHTML = `
 <!-- Golang Package List -->
-<h2 id="title">Golang package list</h2>
+<p class="detail">
+Need more packages? The
+<a href="http://godashboard.appspot.com/package">Package Dashboard</a>
+provides a list of <a href="/cmd/goinstall/">goinstallable</a> packages.
+</p>
+<h2 id="Subdirectories">Subdirectories</h2>
+<p>
 {.section Dirs}
 	{# DirList entries are numbers and strings - no need for FSet}
 	<p>
@@ -55,11 +61,12 @@ var findHTML = `
 	<tr>
 {.end}	
 {.section Best}
-	<td align="left"><a href="{Best.Path|path-esc}">{@Best.Path|html-esc}</a></td>
-	<td></td>
-	<td align="left">{@Best.Synopsis|html-esc}</td>
-	</tr>
 	<tr>
+	{Depth|padding}
+	<td align="left" colspan="{Height|html-esc}"><a href="{Path|path-esc}">{Name|html-esc}</a></td>
+	<td></td>
+	<td align="left">{Synopsis|html-esc}</td>
+	</tr>
 {.end}	
 {.section Dirs}
 	<th align="left" colspan="{MaxHeight|html-esc}">Match</th>
