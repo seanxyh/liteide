@@ -70,6 +70,7 @@ protected:
     bool     m_lastNav;
     QWidget *m_widget;
     DocumentBrowser *m_docBrowser;
+    QLabel  *m_rootLabel;
     QStringListModel *m_findResultModel;
     QListView *m_findResultListView;
     QComboBox *m_findComboBox;

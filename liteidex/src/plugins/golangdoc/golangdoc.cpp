@@ -36,6 +36,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QComboBox>
+#include <QToolBar>
+#include <QStatusBar>
 #include <QPushButton>
 #include <QMenu>
 #include <QAction>
@@ -190,6 +192,9 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_docBrowser->setName(tr("GodocBrowser"));
     m_docBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/golangdoc");
 
+    m_rootLabel = new QLabel;
+    m_docBrowser->statusBar()->addPermanentWidget(m_rootLabel);
+
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
     QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
     if (menu) {
@@ -253,6 +258,7 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
     m_goroot = goroot;
     m_godocCmd = godoc;
     m_findCmd = find;
+    m_rootLabel->setText("GOROOT="+goroot);
 
     m_findProcess->setEnvironment(env.toStringList());
     m_godocProcess->setEnvironment(env.toStringList());
@@ -380,7 +386,6 @@ void GolangDoc::updateDoc(const QUrl &url, const QByteArray &ba, const QString &
     QString nav;
     QString content = docToNavdoc(codec->toUnicode(ba),genHeader,nav);
     QString data = m_templateData;
-    data.replace("{goroot}",m_goroot);
     if (!header.isEmpty()) {
         data.replace("{header}",header);
     } else {

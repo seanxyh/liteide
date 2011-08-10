@@ -300,6 +300,16 @@ void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data)
     setUrlHtml(url,data,false);
 }
 
+QToolBar *DocumentBrowser::toolBar()
+{
+    return m_toolBar;
+}
+
+QStatusBar *DocumentBrowser::statusBar()
+{
+    return m_statusBar;
+}
+
 void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data,bool html)
 {
     const HistoryEntry &historyEntry = createHistoryEntry();

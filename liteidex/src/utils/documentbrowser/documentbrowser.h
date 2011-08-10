@@ -56,6 +56,8 @@ public:
 public:
     virtual void setSearchPaths(const QStringList &paths);
     virtual void setUrlHtml(const QUrl &url,const QString &html);
+    virtual QToolBar *toolBar();
+    virtual QStatusBar *statusBar();
 public slots:
     virtual void backward();
     virtual void forward();
