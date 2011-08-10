@@ -46,7 +46,15 @@ class GolangDoc : public QObject
 public:
     explicit GolangDoc(LiteApi::IApplication *app, QObject *parent = 0);
     ~GolangDoc();
-signals:
+public:
+    struct LastInfo {
+        LastInfo() : nav(true) {}
+        QUrl url;
+        QString pkgName;
+        QString filePath;
+        QString header;
+        bool nav;
+    };
 
 public slots:
     void currentEnvChanged(LiteApi::IEnv*);
@@ -55,21 +63,22 @@ public slots:
     void findPackage(QString name = QString());
     void findOutput(QByteArray,bool);
     void findFinish(bool,int,QString);
+    void godocFindPackage(QString name);
     void godocPackage(QString);
     void godocOutput(QByteArray,bool);
     void godocFinish(bool,int,QString);
     void openUrl(QUrl);
     void doubleClickListView(QModelIndex);
 protected:
-    void updateDoc(const QUrl &url, const QByteArray &ba, const QString &header = QString(), bool toNav = true);
+    void updateTextDoc(const QUrl &url, const QByteArray &ba, const QString &header);
+    void updateHtmlDoc(const QUrl &url, const QByteArray &ba, const QString &header = QString(), bool toNav = true);
     void activeBrowser();
 protected:
     LiteApi::IApplication   *m_liteApp;
-    QUrl     m_lastUrl;
-    QString  m_lastHeader;
-    bool     m_lastNav;
+    LastInfo m_lastInfo;
     QWidget *m_widget;
     DocumentBrowser *m_docBrowser;
+    QComboBox *m_godocFindComboBox;
     QLabel  *m_rootLabel;
     QStringListModel *m_findResultModel;
     QListView *m_findResultListView;

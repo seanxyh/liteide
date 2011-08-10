@@ -192,6 +192,11 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_docBrowser->setName(tr("GodocBrowser"));
     m_docBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/golangdoc");
 
+    m_godocFindComboBox = new QComboBox;
+    m_godocFindComboBox->setEditable(true);
+    m_docBrowser->toolBar()->addSeparator();
+    m_docBrowser->toolBar()->addWidget(m_godocFindComboBox);
+
     m_rootLabel = new QLabel;
     m_docBrowser->statusBar()->addPermanentWidget(m_rootLabel);
 
@@ -209,6 +214,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     }
 
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
+    connect(m_godocFindComboBox,SIGNAL(activated(QString)),this,SLOT(godocFindPackage(QString)));
     connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
     connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
@@ -224,7 +230,6 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
         currentEnvChanged(m_envManager->currentEnv());
     }
-    m_lastNav = true;
     openUrl(QUrl("/doc/docs.html"));
 }
 
@@ -291,6 +296,16 @@ void GolangDoc::listCmd()
     m_findProcess->start(m_findCmd,args);
 }
 
+void GolangDoc::godocFindPackage(QString pkgname)
+{
+    if (pkgname.isEmpty()) {
+        pkgname = m_godocFindComboBox->currentText();
+    }
+    if (pkgname.isEmpty()) {
+        return;
+    }
+    openUrl(QUrl("find$"+pkgname));
+}
 
 void GolangDoc::findPackage(QString pkgname)
 {
@@ -327,10 +342,11 @@ void GolangDoc::findFinish(bool error,int code,QString /*msg*/)
             if (best.isEmpty()) {
                 array.removeFirst();
             } else {
+                activeBrowser();
                 godocPackage(best);
             }
             if (array.isEmpty()) {
-                m_findResultModel->setStringList(QStringList() << "<not find>");
+                m_findResultModel->setStringList(QStringList() << "<nofind>");
             } else {
                 m_findResultModel->setStringList(array);
             }
@@ -358,9 +374,10 @@ void GolangDoc::godocPackage(QString package)
     if (m_godocProcess->isRuning()) {
         m_godocProcess->waitForFinished(200);
     }
-    m_lastUrl = QUrl(package);
-    m_lastHeader = "Package "+package;
-    m_lastNav = true;
+    m_lastInfo.url = QUrl(package);
+    m_lastInfo.pkgName = package;
+    m_lastInfo.header = "Package "+package;
+    m_lastInfo.nav = true;
     m_godocProcess->start(m_godocCmd,args);
 }
 
@@ -375,11 +392,30 @@ void GolangDoc::godocOutput(QByteArray data,bool bStderr)
 void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
 {
     if (!error && code == 0 && m_docBrowser != 0) {
-        updateDoc(m_lastUrl,m_godocData,m_lastHeader,m_lastNav);
+        if (!m_lastInfo.pkgName.isEmpty()) {
+            QFileInfo info(m_lastInfo.filePath,m_lastInfo.pkgName);
+            if (info.isDir()) {
+                m_lastInfo.filePath = info.filePath();
+            }
+        }
+        updateHtmlDoc(m_lastInfo.url,m_godocData,m_lastInfo.header,m_lastInfo.nav);
+
     }
 }
 
-void GolangDoc::updateDoc(const QUrl &url, const QByteArray &ba, const QString &header, bool toNav)
+void GolangDoc::updateTextDoc(const QUrl &url, const QByteArray &ba, const QString &header)
+{
+    QTextCodec *codec = QTextCodec::codecForUtfText(ba,QTextCodec::codecForName("utf-8"));
+    QString html = Qt::escape(codec->toUnicode(ba));
+    QString data = m_templateData;
+    data.replace("{header}",header);
+    data.replace("{nav}","");
+    data.replace("{content}",QString("<pre>%1</pre>").arg(html));
+    m_docBrowser->setUrlHtml(url,data);
+
+}
+
+void GolangDoc::updateHtmlDoc(const QUrl &url, const QByteArray &ba, const QString &header, bool toNav)
 {
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString genHeader;
@@ -398,69 +434,104 @@ void GolangDoc::updateDoc(const QUrl &url, const QByteArray &ba, const QString &
     }
     data.replace("{content}",content);
     m_docBrowser->setUrlHtml(url,data);
-    activeBrowser();
 }
 
 void GolangDoc::openUrl(QUrl url)
 {
-    m_lastUrl = url;
-    m_lastHeader.clear();
-    m_lastNav = true;
+    m_lastInfo.url = url;
+    m_lastInfo.header.clear();
+    m_lastInfo.nav = true;
 
     if (!url.isRelative() &&url.scheme() != "file") {
         QDesktopServices::openUrl(url);
         return;
     }
-    QDir dir(m_goroot);
     QString path = url.path();
-    if (!path.isEmpty() && path.at(0) == '/') {
-        path.remove(0,1);
+    if (path.isEmpty() || url.path() == "..") {
+        return;
     }
-    QFileInfo i(dir,path);
-    if (!i.exists()) {
-        dir.cd("doc");
-        i.setFile(dir,path);
+    if (path.indexOf("find$") == 0) {
+        if (m_findCmd.isEmpty()) {
+            return;
+        }
+        QStringList args;
+        args << "-mode=html" << "-find" << path.right(path.length()-5);
+        m_godocData.clear();
+        m_lastInfo.nav = false;
+        m_lastInfo.pkgName.clear();
+        m_lastInfo.filePath.clear();
+        m_lastInfo.header = "Find Package "+url.path();
+        m_godocProcess->start(m_findCmd,args);
+        return;
     }
 
-    if (i.exists()) {
+    QFileInfo info;
+    if (path.at(0) == '/') {
+        info.setFile(QDir(m_goroot),path.right(path.length()-1));
+        if (!info.exists()) {
+            info.setFile(QDir(m_lastInfo.filePath),path.right(path.length()-1));
+        }
+    } else {
+        info.setFile(QDir(m_lastInfo.filePath),path);
+    }
+
+    if (info.exists()) {
         //dir
-        if (i.isDir()) {
-            QDir dir = i.dir();
-            if (dir.dirName() == "pkg" || dir.dirName() == "cmd") {
-                m_lastHeader = "Directory" + url.path();
-                m_lastNav = false;
+        if (info.isDir()) {
+            m_lastInfo.filePath = info.dir().path();
+            if (path.indexOf("/src/") == 0) {
+                m_lastInfo.header = "Directory" + url.path();
+                m_lastInfo.nav = false;
+                m_lastInfo.pkgName.clear();
                 if (m_findCmd.isEmpty()) {
                     return;
                 }
                 QStringList args;
-                args << "-mode=html"<< QString("-list=src/%1").arg(dir.dirName());
+                if (path.right(0) == "/") {
+                    args << "-mode=html"<< QString("-list=%1").arg(path.mid(1,path.length()-2));
+                } else {
+                    args << "-mode=html"<< QString("-list=%1").arg(path.mid(1,path.length()-1));
+                }
                 m_godocData.clear();
                 m_godocProcess->start(m_findCmd,args);
                 return;
             } else {
-                QFileInfo test(dir,"index.html");
+                QFileInfo test(info.dir(),"index.html");
                 if (test.exists()) {
-                    i = test;
+                    info = test;
+                } else {
+                    if (m_lastInfo.pkgName.isEmpty()) {
+                        godocPackage(url.path());
+                    } else {
+                        godocPackage(m_lastInfo.pkgName+"/"+url.path());
+                    }
+                    return;
                 }
             }
         }
         //file
-        if (i.isFile()) {
-            QString ext = i.suffix().toLower();
+        if (info.isFile()) {
+            QString ext = info.suffix().toLower();
+            m_lastInfo.nav = true;
+            m_lastInfo.pkgName.clear();
+            m_lastInfo.header.clear();
+            m_lastInfo.url = QUrl::fromLocalFile(info.filePath());
             if (ext == "html") {
-                QFile file(i.filePath());
+                QFile file(info.filePath());
                 if (file.open(QIODevice::ReadOnly)) {
+                    m_lastInfo.filePath = info.absolutePath();
                     QByteArray ba = file.readAll();
                     file.close();
-                    if (i.fileName().compare("docs.html",Qt::CaseInsensitive) == 0) {
-                        updateDoc(url,ba,QString(),false);
+                    if (info.fileName().compare("docs.html",Qt::CaseInsensitive) == 0) {
+                        updateHtmlDoc(m_lastInfo.url,ba,QString(),false);
                     } else {
-                        updateDoc(url,ba);
+                        updateHtmlDoc(m_lastInfo.url,ba);
                     }
                 }
             } else if (ext == "go") {
-                LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(i.filePath());
+                LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(info.filePath());
                 if (editor) {
+                    m_lastInfo.filePath = info.absolutePath();
                     editor->setReadOnly(true);
                     QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
                     if (ed && url.hasQueryItem("s")) {
@@ -478,12 +549,27 @@ void GolangDoc::openUrl(QUrl url)
                     }
                 }
             } else if (ext == "pdf") {
-                QDesktopServices::openUrl(i.filePath());
+                QDesktopServices::openUrl(info.filePath());
+            } else {
+                QFile file(info.filePath());
+                if (file.open(QIODevice::ReadOnly)) {
+                    m_lastInfo.filePath = info.absolutePath();
+                    QByteArray ba = file.readAll();
+                    updateTextDoc(m_lastInfo.url,ba,info.fileName());
+                }
             }
         }
         return;
     } else {
-        godocPackage(url.toString());
+        if (path.indexOf("/cmd/") == 0) {
+            if (path.right(0) == "/") {
+                godocPackage(path.mid(5,path.length()-7));
+            } else {
+                godocPackage(path.mid(5,path.length()-6));
+            }
+        } else {
+            godocPackage(url.toString());
+        }
     }
 }
 
@@ -493,7 +579,8 @@ void GolangDoc::doubleClickListView(QModelIndex index)
         return;
     }
     QString text = m_findResultModel->data(index,Qt::DisplayRole).toString();
-    if (!text.isEmpty()) {
+    if (!text.isEmpty() && text.at(0) != '<') {
+        activeBrowser();
         godocPackage(text);
     }
 }

@@ -46,37 +46,34 @@ $list{.section Dirs}{.repeated section List},{Path|path-esc}{.end}{.end}
 
 var findHTML = `
 <!-- Golang Package List -->
-{.section Find}
-<h2 id="title">Find golang package "{@|html-esc}"</h2>
-{.end}
-{.section Dirs}
-	{# DirList entries are numbers and strings - no need for FSet}
-	<p>
-	<table class="layout">
+<p class="detail">
+Need more packages? The
+<a href="http://godashboard.appspot.com/package">Package Dashboard</a>
+provides a list of <a href="/cmd/goinstall/">goinstallable</a> packages.
+</p>
+<h2 id="Subdirectories">Subdirectories</h2>
+<p>{.section Dirs}
+<p>
+<table class="layout">
 	<tr>
-	<th align="left" colspan="{MaxHeight|html-esc}">Best</th>
+	<th align="left">Best</th>
 	<td width="25">&nbsp;</td>
 	<th align="left">Synopsis</th>
-	</tr>
+	{.section Best}
+		<tr>
+		<td align="left"><a href="{Path|path-esc}">{Path|path-esc}</a></td>
+		<td></td>
+		<td align="left">{Synopsis|html-esc}</td>
+		</tr>
+	{.end}	
 	<tr>
-{.end}	
-{.section Best}
-	<tr>
-	{Depth|padding}
-	<td align="left" colspan="{Height|html-esc}"><a href="{Path|path-esc}">{Name|html-esc}</a></td>
-	<td></td>
-	<td align="left">{Synopsis|html-esc}</td>
-	</tr>
-{.end}	
-{.section Dirs}
-	<th align="left" colspan="{MaxHeight|html-esc}">Match</th>
+	<th align="left">Match</th>
 	<td width="25">&nbsp;</td>
 	<th align="left">Synopsis</th>
 	</tr>
 	{.repeated section List}
 		<tr>
-		{Depth|padding}
-		<td align="left" colspan="{Height|html-esc}"><a href="{Path|path-esc}">{Name|html-esc}</a></td>
+		<td align="left"><a href="{Path|path-esc}">{Path|path-esc}</a></td>
 		<td></td>
 		<td align="left">{Synopsis|html-esc}</td>
 		</tr>

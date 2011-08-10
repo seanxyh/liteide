@@ -318,7 +318,7 @@ void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data,bool html)
     } else {
         m_textBrowser->setText(data);
     }
-    m_url = resolveUrl(url);
+    m_url = url;
     if (!url.fragment().isEmpty()) {
         m_textBrowser->scrollToAnchor(url.fragment());
     } else {
