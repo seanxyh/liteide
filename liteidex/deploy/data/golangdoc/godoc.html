@@ -6,30 +6,26 @@
 </head>
 
 <body>
-<div id="container">
-  <div id="topnav">
-    <h1 id="title">The Golang Document  GOROOT={goroot} </h1>
-      <div class="quickref">
-        <form method="GET" action="/search">
-        <a href="/src/pkg/">Packages</a> <span class="sep">|</span>
-        <a href="/src/cmd/">Commands</a> <span class="sep">|</span>
-		<a href="/doc/install.html">Install</a> <span class="sep">|</span>
-		<a href="/doc/docs.html">Documents</a> <span class="sep">|</span>
-		<a href="/doc/contrib.html">Contributing</a> <span class="sep">|</span>
-		<a href="/doc/community.html">Community</a> <span class="sep">|</span>
-        <a href="/doc/go_spec.html">Specification</a> <span class="sep">
-        </form>
-      </div>
-  <div id="content">
-  <!-- Menu is HTML-escaped elsewhere -->
-
-    <h1 id="generatedHeader">{title}</h1>
-
-  <!-- The Table of Contents is automatically inserted in this <div>.
-       Do not delete this <div>. -->
-  <div id="nav"></div>
-
-{content}
-
+	<div id="container">
+		<div id="topnav">
+			<h1 id="title">The Golang Document  GOROOT={goroot} </h1>
+			<div class="quickref">
+				<a href="/src/pkg/">Packages</a> <span class="sep">|</span>
+				<a href="/src/cmd/">Commands</a> <span class="sep">|</span>
+				<a href="/doc/install.html">Install</a> <span class="sep">|</span>
+				<a href="/doc/docs.html">Documents</a> <span class="sep">|</span>
+				<a href="/doc/contrib.html">Contributing</a> <span class="sep">|</span>
+				<a href="/doc/community.html">Community</a> <span class="sep">|</span>
+				<a href="/doc/go_spec.html">Specification</a> <span class="sep">
+			</div>
+		</div>		
+		<div id="content">
+			<!-- Menu is HTML-escaped elsewhere -->
+			<h1 id="generatedHeader">{header}</h1>
+			<!-- The Table of Contents is automatically inserted in this <div>.Do not delete this <div>. -->
+			<div id="nav">{nav}</div>
+			{content}
+		</div>
+	</div>
 </body>
 </html>
