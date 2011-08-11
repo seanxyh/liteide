@@ -10,3 +10,4 @@ SUBDIRS = \
     litebuildapi \
     liteeditorapi \
     docbrowserapi \
+    golangdocapi \

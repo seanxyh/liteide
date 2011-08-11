@@ -24,6 +24,8 @@
 // $Id: filebrowser.cpp,v 1.0 2011-7-12 visualfc Exp $
 
 #include "filebrowser.h"
+#include "liteapi/litefindobj.h"
+#include "golangdocapi/golangdocapi.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -176,6 +178,8 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_openShellAct = new QAction(tr("Open Terminal Here"),this);
     m_openExplorerAct = new QAction(tr("Open Explorer Here"),this);
 
+    m_viewGodocAct = new QAction(tr("View Godoc Here"),this);
+
     m_fileMenu->addAction(m_openFileAct);
     m_fileMenu->addAction(m_openEditorAct);
     m_fileMenu->addSeparator();
@@ -192,6 +196,8 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_folderMenu->addAction(m_newFolderAct);
     m_folderMenu->addAction(m_renameFolderAct);
     m_folderMenu->addAction(m_removeFolderAct);
+    m_folderMenu->addSeparator();
+    m_folderMenu->addAction(m_viewGodocAct);
     m_folderMenu->addSeparator();
     m_folderMenu->addAction(m_openShellAct);
     m_folderMenu->addAction(m_openExplorerAct);
@@ -216,6 +222,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_setRootAct,SIGNAL(triggered()),this,SLOT(setFolderToRoot()));
     connect(m_cdupAct,SIGNAL(triggered()),this,SLOT(cdUp()));
     connect(m_openExplorerAct,SIGNAL(triggered()),this,SLOT(openExplorer()));
+    connect(m_viewGodocAct,SIGNAL(triggered()),this,SLOT(viewGodoc()));
 
 
     QDockWidget *dock = m_liteApp->dockManager()->addDock(m_widget,tr("FileBrowser"));
@@ -502,6 +509,18 @@ void FileBrowser::openExplorer()
     QDesktopServices::openUrl(QUrl::fromLocalFile(dir.path()));
 }
 
+void FileBrowser::viewGodoc()
+{
+    QDir dir = contextDir();
+    LiteApi::IGolangDoc *doc = LiteApi::findExtensionObject<LiteApi::IGolangDoc*>(m_liteApp,"LiteApi.IGolangDoc");
+    if (doc) {
+        QUrl url;
+        url.setScheme("pdoc");
+        url.setPath(dir.path());
+        doc->openUrl(url);
+        doc->activeBrowser();
+    }
+}
 
 void FileBrowser::openShell()
 {

@@ -3,6 +3,7 @@ TEMPLATE = lib
 QT += xml
 
 include(../../liteideplugin.pri)
+include(../../api/golangdocapi/golangdocapi.pri)
 include(../../utils/documentbrowser/documentbrowser.pri)
 include(../../utils/fileutil/fileutil.pri)
 include(../../utils/processex/processex.pri)

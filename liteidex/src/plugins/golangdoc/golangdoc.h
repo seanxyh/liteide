@@ -29,9 +29,10 @@
 #include "liteapi/liteapi.h"
 #include "litebuildapi/litebuildapi.h"
 #include "liteenvapi/liteenvapi.h"
+#include "golangdocapi/golangdocapi.h"
+
 #include <QUrl>
 #include <QModelIndex>
-#include <QCache>
 
 class QLabel;
 class QListView;
@@ -40,12 +41,15 @@ class QComboBox;
 class QPushButton;
 class ProcessEx;
 class DocumentBrowser;
-class GolangDoc : public QObject
+class GolangDoc : public LiteApi::IGolangDoc
 {
     Q_OBJECT
 public:
     explicit GolangDoc(LiteApi::IApplication *app, QObject *parent = 0);
     ~GolangDoc();
+public slots:
+    virtual void openUrl(const QUrl &url);
+    virtual void activeBrowser();
 public slots:
     void currentEnvChanged(LiteApi::IEnv*);
     void listCmd();
@@ -57,7 +61,6 @@ public slots:
     void godocOutput(QByteArray,bool);
     void godocFinish(bool,int,QString);
     void doubleClickListView(QModelIndex);
-    void openUrl(const QUrl &url);
     void highlighted(const QUrl &url);
 protected:
     QUrl parserUrl(const QUrl &url);
@@ -67,7 +70,6 @@ protected:
     void openUrlFile(const QUrl &url);
     void updateTextDoc(const QUrl &url, const QByteArray &ba, const QString &header);
     void updateHtmlDoc(const QUrl &url, const QByteArray &ba, const QString &header = QString(), bool toNav = true);
-    void activeBrowser();
 protected:
     LiteApi::IApplication   *m_liteApp;
     QUrl    m_openUrl;
@@ -75,7 +77,6 @@ protected:
     QWidget *m_widget;
     DocumentBrowser *m_docBrowser;
     QComboBox *m_godocFindComboBox;
-    QLabel  *m_rootLabel;
     QStringListModel *m_findResultModel;
     QListView *m_findResultListView;
     QComboBox *m_findComboBox;

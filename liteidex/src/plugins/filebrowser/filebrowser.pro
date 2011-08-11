@@ -2,6 +2,7 @@ TARGET = filebrowser
 TEMPLATE = lib
 
 include(../../liteideplugin.pri)
+include(../../api/golangdocapi/golangdocapi.pri)
 
 DEFINES += FILEBROWSER_LIBRARY
 
