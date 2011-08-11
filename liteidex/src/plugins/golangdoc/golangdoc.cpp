@@ -203,13 +203,6 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         menu->addAction(m_browserAct);
     }
 
-    QString path = m_liteApp->resourcePath()+"/golangdoc/godoc.html";
-    QFile file(path);
-    if (file.open(QIODevice::ReadOnly)) {
-        m_templateData = file.readAll();
-        file.close();
-    }
-
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));
     connect(m_godocFindComboBox,SIGNAL(activated(QString)),this,SLOT(godocFindPackage(QString)));
@@ -231,7 +224,22 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     m_liteApp->extension()->addObject("LiteApi.IGolangDoc",this);
 
-    openUrl(QUrl("/doc/docs.html"));
+    QString path = m_liteApp->resourcePath()+"/golangdoc/godoc.html";
+    QFile file(path);
+    if (file.open(QIODevice::ReadOnly)) {
+        m_templateData = file.readAll();
+        file.close();
+    }
+    QString about = m_liteApp->resourcePath()+"/golangdoc/about.html";
+    QFileInfo info(about);
+    if(info.exists()) {
+        m_templateData.replace("{about}",info.filePath());
+    }
+
+    QUrl url;
+    url.setScheme("file");
+    url.setPath(info.filePath());
+    openUrl(url);
 }
 
 GolangDoc::~GolangDoc()
