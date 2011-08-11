@@ -40,7 +40,6 @@ class QComboBox;
 class QPushButton;
 class ProcessEx;
 class DocumentBrowser;
-
 class GolangDoc : public QObject
 {
     Q_OBJECT

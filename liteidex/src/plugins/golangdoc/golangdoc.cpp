@@ -281,7 +281,7 @@ void GolangDoc::listPkg()
         return;
     }
     QStringList args;
-    args << "-mode=lite" << "-list=src/pkg";
+    args << "-mode=lite" << "-list=pkg";
     m_findData.clear();
     m_findProcess->start(m_findCmd,args);
 }
@@ -292,7 +292,7 @@ void GolangDoc::listCmd()
         return;
     }
     QStringList args;
-    args << "-mode=lite" << "-list=src/cmd";
+    args << "-mode=lite" << "-list=cmd";
     m_findData.clear();
     m_findProcess->start(m_findCmd,args);
 }
