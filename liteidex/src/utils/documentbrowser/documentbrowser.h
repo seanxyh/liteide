@@ -58,12 +58,12 @@ public:
     virtual void setUrlHtml(const QUrl &url,const QString &html);
     virtual QToolBar *toolBar();
     virtual QStatusBar *statusBar();
+    virtual QComboBox *urlComboBox();
 public slots:
     virtual void backward();
     virtual void forward();
 public slots:
     void anchorClicked(QUrl);
-    void highlighted(QUrl);
     void activatedFindText(QString);
     void findNext();
     void findPrev();

@@ -12,7 +12,7 @@ import (
 var (
 	goroot = flag.String("goroot", runtime.GOROOT(), "Go root directory")
 	find   = flag.String("find", "", "find package list, :pkg flag is best match")
-	list   = flag.String("list", "", "Print go packages list [src/pkg|src/cmd]")
+	list   = flag.String("list", "", "Print go packages list [pkg|cmd]")
 	mode   = flag.String("mode", "text", "Print mode [text|html|lite]")
 )
 
@@ -35,7 +35,7 @@ func main() {
 	var template string
 	var info *Info
 	if len(*list) > 0 {
-		info = NewListInfo(filepath.Join(*goroot, *list))
+		info = NewListInfo(filepath.Join(*goroot,"src",*list))
 		switch *mode {
 		case "html":
 			template = listHTML

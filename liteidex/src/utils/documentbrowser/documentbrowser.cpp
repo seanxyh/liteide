@@ -73,6 +73,7 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_toolBar->addAction(m_forwardAct);
 
     m_urlComboBox = new QComboBox;
+    m_urlComboBox->setEditable(true);
     m_urlComboBox->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
 
     m_toolBar->addSeparator();
@@ -115,7 +116,7 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     mainLayout->addWidget(m_statusBar);
     m_widget->setLayout(mainLayout);
 
-    connect(m_textBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));
+    connect(m_textBrowser,SIGNAL(highlighted(QUrl)),this,SIGNAL(highlighted(QUrl)));
     connect(m_textBrowser,SIGNAL(anchorClicked(QUrl)),this,SLOT(anchorClicked(QUrl)));
     connect(m_backwardAct,SIGNAL(triggered()),this,SLOT(backward()));
     connect(m_forwardAct,SIGNAL(triggered()),this,SLOT(forward()));
@@ -213,11 +214,6 @@ void DocumentBrowser::setName(const QString &t)
     m_name = t;
 }
 
-void DocumentBrowser::highlighted(QUrl url)
-{
-    m_statusBar->showMessage(url.toString());
-}
-
 void DocumentBrowser::activatedFindText(QString)
 {
     findText(false);
@@ -308,6 +304,11 @@ QToolBar *DocumentBrowser::toolBar()
 QStatusBar *DocumentBrowser::statusBar()
 {
     return m_statusBar;
+}
+
+QComboBox *DocumentBrowser::urlComboBox()
+{
+    return m_urlComboBox;
 }
 
 void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data,bool html)
