@@ -40,23 +40,13 @@ class QComboBox;
 class QPushButton;
 class ProcessEx;
 class DocumentBrowser;
+
 class GolangDoc : public QObject
 {
     Q_OBJECT
 public:
     explicit GolangDoc(LiteApi::IApplication *app, QObject *parent = 0);
     ~GolangDoc();
-public:
-    struct LastInfo {
-        LastInfo() : nav(true),isFile(true) {}
-        QUrl url;
-        QString pkgName;
-        QString filePath;
-        QString header;
-        bool nav;
-        bool isFile;
-    };
-
 public slots:
     void currentEnvChanged(LiteApi::IEnv*);
     void listCmd();
@@ -65,18 +55,24 @@ public slots:
     void findOutput(QByteArray,bool);
     void findFinish(bool,int,QString);
     void godocFindPackage(QString name);
-    void godocPackage(QString);
     void godocOutput(QByteArray,bool);
     void godocFinish(bool,int,QString);
-    void openUrl(QUrl);
     void doubleClickListView(QModelIndex);
+    void openUrl(const QUrl &url);
+    void highlighted(const QUrl &url);
 protected:
+    QUrl parserUrl(const QUrl &url);
+    void openUrlList(const QUrl &url);
+    void openUrlFind(const QUrl &url);
+    void openUrlPdoc(const QUrl &url);
+    void openUrlFile(const QUrl &url);
     void updateTextDoc(const QUrl &url, const QByteArray &ba, const QString &header);
     void updateHtmlDoc(const QUrl &url, const QByteArray &ba, const QString &header = QString(), bool toNav = true);
     void activeBrowser();
 protected:
     LiteApi::IApplication   *m_liteApp;
-    LastInfo m_lastInfo;
+    QUrl    m_openUrl;
+    QUrl    m_lastUrl;
     QWidget *m_widget;
     DocumentBrowser *m_docBrowser;
     QComboBox *m_godocFindComboBox;

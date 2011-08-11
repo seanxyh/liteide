@@ -29,6 +29,7 @@
 #include "liteapi/liteapi.h"
 #include <QTextBrowser>
 
+class QComboBox;
 namespace LiteApi {
 
 class IDocumentBrowser : public IBrowserEditor
@@ -40,7 +41,9 @@ public:
     virtual void setUrlHtml(const QUrl &url,const QString &html) = 0;
     virtual QToolBar *toolBar() = 0;
     virtual QStatusBar *statusBar() = 0;
+    virtual QComboBox *urlComboBox() = 0;
 signals:
+    void highlighted(const QUrl &url);
     void requestUrl(const QUrl &url);
     void forwardAvailable(bool available);
     void backwardAvailable(bool available);
