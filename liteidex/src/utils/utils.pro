@@ -15,5 +15,6 @@ SUBDIRS = \
     processex \
     colorstyle \
     documentbrowser \
+    htmlutil
 
 

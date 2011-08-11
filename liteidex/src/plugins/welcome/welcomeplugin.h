@@ -29,6 +29,7 @@
 #include "welcome_global.h"
 #include "liteapi/liteapi.h"
 #include "welcomebrowser.h"
+#include "litedoc.h"
 #include <QtPlugin>
 
 class WelcomePlugin : public LiteApi::IPlugin
@@ -42,6 +43,7 @@ protected slots:
     void home();
 protected:
     WelcomeBrowser *m_welcome;
+    LiteDoc *m_liteDoc;
     QAction *m_welcomeAct;
     QAction *m_homeAct;
 };
