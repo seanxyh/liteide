@@ -32,5 +32,6 @@
         <file>images/logo/zhen.png</file>
         <file>images/backward.png</file>
         <file>images/forward.png</file>
+        <file>images/reload.png</file>
     </qresource>
 </RCC>

@@ -62,6 +62,7 @@ public:
 public slots:
     virtual void backward();
     virtual void forward();
+    virtual void reloadUrl();
 public slots:
     void anchorClicked(QUrl);
     void activatedFindText(QString);
@@ -88,6 +89,7 @@ protected:
     QToolBar     *m_findToolBar;
     QAction      *m_backwardAct;
     QAction      *m_forwardAct;
+    QAction      *m_reloadUrlAct;
     QComboBox    *m_urlComboBox;
     QStatusBar   *m_statusBar;
     QComboBox    *m_findComboBox;
