@@ -82,6 +82,8 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_statusBar = new QStatusBar;
 
+    m_findToolBar = new QToolBar;
+
     m_findComboBox = new QComboBox;
     m_findComboBox->setEditable(true);
 
@@ -100,16 +102,20 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_matchWordCheckBox = new QCheckBox(tr("MatchWord"));
     m_useRegexCheckBox = new QCheckBox(tr("Regex"));
 
-    m_statusBar->addPermanentWidget(m_findComboBox);
-    m_statusBar->addPermanentWidget(findNext);
-    m_statusBar->addPermanentWidget(findPrev);
-    m_statusBar->addPermanentWidget(m_matchCaseCheckBox);
-    m_statusBar->addPermanentWidget(m_matchWordCheckBox);
-    m_statusBar->addPermanentWidget(m_useRegexCheckBox);
+    m_findToolBar->addWidget(m_findComboBox);
+    m_findToolBar->addSeparator();
+    m_findToolBar->addWidget(findNext);
+    m_findToolBar->addWidget(findPrev);
+    m_findToolBar->addSeparator();
+    m_findToolBar->addWidget(m_matchCaseCheckBox);
+    m_findToolBar->addWidget(m_matchWordCheckBox);
+    m_findToolBar->addWidget(m_useRegexCheckBox);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
+
+    m_statusBar->addWidget(m_findToolBar);
 
     mainLayout->addWidget(m_toolBar);
     mainLayout->addWidget(m_textBrowser);

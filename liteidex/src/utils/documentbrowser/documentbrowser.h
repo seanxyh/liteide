@@ -85,6 +85,7 @@ protected:
     QWidget *m_widget;
     QTextBrowser *m_textBrowser;
     QToolBar     *m_toolBar;
+    QToolBar     *m_findToolBar;
     QAction      *m_backwardAct;
     QAction      *m_forwardAct;
     QComboBox    *m_urlComboBox;
