@@ -1,17 +1,22 @@
 TARGET = welcome
 TEMPLATE = lib
 
+QT += xml
+
 include(../../liteideplugin.pri)
 include(../../utils/documentbrowser/documentbrowser.pri)
+include(../../utils/htmlutil/htmlutil.pri)
 
 DEFINES += WELCOME_LIBRARY
 
 SOURCES += welcomeplugin.cpp \
-    welcomebrowser.cpp
+    welcomebrowser.cpp \
+    litedoc.cpp
 
 HEADERS += welcomeplugin.h\
         welcome_global.h \
-    welcomebrowser.h
+    welcomebrowser.h \
+    litedoc.h
 
 FORMS += \
     welcomewidget.ui

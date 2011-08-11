@@ -74,6 +74,8 @@ bool WelcomePlugin::initWithApp(LiteApi::IApplication *app)
         toolBar->addAction(m_homeAct);
     }
 
+    m_liteDoc = new LiteDoc(m_liteApp,this);
+
     return true;
 }
 
