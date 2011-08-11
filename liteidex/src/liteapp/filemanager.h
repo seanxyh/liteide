@@ -87,7 +87,7 @@ protected:
     bool                 m_checkActivated;
 protected:    
     enum { MaxRecentFiles = 16 };
-    enum { MaxRecentProjects = 16 };
+    enum { MaxRecentProjects = 8 };
     QAction     *m_clearRecentFilesAct;
     QAction     *m_clearRecentProjectsAct;
     QAction     *m_recentFileActs[MaxRecentFiles];
