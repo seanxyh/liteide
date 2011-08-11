@@ -191,6 +191,11 @@ span.selection-highlight-comment {
 span.alert {
   color: #D00000;
 }
+
+span.recent {
+  color: #999;
+}
+
 #nav table {
   width: 100%;
 }

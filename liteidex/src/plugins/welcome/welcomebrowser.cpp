@@ -26,12 +26,8 @@
 #include "welcomebrowser.h"
 #include "ui_welcomewidget.h"
 #include "liteapi/litefindobj.h"
-#include "docbrowserapi/docbrowserapi.h"
-#include "documentbrowser/documentbrowser.h"
-#include "documentbrowser/documentbrowserfactory.h"
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QHeaderView>
+#include "golangdocapi/golangdocapi.h"
+#include "litedoc.h"
 #include <QMenu>
 #include <QDir>
 #include <QFileInfo>
@@ -59,49 +55,82 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
 {
     ui->setupUi(m_widget);
 
-    m_recentProjectsModel = new QStandardItemModel(0,2,this);
-    ui->recentProjectsTreeView->setModel(m_recentProjectsModel);
-    ui->recentProjectsTreeView->setRootIsDecorated(false);
-    ui->recentProjectsTreeView->setEditTriggers(0);
-    ui->recentProjectsTreeView->setHeaderHidden(true);
-    ui->recentProjectsTreeView->setTextElideMode(Qt::ElideMiddle);
-    ui->recentProjectsTreeView->header()->setResizeMode(0,QHeaderView::ResizeToContents);
-    //ui->recentProjectsTreeView->header()->setResizeMode(1,QHeaderView::Stretch);
-    //ui->recentProjectsTreeView->header()->setStretchLastSection(true);
-
-    m_recentFilesModel = new QStandardItemModel(0,2,this);
-    ui->recentFilesTreeView->setModel(m_recentFilesModel);
-    ui->recentFilesTreeView->setRootIsDecorated(false);
-    ui->recentFilesTreeView->setEditTriggers(0);
-    ui->recentFilesTreeView->setHeaderHidden(true);
-    ui->recentFilesTreeView->setTextElideMode(Qt::ElideMiddle);
-    ui->recentFilesTreeView->header()->setResizeMode(QHeaderView::ResizeToContents);
-
-    m_docModel = new QStandardItemModel(0,2,this);
-    ui->docTreeView->setModel(m_docModel);
-    ui->docTreeView->setRootIsDecorated(false);
-    ui->docTreeView->setEditTriggers(0);
-    ui->docTreeView->setHeaderHidden(true);
-    ui->docTreeView->setTextElideMode(Qt::ElideMiddle);
-    ui->docTreeView->header()->setResizeMode(0,QHeaderView::ResizeToContents);
-
     connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
     connect(ui->openFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openFiles()));
     connect(ui->openProjectButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openProjects()));
     connect(ui->openEditorButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openEditors()));
-    connect(ui->recentProjectsTreeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openRecentProject(QModelIndex)));
-    connect(ui->recentFilesTreeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openRecentFile(QModelIndex)));
-    connect(m_liteApp->fileManager(),SIGNAL(recentProjectsChanged()),this,SLOT(loadRecentProjects()));
-    connect(m_liteApp->fileManager(),SIGNAL(recentFilesChanged()),this,SLOT(loadRecentFiles()));
     connect(ui->optionsButton,SIGNAL(clicked()),m_liteApp->optionManager(),SLOT(exec()));
-    connect(ui->docTreeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openLiteDoument(QModelIndex)));
+    connect(ui->textBrowser,SIGNAL(anchorClicked(QUrl)),this,SLOT(openUrl(QUrl)));
+    connect(m_liteApp->fileManager(),SIGNAL(recentProjectsChanged()),this,SLOT(loadData()));
+    connect(m_liteApp->fileManager(),SIGNAL(recentFilesChanged()),this,SLOT(loadData()));
 
-    m_docBrowserFactory = new DocumentBrowserFactory(m_liteApp,this);
-    m_liteApp->editorManager()->addFactory(m_docBrowserFactory);
+    ui->textBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/doc");
+    ui->textBrowser->setOpenLinks(false);
 
-    loadRecentProjects();
-    loadRecentFiles();
-    loadDocFiles();
+    QString path = m_liteApp->resourcePath()+"/doc/welcome.html";
+    QFile file(path);
+    if (file.open(QIODevice::ReadOnly)) {
+        m_templateData = file.readAll();
+        file.close();
+    }
+    loadData();
+}
+
+void WelcomeBrowser::openUrl(const QUrl &url)
+{
+    if (url.scheme() == "http" || url.scheme() == "mailto") {
+        QDesktopServices::openUrl(url);
+    } else if (url.scheme() == "proj") {
+        m_liteApp->fileManager()->openProject(url.path());
+    } else if (url.scheme() == "file") {
+        m_liteApp->fileManager()->openEditor(url.path());
+    } else if (url.scheme() == "doc") {
+        LiteDoc *doc = LiteApi::findExtensionObject<LiteDoc*>(m_liteApp,"LiteApi.ILiteDoc");
+        if (doc) {
+            doc->openUrl(url.path());
+            doc->activeBrowser();
+        }
+    } else if (url.scheme() == "godoc") {
+        LiteApi::IGolangDoc *doc = LiteApi::findExtensionObject<LiteApi::IGolangDoc*>(m_liteApp,"LiteApi.IGolangDoc");
+        if (doc) {
+            doc->openUrl(url.path());
+            doc->activeBrowser();
+        }
+    }
+}
+
+void WelcomeBrowser::loadData()
+{
+    QString data = m_templateData;
+    QStringList projectList;
+    projectList.append("<ul>");
+    QStringList recentProjects = m_liteApp->fileManager()->recentProjects();
+    foreach (QString file, recentProjects) {
+        QFileInfo info(file);
+        projectList.append(QString("<li><a href=proj:%1>%2</a> <span class=\"recent\">%3</span></li>")
+                           .arg(info.filePath())
+                           .arg(info.fileName())
+                           .arg(QDir::toNativeSeparators(info.filePath())));
+    }
+    projectList.append("</ul>");
+
+    QStringList fileList;
+    fileList.append("<ul>");
+    QStringList recentFiles = m_liteApp->fileManager()->recentFiles();
+    foreach (QString file, recentFiles) {
+        QFileInfo info(file);
+        fileList.append(QString("<li><a href=file:%1>%2</a> <span class=\"recent\">%3</span></li>")
+                        .arg(info.filePath())
+                        .arg(info.fileName())
+                        .arg(QDir::toNativeSeparators(info.filePath())));
+    }
+    fileList.append("</ul>");
+
+    data.replace("{recent_projects}",projectList.join("\n"));
+    data.replace("{recent_files}",fileList.join("\n"));
+
+    ui->textBrowser->setHtml(data);
+
 }
 
 WelcomeBrowser::~WelcomeBrowser()
@@ -123,116 +152,4 @@ QString WelcomeBrowser::name() const
 QString WelcomeBrowser::mimeType() const
 {
     return "browser/welcome";
-}
-
-static void resizeTreeView(QTreeView *treeView)
-{
-    treeView->resizeColumnToContents(0);
-}
-
-void WelcomeBrowser::loadDocFiles()
-{
-    m_docModel->clear();
-    QDir dir(m_liteApp->resourcePath()+"/doc");
-    QStringList filter;
-    filter << "*.html" << "*.txt" << "*.lgpl";
-    QFileInfoList infoList = dir.entryInfoList(filter,QDir::Files|QDir::NoSymLinks);
-    foreach (QFileInfo info, infoList) {
-        m_docModel->appendRow(QList<QStandardItem*>()
-                              << new QStandardItem(info.baseName())
-                              << new QStandardItem(QDir::toNativeSeparators(info.filePath()))
-                              );
-    }
-    resizeTreeView(ui->docTreeView);
-}
-
-void WelcomeBrowser::loadRecentProjects()
-{
-    m_recentProjectsModel->clear();
-    QStringList recentProjects = m_liteApp->fileManager()->recentProjects();
-    foreach (QString file, recentProjects) {
-        QFileInfo info(file);
-        m_recentProjectsModel->appendRow(QList<QStandardItem*>()
-                                         << new QStandardItem(info.fileName())
-                                         << new QStandardItem(QDir::toNativeSeparators(info.filePath()))
-                                         );
-    }
-    resizeTreeView(ui->recentProjectsTreeView);
-}
-
-void WelcomeBrowser::loadRecentFiles()
-{
-    m_recentFilesModel->clear();
-    QStringList files = m_liteApp->fileManager()->recentFiles();
-    foreach (QString file, files) {
-        QFileInfo info(file);
-        m_recentFilesModel->appendRow(QList<QStandardItem*>()
-                                      << new QStandardItem(info.fileName())
-                                      << new QStandardItem(QDir::toNativeSeparators(info.filePath()))
-                                      );
-    }
-    resizeTreeView(ui->recentFilesTreeView);
-}
-
-
-void WelcomeBrowser::openRecentProject(QModelIndex index)
-{
-    if (!index.isValid()) {
-        return;
-    }
-    QModelIndex i = m_recentProjectsModel->index(index.row(),1);
-    if (!i.isValid()) {
-        return;
-    }
-    QString fileName = i.data().toString();
-    m_liteApp->fileManager()->openProject(fileName);
-}
-
-
-void WelcomeBrowser::openRecentFile(QModelIndex index)
-{
-    if (!index.isValid()) {
-        return;
-    }
-    QModelIndex i = m_recentFilesModel->index(index.row(),1);
-    if (!i.isValid()) {
-        return;
-    }
-    QString fileName = i.data().toString();
-    m_liteApp->fileManager()->openEditor(fileName);
-}
-
-void WelcomeBrowser::openLiteDoument(QModelIndex index)
-{
-    if (!index.isValid()) {
-        return;
-    }
-    QModelIndex i = m_docModel->index(index.row(),1);
-    if (!i.isValid()) {
-        return;
-    }
-    QString fileName = i.data().toString();
-    if (fileName.isEmpty()) {
-        return;
-    }
-    LiteApi::IEditor *editor = m_liteApp->editorManager()->openEditor(fileName,"liteide/x-browser");
-    if (editor) {
-        m_liteApp->editorManager()->setCurrentEditor(editor);
-        LiteApi::IDocumentBrowser *browser = LiteApi::findExtensionObject<LiteApi::IDocumentBrowser*>(editor,"LiteApi.IDocumentBrowser");
-        if (browser) {
-            connect(browser,SIGNAL(requestUrl(QUrl)),this,SLOT(openDocumentUrl(QUrl)));
-        }
-    }
-}
-
-void WelcomeBrowser::openDocumentUrl(const QUrl &url)
-{
-    if (!url.scheme().isEmpty() && url.scheme() != "file") {
-        QDesktopServices::openUrl(url);
-    } else {
-        LiteApi::IDocumentBrowser *browser = (LiteApi::IDocumentBrowser*)sender();
-        if (browser) {
-            //browser->setUrlHtml(url);
-        }
-    }
 }
