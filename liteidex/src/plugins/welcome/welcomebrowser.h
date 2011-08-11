@@ -27,15 +27,12 @@
 #define WELCOMEBROWSER_H
 
 #include "liteapi/liteapi.h"
-#include <QStringListModel>
+#include <QUrl>
 
 namespace Ui {
     class WelcomeWidget;
 }
 
-class DocumentBrowser;
-class DocumentBrowserFactory;
-class QStandardItemModel;
 class WelcomeBrowser : public LiteApi::IBrowserEditor
 {
     Q_OBJECT
@@ -46,21 +43,13 @@ public:
     virtual QString name() const;
     virtual QString mimeType() const;
 public slots:
-    void loadDocFiles();
-    void loadRecentProjects();
-    void loadRecentFiles();
-    void openLiteDoument(QModelIndex);
-    void openRecentProject(QModelIndex);
-    void openRecentFile(QModelIndex);
-    void openDocumentUrl(const QUrl &url);
+    void openUrl(const QUrl &url);
+    void loadData();
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
     Ui::WelcomeWidget *ui;
-    QStandardItemModel  *m_recentProjectsModel;
-    QStandardItemModel  *m_recentFilesModel;
-    QStandardItemModel  *m_docModel;
-    DocumentBrowserFactory *m_docBrowserFactory;
+    QString m_templateData;
 };
 
 #endif // WELCOMEBROWSER_H

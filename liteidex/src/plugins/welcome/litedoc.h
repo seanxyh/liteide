@@ -10,7 +10,7 @@ class LiteDoc : public QObject
     Q_OBJECT
 public:
     explicit LiteDoc(LiteApi::IApplication *app, QObject *parent = 0);
-
+    virtual void activeBrowser();
 public slots:
     void openUrl(const QUrl &url);
     void highlighted(const QUrl &url);
