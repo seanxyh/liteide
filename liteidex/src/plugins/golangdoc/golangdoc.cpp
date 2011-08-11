@@ -414,6 +414,7 @@ void GolangDoc::updateHtmlDoc(const QUrl &url, const QByteArray &ba, const QStri
     QString nav;
     QString content = docToNavdoc(codec->toUnicode(ba),genHeader,nav);
     QString data = m_templateData;
+
     if (!header.isEmpty()) {
         data.replace("{header}",header);
     } else {
@@ -471,7 +472,21 @@ void GolangDoc::openUrlPdoc(const QUrl &url)
     }
     m_godocData.clear();
     QStringList args;
-    args << "-html=true" << url.path();
+    //check additional path
+    bool additional = false;
+    if (QDir(url.path()).exists()) {
+        additional = true;
+        if (url.path().length() >= 2 && url.path().right(2) == "..") {
+            additional = false;
+        }
+    }
+    if (additional) {
+        m_godocProcess->setWorkingDirectory(url.path());
+        args << "-html=true" << "-path=." << ".";
+    } else {
+        m_godocProcess->setWorkingDirectory(m_goroot);
+        args << "-html=true" << url.path();
+    }
     m_godocProcess->start(m_godocCmd,args);
 }
 
@@ -526,6 +541,23 @@ void GolangDoc::openUrlFile(const QUrl &url)
 QUrl GolangDoc::parserUrl(const QUrl &_url)
 {
     QUrl url = _url;
+#ifdef Q_OS_WIN
+    //fix windows "f:/hg/zmq" -> scheme="f" path="/hg/zmq"
+    if (url.scheme().length() == 1) {
+        QString path = QDir::fromNativeSeparators(url.toString());
+        QFileInfo info(path);
+        url.setScheme("");
+        url.setPath(path);
+        if (info.exists()) {
+            if (info.isFile()) {
+                url.setScheme("file");
+            } else if (info.isDir()) {
+                url.setScheme("pdoc");
+            }
+        }
+        return url;
+    }
+#endif
     if (url.isRelative() && !url.path().isEmpty()) {
         if (url.path().compare("/src/pkg/") == 0 ) {
             url.setScheme("list");
@@ -548,12 +580,20 @@ QUrl GolangDoc::parserUrl(const QUrl &_url)
                 url.setPath(url.path().right(url.path().length()-5));
             }
         } else if (url.path() == "..") {
+            // check ".." is root
             if (m_lastUrl.scheme() == "pdoc") {
-                url.setScheme("pdoc");
-                url.setPath(m_lastUrl.path()+"/"+url.path());
+                QString path = QDir::cleanPath(m_lastUrl.path()+"/"+url.path());
+                if (path != "..") {
+                    url.setScheme("pdoc");
+                    url.setPath(path);
+                }
             }
         } else {
-            QFileInfo info(url.toLocalFile());
+            QFileInfo info;
+            info.setFile(url.path());
+            if (!info.exists()) {
+                info.setFile(url.toLocalFile());
+            }
             if (!info.exists()) {
                 QString path = url.path();
                 if (path.at(0) == '/') {
@@ -561,24 +601,40 @@ QUrl GolangDoc::parserUrl(const QUrl &_url)
                 } else if (m_lastUrl.scheme() == "file") {
                     info.setFile(QFileInfo(m_lastUrl.toLocalFile()).absoluteDir(),path);
                 }
-            }
-            if (info.exists()) {
-                if (info.isDir()) {
-                    QFileInfo test(info.dir(),"index.html");
-                    if (test.exists()) {
-                        info = test;
+                if (!info.exists()) {
+                    //fix godoc path="f:/hg/zmq/gozmq" "href=/gozmq/gozmq.go"
+                    if (m_lastUrl.scheme() == "pdoc") {
+                        QDir dir(m_lastUrl.path());
+                        if (dir.exists()) {
+                            if (path.indexOf(dir.dirName()) == 1) {
+                                path.remove(0,dir.dirName().length()+2);
+                            }
+                            info.setFile(dir,path);
+                        }
                     }
                 }
-                if (info.isFile()) {
-                    url.setScheme("file");
-                    url.setPath(QDir::cleanPath(info.filePath()));
+            }
+            //check index.html
+            if (info.exists() && info.isDir()) {
+                QFileInfo test(info.dir(),"index.html");
+                if (test.exists()) {
+                    info = test;
                 }
-            } else {
+            }
+
+            if (info.exists() && info.isFile()) {
+                url.setScheme("file");
+                url.setPath(QDir::cleanPath(info.filePath()));
+            } else if(url.path().at(url.path().length()-1) != '/') {
                 url.setScheme("pdoc");
-                if (m_lastUrl.scheme() == "pdoc") {
-                    url.setPath(QDir::cleanPath(m_lastUrl.path()+"/"+url.path()));
+                if (info.exists()) {
+                    url.setPath(info.filePath());
                 } else {
-                    url.setPath(url.path());
+                    if (m_lastUrl.scheme() == "pdoc") {
+                        url.setPath(QDir::cleanPath(m_lastUrl.path()+"/"+url.path()));
+                    } else {
+                        url.setPath(url.path());
+                    }
                 }
             }
         }
@@ -589,7 +645,7 @@ QUrl GolangDoc::parserUrl(const QUrl &_url)
 void GolangDoc::highlighted(const QUrl &_url)
 {
     QUrl url = parserUrl(_url);
-    m_docBrowser->statusBar()->showMessage(url.toString(),60*1000);
+    m_docBrowser->statusBar()->showMessage(_url.toString()+"\t"+url.toString(),60*1000);
 }
 
 void GolangDoc::openUrl(const QUrl &_url)
