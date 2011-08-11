@@ -115,8 +115,6 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
-    m_statusBar->addWidget(m_findToolBar);
-
     mainLayout->addWidget(m_toolBar);
     mainLayout->addWidget(m_textBrowser);
     mainLayout->addWidget(m_statusBar);

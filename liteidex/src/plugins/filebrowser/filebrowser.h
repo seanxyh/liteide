@@ -69,6 +69,7 @@ protected slots:
     void openExplorer();
     void setFolderToRoot();
     void cdUp();
+    void viewGodoc();
 protected:
     QFileInfo contextFileInfo() const;
     QDir contextDir() const;
@@ -102,6 +103,7 @@ protected:
     QAction *m_cdupAct;
     QAction *m_setRootAct;
     QAction *m_openExplorerAct;
+    QAction *m_viewGodocAct;
 };
 
 #endif // FILEBROWSER_H

@@ -141,7 +141,7 @@ static QString docToNavdoc(const QString &data, QString &header, QString &nav)
 
 
 GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
-    QObject(parent),
+    LiteApi::IGolangDoc(parent),
     m_liteApp(app)
 {
     m_findProcess = new ProcessEx(this);
@@ -197,9 +197,6 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_docBrowser->toolBar()->addSeparator();
     m_docBrowser->toolBar()->addWidget(m_godocFindComboBox);
 
-    m_rootLabel = new QLabel;
-    m_docBrowser->statusBar()->addPermanentWidget(m_rootLabel);
-
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
     QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
     if (menu) {
@@ -231,6 +228,9 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
         currentEnvChanged(m_envManager->currentEnv());
     }
+
+    m_liteApp->extension()->addObject("LiteApi.IGolangDoc",this);
+
     openUrl(QUrl("/doc/docs.html"));
 }
 
@@ -264,7 +264,6 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
     m_goroot = goroot;
     m_godocCmd = godoc;
     m_findCmd = find;
-    m_rootLabel->setText("GOROOT="+goroot);
 
     m_findProcess->setEnvironment(env.toStringList());
     m_godocProcess->setEnvironment(env.toStringList());
@@ -644,8 +643,12 @@ QUrl GolangDoc::parserUrl(const QUrl &_url)
 
 void GolangDoc::highlighted(const QUrl &_url)
 {
-    QUrl url = parserUrl(_url);
-    m_docBrowser->statusBar()->showMessage(_url.toString()+"\t"+url.toString(),60*1000);
+    if (_url.isEmpty()) {
+        m_docBrowser->statusBar()->showMessage(QString("GOROOT=%1").arg(m_goroot));
+    } else {
+        QUrl url = parserUrl(_url);
+        m_docBrowser->statusBar()->showMessage(QString("%1 [%2]").arg(_url.toString()).arg(url.toString()));
+    }
 }
 
 void GolangDoc::openUrl(const QUrl &_url)
