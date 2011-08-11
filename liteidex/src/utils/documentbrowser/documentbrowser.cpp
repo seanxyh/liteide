@@ -69,6 +69,7 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_backwardAct = new QAction(QIcon(":/images/backward.png"),tr("Backward"),this);
     m_forwardAct = new QAction(QIcon(":/images/forward.png"),tr("Forward"),this);
+    m_reloadUrlAct = new QAction(QIcon(":/images/reload.png"),tr("Reload"),this);
     m_toolBar->addAction(m_backwardAct);
     m_toolBar->addAction(m_forwardAct);
 
@@ -78,7 +79,7 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_toolBar->addSeparator();
     m_toolBar->addWidget(m_urlComboBox);
-
+    m_toolBar->addAction(m_reloadUrlAct);
 
     m_statusBar = new QStatusBar;
 
@@ -124,6 +125,7 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_textBrowser,SIGNAL(anchorClicked(QUrl)),this,SLOT(anchorClicked(QUrl)));
     connect(m_backwardAct,SIGNAL(triggered()),this,SLOT(backward()));
     connect(m_forwardAct,SIGNAL(triggered()),this,SLOT(forward()));
+    connect(m_reloadUrlAct,SIGNAL(triggered()),this,SLOT(reloadUrl()));
     connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(activatedFindText(QString)));
     connect(m_findNextAct,SIGNAL(triggered()),this,SLOT(findNext()));
     connect(m_findPrevAct,SIGNAL(triggered()),this,SLOT(findPrev()));
@@ -398,6 +400,11 @@ void DocumentBrowser::backward()
     emit requestUrl(m_backwardStack.top().url);
     emit backwardAvailable(m_backwardStack.count() > 1);
     emit forwardAvailable(true);
+}
+
+void DocumentBrowser::reloadUrl()
+{
+    emit requestUrl(m_url);
 }
 
 void DocumentBrowser::forward()

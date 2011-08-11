@@ -34,7 +34,6 @@
 #include <QUrl>
 #include <QModelIndex>
 
-class QLabel;
 class QListView;
 class QStringListModel;
 class QComboBox;
