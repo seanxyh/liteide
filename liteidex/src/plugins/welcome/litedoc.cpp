@@ -11,6 +11,8 @@
 #include <QDir>
 #include <QPlainTextEdit>
 #include <QDesktopServices>
+#include <QStatusBar>
+#include <QDebug>
 
 LiteDoc::LiteDoc(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
@@ -35,9 +37,7 @@ LiteDoc::LiteDoc(LiteApi::IApplication *app, QObject *parent) :
         m_templateData = file.readAll();
         file.close();
     }
-    QUrl url;
-    url.setScheme("file");
-    url.setPath("readme.html");
+    QUrl url("/readme.html");
     openUrl(url);
 }
 
@@ -48,7 +48,7 @@ QUrl LiteDoc::parserUrl(const QUrl &_url)
     if (url.isRelative() && !url.path().isEmpty()) {
         QFileInfo info;
         if (url.path().at(0) == '/') {
-            info.setFile(root,url.path());
+            info.setFile(root,url.path().right(url.path().length()-1));
         } else if (m_lastUrl.scheme() == "file") {
             info.setFile(QFileInfo(m_lastUrl.toLocalFile()).absoluteDir(),url.path());
         }
@@ -65,7 +65,15 @@ void LiteDoc::openUrl(const QUrl &_url)
     QUrl url = parserUrl(_url);
     if (url.scheme() == "file") {
         openUrlFile(url);
+    } else if (url.scheme() == "http" ||
+               url.scheme() == "mailto") {
+        QDesktopServices::openUrl(url);
     }
+}
+
+void LiteDoc::highlighted(const QUrl &url)
+{
+    m_docBrowser->statusBar()->showMessage(url.toString());
 }
 
 void LiteDoc::openUrlFile(const QUrl &url)
@@ -114,11 +122,6 @@ void LiteDoc::openUrlFile(const QUrl &url)
             updateTextDoc(url,ba,info.fileName());
         }
     }
-}
-
-void LiteDoc::highlighted(const QUrl &url)
-{
-
 }
 
 void LiteDoc::updateTextDoc(const QUrl &url, const QByteArray &ba, const QString &header)
