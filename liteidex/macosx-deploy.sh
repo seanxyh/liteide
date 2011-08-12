@@ -62,7 +62,7 @@ export deploy_file=libprofileproject.dylib
 process_file
 
 export deploy_file=libwelcome.dylib
-process_file
+process_file2
 
 export deploy_file=libgolangcode.dylib
 process_file
@@ -74,7 +74,7 @@ export deploy_file=libcodesearch.dylib
 process_file
 
 export deploy_file=libgolangdoc.dylib
-process_file
+process_file2
 
 export deploy_file=libliteenv.dylib
 process_file
