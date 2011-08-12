@@ -112,6 +112,8 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_findToolBar->addWidget(m_matchWordCheckBox);
     m_findToolBar->addWidget(m_useRegexCheckBox);
 
+    m_statusBar->addPermanentWidget(m_findToolBar);
+
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
