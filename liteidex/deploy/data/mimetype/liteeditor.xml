@@ -11,6 +11,26 @@
     <glob pattern="*.lua"/>
     <glob pattern="*.wlua"/>
   </mime-type>  
+  <mime-type type="text/html" codec="utf-8">
+    <sub-class-of type="text/plain"/>
+    <comment>HTML Source File</comment>
+    <glob pattern="*.htm"/>
+    <glob pattern="*.html"/>
+    <glob pattern="*.shtml"/>
+    <glob pattern="*.shtm"/>
+  </mime-type>
+  <mime-type type="text/xml" codec="utf-8">
+    <sub-class-of type="text/plain"/>
+    <comment>XML Source File</comment>
+    <glob pattern="*.docbook"/>
+    <glob pattern="*.xml"/>
+    <glob pattern="*.rc"/>
+    <glob pattern="*.daml"/>
+    <glob pattern="*.rdf"/>
+    <glob pattern="*.rss"/>
+    <glob pattern="*.xspf"/>
+    <glob pattern="*.plist"/>
+  </mime-type>
   <mime-type type="text/x-csrc" codec="system">
     <sub-class-of type="text/plain"/>
     <comment>C Source File</comment>
