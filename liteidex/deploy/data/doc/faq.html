@@ -1,9 +1,9 @@
 <!-- FAQ -->
 
 <h2 id="liteenv">LiteEnv Plugin</h2>
-<p>
-LiteIDE environment setup plugin
-</p>
+<p>LiteIDE environment setup plugin</p>
+
+<h3>Select Environment</h3>
 <p>Select current use environment, default system</p>
 <ul>
 <li>Windows - win64 or win32</li>
@@ -11,7 +11,7 @@ LiteIDE environment setup plugin
 <li>MacOSX - darwin64 or darwin32</li>
 </ul>
 
-<h2 id="liteenv_edit">Edit LiteEnv Plugin</h2>
+<h3 id="liteenv_edit">Configure Environment</h3>
 <p>Menu: View -> Options -> LiteEnv or Welcome: Options -> LiteEnv</p>
 <p>Double clicked *.env file to editor</p>
 <p>Example win32.env</p>
@@ -35,7 +35,7 @@ GOOS=linux
 <h2 id="litebuild">LiteBuild Plugin</h2>
 <p>LiteIDE build system, build project or file, if file belong a project</p>
 
-<h2 id="litebuild_edit">Edit LiteBuild Plugin</h2>
+<h3 id="litebuild_edit">Configure Build</h3>
 <p>Menu: View -> Options -> LiteBuild or Welcome: Options -> LiteBuild</p>
 <p>Double clicked *.xml file to editor</p>
 <p>Example linux gosrc.xml</p>
@@ -74,7 +74,11 @@ GOOS=linux
 &lt;/mime-type&gt;
 &lt;/mime-info&gt;
 </pre>
-<h2 id="gocode">Install gocode</h2>
+
+
+<h2 id="gocode">GolangCode Plugin</h2>
+<p>Use gocode word complete, example <code>fmt.</code></p>
+<h3>Install gocode</h3>
 <pre>
 $ git clone git://github.com/nsf/gocode.git
 $ cd gocode
@@ -83,7 +87,7 @@ $ export PATH=$HOME/go/bin:$PATH
 $ make install
 </pre>
 
-<h2 id="gocode_load">load gocode incorrect</h2>
+<h3 id="gocode_load">Load gocode incorrect</h3>
 <p>Test gocode status (my = my computer name)</p>
 <pre>
 $ gocode status
@@ -92,7 +96,10 @@ $ rm /tmp/acrserver.my
 </pre>
 <p>Reload LiteIDE</p>
 
-<h2 id="godoc_find">GolangDoc find</h2>
+<h2 id="golangcode">GolangDoc Plugin</h2>
+<p>Golang doc browser and search</p>
+
+<h3>Find package</h3>
 <p>example input "zip"</p>
 <pre>
 archive/zip
@@ -101,5 +108,7 @@ compress/gzip
 </pre>
 <p>The result best matche is archive/zip, auto open zip package document.</p>
 
-<h2 id="editor_search_replace">Editor Search and Replace Regex</h2>
+<h2>CodeSearch Plugin</h2>
+<p>Editor code search and replace</p>
+<h3>Regex</h3>
 <p>(Colo)(u)(r) -> \1\3</p>

@@ -12,6 +12,7 @@
 #include <QPlainTextEdit>
 #include <QDesktopServices>
 #include <QStatusBar>
+#include <QComboBox>
 #include <QDebug>
 
 LiteDoc::LiteDoc(LiteApi::IApplication *app, QObject *parent) :
@@ -19,6 +20,7 @@ LiteDoc::LiteDoc(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp(app)
 {
     m_docBrowser = new DocumentBrowser(app,this);
+    m_docBrowser->urlComboBox()->setEditable(false);
     m_docBrowser->setName(tr("LiteIDE Document Browser"));
     m_docBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/doc");
 
