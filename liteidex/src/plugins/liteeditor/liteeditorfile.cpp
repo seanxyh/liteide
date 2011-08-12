@@ -137,32 +137,33 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
     QByteArray buf = file.readAll();
 
     if (bCheckCodec) {
-        LiteApi::IMimeType *im = m_liteApp->mimeTypeManager()->findMimeType(mimeType);
-        if (im) {
-            QString codecName = im->codec();
-            if (!codecName.isEmpty()) {
-                m_codec = QTextCodec::codecForName(codecName.toAscii());
+        if (mimeType == "text/html" || mimeType == "text/xml") {
+            m_codec = QTextCodec::codecForHtml(buf,QTextCodec::codecForName("utf-8"));
+        } else {
+            LiteApi::IMimeType *im = m_liteApp->mimeTypeManager()->findMimeType(mimeType);
+            if (im) {
+                QString codecName = im->codec();
+                if (!codecName.isEmpty()) {
+                    m_codec = QTextCodec::codecForName(codecName.toAscii());
+                }
             }
+            int bytesRead = buf.size();
+            QTextCodec *codec = m_codec;
+            // code taken from qtextstream
+            if (bytesRead >= 4 && ((uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe && uchar(buf[2]) == 0 && uchar(buf[3]) == 0)
+                                   || (uchar(buf[0]) == 0 && uchar(buf[1]) == 0 && uchar(buf[2]) == 0xfe && uchar(buf[3]) == 0xff))) {
+                codec = QTextCodec::codecForName("UTF-32");
+            } else if (bytesRead >= 2 && ((uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe)
+                                          || (uchar(buf[0]) == 0xfe && uchar(buf[1]) == 0xff))) {
+                codec = QTextCodec::codecForName("UTF-16");
+            } else if (bytesRead >= 3 && uchar(buf[0]) == 0xef && uchar(buf[1]) == 0xbb && uchar(buf[2])== 0xbf) {
+                codec = QTextCodec::codecForName("UTF-8");
+            } else if (!codec) {
+                codec = QTextCodec::codecForLocale();
+            }
+            // end code taken from qtextstream
+            m_codec = codec;
         }
-
-        int bytesRead = buf.size();
-
-        QTextCodec *codec = m_codec;
-        // code taken from qtextstream
-        if (bytesRead >= 4 && ((uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe && uchar(buf[2]) == 0 && uchar(buf[3]) == 0)
-                               || (uchar(buf[0]) == 0 && uchar(buf[1]) == 0 && uchar(buf[2]) == 0xfe && uchar(buf[3]) == 0xff))) {
-            codec = QTextCodec::codecForName("UTF-32");
-        } else if (bytesRead >= 2 && ((uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe)
-                                      || (uchar(buf[0]) == 0xfe && uchar(buf[1]) == 0xff))) {
-            codec = QTextCodec::codecForName("UTF-16");
-        } else if (bytesRead >= 3 && uchar(buf[0]) == 0xef && uchar(buf[1]) == 0xbb && uchar(buf[2])== 0xbf) {
-            codec = QTextCodec::codecForName("UTF-8");
-        } else if (!codec) {
-            codec = QTextCodec::codecForLocale();
-        }
-        // end code taken from qtextstream
-
-        m_codec = codec;
     }
     QString text = m_codec->toUnicode(buf);
 /*
@@ -191,6 +192,6 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
 }
 
 bool LiteEditorFile::open(const QString &fileName, const QString &mimeType)
-{
+{    
     return open(fileName,mimeType,true);
 }

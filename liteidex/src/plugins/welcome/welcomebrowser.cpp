@@ -80,6 +80,8 @@ void WelcomeBrowser::openUrl(const QUrl &url)
 {
     if (url.scheme() == "http" || url.scheme() == "mailto") {
         QDesktopServices::openUrl(url);
+    } else if (url.scheme() == "session") {
+        m_liteApp->loadSession(url.path());
     } else if (url.scheme() == "proj") {
         m_liteApp->fileManager()->openProject(url.path());
     } else if (url.scheme() == "file") {
@@ -102,6 +104,13 @@ void WelcomeBrowser::openUrl(const QUrl &url)
 void WelcomeBrowser::loadData()
 {
     QString data = m_templateData;
+
+    QStringList sessionList;
+    sessionList.append("<ul>");
+    sessionList.append(QString("<li><a href=session:default>default</a></li>"));
+    sessionList.append("</ul>");
+
+
     QStringList projectList;
     projectList.append("<ul>");
     QStringList recentProjects = m_liteApp->fileManager()->recentProjects();
@@ -126,6 +135,7 @@ void WelcomeBrowser::loadData()
     }
     fileList.append("</ul>");
 
+    data.replace("{recent_sessions}",sessionList.join("\n"));
     data.replace("{recent_projects}",projectList.join("\n"));
     data.replace("{recent_files}",fileList.join("\n"));
 

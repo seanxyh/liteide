@@ -110,7 +110,7 @@ int  main(int argc, char *argv[])
     liteApp->loadMimeType();
     liteApp->loadPlugins();
     liteApp->initPlugins();
-    liteApp->loadSession("default");
+    liteApp->loadState();
     liteApp->mainWindow()->show();
 
     if (argc >= 2) {

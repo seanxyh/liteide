@@ -376,6 +376,8 @@ public:
 
     virtual void loadSession(const QString &name) = 0;
     virtual void saveSession(const QString &name) = 0;
+    virtual void loadState() = 0;
+    virtual void saveState() = 0;
 
     virtual void appendConsole(const QString &model, const QString &action, const QString &log = QString()) = 0;
 };
