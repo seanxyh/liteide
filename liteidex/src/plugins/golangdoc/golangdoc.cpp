@@ -100,7 +100,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     findBtn->setMenu(m_findMenu);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setMargin(4);
+    mainLayout->setMargin(0);
 
     QHBoxLayout *findLayout = new QHBoxLayout;
     findLayout->setMargin(0);
@@ -114,7 +114,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->dockManager()->addDock(m_widget,tr("GolangDoc"),Qt::LeftDockWidgetArea);
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
-    m_docBrowser->setName(tr("GodocBrowser"));
+    m_docBrowser->setName(tr("Golang Document Browser"));
     m_docBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/golangdoc");
 
     m_godocFindComboBox = new QComboBox;

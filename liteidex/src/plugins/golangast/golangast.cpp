@@ -106,7 +106,7 @@ void GolangAst::setEnable(bool b)
         editorChanged(m_liteApp->editorManager()->currentEditor());
         updateAst();
     } else {
-        m_stackedWidget->setVisible(false);
+        //m_stackedWidget->setVisible(false);
     }
 }
 
