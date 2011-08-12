@@ -440,7 +440,10 @@ void LiteApp::loadSession(const QString &name)
 
     if (!projectName.isEmpty()) {
         m_fileManager->openProject(projectName);
+    } else {
+        m_projectManager->closeProject();
     }
+
     foreach(QString fileName, fileList) {
         m_fileManager->openEditor(fileName,false);
     }
