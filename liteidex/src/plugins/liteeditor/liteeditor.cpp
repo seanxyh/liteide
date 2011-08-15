@@ -415,8 +415,13 @@ void LiteEditor::applyOption(QString id)
     m_editorWidget->setAutoIndent(autoIndent);
     m_editorWidget->setAutoBraces(autoBraces);
     m_editorWidget->setLineNumberVisible(lineNumberVisible);
-
+#if defined(Q_OS_WIN)
     QString fontFamily = m_liteApp->settings()->value("editor/family","Courier").toString();
+#elif defined(Q_OS_LINUX)
+    QString fontFamily = m_liteApp->settings()->value("editor/family","Monospace").toString();
+#elif defined(Q_OS_MAC)
+    QString fontFamily = m_liteApp->settings()->value("editor/family","Menlo").toString();
+#endif
     int fontSize = m_liteApp->settings()->value("editor/fontsize",12).toInt();
     bool antialias = m_liteApp->settings()->value("editor/antialias",true).toBool();
     QFont font = m_editorWidget->font();
