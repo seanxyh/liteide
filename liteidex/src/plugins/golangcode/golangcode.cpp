@@ -107,6 +107,9 @@ void GolangCode::setCompleter(LiteApi::ICompleter *completer)
 
 void GolangCode::prefixChanged(QTextCursor cur,QString pre)
 {
+    if (m_process->state() == QProcess::Running) {
+        return;
+    }
     if (m_gocodeCmd.isEmpty()) {
         return;
     }
