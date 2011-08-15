@@ -110,8 +110,8 @@ int  main(int argc, char *argv[])
     liteApp->loadMimeType();
     liteApp->loadPlugins();
     liteApp->initPlugins();
-    liteApp->loadState();
     liteApp->mainWindow()->show();
+    liteApp->loadState();
 
     if (argc >= 2) {
         for (int i = 1; i < argc; i++) {
