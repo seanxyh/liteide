@@ -174,7 +174,8 @@ void LiteCompleter::insertCompletion(QModelIndex index)
     }
     QString text = index.data().toString();
     QString prefix = m_completer->completionPrefix();
-    int pos = prefix.indexOf(m_completer->separator());
+    //IsAbs r.URL.
+    int pos = prefix.lastIndexOf(m_completer->separator());
     int length = prefix.length();
     if (pos != -1) {
         length = prefix.length()-pos-1;
