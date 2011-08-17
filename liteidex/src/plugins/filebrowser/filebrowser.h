@@ -60,6 +60,7 @@ protected slots:
     void openFile();
     void openEditor();
     void newFile();
+    void newFileWizard();
     void renameFile();
     void removeFile();
     void newFolder();
@@ -94,6 +95,7 @@ protected:
     QAction *m_openFileAct;
     QAction *m_openEditorAct;
     QAction *m_newFileAct;
+    QAction *m_newFileWizardAct;
     QAction *m_removeFileAct;
     QAction *m_renameFileAct;
     QAction *m_newFolderAct;
