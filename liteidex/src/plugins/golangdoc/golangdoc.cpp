@@ -441,9 +441,14 @@ void GolangDoc::openUrlFile(const QUrl &url)
             }
         }
     } else if (ext == "go") {
-        LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(info.filePath());
-        if (editor) {
+        LiteApi::IEditor *editor = m_liteApp->editorManager()->findEditor(info.filePath(),true);
+        if (!editor) {
+            editor = m_liteApp->fileManager()->openEditor(info.filePath(),true);
             editor->setReadOnly(true);
+        } else {
+            m_liteApp->editorManager()->setCurrentEditor(editor);
+        }
+        if (editor) {
             QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
             if (ed && url.hasQueryItem("s")) {
                 QStringList pos = url.queryItemValue("s").split(":");
