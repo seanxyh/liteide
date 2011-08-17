@@ -39,6 +39,7 @@
 #include <QFileSystemWatcher>
 #include <QMessageBox>
 #include <QTimer>
+#include <QDesktopServices>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -226,40 +227,27 @@ QMenu *FileManager::recentProjectMenu() const
 
 void FileManager::newFile()
 {
-    if (!m_newFileDialog) {
-        m_newFileDialog = new NewFileDialog(m_liteApp->mainWindow());
-        m_newFileDialog->setTemplatePath(m_liteApp->resourcePath()+"/template");
-    }
-    QString location = m_initPath;
+    QString projPath;
+    QString filePath;
     IProject *project = m_liteApp->projectManager()->currentProject();
     if (project) {
-        location = project->workPath();
+        QDir dir(project->workPath());
+        filePath = dir.absolutePath();
     } else {
         IEditor *editor = m_liteApp->editorManager()->currentEditor();
-        if (editor) {
-            location = QFileInfo(editor->fileName()).absolutePath();
+        if (editor && !editor->fileName().isEmpty()) {
+            filePath = QFileInfo(editor->fileName()).absolutePath();
         }
     }
-    QDir dir(location);
-    m_newFileDialog->setFileLocation(dir.absolutePath());
-    dir.cdUp();
-    m_newFileDialog->setProjectLocation(dir.absolutePath());
-    m_newFileDialog->updateLocation();
-
-    if (m_newFileDialog->exec() == QDialog::Accepted) {
-        QMessageBox::StandardButton ret;
-        ret = QMessageBox::question(m_liteApp->mainWindow(), tr("LiteIDE"),
-                                    tr("Project '%1' is created.\n"
-                                       "Do you want to load?")
-                                    .arg(m_newFileDialog->openFiles().join(" ")),
-                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
-                                    QMessageBox::Yes);
-        if (ret == QMessageBox::Yes) {
-            foreach(QString file, m_newFileDialog->openFiles()) {
-                this->openFile(file);
-            }
-        }
+    if (filePath.isEmpty()) {
+        filePath = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+        projPath = filePath;
+    } else {
+        QDir dir(filePath);
+        dir.cdUp();
+        projPath = dir.absolutePath();
     }
+    execFileWizard(projPath,filePath);
 }
 
 void FileManager::openFiles()
@@ -297,6 +285,33 @@ void FileManager::openProjects()
     foreach (QString fileName, fileNames) {
         if (openProject(fileName)) {
             m_initPath = QFileInfo(fileName).canonicalPath();
+        }
+    }
+}
+
+void FileManager::execFileWizard(const QString &projPath, const QString &filePath)
+{
+    if (!m_newFileDialog) {
+        m_newFileDialog = new NewFileDialog(m_liteApp->mainWindow());
+        m_newFileDialog->setTemplatePath(m_liteApp->resourcePath()+"/template");
+    }
+
+    m_newFileDialog->setFileLocation(filePath);
+    m_newFileDialog->setProjectLocation(projPath);
+    m_newFileDialog->updateLocation();
+
+    if (m_newFileDialog->exec() == QDialog::Accepted) {
+        QMessageBox::StandardButton ret;
+        ret = QMessageBox::question(m_liteApp->mainWindow(), tr("LiteIDE"),
+                                    tr("Project '%1' is created.\n"
+                                       "Do you want to load?")
+                                    .arg(m_newFileDialog->openFiles().join(" ")),
+                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                    QMessageBox::Yes);
+        if (ret == QMessageBox::Yes) {
+            foreach(QString file, m_newFileDialog->openFiles()) {
+                this->openFile(file);
+            }
         }
     }
 }

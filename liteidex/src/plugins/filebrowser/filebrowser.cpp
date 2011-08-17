@@ -167,6 +167,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_openFileAct = new QAction(tr("Open File"),this);
     m_openEditorAct = new QAction(tr("Open Editor"),this);
     m_newFileAct = new QAction(tr("New File"),this);
+    m_newFileWizardAct = new QAction(tr("New File Wizard"),this);
     m_renameFileAct = new QAction(tr("Rename File"),this);
     m_removeFileAct = new QAction(tr("Remove File"),this);
 
@@ -184,6 +185,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileMenu->addAction(m_openEditorAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_newFileAct);
+    m_fileMenu->addAction(m_newFileWizardAct);
     m_fileMenu->addAction(m_renameFileAct);
     m_fileMenu->addAction(m_removeFileAct);
     m_fileMenu->addSeparator();
@@ -193,6 +195,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_folderMenu->addAction(m_setRootAct);
     m_folderMenu->addSeparator();
     m_folderMenu->addAction(m_newFileAct);
+    m_folderMenu->addAction(m_newFileWizardAct);
     m_folderMenu->addAction(m_newFolderAct);
     m_folderMenu->addAction(m_renameFolderAct);
     m_folderMenu->addAction(m_removeFolderAct);
@@ -205,14 +208,16 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_rootMenu->addAction(m_cdupAct);
     m_rootMenu->addSeparator();
     m_rootMenu->addAction(m_newFileAct);
+    m_rootMenu->addAction(m_newFileWizardAct);
     m_rootMenu->addAction(m_newFolderAct);
     m_rootMenu->addSeparator();
     m_rootMenu->addAction(m_openShellAct);
     m_rootMenu->addAction(m_openExplorerAct);
 
     connect(m_openFileAct,SIGNAL(triggered()),this,SLOT(openFile()));
-    connect(m_openEditorAct,SIGNAL(triggered()),this,SLOT(openEditor()));
+    connect(m_openEditorAct,SIGNAL(triggered()),this,SLOT(openEditor()));    
     connect(m_newFileAct,SIGNAL(triggered()),this,SLOT(newFile()));
+    connect(m_newFileWizardAct,SIGNAL(triggered()),this,SLOT(newFileWizard()));
     connect(m_renameFileAct,SIGNAL(triggered()),this,SLOT(renameFile()));
     connect(m_removeFileAct,SIGNAL(triggered()),this,SLOT(removeFile()));
     connect(m_newFolderAct,SIGNAL(triggered()),this,SLOT(newFolder()));
@@ -370,6 +375,23 @@ void FileBrowser::newFile()
             }
         }
     }
+}
+
+void FileBrowser::newFileWizard()
+{
+    QString filePath;
+    QString projPath;
+    QFileInfo info = contextFileInfo();
+    QDir dir = contextDir();
+    if (!info.isFile()) {
+        filePath = dir.absolutePath();
+        projPath = dir.absolutePath();
+    } else {
+        filePath = dir.absolutePath();
+        dir.cdUp();
+        projPath = dir.absolutePath();
+    }
+    m_liteApp->fileManager()->execFileWizard(projPath,filePath);
 }
 
 void FileBrowser::renameFile()

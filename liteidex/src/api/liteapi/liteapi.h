@@ -121,6 +121,7 @@ class IFileManager : public IManager
 public:
     IFileManager(QObject *parent = 0) : IManager(parent) {}
 
+    virtual void execFileWizard(const QString &projPath, const QString &filePath) = 0;
     virtual bool openFile(const QString &fileName) = 0;
     virtual IEditor *openEditor(const QString &fileName, bool bActive = true) = 0;
     virtual IProject *openProject(const QString &fileName) = 0;
