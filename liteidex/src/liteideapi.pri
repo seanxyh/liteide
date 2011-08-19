@@ -1,7 +1,7 @@
 include (../liteide.pri)
 
-DESTDIR = $$IDE_LIB_PATH
-LIBS += -L$$DESTDIR
+DESTDIR = $$IDE_LIBRARY_PATH
+LIBS += -L$$IDE_LIBRARY_PATH
 
 INCLUDEPATH += $$IDE_SOURCE_TREE/src/api
 

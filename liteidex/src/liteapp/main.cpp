@@ -43,39 +43,31 @@
 #endif
 //lite_memory_check_end
 
-#ifdef Q_OS_MAC
-#  define SHARE_PATH "/../Resources"
-#else
-#  define SHARE_PATH "/../share/liteide"
-#endif
+static inline QString getRootPath()
+{
+    QDir rootDir = QApplication::applicationDirPath();
+    rootDir.cdUp();
+    return rootDir.canonicalPath();
+}
 
 static inline QString getPluginPath()
 {
-    // Figure out root:  Up one from 'bin'
-    QDir rootDir = QApplication::applicationDirPath();
-    rootDir.cdUp();
-    const QString rootDirPath = rootDir.canonicalPath();
-    QString pluginPath = rootDirPath;
+    QString root = getRootPath();
 #ifdef Q_OS_MAC
-    pluginPath += QLatin1String("/PlugIns");
+    return root+"/Resources/PlugIns";
 #else
-    pluginPath += QLatin1String("/plugins");
+    return root+"/lib/liteide/plugins";
 #endif
-    return pluginPath;
 }
 
 static inline QString getResoucePath()
 {
-    QDir rootDir = QApplication::applicationDirPath();
-    rootDir.cdUp();
-    const QString rootDirPath = rootDir.canonicalPath();
-    QString pluginPath = rootDirPath;
+    QString root = getRootPath();
 #ifdef Q_OS_MAC
-    pluginPath += QLatin1String("/Resources");
+    return root+"/Resources";
 #else
-    pluginPath += QLatin1String("/data");
+    return root+"/share/liteide";
 #endif
-    return pluginPath;
 }
 
 int  main(int argc, char *argv[])

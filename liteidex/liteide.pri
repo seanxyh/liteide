@@ -14,18 +14,23 @@ defineReplace(qtLibraryName) {
    return($$RET)
 }
 
+isEmpty(IDE_LIBRARY_BASENAME) {
+    IDE_LIBRARY_BASENAME = lib
+}
+
+DEFINES += IDE_LIBRARY_BASENAME=\\\"$$IDE_LIBRARY_BASENAME\\\"
+
 IDE_APP_TARGET   = liteide
 IDE_SOURCE_TREE = $$PWD
 IDE_BUILD_TREE = $$IDE_SOURCE_TREE/liteide
-IDE_LIB_PATH = $$IDE_BUILD_TREE/lib
+
 IDE_APP_PATH = $$IDE_BUILD_TREE/bin
 
 macx {
     IDE_APP_TARGET   = "LiteIDE"
-    IDE_PLUGIN_PATH  = $$IDE_APP_PATH/$${IDE_APP_TARGET}.app/Contents/PlugIns
-    IDE_LIBEXEC_PATH = $$IDE_APP_PATH/$${IDE_APP_TARGET}.app/Contents/Resources
-    IDE_DATA_PATH    = $$IDE_APP_PATH/$${IDE_APP_TARGET}.app/Contents/Resources
-    IDE_DOC_PATH     = $$IDE_DATA_PATH/doc
+    IDE_LIBRARY_PATH = $$IDE_APP_PATH/$${IDE_APP_TARGET}.app/Contents/PlugIns
+    IDE_PLUGIN_PATH = $$IDE_LIBRARY_PATH
+    IDE_DATA_PATH   = $$IDE_APP_PATH/$${IDE_APP_TARGET}.app/Contents/Resources
     IDE_BIN_PATH     = $$IDE_APP_PATH/$${IDE_APP_TARGET}.app/Contents/MacOS
     contains(QT_CONFIG, ppc):CONFIG += ppc x86
     copydata = 1
@@ -36,11 +41,10 @@ macx {
     } else {
         IDE_APP_TARGET   = liteide
     }
-    IDE_PLUGIN_PATH  = $$IDE_BUILD_TREE/plugins
-    IDE_LIBEXEC_PATH = $$IDE_APP_PATH
-    IDE_DATA_PATH    = $$IDE_BUILD_TREE/data
-    IDE_DOC_PATH     = $$IDE_BUILD_TREE/doc
-    IDE_BIN_PATH     = $$IDE_APP_PATH
+    IDE_BIN_PATH = $$IDE_BUILD_TREE/bin
+    IDE_LIBRARY_PATH = $$IDE_BUILD_TREE/$$IDE_LIBRARY_BASENAME/liteide
+    IDE_PLUGIN_PATH = $$IDE_LIBRARY_PATH/plugins
+    IDE_DATA_PATH = $$IDE_BUILD_TREE/share/liteide
     !isEqual(IDE_SOURCE_TREE, $$IDE_BUILD_TREE):copydata = 1
 }
 
