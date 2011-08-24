@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
 	<mime-type type="text/x-lua" id="lua">
+		<action id="Exec" key="F5" img="lua/exec.png" cmd="lua" args="-e io.stdout:setvbuf(&quot;no&quot;) ${EDITORPATH}" output="false"/>
 		<action id="Go" key="CTRL+F5" img="lua/run.png" cmd="lua" args="-e io.stdout:setvbuf(&quot;no&quot;) ${EDITORPATH}" save="editor" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" />
 	</mime-type>
 </mime-info>
