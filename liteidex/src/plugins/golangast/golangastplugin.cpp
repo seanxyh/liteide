@@ -41,7 +41,7 @@ GolangAstPlugin::GolangAstPlugin() : m_golangAst(0)
     m_info->setId("plugin/golangast");
     m_info->setName("GolangAst");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("Golang Project AstView");
+    m_info->setInfo("Golang AstView Plugin");
 }
 
 bool GolangAstPlugin::initWithApp(LiteApi::IApplication *app)

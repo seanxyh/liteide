@@ -41,7 +41,7 @@ ProfileProjectPlugin::ProfileProjectPlugin()
     m_info->setId("plugin/profileproject");
     m_info->setName("ProfileProject");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("Profile Project");
+    m_info->setInfo("Project Profile Plugin");
 }
 
 bool ProfileProjectPlugin::initWithApp(LiteApi::IApplication *app)

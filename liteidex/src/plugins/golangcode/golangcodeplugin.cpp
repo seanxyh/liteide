@@ -44,7 +44,7 @@ GolangCodePlugin::GolangCodePlugin()
     m_info->setId("plugin/golangcode");
     m_info->setName("GolangCode");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("Gocode Helper Plugin");
+    m_info->setInfo("Golang Gocode Plugin");
 }
 
 bool GolangCodePlugin::initWithApp(LiteApi::IApplication *app)

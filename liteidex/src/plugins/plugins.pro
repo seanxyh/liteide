@@ -8,6 +8,7 @@ SUBDIRS = \
     liteenv \
     litebuild \
     liteeditor \
+    litefind    \
     makefileproject \
     profileproject  \
     filebrowser \

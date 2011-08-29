@@ -41,7 +41,7 @@ LiteEnvPlugin::LiteEnvPlugin()
     m_info->setId("plugin/LiteEnv");
     m_info->setName("LiteEnv");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("Environment Plugin");
+    m_info->setInfo("LiteIDE Environment Plugin");
 }
 
 bool LiteEnvPlugin::initWithApp(LiteApi::IApplication *app)
