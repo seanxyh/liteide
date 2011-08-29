@@ -42,7 +42,7 @@ LiteEditorPlugin::LiteEditorPlugin()
     m_info->setId("plugin/liteeditor");
     m_info->setName("LiteEditor");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("Lite Editor");
+    m_info->setInfo("LiteIDE Editor Plugin");
 }
 
 bool LiteEditorPlugin::initWithApp(LiteApi::IApplication *app)

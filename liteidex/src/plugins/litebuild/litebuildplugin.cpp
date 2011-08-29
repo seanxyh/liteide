@@ -42,7 +42,7 @@ LiteBuildPlugin::LiteBuildPlugin()
     m_info->setId("plugin/litebuild");
     m_info->setName("LiteBuilder");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("Project or File Build");
+    m_info->setInfo("LiteIDE Build Plugin");
 }
 
 bool LiteBuildPlugin::initWithApp(LiteApi::IApplication *app)

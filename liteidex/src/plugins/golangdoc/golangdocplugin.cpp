@@ -42,7 +42,7 @@ GolangDocPlugin::GolangDocPlugin()
     m_info->setId("plugin/golangdoc");
     m_info->setName("GolangDoc");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("GolangDoc Plugin");
+    m_info->setInfo("Golang DocBrowser Plugin");
 }
 
 GolangDocPlugin::~GolangDocPlugin()

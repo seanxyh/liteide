@@ -1,17 +1,17 @@
-#ifndef HELLOPLUGIN_H
-#define HELLOPLUGIN_H
+#ifndef LITEFINDPLUGIN_H
+#define LITEFINDPLUGIN_H
 
-#include "hello_global.h"
+#include "litefind_global.h"
 #include "liteapi/liteapi.h"
 #include <QtPlugin>
 
-class HelloPlugin : public LiteApi::IPlugin
+class LiteFindPlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
     Q_INTERFACES(LiteApi::IPlugin)
 public:
-    HelloPlugin();
+    LiteFindPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
 };
 
-#endif // HELLOPLUGIN_H
+#endif // LITEFINDPLUGIN_H
