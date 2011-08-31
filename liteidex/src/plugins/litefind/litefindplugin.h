@@ -17,6 +17,9 @@ public:
 public slots:
     void find(bool);
     void replace(bool);
+    void hideFind();
+    void hideReplace();
+    void switchReplace();
 protected:
     FindEditor *m_findEditor;
     ReplaceEditor *m_replaceEditor;

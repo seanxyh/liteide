@@ -30,6 +30,9 @@ public:
     virtual void setReady();
     QString findText() const;
     void genFindState(FindState *state, bool backWard);
+signals:
+    void hideFind();
+    void swithReplace();
 public slots:
     void findNext();
     void findPrev();

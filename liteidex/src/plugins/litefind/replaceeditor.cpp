@@ -19,6 +19,8 @@ ReplaceEditor::ReplaceEditor(LiteApi::IApplication *app, QObject *parent) :
     QPushButton *findNext = new QPushButton(tr("Find Next"));
     QPushButton *replace = new QPushButton(tr("Replace"));
     QPushButton *replaceAll = new QPushButton(tr("Replace All"));
+    QPushButton *hideReplace = new QPushButton(tr("Hide"));
+    hideReplace->setToolTip(tr("Hide Replace"));
 
     m_matchWordCheckBox = new QCheckBox(tr("Match whole word only"));
     m_matchCaseCheckBox = new QCheckBox(tr("Match case"));
@@ -44,6 +46,7 @@ ReplaceEditor::ReplaceEditor(LiteApi::IApplication *app, QObject *parent) :
     layout->addWidget(new QLabel(tr("Find What:")),0,0);
     layout->addWidget(m_findEdit,0,1);
     layout->addWidget(findNext,0,2);
+    layout->addWidget(hideReplace,0,3);
     layout->addWidget(new QLabel(tr("Replace With:")),1,0);
     layout->addWidget(m_replaceEdit,1,1);
     layout->addWidget(replace,1,2);
@@ -57,6 +60,7 @@ ReplaceEditor::ReplaceEditor(LiteApi::IApplication *app, QObject *parent) :
     connect(findNext,SIGNAL(clicked()),this,SLOT(findNext()));
     connect(replace,SIGNAL(clicked()),this,SLOT(replace()));
     connect(replaceAll,SIGNAL(clicked()),this,SLOT(replaceAll()));
+    connect(hideReplace,SIGNAL(clicked()),this,SIGNAL(hideReplace()));
 }
 
 ReplaceEditor::~ReplaceEditor()

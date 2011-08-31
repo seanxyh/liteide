@@ -64,8 +64,26 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
     connect(m_findNextAct,SIGNAL(triggered()),m_findEditor,SLOT(findNext()));
     connect(m_findPrevAct,SIGNAL(triggered()),m_findEditor,SLOT(findPrev()));
     connect(m_replaceAct,SIGNAL(toggled(bool)),this,SLOT(replace(bool)));
+    connect(m_findEditor,SIGNAL(hideFind()),this,SLOT(hideFind()));
+    connect(m_replaceEditor,SIGNAL(hideReplace()),this,SLOT(hideReplace()));
+    connect(m_findEditor,SIGNAL(swithReplace()),this,SLOT(switchReplace()));
 
     return true;
+}
+
+void LiteFindPlugin::hideFind()
+{
+    m_findAct->setChecked(false);
+}
+
+void LiteFindPlugin::hideReplace()
+{
+    m_replaceAct->setChecked(false);
+}
+
+void LiteFindPlugin::switchReplace()
+{
+    m_replaceAct->setChecked(true);
 }
 
 void LiteFindPlugin::find(bool b)

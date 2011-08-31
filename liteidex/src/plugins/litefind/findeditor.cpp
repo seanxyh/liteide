@@ -28,6 +28,11 @@ FindEditor::FindEditor(LiteApi::IApplication *app, QObject *parent) :
 
     QPushButton *findNext = new QPushButton(tr("Find Next"));
     QPushButton *findPrev = new QPushButton(tr("Find Prev"));
+    QPushButton *switchReplace = new QPushButton(tr("Replace"));
+    switchReplace->setToolTip(tr("Switch Replace"));
+    QPushButton *hideFind = new QPushButton(tr("Hide"));
+    hideFind->setToolTip(tr("Hide Find"));
+
 
     m_status = new QLabel(tr("Ready"));
     m_status->setFrameStyle(QFrame::Panel | QFrame::Sunken);
@@ -49,14 +54,18 @@ FindEditor::FindEditor(LiteApi::IApplication *app, QObject *parent) :
     layout->addWidget(m_findEdit,0,1);
     layout->addWidget(findNext,0,2);
     layout->addWidget(findPrev,0,3);
+    layout->addWidget(switchReplace,0,4);
+    layout->addWidget(hideFind,0,5);
     layout->addWidget(new QLabel(tr("Find Option:")),1,0);
-    layout->addLayout(optLayout,1,1,1,3);
+    layout->addLayout(optLayout,1,1,1,5);
 
     m_widget->setLayout(layout);
 
     connect(m_findEdit,SIGNAL(returnPressed()),this,SLOT(findNext()));
     connect(findNext,SIGNAL(clicked()),this,SLOT(findNext()));
     connect(findPrev,SIGNAL(clicked()),this,SLOT(findPrev()));
+    connect(hideFind,SIGNAL(clicked()),this,SIGNAL(hideFind()));
+    connect(switchReplace,SIGNAL(clicked()),this,SIGNAL(swithReplace()));
 }
 
 FindEditor::~FindEditor()
