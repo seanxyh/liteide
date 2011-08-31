@@ -31,6 +31,8 @@ public:
     virtual QWidget *widget();
     virtual void setReady(const QString &findText = QString());
     void genFindState(ReplaceState *state, bool backWard);
+signals:
+    void hideReplace();
 public slots:
     void findNext();
     void replace();
