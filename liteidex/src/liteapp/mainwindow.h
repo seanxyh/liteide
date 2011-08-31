@@ -38,8 +38,6 @@ public:
     ~MainWindow();
 public:
     void init();
-    void createActions();
-    void createMenus();
 protected:
     virtual void closeEvent(QCloseEvent *event);
     virtual void dropEvent(QDropEvent *event);

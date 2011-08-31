@@ -82,22 +82,6 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::createActions()
-{
-    m_aboutAct = new QAction(tr("About"),this);
-    connect(m_aboutAct,SIGNAL(triggered()),this,SLOT(about()));
-}
-
-void MainWindow::createMenus()
-{
-    IActionManager *m = m_liteApp->actionManager();
-    m->addMenu("file",tr("File"));
-    m->addMenu("edit",tr("Edit"));
-    m->addMenu("view", tr("View"));
-    m->addMenu("tools", tr("Tools"));
-    m->addMenu("help",tr("Help"))->addAction(m_aboutAct);
-}
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     m_liteApp->saveSession("default");

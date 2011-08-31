@@ -55,9 +55,9 @@
 
 DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     LiteApi::IDocumentBrowser(parent),
-    m_liteApp(app)
+    m_liteApp(app),
+    m_extension(new Extension)
 {
-    m_extension = new Extension;
     m_widget = new QWidget;
 
     m_textBrowser = new QTextBrowser;
@@ -142,6 +142,7 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->settings()->endGroup();
 
     m_extension->addObject("LiteApi.IDocumentBrowser",this);
+    m_extension->addObject("LiteApi.QTextBrowser",m_textBrowser);
     m_textBrowser->installEventFilter(m_liteApp->editorManager());
 
     emit backwardAvailable(false);

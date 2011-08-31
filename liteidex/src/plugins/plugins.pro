@@ -12,9 +12,9 @@ SUBDIRS = \
     makefileproject \
     profileproject  \
     filebrowser \
-    codesearch \
     golangast \
     golangfmt \
     golangcode \
     golangdoc \
+#    codesearch \
 #    qsqleditor \

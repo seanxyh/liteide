@@ -34,8 +34,8 @@ class ActionManager : public IActionManager
 {
     Q_OBJECT
 public:
-    virtual QMenu *addMenu(const QString &id, const QString &title);
-    virtual QMenu *loadMenu(const QString &id, const QString &title);
+    virtual QMenu *insertMenu(const QString &id, const QString &title, const QString &idBefore = QString());
+    virtual QMenu *loadMenu(const QString &id);
     virtual QList<QMenu*>  menuList() const;
     virtual void addToolBar(QToolBar* toolBar);
     virtual void removeToolBar(QToolBar* toolBar);

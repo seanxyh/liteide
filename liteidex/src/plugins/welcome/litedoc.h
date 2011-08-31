@@ -27,17 +27,33 @@
 #define LITEDOC_H
 
 #include "liteapi/liteapi.h"
+#include "extension/extension.h"
 #include <QUrl>
 
 class DocumentBrowser;
-class LiteDoc : public QObject
+
+namespace LiteApi {
+
+class ILiteDoc : public IObject
+{
+    Q_OBJECT
+public:
+    ILiteDoc(QObject *parent) : IObject(parent) {}
+public slots:
+    virtual void openUrl(const QUrl &url) = 0;
+    virtual void activeBrowser() = 0;
+};
+
+}
+
+class LiteDoc : public LiteApi::ILiteDoc
 {
     Q_OBJECT
 public:
     explicit LiteDoc(LiteApi::IApplication *app, QObject *parent = 0);
     virtual void activeBrowser();
 public slots:
-    void openUrl(const QUrl &url);
+    virtual void openUrl(const QUrl &url);
     void highlighted(const QUrl &url);
 protected:
     void openUrlFile(const QUrl &url);

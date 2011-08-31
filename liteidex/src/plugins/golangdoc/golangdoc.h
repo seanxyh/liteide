@@ -45,7 +45,7 @@ class GolangDoc : public LiteApi::IGolangDoc
     Q_OBJECT
 public:
     explicit GolangDoc(LiteApi::IApplication *app, QObject *parent = 0);
-    ~GolangDoc();
+    ~GolangDoc();    
 public slots:
     virtual void openUrl(const QUrl &url);
     virtual void activeBrowser();

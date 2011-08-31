@@ -50,6 +50,7 @@
 WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
     : LiteApi::IBrowserEditor(parent),
       m_liteApp(app),
+      m_extension(new Extension),
       m_widget(new QWidget),
       ui (new Ui::WelcomeWidget)
 {
@@ -67,6 +68,8 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
     ui->textBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/doc");
     ui->textBrowser->setOpenLinks(false);
 
+    m_extension->addObject("LiteApi.QTextBrowser",ui->textBrowser);
+
     QString path = m_liteApp->resourcePath()+"/doc/welcome.html";
     QFile file(path);
     if (file.open(QIODevice::ReadOnly)) {
@@ -74,6 +77,20 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
         file.close();
     }
     loadData();
+}
+
+WelcomeBrowser::~WelcomeBrowser()
+{
+    delete ui;
+    delete m_widget;
+    if (m_extension) {
+        delete m_extension;
+    }
+}
+
+LiteApi::IExtension *WelcomeBrowser::extension()
+{
+    return m_extension;
 }
 
 void WelcomeBrowser::openUrl(const QUrl &url)
@@ -87,7 +104,7 @@ void WelcomeBrowser::openUrl(const QUrl &url)
     } else if (url.scheme() == "file") {
         m_liteApp->fileManager()->openEditor(url.path());
     } else if (url.scheme() == "doc") {
-        LiteDoc *doc = LiteApi::findExtensionObject<LiteDoc*>(m_liteApp,"LiteApi.ILiteDoc");
+        LiteApi::ILiteDoc *doc = LiteApi::findExtensionObject<LiteApi::ILiteDoc*>(m_liteApp,"LiteApi.ILiteDoc");
         if (doc) {
             doc->openUrl(url.path());
             doc->activeBrowser();
@@ -141,12 +158,6 @@ void WelcomeBrowser::loadData()
 
     ui->textBrowser->setHtml(data);
 
-}
-
-WelcomeBrowser::~WelcomeBrowser()
-{
-   delete ui;
-   delete m_widget;
 }
 
 QWidget *WelcomeBrowser::widget()
