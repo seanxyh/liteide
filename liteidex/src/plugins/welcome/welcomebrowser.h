@@ -27,6 +27,7 @@
 #define WELCOMEBROWSER_H
 
 #include "liteapi/liteapi.h"
+#include "extension/extension.h"
 #include <QUrl>
 
 namespace Ui {
@@ -39,6 +40,7 @@ class WelcomeBrowser : public LiteApi::IBrowserEditor
 public:
     WelcomeBrowser(LiteApi::IApplication *app, QObject *parent);
     virtual ~WelcomeBrowser();
+    virtual LiteApi::IExtension *extension();
     virtual QWidget *widget();
     virtual QString name() const;
     virtual QString mimeType() const;
@@ -47,6 +49,7 @@ public slots:
     void loadData();
 protected:
     LiteApi::IApplication *m_liteApp;
+    Extension   *m_extension;
     QWidget *m_widget;
     Ui::WelcomeWidget *ui;
     QString m_templateData;

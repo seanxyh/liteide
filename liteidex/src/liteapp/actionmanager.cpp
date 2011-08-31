@@ -38,10 +38,24 @@
 #endif
 //lite_memory_check_end
 
-QMenu *ActionManager::addMenu(const QString &id, const QString &title)
-{
-    QMenu *menu = m_liteApp->mainWindow()->menuBar()->addMenu(title);
-    m_idMenuMap.insert(id,menu);
+QMenu *ActionManager::insertMenu(const QString &id, const QString &title, const QString &idBefore)
+{    
+    QMenu *menu = m_idMenuMap.value(id);
+    if (menu) {
+        return menu;
+    }
+    if (idBefore.isEmpty()) {
+        menu = m_liteApp->mainWindow()->menuBar()->addMenu(title);
+    } else {
+        QMenu *m = m_idMenuMap.value(idBefore);
+        if (m) {
+            menu = new QMenu(title);
+            m_liteApp->mainWindow()->menuBar()->insertMenu(m->menuAction(),menu);
+        }
+    }
+    if (menu) {
+        m_idMenuMap.insert(id,menu);
+    }
     return menu;
 }
 
@@ -50,13 +64,9 @@ QList<QMenu*>  ActionManager::menuList() const
     return m_idMenuMap.values();
 }
 
-QMenu *ActionManager::loadMenu(const QString &id,const QString &title)
+QMenu *ActionManager::loadMenu(const QString &id)
 {
-    QMenu *m = m_idMenuMap.value(id);
-    if (m == 0) {
-        m = addMenu(id,title);
-    }
-    return m;
+    return m_idMenuMap.value(id);
 }
 
 void ActionManager::addToolBar(QToolBar* toolBar)

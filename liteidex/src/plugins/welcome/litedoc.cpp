@@ -50,7 +50,7 @@
 //lite_memory_check_end
 
 LiteDoc::LiteDoc(LiteApi::IApplication *app, QObject *parent) :
-    QObject(parent),
+    LiteApi::ILiteDoc(parent),
     m_liteApp(app)
 {
     m_docBrowser = new DocumentBrowser(app,this);

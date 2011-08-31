@@ -342,8 +342,8 @@ class IActionManager : public IManager
     Q_OBJECT
 public:
     IActionManager(QObject *parent = 0) : IManager(parent) {}
-    virtual QMenu *addMenu(const QString &id, const QString &title) = 0;
-    virtual QMenu *loadMenu(const QString &id, const QString &defTitle = QString()) = 0;
+    virtual QMenu *insertMenu(const QString &id, const QString &title, const QString &idBefore = QString()) = 0;
+    virtual QMenu *loadMenu(const QString &id) = 0;
     virtual QList<QMenu*>  menuList() const = 0;
     virtual void addToolBar(QToolBar* toolBar) = 0;
     virtual void removeToolBar(QToolBar* toolBar) = 0;

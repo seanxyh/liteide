@@ -56,9 +56,12 @@ QDockWidget *DockManager::addDock(QWidget *widget, const QString &title, Qt::Doc
     dock->setAllowedAreas(alowedAreas);
     dock->setFeatures(features);
     m_liteApp->mainWindow()->addDockWidget(area, dock);
-    QMenu *menu = m_liteApp->actionManager()->loadMenu("view",tr("View"));
-    menu->addAction(dock->toggleViewAction());
+    QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
+    if (menu) {
+        menu->addAction(dock->toggleViewAction());
+    }
     m_widgetDockMap.insert(widget,dock);
+
     return dock;
 }
 
@@ -66,8 +69,10 @@ void DockManager::removeDock(QWidget *widget)
 {
     QDockWidget *dock = m_widgetDockMap.value(widget);
     if (dock) {
-        QMenu *menu = m_liteApp->actionManager()->loadMenu("view",tr("View"));
-        menu->removeAction(dock->toggleViewAction());
+        QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
+        if (menu) {
+            menu->removeAction(dock->toggleViewAction());
+        }
         m_liteApp->mainWindow()->removeDockWidget(dock);
     }
     m_widgetDockMap.remove(widget);
