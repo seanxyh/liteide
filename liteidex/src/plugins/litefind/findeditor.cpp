@@ -60,6 +60,13 @@ FindEditor::FindEditor(LiteApi::IApplication *app, QObject *parent) :
     m_useRegexCheckBox = new QCheckBox(tr("Regular expression"));
     m_wrapAroundCheckBox = new QCheckBox(tr("Wrap around"));
 
+    m_liteApp->settings()->beginGroup("findeditor");
+    m_matchWordCheckBox->setChecked(m_liteApp->settings()->value("matchWord",true).toBool());
+    m_matchCaseCheckBox->setChecked(m_liteApp->settings()->value("matchCase",true).toBool());
+    m_useRegexCheckBox->setChecked(m_liteApp->settings()->value("useRegexp",false).toBool());
+    m_wrapAroundCheckBox->setChecked(m_liteApp->settings()->value("wrapAround",true).toBool());
+    m_liteApp->settings()->endGroup();
+
     QPushButton *findNext = new QPushButton(tr("Find Next"));
     QPushButton *findPrev = new QPushButton(tr("Find Prev"));
     QPushButton *switchReplace = new QPushButton(tr("Replace"));
@@ -107,6 +114,13 @@ FindEditor::FindEditor(LiteApi::IApplication *app, QObject *parent) :
 
 FindEditor::~FindEditor()
 {
+    m_liteApp->settings()->beginGroup("findeditor");
+    m_liteApp->settings()->setValue("matchWord",m_matchWordCheckBox->isChecked());
+    m_liteApp->settings()->setValue("matchCase",m_matchCaseCheckBox->isChecked());
+    m_liteApp->settings()->setValue("useRegexp",m_useRegexCheckBox->isChecked());
+    m_liteApp->settings()->setValue("wrapAround",m_wrapAroundCheckBox->isChecked());
+    m_liteApp->settings()->endGroup();
+
     if (m_widget) {
         delete m_widget;
     }
