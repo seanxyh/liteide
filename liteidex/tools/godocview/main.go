@@ -64,8 +64,7 @@ func main() {
 		fmt.Fprintf(os.Stderr,"<error>")
 		os.Exit(2)
 	}	
-
-	contents := info.GetPkgList(template)
+	contents := info.GetPkgList(*mode,template)
 	fmt.Println(string(contents))
 
 	os.Exit(0)

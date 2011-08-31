@@ -1,7 +1,7 @@
 package main
 
-var listHTML = `
-<!-- Golang Package List -->
+var listHTML = 
+`<!-- Golang Package List -->
 <p class="detail">
 Need more packages? The
 <a href="http://godashboard.appspot.com/package">Package Dashboard</a>
@@ -9,92 +9,79 @@ provides a list of <a href="/cmd/goinstall/">goinstallable</a> packages.
 </p>
 <h2 id="Subdirectories">Subdirectories</h2>
 <p>
-{.section Dirs}
-	{# DirList entries are numbers and strings - no need for FSet}
+{{with .Dirs}}
 	<p>
 	<table class="layout">
 	<tr>
-	<th align="left" colspan="{MaxHeight|html-esc}">Name</th>
+	<th align="left" colspan="{{html .MaxHeight}}">Name</th>
 	<td width="25">&nbsp;</td>
 	<th align="left">Synopsis</th>
 	</tr>
-	{.repeated section List}
+	{{range .List}}
 		<tr>
-		{Depth|padding}
-		<td align="left" colspan="{Height|html-esc}"><a href="{Path|path-esc}">{Name|html-esc}</a></td>
+		{{repeat "<td width=\"25\"></td>" .Depth}}
+		<td align="left" colspan="{{html .Height}}"><a href="{{.Path}}">{{html .Name}}</a></td>
 		<td></td>
-		<td align="left">{Synopsis|html-esc}</td>
+		<td align="left">{{html .Synopsis}}</td>
 		</tr>
-	{.end}
+	{{end}}
 	</table>
 	</p>
-{.end}
-`
+{{end}}`
 
-var listText = `
-$list
-{.section Dirs}
-{.repeated section List}
-{Path|path-esc}
-{.end}
-{.end}
-`
+var listText = 
+`$list
+{{with .Dirs}}
+{{range .List}}{{.Path }}
+{{end}}
+{{end}}`
 
-var listLite = `
-$list{.section Dirs}{.repeated section List},{Path|path-esc}{.end}{.end}
-`
+var listLite = 
+`$list{{with .Dirs}}{{range .List}},{{.Path}}{{end}}{{end}}`
 
-var findHTML = `
-<!-- Golang Package List -->
+var findHTML =
+`<!-- Golang Package List -->
 <p class="detail">
 Need more packages? The
 <a href="http://godashboard.appspot.com/package">Package Dashboard</a>
 provides a list of <a href="/cmd/goinstall/">goinstallable</a> packages.
 </p>
 <h2 id="Subdirectories">Subdirectories</h2>
-<p>{.section Dirs}
-<p>
 <table class="layout">
 	<tr>
 	<th align="left">Best</th>
 	<td width="25">&nbsp;</td>
 	<th align="left">Synopsis</th>
-	{.section Best}
+	{{with .Best}}
 		<tr>
-		<td align="left"><a href="{Path|path-esc}">{Path|path-esc}</a></td>
+		<td align="left"><a href="{{html .Path}}">{{.Path}}</a></td>
 		<td></td>
-		<td align="left">{Synopsis|html-esc}</td>
+		<td align="left">{{html .Synopsis}}</td>
 		</tr>
-	{.end}	
+	{{end}}	
+	{{with .Dirs}}
 	<tr>
 	<th align="left">Match</th>
 	<td width="25">&nbsp;</td>
 	<th align="left">Synopsis</th>
 	</tr>
-	{.repeated section List}
+	{{range .List}}
 		<tr>
-		<td align="left"><a href="{Path|path-esc}">{Path|path-esc}</a></td>
+		<td align="left"><a href="{{html .Path}}">{{.Path}}</a></td>
 		<td></td>
-		<td align="left">{Synopsis|html-esc}</td>
+		<td align="left">{{html .Synopsis}}</td>
 		</tr>
-	{.end}
+	{{end}}
 	</table>
 	</p>
-{.end}
-`
-var findText = `
-$best
-{.section Best}
-{Path|path-esc}
-{.end}
-$list
-{.section Dirs}
-{.repeated section List}
-{Path|path-esc}
-{.end}
-{.end}
-`
+{{end}}`
 
-var findLite = `
-$find,{.section Best}{Path|path-esc}{.end}{.section Dirs}{.repeated section List},{Path|path-esc}{.end}{.end}
-`
+var findText = 
+`$best
+{{with .Best}}{{.Path}}{{end}}
+$list
+{{with .Dirs}}{{range .List}}{{.Path}}
+{{end}}{{end}}`
+
+var findLite = 
+`$find,{{with .Best}}{{.Path}}{{end}}{{with .Dirs}}{{range .List}},{{.Path}}{{end}}{{end}}`
