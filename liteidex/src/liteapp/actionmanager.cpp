@@ -49,7 +49,7 @@ QMenu *ActionManager::insertMenu(const QString &id, const QString &title, const 
     } else {
         QMenu *m = m_idMenuMap.value(idBefore);
         if (m) {
-            menu = new QMenu(title);
+            menu = new QMenu(title,m_liteApp->mainWindow());
             m_liteApp->mainWindow()->menuBar()->insertMenu(m->menuAction(),menu);
         }
     }
