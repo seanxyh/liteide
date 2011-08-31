@@ -67,32 +67,16 @@ func timeFmt(w io.Writer, format string, x ...interface{}) {
 	template.HTMLEscape(w, []byte(time.SecondsToLocalTime(x[0].(int64)/1e9).String()))
 }
 
-var fmap = template.FormatterMap{
-	"":         textFmt,
-	"html-esc": htmlEscFmt,
-	"path-esc": pathEscFmt,
-	"padding":  paddingFmt,
-	"time":     timeFmt,
+var fmap = template.FuncMap{
+	"repeat":   strings.Repeat,
 }
 
-func readTemplateData(data string) *template.Template {
-	t, err := template.Parse(data, fmap)
-	if err != nil {
-		log.Fatalf("%s: %v", data, err)
-	}
-	return t
+func readTemplateData(name, data string) *template.Template {
+	return template.Must(template.New(name).Funcs(fmap).Parse(data))
 }
 
-func readTemplateFile(path string) *template.Template {
-	data, err := fs.ReadFile(path)
-	if err != nil {
-		log.Fatalf("ReadFile %s: %v", path, err)
-	}
-	t, err := template.Parse(string(data), fmap)
-	if err != nil {
-		log.Fatalf("%s: %v", path, err)
-	}
-	return t
+func readTemplateFile(name, path string) *template.Template {
+	return template.Must(template.New(name).Funcs(fmap).ParseFile(path))
 }
 
 func applyTemplate(t *template.Template, name string, data interface{}) []byte {
@@ -202,7 +186,7 @@ func FindPkgInfo(root string, pkgname string) *Info {
 	return &Info{pkgname, &best, &DirList{dirList.MaxHeight, list}}
 }
 
-func (info *Info) GetPkgList(templateData string) []byte {
-	data := readTemplateData(templateData)
+func (info *Info) GetPkgList(name, templateData string) []byte {
+	data := readTemplateData(name, templateData)
 	return applyTemplate(data, "pkglist", info)
 }
