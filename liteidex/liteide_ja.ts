@@ -134,39 +134,6 @@ LGPL_EXCEPTION.txt in this package.</source>
     </message>
 </context>
 <context>
-    <name>CodeSearchPlugin</name>
-    <message>
-        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="78"/>
-        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="89"/>
-        <source>Find</source>
-        <translation>検索</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="81"/>
-        <source>Replace</source>
-        <translation>置換</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="84"/>
-        <source>Find Next</source>
-        <translation>次を検索</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/codesearchplugin.cpp" line="85"/>
-        <source>Find Prev</source>
-        <translation>前を検索</translation>
-    </message>
-</context>
-<context>
-    <name>DockManager</name>
-    <message>
-        <location filename="src/liteapp/dockmanager.cpp" line="59"/>
-        <location filename="src/liteapp/dockmanager.cpp" line="69"/>
-        <source>View</source>
-        <translation>表示</translation>
-    </message>
-</context>
-<context>
     <name>DocumentBrowser</name>
     <message>
         <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="70"/>
@@ -243,128 +210,6 @@ LGPL_EXCEPTION.txt in this package.</source>
     </message>
 </context>
 <context>
-    <name>EditorReplaceDialog</name>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="14"/>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="144"/>
-        <source>Replace</source>
-        <translation>置換</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="28"/>
-        <source>Find:</source>
-        <translation>検索:</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="48"/>
-        <source>Replace:</source>
-        <translation>置換:</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="83"/>
-        <source>Options</source>
-        <translation>オプション</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="89"/>
-        <source>Match whole word only</source>
-        <translation>単語の検索</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="96"/>
-        <source>Match case</source>
-        <translation>大文字/小文字の区別</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="103"/>
-        <source>Regular expression</source>
-        <translation>正規表現</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="110"/>
-        <source>Wrap around</source>
-        <translation>1周する</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="130"/>
-        <source>Find Next</source>
-        <translation>次を検索</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="137"/>
-        <source>Find Prev</source>
-        <translation>前を検索</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="151"/>
-        <source>Replace All</source>
-        <translation>全てを置換</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="171"/>
-        <source>Close</source>
-        <translation>閉じる</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorreplacedialog.ui" line="184"/>
-        <source>Info:</source>
-        <translation>情報:</translation>
-    </message>
-</context>
-<context>
-    <name>EditorSearchDialog</name>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="14"/>
-        <source>Search</source>
-        <translation>検索</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="24"/>
-        <source>Find:</source>
-        <translation>検索:</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="59"/>
-        <source>Options</source>
-        <translation>オプション</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="65"/>
-        <source>Match whole word only</source>
-        <translation>単語の検索</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="72"/>
-        <source>Match case</source>
-        <translation>大文字/小文字の区別</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="79"/>
-        <source>Regular expression</source>
-        <translation>正規表現</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="86"/>
-        <source>Wrap around</source>
-        <translation>1周する</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="100"/>
-        <source>Find Next</source>
-        <translation>次を検索</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="107"/>
-        <source>Find Prev</source>
-        <translation>前を検索</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/codesearch/editorsearchdialog.ui" line="127"/>
-        <source>Close</source>
-        <translation>閉じる</translation>
-    </message>
-</context>
-<context>
     <name>EnvManager</name>
     <message>
         <location filename="src/plugins/liteenv/envmanager.cpp" line="206"/>
@@ -411,135 +256,140 @@ LGPL_EXCEPTION.txt in this package.</source>
     </message>
     <message>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="170"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="382"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="387"/>
+        <source>New File Wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="171"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="404"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="409"/>
         <source>Rename File</source>
         <translation>ファイル名を変更</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="171"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="400"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="405"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="172"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="422"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="427"/>
         <source>Remove File</source>
         <translation>ファイルを削除</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="173"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="174"/>
         <source>Set Folder To Root</source>
         <translation>フォルダをルートへ設定</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="174"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="175"/>
         <source>New Folder</source>
         <translation>新しいフォルダ</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="175"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="434"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="440"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="176"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="456"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="462"/>
         <source>Rename Folder</source>
         <translation>フォルダ名を変更</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="176"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="453"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="458"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="177"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="475"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="480"/>
         <source>Remove Folder</source>
         <translation>フォルダを削除</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="178"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="179"/>
         <source>Open Terminal Here</source>
         <translation>ここでターミナルを開く</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="179"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="180"/>
         <source>Open Explorer Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="181"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="182"/>
         <source>View Godoc Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="228"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="233"/>
         <source>FileBrowser</source>
         <translation>ファイルブラウザ</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="357"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="361"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="368"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="362"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="366"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="373"/>
         <source>Create File</source>
         <translation>ファイルを作成</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="357"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="382"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="362"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="404"/>
         <source>File Name</source>
         <translation>ファイル名</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="362"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="367"/>
         <source>The filename is exists!</source>
         <translation>このファイル名は存在します!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="369"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="374"/>
         <source>Failed to create the file!</source>
         <translation>ファイルの作成に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="388"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="410"/>
         <source>Failed to rename the file!</source>
         <translation>ファイル名の変更に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="401"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="423"/>
         <source>Confirm remove the file and continue</source>
         <translation>ファイル削除の続行を確認</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="406"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="428"/>
         <source>Failed to remove the file!</source>
         <translation>ファイルの削除に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="413"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="417"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="420"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="435"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="439"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="442"/>
         <source>Create Folder</source>
         <translation>フォルダを作成</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="413"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="434"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="435"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="456"/>
         <source>Folder Name</source>
         <translation>フォルダ名</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="418"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="440"/>
         <source>The folder name is exists!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="421"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="443"/>
         <source>Failed to create the folder!</source>
         <translation>フォルダの作成に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="441"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="463"/>
         <source>Failed to rename the folder!</source>
         <translation>フォルダ名の変更に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="454"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="476"/>
         <source>Confirm remove the foler and continue</source>
         <translation>フォルダ削除の続行を確認</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="459"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="481"/>
         <source>Failed to remove the folder!</source>
         <translation>フォルダの削除に失敗しました!</translation>
     </message>
@@ -570,86 +420,160 @@ LGPL_EXCEPTION.txt in this package.</source>
 <context>
     <name>FileManager</name>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="63"/>
         <location filename="src/liteapp/filemanager.cpp" line="64"/>
+        <location filename="src/liteapp/filemanager.cpp" line="65"/>
         <source>Clear All</source>
         <translation>全てをクリア</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="83"/>
+        <location filename="src/liteapp/filemanager.cpp" line="84"/>
         <source>Recent Files</source>
         <translation>最近使用したファイル</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="84"/>
+        <location filename="src/liteapp/filemanager.cpp" line="85"/>
         <source>Recent Projects</source>
         <translation>最近使用したプロジェクト</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="168"/>
-        <location filename="src/liteapp/filemanager.cpp" line="189"/>
-        <location filename="src/liteapp/filemanager.cpp" line="210"/>
+        <location filename="src/liteapp/filemanager.cpp" line="169"/>
+        <location filename="src/liteapp/filemanager.cpp" line="190"/>
+        <location filename="src/liteapp/filemanager.cpp" line="211"/>
         <source>All Support File (%1)</source>
         <translation>サポートしている全てのファイル (%1)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="171"/>
-        <location filename="src/liteapp/filemanager.cpp" line="192"/>
-        <location filename="src/liteapp/filemanager.cpp" line="213"/>
+        <location filename="src/liteapp/filemanager.cpp" line="172"/>
+        <location filename="src/liteapp/filemanager.cpp" line="193"/>
+        <location filename="src/liteapp/filemanager.cpp" line="214"/>
         <source>All Files (*)</source>
         <translation>全てのファイル (*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="251"/>
+        <location filename="src/liteapp/filemanager.cpp" line="305"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="252"/>
+        <location filename="src/liteapp/filemanager.cpp" line="306"/>
         <source>Project &apos;%1&apos; is created.
 Do you want to load?</source>
         <translation>プロジェクト &apos;%1&apos; が作成されました。
 読み込みますか?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="268"/>
+        <location filename="src/liteapp/filemanager.cpp" line="256"/>
         <source>Open Project or File</source>
         <translation>プロジェクトもしくはファイルを開く...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="281"/>
+        <location filename="src/liteapp/filemanager.cpp" line="269"/>
         <source>Open Files</source>
         <translation>ファイルを開く...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="294"/>
+        <location filename="src/liteapp/filemanager.cpp" line="282"/>
         <source>Open Project</source>
         <translation>プロジェクトを開く</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="350"/>
-        <location filename="src/liteapp/filemanager.cpp" line="366"/>
+        <location filename="src/liteapp/filemanager.cpp" line="365"/>
+        <location filename="src/liteapp/filemanager.cpp" line="381"/>
         <source>&amp;%1 %2</source>
         <translation>&amp;%1 %2</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="519"/>
+        <location filename="src/liteapp/filemanager.cpp" line="534"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
         <translation>%1
 このファイルは削除されました。ファイルを保存しますか?またはエディタを終了しますか?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="520"/>
+        <location filename="src/liteapp/filemanager.cpp" line="535"/>
         <source>LiteIDE X</source>
         <translation>LiteIDE X</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="538"/>
+        <location filename="src/liteapp/filemanager.cpp" line="553"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation type="unfinished">%1
 ファイルが liteide 以外で変更されました。再読み込みしますか?</translation>
+    </message>
+</context>
+<context>
+    <name>FindEditor</name>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="58"/>
+        <source>Match word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="59"/>
+        <source>Match case</source>
+        <translation type="unfinished">大文字/小文字の区別</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="60"/>
+        <source>Regular expression</source>
+        <translation type="unfinished">正規表現</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="61"/>
+        <source>Wrap around</source>
+        <translation type="unfinished">1周する</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="63"/>
+        <source>Find Next</source>
+        <translation type="unfinished">次を検索</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="64"/>
+        <source>Find Prev</source>
+        <translation type="unfinished">前を検索</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="65"/>
+        <source>Replace</source>
+        <translation type="unfinished">置換</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="66"/>
+        <source>Switch Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="67"/>
+        <source>Hide</source>
+        <translation type="unfinished">非表示</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="68"/>
+        <source>Hide Find</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="71"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="123"/>
+        <source>Ready</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="90"/>
+        <source>Find What:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="96"/>
+        <source>Find Option:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/findeditor.h" line="85"/>
+        <source>Not find</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -843,7 +767,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteDoc</name>
     <message>
-        <location filename="src/plugins/welcome/litedoc.cpp" line="24"/>
+        <location filename="src/plugins/welcome/litedoc.cpp" line="58"/>
         <source>LiteIDE Document Browser</source>
         <translation type="unfinished"></translation>
     </message>
@@ -882,19 +806,19 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="160"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="502"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="507"/>
         <source>Export HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="162"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="529"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="534"/>
         <source>Export PDF</source>
         <translation>PDFへエクスポート</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="163"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="553"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="558"/>
         <source>Print Document</source>
         <translation>印刷</translation>
     </message>
@@ -919,17 +843,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>書き込み可能</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="510"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="515"/>
         <source>Can not write file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="511"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="516"/>
         <source>LiteIDE</source>
         <translation type="unfinished">LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="570"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="575"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation type="unfinished">ファイル %1 の変更を取り消し、再読み込みしますか?</translation>
     </message>
@@ -1017,6 +941,34 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
+    <name>LiteFindPlugin</name>
+    <message>
+        <location filename="src/plugins/litefind/litefindplugin.cpp" line="64"/>
+        <source>F&amp;ind</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/litefindplugin.cpp" line="78"/>
+        <source>Find</source>
+        <translation type="unfinished">検索</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/litefindplugin.cpp" line="82"/>
+        <source>Find Next</source>
+        <translation type="unfinished">次を検索</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/litefindplugin.cpp" line="84"/>
+        <source>Find Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/litefindplugin.cpp" line="87"/>
+        <source>Replace</source>
+        <translation type="unfinished">置換</translation>
+    </message>
+</context>
+<context>
     <name>LiteOutput</name>
     <message>
         <location filename="src/plugins/litebuild/litebuild.cpp" line="59"/>
@@ -1040,39 +992,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/liteapp/litetabwidget.cpp" line="72"/>
         <source>Add Page</source>
         <translation>ページを追加</translation>
-    </message>
-</context>
-<context>
-    <name>MainWindow</name>
-    <message>
-        <location filename="src/liteapp/mainwindow.cpp" line="87"/>
-        <source>About</source>
-        <translation>About...</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/mainwindow.cpp" line="94"/>
-        <source>File</source>
-        <translation>ファイル</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/mainwindow.cpp" line="95"/>
-        <source>Edit</source>
-        <translation>編集</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/mainwindow.cpp" line="96"/>
-        <source>View</source>
-        <translation>表示</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/mainwindow.cpp" line="97"/>
-        <source>Tools</source>
-        <translation>ツール</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/mainwindow.cpp" line="98"/>
-        <source>Help</source>
-        <translation>ヘルプ</translation>
     </message>
 </context>
 <context>
@@ -1276,6 +1195,81 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
+    <name>ReplaceEditor</name>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="54"/>
+        <source>Find Next</source>
+        <translation type="unfinished">次を検索</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="55"/>
+        <source>Replace</source>
+        <translation type="unfinished">置換</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="56"/>
+        <source>Replace All</source>
+        <translation type="unfinished">全てを置換</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="57"/>
+        <source>Hide</source>
+        <translation type="unfinished">非表示</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="58"/>
+        <source>Hide Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="60"/>
+        <source>Match whole word only</source>
+        <translation type="unfinished">単語の検索</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="61"/>
+        <source>Match case</source>
+        <translation type="unfinished">大文字/小文字の区別</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="62"/>
+        <source>Regular expression</source>
+        <translation type="unfinished">正規表現</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="63"/>
+        <source>Wrap around</source>
+        <translation type="unfinished">1周する</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="65"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="130"/>
+        <source>Ready</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="84"/>
+        <source>Find What:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="88"/>
+        <source>Replace With:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="92"/>
+        <source>Find Option:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litefind/replaceeditor.h" line="86"/>
+        <location filename="src/plugins/litefind/replaceeditor.h" line="149"/>
+        <source>Not find</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TextEditor::Internal::ColorScheme</name>
     <message>
         <location filename="src/3rdparty/qtc_texteditor/colorscheme.cpp" line="212"/>
@@ -1299,7 +1293,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>WelcomeBrowser</name>
     <message>
-        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="159"/>
+        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="170"/>
         <source>Welcome</source>
         <translation>ようこそ</translation>
     </message>

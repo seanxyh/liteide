@@ -50,6 +50,7 @@ ReplaceEditor::ReplaceEditor(LiteApi::IApplication *app, QObject *parent) :
 {
     m_findEdit = new QLineEdit;
     m_replaceEdit = new QLineEdit;
+
     QPushButton *findNext = new QPushButton(tr("Find Next"));
     QPushButton *replace = new QPushButton(tr("Replace"));
     QPushButton *replaceAll = new QPushButton(tr("Replace All"));
@@ -63,9 +64,12 @@ ReplaceEditor::ReplaceEditor(LiteApi::IApplication *app, QObject *parent) :
 
     m_status = new QLabel(tr("Ready"));
     m_status->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    m_status->setAlignment(Qt::AlignRight);
+    m_status->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
 
     QGridLayout *layout = new QGridLayout;
     layout->setMargin(0);
+    layout->setVerticalSpacing(1);
 
     QHBoxLayout *optLayout = new QHBoxLayout;
     optLayout->setMargin(0);    
@@ -89,6 +93,9 @@ ReplaceEditor::ReplaceEditor(LiteApi::IApplication *app, QObject *parent) :
     layout->addLayout(optLayout,3,1,1,3);
 
     m_widget->setLayout(layout);
+
+    QWidget::setTabOrder(m_findEdit,m_replaceEdit);
+
 
     connect(m_findEdit,SIGNAL(returnPressed()),this,SLOT(findNext()));
     connect(findNext,SIGNAL(clicked()),this,SLOT(findNext()));
@@ -120,6 +127,7 @@ void ReplaceEditor::setReady(const QString &findText)
     } else {
         m_replaceEdit->setFocus();
     }
+    m_status->setText(tr("Ready"));
 }
 
 void ReplaceEditor::genFindState(ReplaceState *state, bool backWard)
