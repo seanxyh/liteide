@@ -70,9 +70,12 @@ FindEditor::FindEditor(LiteApi::IApplication *app, QObject *parent) :
 
     m_status = new QLabel(tr("Ready"));
     m_status->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    m_status->setAlignment(Qt::AlignRight);
+    m_status->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
 
     QGridLayout *layout = new QGridLayout;
     layout->setMargin(0);
+    layout->setVerticalSpacing(1);
 
     QHBoxLayout *optLayout = new QHBoxLayout;
     optLayout->setMargin(0);

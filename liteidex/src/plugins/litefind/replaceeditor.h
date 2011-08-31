@@ -146,13 +146,13 @@ public:
                                           arg(find.blockNumber()+1).
                                           arg(find.columnNumber()));
                 } else {
-                    m_status->setText(tr("No find"));
+                    m_status->setText(tr("Not find"));
                 }
                 break;
             }
         } while(!find.isNull());
         if (replaceCount == -1) {
-            m_status->setText(QString("ReplaceAll:%1").arg(number));
+            m_status->setText(QString("Replace:%1").arg(number));
         }
     }
 protected:
