@@ -134,10 +134,17 @@ void LiteBuild::config()
     BuildConfigDialog dlg;
     dlg.setModel(m_configModel);
     if (dlg.exec() == QDialog::Accepted) {
+        QString key;
+        if (!m_buildFilePath.isEmpty()) {
+            key = "litebuild-buildconfig/"+m_buildFilePath;
+        }
         for (int i = 0; i < m_configModel->rowCount(); i++) {
             QStandardItem *name = m_configModel->item(i,0);
             QStandardItem *value = m_configModel->item(i,1);
             m_liteEnv.insert(name->text(),value->text());
+            if (!key.isEmpty()) {
+                m_liteApp->settings()->setValue(key+"#"+name->text(),value->text());
+            }
         }
     }
 }
@@ -179,11 +186,13 @@ void LiteBuild::reloadProject()
 void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
 {
     LiteApi::IBuild *build = 0;
+    m_buildFilePath.clear();
     resetLiteEnv(project);
     if (project) {
         connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
         build =  m_manager->findBuild(project->mimeType());
         if (build) {
+            m_buildFilePath = project->fileName();
             m_liteApp->actionManager()->showToolBar(m_toolBar);
             setCurrentBuild(build);
         } else {
@@ -196,6 +205,26 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
 
 void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
 {
+    //update buildconfig
+    if (build) {
+        m_configModel->removeRows(0,m_configModel->rowCount());
+        QString key;
+        if (!m_buildFilePath.isEmpty()) {
+            key = "litebuild-buildconfig/"+m_buildFilePath;
+        }
+        foreach(LiteApi::BuildConfig *cf, build->configList()) {
+            QString name = cf->name();
+            QString value = cf->value();
+            if (!key.isEmpty()) {
+                value = m_liteApp->settings()->value(key+"#"+name,value).toString();
+            }
+            m_configModel->appendRow(QList<QStandardItem*>()
+                                     << new QStandardItem(name)
+                                     << new QStandardItem(value));
+            m_liteEnv.insert(name,value);
+        }
+    }
+
     if (m_build == build) {
         return;
     }
@@ -214,13 +243,7 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
         return;
     }
 
-    m_configModel->removeRows(0,m_configModel->rowCount());
-    foreach(LiteApi::BuildConfig *cf, m_build->configList()) {
-        m_configModel->appendRow(QList<QStandardItem*>()
-                                 << new QStandardItem(cf->name())
-                                 << new QStandardItem(cf->value()));
-        m_liteEnv.insert(cf->name(),cf->value());
-    }
+
 
     foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
         QAction *act = m_toolBar->addAction(ba->id());
@@ -244,6 +267,7 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
     if (m_liteApp->projectManager()->currentProject()) {
         return;
     }
+    m_buildFilePath.clear();
     QString editorPath,editorDir,editorName;
     QString workDir,targetPath,targetDir,targetName;
 
@@ -255,6 +279,7 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
             editorDir = QFileInfo(editorPath).absolutePath();
             editorName = QFileInfo(editorPath).fileName();
             build = m_manager->findBuild(editor->mimeType());
+            m_buildFilePath = editor->fileName();
         }
         workDir = editorDir;
         targetDir = editorDir;
@@ -272,6 +297,7 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
                     projectBuild = m_manager->findBuild(lookup->mimeType());
                     if (projectBuild != 0) {
                         projectPath = infos.at(0).filePath();
+                        m_buildFilePath = projectPath;
                         break;
                     }
                 }

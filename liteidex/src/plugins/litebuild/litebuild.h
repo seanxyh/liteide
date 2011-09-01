@@ -70,6 +70,7 @@ protected:
     ProcessEx *m_process;
     LiteOutput *m_output;
     QString     m_outputRegex;
+    QString     m_buildFilePath;
 };
 
 #endif // LITEBUILD_H
