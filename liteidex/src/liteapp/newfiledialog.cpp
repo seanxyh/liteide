@@ -150,7 +150,14 @@ void NewFileDialog::accept()
     foreach (QString file, m_cur.files) {
         QString infile = QFileInfo(m_cur.dir,file).absoluteFilePath();
         QString ofile = file;
-        ofile.replace("root",name);
+        QFileInfo oi(name);
+        if (!oi.suffix().isEmpty() &&
+            (oi.suffix() == QFileInfo(infile).suffix())) {
+            ofile.replace("root",name.left(name.length()-oi.suffix().length()-1));
+        } else {
+            ofile.replace("root",name);
+        }
+
         QString outfile = QFileInfo(location,ofile).absoluteFilePath();
         if (QFile::exists(outfile)) {
             int ret = QMessageBox::warning(this,"Warning",QString(tr("%1 exists, continue to rewrite or abort?").arg(outfile)),
