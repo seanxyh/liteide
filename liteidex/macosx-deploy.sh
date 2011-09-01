@@ -70,7 +70,7 @@ process_file
 export deploy_file=libfilebrowser.dylib
 process_file
 
-export deploy_file=libcodesearch.dylib
+export deploy_file=liblitefind.dylib
 process_file
 
 export deploy_file=libgolangdoc.dylib
