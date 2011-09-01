@@ -10,79 +10,79 @@
         <translation type="unfinished">Liteide について</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="182"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="201"/>
         <source>Infomation</source>
         <translation>情報</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="188"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="207"/>
         <source>Welcome:</source>
         <translation>ようこそ:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="194"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="213"/>
         <source>Welcome to LiteIDE X!
 LiteIDE is a simple, open source, cross-platform IDE.</source>
         <translation>LiteIDE X へようこそ!
 LiteIDE はシンプルでオープンソース、クロスプラットフォームなIDEです。</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="205"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="224"/>
         <source>Project:</source>
         <translation>プロジェクト:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="211"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="230"/>
         <source>Name:</source>
         <translation>名前:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="225"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="244"/>
         <source>Author:</source>
         <translation>作者:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="239"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="258"/>
         <source>Version:</source>
         <translation>バージョン:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="253"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="272"/>
         <source>Website:</source>
         <translation>ウェブサイト:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="284"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="290"/>
         <source>Developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="390"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="380"/>
         <source>Translations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="402"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="392"/>
         <source>Chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="416"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="406"/>
         <source>Japanese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="430"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="420"/>
         <source>Russian</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="461"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="451"/>
         <source>Thanks to...</source>
         <translation>謝辞...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="467"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="457"/>
         <source>All contributors that provided patches.
 
 The Go Project (http://golang.org/)
@@ -103,32 +103,23 @@ The GNU Software Foundation (http://www.gnu.org).
 最後に、多大なるオープンソースコミュニティ</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="489"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="479"/>
         <source>License</source>
         <translation>ライセンス</translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="495"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="488"/>
         <source>Copyright (c) 2011 LiteIDE team. All rights reserved.
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
+This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
-In addition, as a special exception, that plugins developed for 
-LiteIDE, are allowed to remain closed sourced and can be distributed
-under any license .These rights are included in the file 
-LGPL_EXCEPTION.txt in this package.</source>
-        <translation></translation>
+In addition, as a special exception, that plugins developed for LiteIDE, are allowed to remain closed sourced and can be distributed under any license .These rights are included in the file LGPL_EXCEPTION.txt in this package.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="536"/>
+        <location filename="src/liteapp/aboutdialog.ui" line="520"/>
         <source>Close</source>
         <translation>閉じる</translation>
     </message>
@@ -138,6 +129,57 @@ LGPL_EXCEPTION.txt in this package.</source>
     <message>
         <location filename="src/plugins/litebuild/buildconfigdialog.ui" line="14"/>
         <source>Build Config Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CreateDirDialog</name>
+    <message>
+        <location filename="src/plugins/filebrowser/createdirdialog.ui" line="14"/>
+        <source>Create Directory Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/createdirdialog.ui" line="22"/>
+        <source>Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/createdirdialog.ui" line="36"/>
+        <source>Path Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CreateFileDialog</name>
+    <message>
+        <location filename="src/plugins/filebrowser/createfiledialog.ui" line="14"/>
+        <source>Create File Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/createfiledialog.ui" line="22"/>
+        <source>Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/createfiledialog.ui" line="36"/>
+        <source>File Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/createfiledialog.ui" line="76"/>
+        <source>Create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/createfiledialog.ui" line="83"/>
+        <source>Create and Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/createfiledialog.ui" line="90"/>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -238,166 +280,162 @@ LGPL_EXCEPTION.txt in this package.</source>
 <context>
     <name>FileBrowser</name>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="105"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="108"/>
         <source>Synchronize with editor</source>
         <translation>エディタと同期</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="124"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="127"/>
         <source>open to parent</source>
         <translation>親を開く</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="167"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="170"/>
         <source>Open File</source>
         <translation>ファイルを開く</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="168"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="171"/>
         <source>Open Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="169"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="172"/>
         <source>New File</source>
         <translation>新しいファイル</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="170"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="173"/>
         <source>New File Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="171"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="404"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="409"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="174"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="415"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="420"/>
         <source>Rename File</source>
         <translation>ファイル名を変更</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="172"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="422"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="427"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="175"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="433"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="438"/>
         <source>Remove File</source>
         <translation>ファイルを削除</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="174"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="177"/>
         <source>Set Folder To Root</source>
         <translation>フォルダをルートへ設定</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="175"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="178"/>
         <source>New Folder</source>
         <translation>新しいフォルダ</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="176"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="456"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="462"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="179"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="474"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="480"/>
         <source>Rename Folder</source>
         <translation>フォルダ名を変更</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="177"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="475"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="480"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="180"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="493"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="498"/>
         <source>Remove Folder</source>
         <translation>フォルダを削除</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="179"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="182"/>
         <source>Open Terminal Here</source>
         <translation>ここでターミナルを開く</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="180"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="183"/>
         <source>Open Explorer Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="182"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="185"/>
         <source>View Godoc Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="233"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="236"/>
         <source>FileBrowser</source>
         <translation>ファイルブラウザ</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="362"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="366"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="373"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="374"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="384"/>
         <source>Create File</source>
         <translation>ファイルを作成</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="362"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="404"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="415"/>
         <source>File Name</source>
         <translation>ファイル名</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="367"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="375"/>
         <source>The filename is exists!</source>
         <translation>このファイル名は存在します!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="374"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="385"/>
         <source>Failed to create the file!</source>
         <translation>ファイルの作成に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="410"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="421"/>
         <source>Failed to rename the file!</source>
         <translation>ファイル名の変更に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="423"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="434"/>
         <source>Confirm remove the file and continue</source>
         <translation>ファイル削除の続行を確認</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="428"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="439"/>
         <source>Failed to remove the file!</source>
         <translation>ファイルの削除に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="435"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="439"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="442"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="457"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="460"/>
         <source>Create Folder</source>
         <translation>フォルダを作成</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="435"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="456"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="474"/>
         <source>Folder Name</source>
         <translation>フォルダ名</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="440"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="458"/>
         <source>The folder name is exists!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="443"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="461"/>
         <source>Failed to create the folder!</source>
         <translation>フォルダの作成に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="463"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="481"/>
         <source>Failed to rename the folder!</source>
         <translation>フォルダ名の変更に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="476"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="494"/>
         <source>Confirm remove the foler and continue</source>
         <translation>フォルダ削除の続行を確認</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="481"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="499"/>
         <source>Failed to remove the folder!</source>
         <translation>フォルダの削除に失敗しました!</translation>
     </message>
@@ -1094,27 +1132,27 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>位置 %1 は空です。続行しますか?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/newfiledialog.cpp" line="156"/>
+        <location filename="src/liteapp/newfiledialog.cpp" line="163"/>
         <source>%1 exists, continue to rewrite or abort?</source>
         <translation>%1 は存在します。再書き込みを続行しますか?もしくは中断しますか?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/newfiledialog.cpp" line="172"/>
+        <location filename="src/liteapp/newfiledialog.cpp" line="179"/>
         <source>%1 create false!</source>
         <translation>%1 の作成が失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/liteapp/newfiledialog.cpp" line="253"/>
+        <location filename="src/liteapp/newfiledialog.cpp" line="260"/>
         <source>New file wizard:</source>
         <translation>新規ファイルウィザード:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/newfiledialog.cpp" line="255"/>
+        <location filename="src/liteapp/newfiledialog.cpp" line="262"/>
         <source>New project wizard:</source>
         <translation>新規プロジェクトウィザード:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/newfiledialog.cpp" line="312"/>
+        <location filename="src/liteapp/newfiledialog.cpp" line="319"/>
         <source>Browser Location</source>
         <translation>ブラウザロケーション</translation>
     </message>
