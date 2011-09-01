@@ -1,3 +1,11 @@
+==== 2011.9.1 Ver X8 1.25 ====
+ * LiteFind : new find and replace plugin, remove CodeSearch plugin
+ * LiteEditor : fix word api complete three parts error
+ * LiteEditor : fix word api complete sorted
+ * LiteApp : fix main window state load/save on linux
+ * LiteApp : change path to standard linux path
+ * LiteBuild : add build option, example execute arguments
+ * FileBrowser : add new file wizard
 ==== 2011.8.12 Ver X7 1.09375 ====
  * Welcome : new html page, quick link, session, recent projects and files
  * GolangDoc : generic document nav

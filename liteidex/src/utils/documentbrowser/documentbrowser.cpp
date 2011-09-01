@@ -83,37 +83,6 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_statusBar = new QStatusBar;
 
-    m_findToolBar = new QToolBar;
-
-    m_findComboBox = new QComboBox;
-    m_findComboBox->setEditable(true);
-
-    m_findNextAct = new QAction(tr("Next"),this);
-    m_findNextAct->setShortcut(QKeySequence::FindNext);
-    m_findNextAct->setToolTip(tr("FindNext\t")+QKeySequence(QKeySequence::FindNext).toString());
-    m_findPrevAct = new QAction(tr("Prev"),this);
-    m_findPrevAct->setShortcut(QKeySequence::FindPrevious);
-    m_findPrevAct->setToolTip(tr("FindPrev\t")+QKeySequence(QKeySequence::FindPrevious).toString());
-
-    QToolButton *findNext = new QToolButton;
-    findNext->setDefaultAction(m_findNextAct);
-    QToolButton *findPrev = new QToolButton;
-    findPrev->setDefaultAction(m_findPrevAct);
-    m_matchCaseCheckBox = new QCheckBox(tr("MatchCase"));
-    m_matchWordCheckBox = new QCheckBox(tr("MatchWord"));
-    m_useRegexCheckBox = new QCheckBox(tr("Regex"));
-
-    m_findToolBar->addWidget(m_findComboBox);
-    m_findToolBar->addSeparator();
-    m_findToolBar->addWidget(findNext);
-    m_findToolBar->addWidget(findPrev);
-    m_findToolBar->addSeparator();
-    m_findToolBar->addWidget(m_matchCaseCheckBox);
-    m_findToolBar->addWidget(m_matchWordCheckBox);
-    m_findToolBar->addWidget(m_useRegexCheckBox);
-
-    m_statusBar->addPermanentWidget(m_findToolBar);
-
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
@@ -128,18 +97,9 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_backwardAct,SIGNAL(triggered()),this,SLOT(backward()));
     connect(m_forwardAct,SIGNAL(triggered()),this,SLOT(forward()));
     connect(m_reloadUrlAct,SIGNAL(triggered()),this,SLOT(reloadUrl()));
-    connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(activatedFindText(QString)));
-    connect(m_findNextAct,SIGNAL(triggered()),this,SLOT(findNext()));
-    connect(m_findPrevAct,SIGNAL(triggered()),this,SLOT(findPrev()));
     connect(m_urlComboBox,SIGNAL(activated(QString)),this,SLOT(activatedUrl(QString)));
     connect(this,SIGNAL(backwardAvailable(bool)),m_backwardAct,SLOT(setEnabled(bool)));
     connect(this,SIGNAL(forwardAvailable(bool)),m_forwardAct,SLOT(setEnabled(bool)));
-
-    m_liteApp->settings()->beginGroup("documentbrowser");
-    m_matchWordCheckBox->setChecked(m_liteApp->settings()->value("matchword",true).toBool());
-    m_matchCaseCheckBox->setChecked(m_liteApp->settings()->value("matchcase",true).toBool());
-    m_useRegexCheckBox->setChecked(m_liteApp->settings()->value("useregex",false).toBool());
-    m_liteApp->settings()->endGroup();
 
     m_extension->addObject("LiteApi.IDocumentBrowser",this);
     m_extension->addObject("LiteApi.QTextBrowser",m_textBrowser);
@@ -151,12 +111,6 @@ DocumentBrowser::DocumentBrowser(LiteApi::IApplication *app, QObject *parent) :
 
 DocumentBrowser::~DocumentBrowser()
 {
-    m_liteApp->settings()->beginGroup("documentbrowser");
-    m_liteApp->settings()->setValue("matchword",m_matchWordCheckBox->isChecked());
-    m_liteApp->settings()->setValue("matchcase",m_matchCaseCheckBox->isChecked());
-    m_liteApp->settings()->setValue("useregex",m_useRegexCheckBox->isChecked());
-    m_liteApp->settings()->endGroup();
-
     if (m_widget) {
         delete m_widget;
     }
@@ -221,53 +175,6 @@ QString DocumentBrowser::mimeType() const
 void DocumentBrowser::setName(const QString &t)
 {
     m_name = t;
-}
-
-void DocumentBrowser::activatedFindText(QString)
-{
-    findText(false);
-}
-
-void DocumentBrowser::findNext()
-{
-    findText(false);
-}
-
-void DocumentBrowser::findPrev()
-{
-    findText(true);
-}
-
-bool DocumentBrowser::findText(bool findBackward)
-{
-    QString text = m_findComboBox->currentText();
-    if (text.isEmpty()) {
-        return false;
-    }
-    QTextCursor cursor = m_textBrowser->textCursor();
-    QTextDocument::FindFlags flags = 0;
-    if (findBackward) {
-        flags |= QTextDocument::FindBackward;
-    }
-    if (m_matchCaseCheckBox->isChecked()) {
-        flags |= QTextDocument::FindCaseSensitively;
-    }
-    if (m_matchWordCheckBox->isChecked()) {
-        flags |= QTextDocument::FindWholeWords;
-    }
-    QTextCursor find;
-    if (m_useRegexCheckBox->isChecked()) {
-        find = m_textBrowser->document()->find(QRegExp(text),cursor,flags);
-    } else {
-        find = m_textBrowser->document()->find(text,cursor,flags);
-    }
-    if (!find.isNull()) {
-        m_textBrowser->setTextCursor(find);
-        m_statusBar->showMessage(QString("find %1").arg(find.selectedText()));
-        return true;
-    }
-    m_statusBar->showMessage("end find");
-    return false;
 }
 
 void DocumentBrowser::setSearchPaths(const QStringList &paths)

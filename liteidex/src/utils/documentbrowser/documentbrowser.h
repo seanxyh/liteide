@@ -51,7 +51,6 @@ public:
     virtual QString fileName() const;
     virtual QString mimeType() const;
     void setName(const QString &t);
-    bool findText(bool findBackward);
     QUrl resolveUrl(const QUrl &url) const;
 public:
     virtual void setSearchPaths(const QStringList &paths);
@@ -65,10 +64,7 @@ public slots:
     virtual void reloadUrl();
 public slots:
     void anchorClicked(QUrl);
-    void activatedFindText(QString);
-    void findNext();
-    void findPrev();
-    void activatedUrl(QString);
+    void activatedUrl(QString text);
 protected:
     struct HistoryEntry {
         HistoryEntry()
@@ -86,18 +82,11 @@ protected:
     QWidget *m_widget;
     QTextBrowser *m_textBrowser;
     QToolBar     *m_toolBar;
-    QToolBar     *m_findToolBar;
     QAction      *m_backwardAct;
     QAction      *m_forwardAct;
     QAction      *m_reloadUrlAct;
     QComboBox    *m_urlComboBox;
     QStatusBar   *m_statusBar;
-    QComboBox    *m_findComboBox;
-    QCheckBox    *m_matchCaseCheckBox;
-    QCheckBox    *m_matchWordCheckBox;
-    QCheckBox    *m_useRegexCheckBox;
-    QAction     *m_findNextAct;
-    QAction     *m_findPrevAct;
     QString     m_name;
     QString     m_fileName;
     QString     m_mimeType;
