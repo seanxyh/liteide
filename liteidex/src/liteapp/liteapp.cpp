@@ -115,15 +115,23 @@ LiteApp::LiteApp()
     m_viewMenu->addAction(m_optionAct);
     m_optionManager->setAction(m_optionAct);
 
-    currentProjectChanged(0);
-    currentEditorChanged(0);
-
     this->appendConsole("LiteApp","Init");
     this->appendConsole("LiteApp","ObjectIdList",m_extension->objectMetaList().join(";"));
 
     m_liteAppOptionFactory = new LiteAppOptionFactory(this,this);
 
     m_optionManager->addFactory(m_liteAppOptionFactory);
+}
+
+void LiteApp::load()
+{
+    loadMimeType();
+    loadPlugins();
+    initPlugins();
+    m_mainwindow->show();
+    loadState();
+    m_projectManager->setCurrentProject(0);
+    emit loaded();
 }
 
 LiteApp::~LiteApp()

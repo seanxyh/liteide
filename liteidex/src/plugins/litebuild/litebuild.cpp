@@ -29,6 +29,7 @@
 #include "processex/processex.h"
 #include "textoutput/textoutput.h"
 #include "liteapi/litefindobj.h"
+#include "buildconfigdialog.h"
 
 #include <QToolBar>
 #include <QComboBox>
@@ -38,6 +39,8 @@
 #include <QTextBlock>
 #include <QTextCodec>
 #include <QProcessEnvironment>
+#include <QStandardItemModel>
+#include <QStandardItem>
 #include <QTime>
 #include <QDebug>
 
@@ -77,9 +80,17 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
         m_liteApp->extension()->addObject("LiteApi.IBuildManager",m_manager);
     }
     m_toolBar = new QToolBar;
+    m_toolBar->setObjectName("BuildToolBar");
+
+    m_configModel = new QStandardItemModel(0,2,this);
+    m_configModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
+    m_configModel->setHeaderData(1,Qt::Horizontal,tr("Value"));
+
+    m_configAct = new QAction(tr("Config"),this);
+    m_toolBar->addAction(m_configAct);
+    m_toolBar->addSeparator();
 
     m_liteApp->actionManager()->addToolBar(m_toolBar);
-    m_toolBar->setObjectName("BuildToolBar");
 
     m_process = new ProcessEx(this);
     m_output = new LiteOutput;
@@ -94,7 +105,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     connect(m_process,SIGNAL(extFinish(bool,int,QString)),this,SLOT(extFinish(bool,int,QString)));
     connect(m_output,SIGNAL(dbclickEvent()),this,SLOT(dbclickBuildOutput()));
     connect(m_output,SIGNAL(enterText(QString)),this,SLOT(enterTextBuildOutput(QString)));
-
+    connect(m_configAct,SIGNAL(triggered()),this,SLOT(config()));
     currentProjectChanged(m_liteApp->projectManager()->currentProject());
 
     m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
@@ -102,6 +113,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
         currentEnvChanged(m_envManager->currentEnv());
     }
+    m_liteApp->actionManager()->hideToolBar(m_toolBar);
     m_liteApp->outputManager()->showOutput(m_output);
 }
 
@@ -110,6 +122,19 @@ LiteBuild::~LiteBuild()
     m_liteApp->actionManager()->removeToolBar(m_toolBar);
     delete m_toolBar;
     delete m_output;
+}
+
+void LiteBuild::config()
+{
+    BuildConfigDialog dlg;
+    dlg.setModel(m_configModel);
+    if (dlg.exec() == QDialog::Accepted) {
+        for (int i = 0; i < m_configModel->rowCount(); i++) {
+            QStandardItem *name = m_configModel->item(i,0);
+            QStandardItem *value = m_configModel->item(i,1);
+            m_liteEnv.insert(name->text(),value->text());
+        }
+    }
 }
 
 void LiteBuild::currentEnvChanged(LiteApi::IEnv*)
@@ -149,22 +174,17 @@ void LiteBuild::reloadProject()
 void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
 {
     LiteApi::IBuild *build = 0;
+    resetLiteEnv(project);
     if (project) {
         connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
         build =  m_manager->findBuild(project->mimeType());
-    }
-
-    resetLiteEnv(project);
-
-    if (!build) {
-        m_liteApp->actionManager()->hideToolBar(m_toolBar);
-        m_liteApp->outputManager()->hideOutput(m_output);
+        if (build) {
+            m_liteApp->actionManager()->showToolBar(m_toolBar);
+            setCurrentBuild(build);
+        } else {
+            m_liteApp->actionManager()->hideToolBar(m_toolBar);
+        }
     } else {
-        m_liteApp->actionManager()->showToolBar(m_toolBar);
-        m_liteApp->outputManager()->showOutput(m_output);
-        setCurrentBuild(build);
-    }
-    if (!project) {
         currentEditorChanged(m_liteApp->editorManager()->currentEditor());
     }
 }
@@ -187,6 +207,14 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
 
     if (!m_build) {
         return;
+    }
+
+    m_configModel->removeRows(0,m_configModel->rowCount());
+    foreach(LiteApi::BuildConfig *cf, m_build->configList()) {
+        m_configModel->appendRow(QList<QStandardItem*>()
+                                 << new QStandardItem(cf->name())
+                                 << new QStandardItem(cf->value()));
+        m_liteEnv.insert(cf->name(),cf->value());
     }
 
     foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
@@ -270,20 +298,11 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
         m_liteEnv.insert("${TARGETDIR}",targetDir);
         m_liteEnv.insert("${TARGETNAME}",targetName);
     }
-
-    if (!build) {
-        m_liteApp->actionManager()->hideToolBar(m_toolBar);
-//        if (m_liteApp->outputManager()->currentOutput() == m_output) {
-//            m_liteApp->outputManager()->setCurrentOutput();
-//            m_bLastOutput = true;
-//        }
-    } else {
+    if (build) {
         m_liteApp->actionManager()->showToolBar(m_toolBar);
         setCurrentBuild(build);
-//        if (m_bLastOutput) {
-//            m_bLastOutput = false;
-//            m_liteApp->outputManager()->setCurrentOutput(m_output);
-//        }
+    } else {
+        m_liteApp->actionManager()->hideToolBar(m_toolBar);
     }
 }
 
