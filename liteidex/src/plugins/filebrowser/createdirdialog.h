@@ -18,34 +18,31 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: buildconfigdialog.h
+// Module: createdirdialog.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: buildconfigdialog.h,v 1.0 2011-8-12 visualfc Exp $
+// $Id: createdirdialog.h,v 1.0 2011-8-12 visualfc Exp $
 
-#ifndef BUILDCONFIGDIALOG_H
-#define BUILDCONFIGDIALOG_H
+#ifndef CREATEDIRDIALOG_H
+#define CREATEDIRDIALOG_H
 
 #include <QDialog>
-#include <QModelIndex>
 
 namespace Ui {
-    class BuildConfigDialog;
+    class CreateDirDialog;
 }
 
-class QAbstractItemModel;
-class BuildConfigDialog : public QDialog
+class CreateDirDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit BuildConfigDialog(QWidget *parent = 0);
-    ~BuildConfigDialog();
-    void setModel(QAbstractItemModel * model);
-public slots:
-    void editTabView(QModelIndex);
+    explicit CreateDirDialog(QWidget *parent = 0);
+    ~CreateDirDialog();
+    void setDirectory(const QString &path);
+    QString getDirPath() const;
 private:
-    Ui::BuildConfigDialog *ui;
+    Ui::CreateDirDialog *ui;
 };
 
-#endif // BUILDCONFIGDIALOG_H
+#endif // CREATEDIRDIALOG_H

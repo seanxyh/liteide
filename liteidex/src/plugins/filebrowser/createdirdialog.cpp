@@ -18,16 +18,14 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: buildconfigdialog.cpp
+// Module: createdirdialog.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: buildconfigdialog.cpp,v 1.0 2011-8-12 visualfc Exp $
+// $Id: createdirdialog.cpp,v 1.0 2011-8-12 visualfc Exp $
 
-#include "buildconfigdialog.h"
-#include "ui_buildconfigdialog.h"
-
-#include <QAbstractItemModel>
-#include <QDebug>
+#include "createdirdialog.h"
+#include "ui_createdirdialog.h"
+#include <QDir>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -38,47 +36,24 @@
 #endif
 //lite_memory_check_end
 
-BuildConfigDialog::BuildConfigDialog(QWidget *parent) :
+CreateDirDialog::CreateDirDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::BuildConfigDialog)
+    ui(new Ui::CreateDirDialog)
 {
     ui->setupUi(this);
-    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tableView->resizeColumnsToContents();
-    ui->tableView->verticalHeader()->hide();
-    connect(ui->tableView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(editTabView(QModelIndex)));
 }
 
-BuildConfigDialog::~BuildConfigDialog()
+CreateDirDialog::~CreateDirDialog()
 {
     delete ui;
 }
 
-void BuildConfigDialog::editTabView(QModelIndex index)
+void CreateDirDialog::setDirectory(const QString &path)
 {
-    if (!index.isValid()) {
-        return;
-    }
-    if (index.column() == 1) {
-        ui->tableView->edit(index);
-    }
+    ui->dirLabel->setText(QDir::toNativeSeparators(path));
 }
 
-void BuildConfigDialog::setModel(QAbstractItemModel * model)
+QString CreateDirDialog::getDirPath() const
 {
-    ui->tableView->setModel(model);
-    ui->tableView->resizeColumnsToContents();
-    ui->tableView->adjustSize();
-
-    int total = 0;
-    for (int i = 0; i < model->columnCount(); ++i) {
-        total += ui->tableView->columnWidth(i);
-    }
-    int width = ui->tableView->size().width();
-    if (total < width)
-    {
-        int extra = (width - total)/ model->columnCount();
-        for (int i = 0; i < model->columnCount(); ++i)
-            ui->tableView->setColumnWidth(i, ui->tableView->columnWidth(i) + extra);
-    }
+    return ui->lineEdit->text();
 }

@@ -81,7 +81,7 @@ public slots:
     void nameLineChanged(QString);
     void locationLineChanged(QString);
 private slots:
-    void on_locationBrowseButton_clicked();
+    void on_locationBrowseButton_clicked();        
 private:
     Ui::NewFileDialog *ui;
     QStandardItemModel  *m_categoryModel;

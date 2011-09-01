@@ -18,34 +18,37 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: buildconfigdialog.h
+// Module: createfiledialog.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: buildconfigdialog.h,v 1.0 2011-8-12 visualfc Exp $
+// $Id: createfiledialog.h,v 1.0 2011-8-12 visualfc Exp $
 
-#ifndef BUILDCONFIGDIALOG_H
-#define BUILDCONFIGDIALOG_H
+#ifndef CREATEFILEDIALOG_H
+#define CREATEFILEDIALOG_H
 
 #include <QDialog>
-#include <QModelIndex>
 
 namespace Ui {
-    class BuildConfigDialog;
+    class CreateFileDialog;
 }
 
-class QAbstractItemModel;
-class BuildConfigDialog : public QDialog
+class CreateFileDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit BuildConfigDialog(QWidget *parent = 0);
-    ~BuildConfigDialog();
-    void setModel(QAbstractItemModel * model);
-public slots:
-    void editTabView(QModelIndex);
+    explicit CreateFileDialog(QWidget *parent = 0);
+    ~CreateFileDialog();
+    void setDirectory(const QString &path);
+    QString getFileName() const;
+    bool isOpenEditor() const { return m_bOpenEditor; }
+private slots:
+    void on_createButton_clicked();
+    void on_editButton_clicked();
+    void on_cancelButton_clicked();
 private:
-    Ui::BuildConfigDialog *ui;
+    Ui::CreateFileDialog *ui;
+    bool    m_bOpenEditor;
 };
 
-#endif // BUILDCONFIGDIALOG_H
+#endif // CREATEFILEDIALOG_H
