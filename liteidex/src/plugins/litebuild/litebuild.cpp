@@ -87,7 +87,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_configModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
     m_configModel->setHeaderData(1,Qt::Horizontal,tr("Value"));
 
-    m_configAct = new QAction(tr("Config"),this);
+    m_configAct = new QAction(QIcon(":/images/config.png"),tr("Config"),this);
     m_toolBar->addAction(m_configAct);
     m_toolBar->addSeparator();
 
