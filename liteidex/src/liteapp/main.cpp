@@ -54,7 +54,7 @@ static inline QString getPluginPath()
 {
     QString root = getRootPath();
 #ifdef Q_OS_MAC
-    return root+"/Resources/PlugIns";
+    return root+"/PlugIns";
 #else
     return root+"/lib/liteide/plugins";
 #endif
