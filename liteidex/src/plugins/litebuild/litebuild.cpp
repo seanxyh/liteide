@@ -73,7 +73,8 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
     m_liteApp(app),
     m_manager(new BuildManager(this)),
-    m_build(0)
+    m_build(0),
+    m_envManager(0)
 {
     if (m_manager->initWithApp(m_liteApp)) {
         m_manager->load(m_liteApp->resourcePath()+"/build");
@@ -431,7 +432,14 @@ void LiteBuild::execAction(const QString &id)
     }
 
     QString workDir = m_liteEnv.value("${WORKDIR}");
-    QString cmd = m_build->actionCommand(ba,m_liteEnv,m_envManager->currentEnvironment());
+
+    QString cmd;
+    if (m_envManager) {
+        cmd = m_build->actionCommand(ba,m_liteEnv,m_envManager->currentEnvironment());
+    } else {
+        cmd = m_build->actionCommand(ba,m_liteEnv,QProcessEnvironment::systemEnvironment());
+    }
+
     QString args = m_build->actionArgs(ba,m_liteEnv);
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);

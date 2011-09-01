@@ -3,11 +3,12 @@
 	<mime-type type="text/x-gosrc" id="gosrc">
 		<lookup mime-type="text/x-gomake" file="Makefile" top="1"/>
 		<lookup mime-type="text/x-gopro" file="*.e64" top="1"/>
+		<config id="Target" name="${TARGETARGS}" value=""/>
 		<action id="Build" img="go/build.png" key="F7" cmd="${LITEAPPDIR}/gopromake" args="-gofiles ${EDITORNAME} -o ${TARGETNAME}" save="editor" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" />
 		<action id="Clean" img="go/clean.png" cmd="${LITEAPPDIR}/gopromake" args="-gofiles ${EDITORNAME} -o ${TARGETNAME} -clean=obj" output="true" codec="utf-8"/>
 		<action id="CleanAll" img="go/cleanall.png" cmd="${LITEAPPDIR}/gopromake" args="-gofiles ${EDITORNAME} -o ${TARGETNAME} -clean=all" output="true" codec="utf-8"/>
-		<action id="Exec" img="go/exec.png" key="F5" cmd="/usr/bin/xterm" args="-e ${LITEAPPDIR}/goexec  ${TARGETNAME}" output="false"/>
-		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="" output="true" codec="utf-8"/>
+		<action id="Exec" img="go/exec.png" key="F5" cmd="/usr/bin/xterm" args="-e ${LITEAPPDIR}/goexec ${TARGETNAME} ${TARGETARGS}" output="false"/>
+		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="${TARGETARGS}" output="true" codec="utf-8"/>
 		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
 	</mime-type>
 </mime-info>
