@@ -223,6 +223,9 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
                                      << new QStandardItem(value));
             m_liteEnv.insert(name,value);
         }
+        m_output->appendTag0(QString("<build id=\"%1\" file=\"%2\"/>").
+                             arg(build->id()).
+                             arg(m_buildFilePath));
     }
 
     if (m_build == build) {
