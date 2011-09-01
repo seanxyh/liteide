@@ -5,6 +5,7 @@ import (
 	"os"
 	"fmt"
 	"path"
+	"strings"
 )
 
 func main() {
@@ -44,8 +45,8 @@ func main() {
 		fmt.Println(err)
 		wait_exit()
 	}
-
-	fmt.Printf("Starting Process %s ...\n\n", filePath)
+	
+	fmt.Println("---- Starting Process", filePath,strings.Join(args[1:]," "),"----")
 
 	cmd := exec.Command(filePath, args[1:]...)
 	cmd.Dir = workPath
@@ -56,9 +57,9 @@ func main() {
 	err = cmd.Run()
 
 	if err != nil {
-		fmt.Println("\nEnd Process", err)
+		fmt.Println("\n---- End Process", err,"----")
 	} else {
-		fmt.Println("\nEnd Process", "exit status 0")
+		fmt.Println("\n---- End Process", "exit status 0","----")
 	}
 
 	wait_exit()
