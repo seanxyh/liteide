@@ -99,6 +99,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
 
     m_liteApp->outputManager()->addOutuput(m_output,tr("LiteBuild"));
 
+    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(currentProjectChanged(LiteApi::IProject*)));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     connect(m_process,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(extOutput(QByteArray,bool)));
@@ -106,14 +107,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     connect(m_output,SIGNAL(dbclickEvent()),this,SLOT(dbclickBuildOutput()));
     connect(m_output,SIGNAL(enterText(QString)),this,SLOT(enterTextBuildOutput(QString)));
     connect(m_configAct,SIGNAL(triggered()),this,SLOT(config()));
-    currentProjectChanged(m_liteApp->projectManager()->currentProject());
 
-    m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
-    if (m_envManager) {
-        connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
-        currentEnvChanged(m_envManager->currentEnv());
-    }
-    m_liteApp->actionManager()->hideToolBar(m_toolBar);
     m_liteApp->outputManager()->showOutput(m_output);
 }
 
@@ -122,6 +116,16 @@ LiteBuild::~LiteBuild()
     m_liteApp->actionManager()->removeToolBar(m_toolBar);
     delete m_toolBar;
     delete m_output;
+}
+
+void LiteBuild::appLoaded()
+{
+    currentProjectChanged(m_liteApp->projectManager()->currentProject());
+    m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
+    if (m_envManager) {
+        connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
+        currentEnvChanged(m_envManager->currentEnv());
+    }
 }
 
 void LiteBuild::config()
