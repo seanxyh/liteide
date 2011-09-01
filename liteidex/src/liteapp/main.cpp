@@ -99,11 +99,7 @@ int  main(int argc, char *argv[])
     LiteApp *liteApp = new LiteApp;
     liteApp->setPluginPath(getPluginPath());
     liteApp->setResourcePath(getResoucePath());
-    liteApp->loadMimeType();
-    liteApp->loadPlugins();
-    liteApp->initPlugins();
-    liteApp->mainWindow()->show();
-    liteApp->loadState();
+    liteApp->load();
 
     if (argc >= 2) {
         for (int i = 1; i < argc; i++) {

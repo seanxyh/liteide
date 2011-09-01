@@ -355,6 +355,8 @@ class IPlugin;
 class IApplication : public IObject
 {
     Q_OBJECT
+signals:
+    void loaded();
 public:
     virtual ~IApplication() {}
     virtual IProjectManager *projectManager() = 0;

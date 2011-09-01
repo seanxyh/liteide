@@ -77,6 +77,7 @@ public:
 
     virtual void appendConsole(const QString &model, const QString &action, const QString &log = QString());
 public:
+    void load();
     void createActions();
     void createMenus();
     void createToolBars();

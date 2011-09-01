@@ -168,6 +168,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 config = new BuildConfig;
                 config->setId(attrs.value("id").toString());
                 config->setName(attrs.value("name").toString());
+                config->setValue(attrs.value("value").toString());
             }
             break;
         case QXmlStreamReader::EndElement:

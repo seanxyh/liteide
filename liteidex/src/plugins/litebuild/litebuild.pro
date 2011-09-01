@@ -14,7 +14,8 @@ SOURCES += litebuildplugin.cpp \
     build.cpp \
     buildmanager.cpp \
     litebuildoptionfactory.cpp \
-    litebuildoption.cpp
+    litebuildoption.cpp \
+    buildconfigdialog.cpp
 
 HEADERS += litebuildplugin.h\
         litebuild_global.h \
@@ -22,10 +23,12 @@ HEADERS += litebuildplugin.h\
     build.h \
     buildmanager.h \
     litebuildoptionfactory.h \
-    litebuildoption.h
+    litebuildoption.h \
+    buildconfigdialog.h
 
 RESOURCES += \
     litebuild.qrc
 
 FORMS += \
-    litebuildoption.ui
+    litebuildoption.ui \
+    buildconfigdialog.ui
