@@ -134,6 +134,14 @@ LGPL_EXCEPTION.txt in this package.</source>
     </message>
 </context>
 <context>
+    <name>BuildConfigDialog</name>
+    <message>
+        <location filename="src/plugins/litebuild/buildconfigdialog.ui" line="14"/>
+        <source>Build Config Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DocumentBrowser</name>
     <message>
         <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="70"/>
@@ -525,48 +533,48 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="63"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="70"/>
         <source>Find Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="64"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="71"/>
         <source>Find Prev</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="65"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="72"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="66"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="73"/>
         <source>Switch Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="67"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="74"/>
         <source>Hide</source>
         <translation type="unfinished">Скрыть</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="68"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="75"/>
         <source>Hide Find</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="71"/>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="123"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="78"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="137"/>
         <source>Ready</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="90"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="97"/>
         <source>Find What:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="96"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="103"/>
         <source>Find Option:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -629,93 +637,93 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>Консоль</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="301"/>
+        <location filename="src/liteapp/liteapp.cpp" line="309"/>
         <source>New</source>
         <translation>Создать...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="303"/>
+        <location filename="src/liteapp/liteapp.cpp" line="311"/>
         <source>Open</source>
         <translation>Открыть...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="305"/>
+        <location filename="src/liteapp/liteapp.cpp" line="313"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="307"/>
+        <location filename="src/liteapp/liteapp.cpp" line="315"/>
         <source>Close All</source>
         <translation>Закрыть всё</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="308"/>
+        <location filename="src/liteapp/liteapp.cpp" line="316"/>
         <source>Open Project</source>
         <translation>Открыть проект...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="309"/>
+        <location filename="src/liteapp/liteapp.cpp" line="317"/>
         <source>Save Project</source>
         <translation>Сохранить проект</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="310"/>
+        <location filename="src/liteapp/liteapp.cpp" line="318"/>
         <source>Close Project</source>
         <translation>Закрыть проект</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="311"/>
+        <location filename="src/liteapp/liteapp.cpp" line="319"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="313"/>
+        <location filename="src/liteapp/liteapp.cpp" line="321"/>
         <source>Save As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="315"/>
+        <location filename="src/liteapp/liteapp.cpp" line="323"/>
         <source>Save All</source>
         <oldsource>Save As</oldsource>
         <translation type="unfinished">Сохранить как...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="317"/>
+        <location filename="src/liteapp/liteapp.cpp" line="325"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="320"/>
+        <location filename="src/liteapp/liteapp.cpp" line="328"/>
         <source>About LiteIDE...</source>
         <translation>О LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="321"/>
+        <location filename="src/liteapp/liteapp.cpp" line="329"/>
         <source>About Plugins...</source>
         <translation>О плагинах...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="340"/>
+        <location filename="src/liteapp/liteapp.cpp" line="348"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="341"/>
+        <location filename="src/liteapp/liteapp.cpp" line="349"/>
         <source>&amp;View</source>
         <translation>&amp;Вид</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="343"/>
+        <location filename="src/liteapp/liteapp.cpp" line="351"/>
         <source>&amp;Help</source>
         <translation>&amp;Справка</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="369"/>
+        <location filename="src/liteapp/liteapp.cpp" line="377"/>
         <source>Standard ToolBar</source>
         <translation>Стандартная панель</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="381"/>
+        <location filename="src/liteapp/liteapp.cpp" line="389"/>
         <source>Navigation ToolBar</source>
         <translation>Панель навигации</translation>
     </message>
@@ -746,7 +754,22 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteBuild</name>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="89"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="87"/>
+        <source>Name</source>
+        <translation type="unfinished">Название</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="88"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="90"/>
+        <source>Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="101"/>
         <source>LiteBuild</source>
         <translation>LiteBuild</translation>
     </message>
@@ -971,7 +994,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteOutput</name>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="59"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="62"/>
         <source>Stop</source>
         <translation>Остановить</translation>
     </message>
@@ -1242,23 +1265,23 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="65"/>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="130"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="72"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="144"/>
         <source>Ready</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="84"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="91"/>
         <source>Find What:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="88"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="95"/>
         <source>Replace With:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="92"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="99"/>
         <source>Find Option:</source>
         <translation type="unfinished"></translation>
     </message>
