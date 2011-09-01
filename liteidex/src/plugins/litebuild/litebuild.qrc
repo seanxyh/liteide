@@ -8,5 +8,6 @@
         <file>images/clean.png</file>
         <file>images/run.png</file>
         <file>images/stopaction.png</file>
+        <file>images/config.png</file>
     </qresource>
 </RCC>
