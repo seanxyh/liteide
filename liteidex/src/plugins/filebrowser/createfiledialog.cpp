@@ -18,16 +18,14 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: buildconfigdialog.cpp
+// Module: createfiledialog.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: buildconfigdialog.cpp,v 1.0 2011-8-12 visualfc Exp $
+// $Id: createfiledialog.cpp,v 1.0 2011-8-12 visualfc Exp $
 
-#include "buildconfigdialog.h"
-#include "ui_buildconfigdialog.h"
-
-#include <QAbstractItemModel>
-#include <QDebug>
+#include "createfiledialog.h"
+#include "ui_createfiledialog.h"
+#include <QDir>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -38,47 +36,43 @@
 #endif
 //lite_memory_check_end
 
-BuildConfigDialog::BuildConfigDialog(QWidget *parent) :
+CreateFileDialog::CreateFileDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::BuildConfigDialog)
+    ui(new Ui::CreateFileDialog)
 {
     ui->setupUi(this);
-    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tableView->resizeColumnsToContents();
-    ui->tableView->verticalHeader()->hide();
-    connect(ui->tableView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(editTabView(QModelIndex)));
+    m_bOpenEditor = false;
 }
 
-BuildConfigDialog::~BuildConfigDialog()
+CreateFileDialog::~CreateFileDialog()
 {
     delete ui;
 }
 
-void BuildConfigDialog::editTabView(QModelIndex index)
+void CreateFileDialog::on_createButton_clicked()
 {
-    if (!index.isValid()) {
-        return;
-    }
-    if (index.column() == 1) {
-        ui->tableView->edit(index);
-    }
+    m_bOpenEditor = false;
+    this->accept();
 }
 
-void BuildConfigDialog::setModel(QAbstractItemModel * model)
+void CreateFileDialog::on_editButton_clicked()
 {
-    ui->tableView->setModel(model);
-    ui->tableView->resizeColumnsToContents();
-    ui->tableView->adjustSize();
-
-    int total = 0;
-    for (int i = 0; i < model->columnCount(); ++i) {
-        total += ui->tableView->columnWidth(i);
-    }
-    int width = ui->tableView->size().width();
-    if (total < width)
-    {
-        int extra = (width - total)/ model->columnCount();
-        for (int i = 0; i < model->columnCount(); ++i)
-            ui->tableView->setColumnWidth(i, ui->tableView->columnWidth(i) + extra);
-    }
+    m_bOpenEditor = true;
+    this->accept();
 }
+
+void CreateFileDialog::on_cancelButton_clicked()
+{
+    this->reject();
+}
+
+void CreateFileDialog::setDirectory(const QString &path)
+{
+    ui->dirLabel->setText(QDir::toNativeSeparators(path));
+}
+
+QString CreateFileDialog::getFileName() const
+{
+    return ui->lineEdit->text();
+}
+

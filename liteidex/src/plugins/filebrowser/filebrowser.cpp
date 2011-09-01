@@ -24,6 +24,8 @@
 // $Id: filebrowser.cpp,v 1.0 2011-7-12 visualfc Exp $
 
 #include "filebrowser.h"
+#include "createfiledialog.h"
+#include "createdirdialog.h"
 #include "liteapi/litefindobj.h"
 #include "golangdocapi/golangdocapi.h"
 
@@ -44,6 +46,7 @@
 #include <QProcess>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QDialogButtonBox>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -359,7 +362,12 @@ void FileBrowser::newFile()
 {
     QDir dir = contextDir();
 
-    QString fileName = QInputDialog::getText(m_liteApp->mainWindow(),tr("Create File"),tr("File Name"));
+    CreateFileDialog dlg;
+    dlg.setDirectory(dir.path());
+    if (dlg.exec() == QDialog::Rejected) {
+        return;
+    }
+    QString fileName = dlg.getFileName();
     if (!fileName.isEmpty()) {
         QString filePath = QFileInfo(dir,fileName).filePath();
         if (QFile::exists(filePath)) {
@@ -369,6 +377,9 @@ void FileBrowser::newFile()
             QFile file(filePath);
             if (file.open(QIODevice::WriteOnly)) {
                 file.close();
+                if (dlg.isOpenEditor()) {
+                    m_liteApp->fileManager()->openEditor(filePath,true);
+                }
             } else {
                 QMessageBox::information(m_liteApp->mainWindow(),tr("Create File"),
                                          tr("Failed to create the file!"));
@@ -432,9 +443,16 @@ void FileBrowser::removeFile()
 
 void FileBrowser::newFolder()
 {
-    QString folderName = QInputDialog::getText(m_liteApp->mainWindow(),tr("Create Folder"),tr("Folder Name"));
+    QDir dir = contextDir();
+
+    CreateDirDialog dlg;
+    dlg.setDirectory(dir.path());
+    if (dlg.exec() == QDialog::Rejected) {
+        return;
+    }
+
+    QString folderName = dlg.getDirPath();
     if (!folderName.isEmpty()) {
-        QDir dir = contextDir();
         if (!dir.entryList(QStringList() << folderName,QDir::Dirs).isEmpty()) {
             QMessageBox::information(m_liteApp->mainWindow(),tr("Create Folder"),
                                      tr("The folder name is exists!"));
