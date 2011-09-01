@@ -72,6 +72,11 @@ QList<BuildLookup*> Build::lookupList() const
     return m_lookupList;
 }
 
+QList<BuildConfig*> Build::configList() const
+{
+    return m_configList;
+}
+
 BuildAction *Build::findAction(const QString &id)
 {
     foreach(BuildAction *act, m_actionList) {
@@ -102,6 +107,11 @@ void Build::appendLookup(BuildLookup *lookup)
     m_lookupList.append(lookup);
 }
 
+void Build::appendConfig(BuildConfig *config)
+{
+    m_configList.append(config);
+}
+
 bool Build::loadBuild(LiteApi::IBuildManager *manager, const QString &fileName)
 {
     QFile file(fileName);
@@ -119,6 +129,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
     Build *build = 0;
     BuildAction *act = 0;
     BuildLookup *lookup = 0;
+    BuildConfig *config = 0;
     while (!reader.atEnd()) {
         switch (reader.readNext()) {
         case QXmlStreamReader::StartElement:
@@ -153,6 +164,10 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 if (!task.isEmpty()) {
                     act->setTask(task.split(";",QString::SkipEmptyParts));
                 }
+            } else if (reader.name() == "config" && config == 0) {
+                config = new BuildConfig;
+                config->setId(attrs.value("id").toString());
+                config->setName(attrs.value("name").toString());
             }
             break;
         case QXmlStreamReader::EndElement:
@@ -171,6 +186,11 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                     build->appendLookup(lookup);
                 }
                 lookup = 0;
+            } else if (reader.name() == "config") {
+                if (build && config) {
+                    build->appendConfig(config);
+                }
+                config = 0;
             }
             break;
         default:

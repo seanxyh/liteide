@@ -39,6 +39,7 @@ public:
     virtual QString id() const;
     virtual QList<BuildAction*> actionList() const;
     virtual QList<BuildLookup*> lookupList() const;
+    virtual QList<BuildConfig*> configList() const;
     virtual BuildAction *findAction(const QString &id);
     virtual QString actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env);
     virtual QString actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv);
@@ -47,6 +48,7 @@ public:
     void setId(const QString &id);
     void appendAction(BuildAction *act);
     void appendLookup(BuildLookup *lookup);
+    void appendConfig(BuildConfig *config);
 public:
     static bool loadBuild(LiteApi::IBuildManager *manager, const QString &fileName);
     static bool loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QString &fileName);
@@ -55,6 +57,7 @@ protected:
     QString m_id;
     QList<BuildAction*> m_actionList;
     QList<BuildLookup*> m_lookupList;
+    QList<BuildConfig*> m_configList;
     QMap<BuildAction*,QString> m_actionCmdMap;
     QMap<BuildAction*,QString> m_actionArgMap;
 };
