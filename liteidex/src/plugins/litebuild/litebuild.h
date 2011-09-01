@@ -44,6 +44,7 @@ public:
     void setCurrentBuild(LiteApi::IBuild *build);
     void resetLiteEnv(LiteApi::IProject *project);
 public slots:
+    void appLoaded();
     void currentEnvChanged(LiteApi::IEnv*);
     void currentProjectChanged(LiteApi::IProject*);
     void reloadProject();
