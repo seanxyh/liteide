@@ -123,7 +123,7 @@ QString ModelFileImpl::fileNameToFullPath(const QString &fileName)
     QString fullPath = m_rootPath;
     fullPath += QLatin1Char('/');
     fullPath += fileName;
-    return QDir::toNativeSeparators(fullPath);
+    return fullPath;
 }
 
 QString ModelFileImpl::workPath() const

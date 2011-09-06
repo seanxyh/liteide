@@ -40,6 +40,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QDesktopServices>
+#include <QDir>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -327,8 +328,10 @@ bool FileManager::openFile(const QString &fileName)
     return false;
 }
 
-IEditor *FileManager::openEditor(const QString &fileName, bool bActive)
+IEditor *FileManager::openEditor(const QString &_fileName, bool bActive)
 {
+    QString fileName = QDir::fromNativeSeparators(_fileName);
+
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
 
     IEditor *editor = m_liteApp->editorManager()->openEditor(fileName,mimeType);
@@ -343,8 +346,9 @@ IEditor *FileManager::openEditor(const QString &fileName, bool bActive)
     return editor;
 }
 
-IProject *FileManager::openProject(const QString &fileName)
+IProject *FileManager::openProject(const QString &_fileName)
 {
+    QString fileName = QDir::fromNativeSeparators(_fileName);
     QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
     IProject *project = m_liteApp->projectManager()->openProject(fileName,mimeType);
     if (project) {

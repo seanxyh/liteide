@@ -103,7 +103,7 @@ int  main(int argc, char *argv[])
 
     if (argc >= 2) {
         for (int i = 1; i < argc; i++) {
-            QString fileName = QDir::toNativeSeparators(argv[i]);
+            QString fileName = argv[i];
             if (QFile::exists(fileName)) {
                 liteApp->fileManager()->openFile(fileName);
             }
