@@ -42,12 +42,12 @@ class BuildConfigDialog : public QDialog
 public:
     explicit BuildConfigDialog(QWidget *parent = 0);
     ~BuildConfigDialog();
+    void setBuild(const QString &buildId, const QString &buildFile);
     void setModel(QAbstractItemModel * liteide,QAbstractItemModel * config, QAbstractItemModel * custom);
 public slots:
     void editCustomeTabView(QModelIndex);
 protected:
     void resizeTableView(QTableView *tableView);
-    virtual void showEvent(QShowEvent *event);
 private:    
     Ui::BuildConfigDialog *ui;
 };
