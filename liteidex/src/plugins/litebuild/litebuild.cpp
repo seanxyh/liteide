@@ -139,17 +139,21 @@ void LiteBuild::appLoaded()
 
 void LiteBuild::config()
 {
+    if (!m_build) {
+        return;
+    }
     BuildConfigDialog dlg;
+    dlg.setBuild(m_build->id(),m_buildFilePath);
     dlg.setModel(m_liteideModel,m_configModel,m_customModel);
     if (dlg.exec() == QDialog::Accepted) {
         QString key;
         if (!m_buildFilePath.isEmpty()) {
-            key = "litebuild-buildconfig/"+m_buildFilePath;
+            key = "litebuild-custom/"+m_buildFilePath;
         }
-        for (int i = 0; i < m_configModel->rowCount(); i++) {
-            QStandardItem *name = m_configModel->item(i,0);
-            QStandardItem *value = m_configModel->item(i,1);
-            m_liteideMap.insert(name->text(),value->text());
+        for (int i = 0; i < m_customModel->rowCount(); i++) {
+            QStandardItem *name = m_customModel->item(i,0);
+            QStandardItem *value = m_customModel->item(i,1);
+            m_customMap.insert(name->text(),value->text());
             if (!key.isEmpty()) {
                 m_liteApp->settings()->setValue(key+"#"+name->text(),value->text());
             }

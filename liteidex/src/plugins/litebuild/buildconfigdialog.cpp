@@ -73,34 +73,20 @@ void BuildConfigDialog::editCustomeTabView(QModelIndex index)
     }
 }
 
-void BuildConfigDialog::showEvent(QShowEvent *event)
-{
-    QDialog::showEvent(event);
-    resizeTableView(ui->liteideTableView);
-    resizeTableView(ui->configTableView);
-    resizeTableView(ui->customTableView);
-}
-
 void BuildConfigDialog::resizeTableView(QTableView *tableView)
 {
     QAbstractItemModel *model = tableView->model();
-    if (!model) {
-        return;
+    if (model && model->columnCount() >= 2) {
+        tableView->resizeColumnToContents(0);
+        tableView->horizontalHeader()->setResizeMode(0,QHeaderView::Interactive);
+        tableView->horizontalHeader()->setResizeMode(1,QHeaderView::Stretch);
     }
-    tableView->resizeColumnsToContents();
+}
 
-    int total = 0;
-    for (int i = 0; i < model->columnCount(); ++i) {
-        total += tableView->columnWidth(i);
-    }
-    int width = tableView->width()-2;
-    int count = model->columnCount();
-    if (total < width && count == 2)
-    {
-        int extra = (width - total)/4;
-        tableView->setColumnWidth(0, tableView->columnWidth(0) + extra);
-        tableView->setColumnWidth(1, tableView->columnWidth(1) + extra*3);
-    }
+void BuildConfigDialog::setBuild(const QString &buildId, const QString &buildFile)
+{
+    ui->buildIdLabel->setText(buildId);
+    ui->buildFileLabel->setText(buildFile);
 }
 
 void BuildConfigDialog::setModel(QAbstractItemModel * liteide,QAbstractItemModel * config, QAbstractItemModel * custom)
@@ -108,4 +94,7 @@ void BuildConfigDialog::setModel(QAbstractItemModel * liteide,QAbstractItemModel
     ui->liteideTableView->setModel(liteide);
     ui->configTableView->setModel(config);
     ui->customTableView->setModel(custom);
+    resizeTableView(ui->liteideTableView);
+    resizeTableView(ui->configTableView);
+    resizeTableView(ui->customTableView);
 }
