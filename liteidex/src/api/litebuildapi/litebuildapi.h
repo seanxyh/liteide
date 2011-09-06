@@ -132,6 +132,24 @@ protected:
     QString m_value;
 };
 
+class BuildCustom
+{
+public:
+    BuildCustom()
+    {
+    }
+    void setId(const QString &id) { m_id = id; }
+    void setName(const QString &name) { m_name = name; }
+    void setValue(const QString &value) { m_value = value; }
+    QString id() const { return m_id; }
+    QString name() const { return m_name; }
+    QString value() const { return m_value; }
+protected:
+    QString m_id;
+    QString m_name;
+    QString m_value;
+};
+
 class IBuild : public QObject
 {
     Q_OBJECT
@@ -143,6 +161,7 @@ public:
     virtual QList<BuildAction*> actionList() const = 0;
     virtual QList<BuildLookup*> lookupList() const = 0;
     virtual QList<BuildConfig*> configList() const = 0;
+    virtual QList<BuildCustom*> customList() const = 0;
     virtual BuildAction *findAction(const QString &name) = 0;
     virtual QString actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env) = 0;
     virtual QString actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv) = 0;

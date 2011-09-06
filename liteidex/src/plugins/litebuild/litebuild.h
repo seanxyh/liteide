@@ -58,6 +58,8 @@ public slots:
     void enterTextBuildOutput(QString);
     void config();
 protected:
+    QMap<QString,QString> envMap() const;
+protected:
     LiteApi::IApplication   *m_liteApp;
     BuildManager    *m_manager;
     LiteApi::IBuild *m_build;
@@ -65,8 +67,11 @@ protected:
     QToolBar    *m_toolBar;
     QAction     *m_configAct;
     QStandardItemModel *m_configModel;
+    QStandardItemModel *m_customModel;
     QList<QAction*> m_actions;
-    QMap<QString,QString> m_liteEnv;
+    QMap<QString,QString> m_liteenvMap;
+    QMap<QString,QString> m_configMap;
+    QMap<QString,QString> m_customMap;
     ProcessEx *m_process;
     LiteOutput *m_output;
     QString     m_outputRegex;

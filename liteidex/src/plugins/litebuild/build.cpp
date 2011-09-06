@@ -51,6 +51,7 @@ Build::~Build()
     qDeleteAll(m_lookupList);
     qDeleteAll(m_actionList);
     qDeleteAll(m_configList);
+    qDeleteAll(m_customList);
 }
 
 QString Build::mimeType() const
@@ -76,6 +77,11 @@ QList<BuildLookup*> Build::lookupList() const
 QList<BuildConfig*> Build::configList() const
 {
     return m_configList;
+}
+
+QList<BuildCustom*> Build::customList() const
+{
+    return m_customList;
 }
 
 BuildAction *Build::findAction(const QString &id)
