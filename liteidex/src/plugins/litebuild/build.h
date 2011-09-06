@@ -40,6 +40,7 @@ public:
     virtual QList<BuildAction*> actionList() const;
     virtual QList<BuildLookup*> lookupList() const;
     virtual QList<BuildConfig*> configList() const;
+    virtual QList<BuildCustom*> customList() const;
     virtual BuildAction *findAction(const QString &id);
     virtual QString actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env);
     virtual QString actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv);
@@ -58,6 +59,7 @@ protected:
     QList<BuildAction*> m_actionList;
     QList<BuildLookup*> m_lookupList;
     QList<BuildConfig*> m_configList;
+    QList<BuildCustom*> m_customList;
     QMap<BuildAction*,QString> m_actionCmdMap;
     QMap<BuildAction*,QString> m_actionArgMap;
 };
