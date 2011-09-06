@@ -44,7 +44,10 @@ public:
     void setModel(QAbstractItemModel * model);
 public slots:
     void editTabView(QModelIndex);
-private:
+protected:
+    void resizeModel();
+    virtual void showEvent(QShowEvent *event);
+private:    
     Ui::BuildConfigDialog *ui;
 };
 
