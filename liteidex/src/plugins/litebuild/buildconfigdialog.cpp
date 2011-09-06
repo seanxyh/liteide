@@ -64,21 +64,35 @@ void BuildConfigDialog::editTabView(QModelIndex index)
     }
 }
 
-void BuildConfigDialog::setModel(QAbstractItemModel * model)
+void BuildConfigDialog::showEvent(QShowEvent *event)
 {
-    ui->tableView->setModel(model);
+    QDialog::showEvent(event);
+    resizeModel();
+}
+
+void BuildConfigDialog::resizeModel()
+{
+    QAbstractItemModel *model = ui->tableView->model();
+    if (!model) {
+        return;
+    }
     ui->tableView->resizeColumnsToContents();
-    ui->tableView->adjustSize();
 
     int total = 0;
     for (int i = 0; i < model->columnCount(); ++i) {
         total += ui->tableView->columnWidth(i);
     }
-    int width = ui->tableView->size().width();
-    if (total < width)
+    int width = ui->tableView->viewport()->width()-2;
+    int count = model->columnCount();
+    if (total < width && count == 2)
     {
-        int extra = (width - total)/ model->columnCount();
-        for (int i = 0; i < model->columnCount(); ++i)
-            ui->tableView->setColumnWidth(i, ui->tableView->columnWidth(i) + extra);
+        int extra = (width - total)/4;
+        ui->tableView->setColumnWidth(0, ui->tableView->columnWidth(0) + extra);
+        ui->tableView->setColumnWidth(1, ui->tableView->columnWidth(1) + extra*3);
     }
+}
+
+void BuildConfigDialog::setModel(QAbstractItemModel * model)
+{
+    ui->tableView->setModel(model);
 }
