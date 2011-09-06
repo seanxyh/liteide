@@ -50,6 +50,7 @@ Build::~Build()
 {
     qDeleteAll(m_lookupList);
     qDeleteAll(m_actionList);
+    qDeleteAll(m_configList);
 }
 
 QString Build::mimeType() const

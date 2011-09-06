@@ -212,9 +212,13 @@ QTextCursor FindEditor::findEditor(QTextDocument *doc, const QTextCursor &cursor
     if (state->matchWord) {
         flags |= QTextDocument::FindWholeWords;
     }
+    Qt::CaseSensitivity cs = Qt::CaseInsensitive;
+    if (state->matchCase) {
+        cs = Qt::CaseSensitive;
+    }
     QTextCursor find;
     if (state->useRegexp) {
-        find = doc->find(QRegExp(text),cursor,flags);
+        find = doc->find(QRegExp(text,cs),cursor,flags);
     } else {
         find = doc->find(text,cursor,flags);
     }

@@ -93,14 +93,18 @@ public:
         QTextCursor cursor = ed->textCursor();
         int line = cursor.blockNumber();
         int col = cursor.columnNumber();
+        Qt::CaseSensitivity cs = Qt::CaseInsensitive;
+        if (state->matchCase) {
+            cs = Qt::CaseSensitive;
+        }
         if ( cursor.hasSelection() ) {
             QString text = cursor.selectedText();
             if (state->useRegexp) {
-                if (text.indexOf(QRegExp(state->findText),0) != -1) {
+                if (text.indexOf(QRegExp(state->findText,cs),0) != -1) {
                     find = cursor;
                 }
             } else {
-                if (text.indexOf(state->findText,0) != -1) {
+                if (text.indexOf(state->findText,0,cs) != -1) {
                     find = cursor;
                 }
             }
@@ -113,7 +117,7 @@ public:
                 find.beginEditBlock();
                 QString text = find.selectedText();
                 if (state->useRegexp) {
-                    text.replace(QRegExp(state->findText),state->replaceText);
+                    text.replace(QRegExp(state->findText,cs),state->replaceText);
                 } else {
                     text.replace(state->findText,state->replaceText);
                 }
