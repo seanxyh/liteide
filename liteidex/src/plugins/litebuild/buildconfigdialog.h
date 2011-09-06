@@ -34,6 +34,7 @@ namespace Ui {
 }
 
 class QAbstractItemModel;
+class QTableView;
 class BuildConfigDialog : public QDialog
 {
     Q_OBJECT
@@ -41,11 +42,11 @@ class BuildConfigDialog : public QDialog
 public:
     explicit BuildConfigDialog(QWidget *parent = 0);
     ~BuildConfigDialog();
-    void setModel(QAbstractItemModel * model);
+    void setModel(QAbstractItemModel * liteide,QAbstractItemModel * config, QAbstractItemModel * custom);
 public slots:
-    void editTabView(QModelIndex);
+    void editCustomeTabView(QModelIndex);
 protected:
-    void resizeModel();
+    void resizeTableView(QTableView *tableView);
     virtual void showEvent(QShowEvent *event);
 private:    
     Ui::BuildConfigDialog *ui;

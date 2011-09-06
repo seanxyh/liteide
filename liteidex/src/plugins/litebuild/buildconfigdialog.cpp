@@ -43,10 +43,19 @@ BuildConfigDialog::BuildConfigDialog(QWidget *parent) :
     ui(new Ui::BuildConfigDialog)
 {
     ui->setupUi(this);
-    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tableView->resizeColumnsToContents();
-    ui->tableView->verticalHeader()->hide();
-    connect(ui->tableView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(editTabView(QModelIndex)));
+    ui->liteideTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->liteideTableView->resizeColumnsToContents();
+    ui->liteideTableView->verticalHeader()->hide();
+
+    ui->configTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->configTableView->resizeColumnsToContents();
+    ui->configTableView->verticalHeader()->hide();
+
+    ui->customTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->customTableView->resizeColumnsToContents();
+    ui->customTableView->verticalHeader()->hide();
+
+    connect(ui->customTableView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(editCustomeTabView(QModelIndex)));
 }
 
 BuildConfigDialog::~BuildConfigDialog()
@@ -54,45 +63,49 @@ BuildConfigDialog::~BuildConfigDialog()
     delete ui;
 }
 
-void BuildConfigDialog::editTabView(QModelIndex index)
+void BuildConfigDialog::editCustomeTabView(QModelIndex index)
 {
     if (!index.isValid()) {
         return;
     }
     if (index.column() == 1) {
-        ui->tableView->edit(index);
+        ui->customTableView->edit(index);
     }
 }
 
 void BuildConfigDialog::showEvent(QShowEvent *event)
 {
     QDialog::showEvent(event);
-    resizeModel();
+    resizeTableView(ui->liteideTableView);
+    resizeTableView(ui->configTableView);
+    resizeTableView(ui->customTableView);
 }
 
-void BuildConfigDialog::resizeModel()
+void BuildConfigDialog::resizeTableView(QTableView *tableView)
 {
-    QAbstractItemModel *model = ui->tableView->model();
+    QAbstractItemModel *model = tableView->model();
     if (!model) {
         return;
     }
-    ui->tableView->resizeColumnsToContents();
+    tableView->resizeColumnsToContents();
 
     int total = 0;
     for (int i = 0; i < model->columnCount(); ++i) {
-        total += ui->tableView->columnWidth(i);
+        total += tableView->columnWidth(i);
     }
-    int width = ui->tableView->viewport()->width()-2;
+    int width = tableView->width()-2;
     int count = model->columnCount();
     if (total < width && count == 2)
     {
         int extra = (width - total)/4;
-        ui->tableView->setColumnWidth(0, ui->tableView->columnWidth(0) + extra);
-        ui->tableView->setColumnWidth(1, ui->tableView->columnWidth(1) + extra*3);
+        tableView->setColumnWidth(0, tableView->columnWidth(0) + extra);
+        tableView->setColumnWidth(1, tableView->columnWidth(1) + extra*3);
     }
 }
 
-void BuildConfigDialog::setModel(QAbstractItemModel * model)
+void BuildConfigDialog::setModel(QAbstractItemModel * liteide,QAbstractItemModel * config, QAbstractItemModel * custom)
 {
-    ui->tableView->setModel(model);
+    ui->liteideTableView->setModel(liteide);
+    ui->configTableView->setModel(config);
+    ui->customTableView->setModel(custom);
 }

@@ -119,6 +119,11 @@ void Build::appendConfig(BuildConfig *config)
     m_configList.append(config);
 }
 
+void Build::appendCustom(BuildCustom *custom)
+{
+    m_customList.append(custom);
+}
+
 bool Build::loadBuild(LiteApi::IBuildManager *manager, const QString &fileName)
 {
     QFile file(fileName);
@@ -137,6 +142,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
     BuildAction *act = 0;
     BuildLookup *lookup = 0;
     BuildConfig *config = 0;
+    BuildCustom *custom = 0;
     while (!reader.atEnd()) {
         switch (reader.readNext()) {
         case QXmlStreamReader::StartElement:
@@ -176,6 +182,11 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 config->setId(attrs.value("id").toString());
                 config->setName(attrs.value("name").toString());
                 config->setValue(attrs.value("value").toString());
+            } else if (reader.name() == "custom" && custom == 0) {
+                custom = new BuildCustom;
+                custom->setId(attrs.value("id").toString());
+                custom->setName(attrs.value("name").toString());
+                custom->setValue(attrs.value("value").toString());
             }
             break;
         case QXmlStreamReader::EndElement:
@@ -199,6 +210,11 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                     build->appendConfig(config);
                 }
                 config = 0;
+            } else if (reader.name() == "custom") {
+                if (build && custom) {
+                    build->appendCustom(custom);
+                }
+                custom = 0;
             }
             break;
         default:

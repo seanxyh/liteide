@@ -66,10 +66,11 @@ protected:
     LiteApi::IEnvManager *m_envManager;
     QToolBar    *m_toolBar;
     QAction     *m_configAct;
+    QStandardItemModel *m_liteideModel;
     QStandardItemModel *m_configModel;
     QStandardItemModel *m_customModel;
     QList<QAction*> m_actions;
-    QMap<QString,QString> m_liteenvMap;
+    QMap<QString,QString> m_liteideMap;
     QMap<QString,QString> m_configMap;
     QMap<QString,QString> m_customMap;
     ProcessEx *m_process;

@@ -50,6 +50,7 @@ public:
     void appendAction(BuildAction *act);
     void appendLookup(BuildLookup *lookup);
     void appendConfig(BuildConfig *config);
+    void appendCustom(BuildCustom *custom);
 public:
     static bool loadBuild(LiteApi::IBuildManager *manager, const QString &fileName);
     static bool loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QString &fileName);
