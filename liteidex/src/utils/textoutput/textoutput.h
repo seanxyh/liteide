@@ -72,7 +72,7 @@ protected:
     QToolBar      *m_toolBar;
     QToolButton   *m_closeBtn;
     TextOutEdit   *m_editor;
-    QLabel        *m_space;
+    QLabel        *m_infoLabel;
     QAction       *m_clearAct;
     QAction       *m_hideAct;
     QTextCharFormat m_fmt;

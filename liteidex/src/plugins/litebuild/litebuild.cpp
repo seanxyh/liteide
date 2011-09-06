@@ -41,6 +41,7 @@
 #include <QProcessEnvironment>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QLabel>
 #include <QTime>
 #include <QDebug>
 
@@ -63,7 +64,11 @@ public:
         m_stopAct->setIcon(QIcon(":/images/stopaction.png"));
         m_stopAct->setToolTip("Stop Action");
         m_toolBar->insertAction(m_clearAct,m_stopAct);
-        m_toolBar->insertSeparator(m_clearAct);
+        m_toolBar->insertSeparator(m_clearAct);        
+    }
+    void setInfo(const QString &info)
+    {
+        m_infoLabel->setText(info);
     }
 public:
     QAction *m_stopAct;
@@ -207,10 +212,10 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
         if (build) {
             m_buildFilePath = project->fileName();
             m_liteApp->actionManager()->showToolBar(m_toolBar);
-            setCurrentBuild(build);
         } else {
             m_liteApp->actionManager()->hideToolBar(m_toolBar);
         }
+        setCurrentBuild(build);
     } else {
         currentEditorChanged(m_liteApp->editorManager()->currentEditor());
     }
@@ -279,9 +284,11 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
                                      << new QStandardItem(value));
             m_configMap.insert(name,value);
         }
-        m_output->appendTag0(QString("<build id=\"%1\" file=\"%2\"/>").
-                             arg(build->id()).
-                             arg(m_buildFilePath));
+        m_output->setInfo(QString("{build id=\"%1\" file=\"%2\"}").
+                          arg(build->id()).
+                          arg(m_buildFilePath));
+    } else {
+        m_output->setInfo(QString());
     }
 
     if (m_build == build) {
@@ -399,10 +406,10 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
     }
     if (build) {
         m_liteApp->actionManager()->showToolBar(m_toolBar);
-        setCurrentBuild(build);
     } else {
         m_liteApp->actionManager()->hideToolBar(m_toolBar);
     }
+    setCurrentBuild(build);
 }
 
 void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)

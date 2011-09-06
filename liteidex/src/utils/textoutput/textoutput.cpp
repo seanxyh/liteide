@@ -96,10 +96,12 @@ TextOutput::TextOutput(bool readOnly, QWidget *parent) :
     m_hideAct->setIcon(QIcon(":/images/hideoutput.png"));
     m_clearAct = new QAction(tr("Clear"),this);
     m_clearAct->setIcon(QIcon(":/images/cleanoutput.png"));
-    m_space = new QLabel(this);
-    m_space->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+    m_infoLabel = new QLabel(this);
+    m_infoLabel->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
     m_toolBar->addAction(m_clearAct);
-    m_toolBar->addWidget(m_space);
+    m_toolBar->addSeparator();
+    m_toolBar->addWidget(m_infoLabel);
+    m_toolBar->addSeparator();
     m_toolBar->addAction(m_hideAct);
 
     connect(m_editor,SIGNAL(dbclickEvent()),this,SIGNAL(dbclickEvent()));
