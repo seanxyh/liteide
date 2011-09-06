@@ -123,7 +123,7 @@ void MainWindow::currentEditorChanged(IEditor *editor)
         }
         connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(editorModifyChanged(bool)));
     }
-    this->setWindowTitle(title);
+    this->setWindowTitle(QDir::toNativeSeparators(title));
 }
 
 void MainWindow::editorModifyChanged(bool b)
@@ -135,7 +135,7 @@ void MainWindow::editorModifyChanged(bool b)
         if (b == true) {
             title += " * ";
         }
-        this->setWindowTitle(title);
+        this->setWindowTitle(QDir::toNativeSeparators(title));
     }
 }
 

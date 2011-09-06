@@ -41,7 +41,7 @@ class BuildConfigDialog : public QDialog
 
 public:
     explicit BuildConfigDialog(QWidget *parent = 0);
-    ~BuildConfigDialog();
+    virtual ~BuildConfigDialog();
     void setBuild(const QString &buildId, const QString &buildFile);
     void setModel(QAbstractItemModel * liteide,QAbstractItemModel * config, QAbstractItemModel * custom);
 public slots:

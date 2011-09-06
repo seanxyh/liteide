@@ -132,7 +132,7 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
     m_bReadOnly = !fi.isWritable();
 
     m_mimeType = mimeType;
-    m_fileName =  QDir::toNativeSeparators(fileName);
+    m_fileName = fileName;
 
     QByteArray buf = file.readAll();
 
