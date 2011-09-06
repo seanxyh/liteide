@@ -108,9 +108,6 @@ QStringList ProjectManager::mimeTypeList() const
 
 void ProjectManager::setCurrentProject(IProject *project)
 {
-    if (m_currentProject == project) {
-        return;
-    }
     if (m_currentProject) {
         closeProjectHelper(m_currentProject);
     }
