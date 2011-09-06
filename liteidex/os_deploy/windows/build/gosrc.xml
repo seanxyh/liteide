@@ -3,9 +3,9 @@
 	<mime-type type="text/x-gosrc" id="gosrc">
 		<lookup mime-type="text/x-gomake" file="Makefile" top="1"/>
 		<lookup mime-type="text/x-gopro" file="*.e64" top="1"/>
-		<custom id="Target" name="${TARGETARGS}" value=""/>
 		<config id="GoproMake" name="${GOPROMAKE}" value="${LITEAPPDIR}/gopromake"/>
 		<config id="GoExec" name="${GOEXEC}" value="${LITEAPPDIR}/goexec"/>
+		<custom id="TargetArgs" name="${TARGETARGS}" value=""/>
 		<action id="Build" img="go/build.png" key="F7" cmd="${GOPROMAKE}" args="-gofiles ${EDITORNAME} -o ${TARGETNAME}" save="editor" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" />
 		<action id="Clean" img="go/clean.png" cmd="${GOPROMAKE}" args="-gofiles ${EDITORNAME} -o ${TARGETNAME} -clean=obj" output="true" codec="utf-8"/>
 		<action id="CleanAll" img="go/cleanall.png" cmd="${GOPROMAKE}" args="-gofiles ${EDITORNAME} -o ${TARGETNAME} -clean=all" output="true" codec="utf-8"/>
