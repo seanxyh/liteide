@@ -37,7 +37,7 @@ public:
     MainWindow(IApplication *app, QWidget *parent = 0);
     ~MainWindow();
 public:
-    void init();
+    QSplitter *splitter();
 protected:
     virtual void closeEvent(QCloseEvent *event);
     virtual void dropEvent(QDropEvent *event);

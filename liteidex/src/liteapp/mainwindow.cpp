@@ -63,19 +63,14 @@ MainWindow::MainWindow(IApplication *app,QWidget *parent)
     this->setWindowIcon(QIcon(":images/liteide128.png"));
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setAcceptDrops(true);
+
+    m_mainSplitter = new QSplitter(Qt::Vertical,this);
+    setCentralWidget(m_mainSplitter);
 }
 
-void MainWindow::init()
+QSplitter *MainWindow::splitter()
 {
-    m_mainSplitter = new QSplitter(Qt::Vertical,this);
-    m_mainSplitter->addWidget(m_liteApp->editorManager()->widget());
-    //m_liteApp->outputManager()->widget()->hide();
-    m_mainSplitter->addWidget(m_liteApp->outputManager()->widget());
-    m_mainSplitter->setStretchFactor(0,50);
-    addToolBar(Qt::BottomToolBarArea,m_liteApp->outputManager()->toolBar());
-    setCentralWidget(m_mainSplitter);
-
-    //resize(640,480);
+    return m_mainSplitter;
 }
 
 MainWindow::~MainWindow()

@@ -43,6 +43,7 @@ class ActionManager;
 class MimeTypeManager;
 class OptionManager;
 class QSettings;
+class QSplitter;
 class LiteAppOptionFactory;
 
 class LiteApp : public IApplication

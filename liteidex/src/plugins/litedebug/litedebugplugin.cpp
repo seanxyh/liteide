@@ -25,9 +25,20 @@
 
 #include "litedebugplugin.h"
 #include "litedebug.h"
+#include "liteapi/litefindobj.h"
 #include <QMenu>
 #include <QLayout>
 #include <QAction>
+#include <QSplitter>
+//lite_memory_check_begin
+#if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
+     #define _CRTDBG_MAP_ALLOC
+     #include <stdlib.h>
+     #include <crtdbg.h>
+     #define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ )
+     #define new DEBUG_NEW
+#endif
+//lite_memory_check_end
 
 LiteDebugPlugin::LiteDebugPlugin()
 {
@@ -43,8 +54,9 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
 
-    QLayout *layout = m_liteApp->editorManager()->widget()->layout();
-    if (!layout) {
+
+    QSplitter *splitter = LiteApi::findExtensionObject<QSplitter*>(m_liteApp,"LiteApi.QMainWindow.QSplitter");
+    if (!splitter) {
         return false;
     }
 
@@ -55,7 +67,8 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
 
     m_liteDebug = new LiteDebug(app,this);
     m_liteDebug->widget()->hide();
-    layout->addWidget(m_liteDebug->widget());
+    int index = splitter->indexOf(m_liteApp->outputManager()->widget());
+    splitter->insertWidget(index,m_liteDebug->widget());
 
     m_startDebugAct = new QAction(tr("Start Debugging"),this);
     m_stopDebugAct = new QAction(tr("Stop Debugger"),this);
@@ -72,20 +85,17 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
     menu->addAction(m_stepIntoAct);
     menu->addAction(m_stepOutAct);
 
-    connect(m_startDebugAct,SIGNAL(triggered()),this,SLOT(startDebug()));
-    connect(m_stopDebugAct,SIGNAL(triggered()),this,SLOT(stopDebug()));
+    connect(m_startDebugAct,SIGNAL(triggered()),m_liteDebug,SLOT(startDebug()));
+    connect(m_stopDebugAct,SIGNAL(triggered()),m_liteDebug,SLOT(stopDebug()));
+    connect(m_abortDebugAct,SIGNAL(triggered()),m_liteDebug,SLOT(abortDebug()));
+    connect(m_stepOverAct,SIGNAL(triggered()),m_liteDebug,SLOT(stepOver()));
+    connect(m_stepIntoAct,SIGNAL(triggered()),m_liteDebug,SLOT(stepInto()));
+    connect(m_stepOutAct,SIGNAL(triggered()),m_liteDebug,SLOT(stepOut()));
+
+    connect(m_liteDebug,SIGNAL(debugStarted()),m_liteDebug->widget(),SLOT(show()));
+    connect(m_liteDebug,SIGNAL(debugStoped()),m_liteDebug->widget(),SLOT(hide()));
 
     return true;
-}
-
-void LiteDebugPlugin::startDebug()
-{
-    m_liteDebug->widget()->show();
-}
-
-void LiteDebugPlugin::stopDebug()
-{
-    m_liteDebug->widget()->hide();
 }
 
 Q_EXPORT_PLUGIN(LiteDebugPlugin)

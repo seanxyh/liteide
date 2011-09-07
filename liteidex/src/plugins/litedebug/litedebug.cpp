@@ -30,6 +30,15 @@
 #include <QLayout>
 #include <QMenu>
 #include <QAction>
+//lite_memory_check_begin
+#if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
+     #define _CRTDBG_MAP_ALLOC
+     #include <stdlib.h>
+     #include <crtdbg.h>
+     #define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ )
+     #define new DEBUG_NEW
+#endif
+//lite_memory_check_end
 
 LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
@@ -40,7 +49,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 {
     m_manager->initWithApp(app);
 
-    connect(m_manager,SIGNAL(currentDebugChanged(LiteApi::IDebug*)),m_widget,SLOT(setDebug(LiteApi::IDebug*)));
+    connect(m_manager,SIGNAL(currentDebugChanged(LiteApi::IDebug*)),this,SLOT(setDebug(LiteApi::IDebug*)));
 
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
 }
@@ -48,6 +57,16 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 QWidget *LiteDebug::widget()
 {
     return m_widget->widget();
+}
+
+void LiteDebug::setDebug(LiteApi::IDebug *debug)
+{
+    m_debug = debug;
+    if (m_debug) {
+        connect(m_debug,SIGNAL(debugStarted()),this,SIGNAL(debugStarted()));
+        connect(m_debug,SIGNAL(debugStoped()),this,SIGNAL(debugStoped()));
+    }
+    m_widget->setDebug(m_debug);
 }
 
 void LiteDebug::startDebug()
@@ -67,6 +86,14 @@ void LiteDebug::stopDebug()
         return;
     }
     m_debug->stop();
+}
+
+void LiteDebug::abortDebug()
+{
+    if (!m_debug || !m_debug->isDebugging()) {
+        return;
+    }
+    m_debug->abort();
 }
 
 void LiteDebug::stepOver()
