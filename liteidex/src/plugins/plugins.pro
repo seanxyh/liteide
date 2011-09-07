@@ -9,6 +9,7 @@ SUBDIRS = \
     litebuild \
     liteeditor \
     litefind    \
+    litedebug   \
     makefileproject \
     profileproject  \
     filebrowser \
