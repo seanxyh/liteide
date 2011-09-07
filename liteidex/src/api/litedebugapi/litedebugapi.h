@@ -18,25 +18,43 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: litedebugplugin.h
+// Module: litedebugapi.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: litedebugplugin.h,v 1.0 2011-8-12 visualfc Exp $
+// $Id: litedebugapi.h,v 1.0 2011-8-12 visualfc Exp $
 
-#ifndef LITEDEBUGPLUGIN_H
-#define LITEDEBUGPLUGIN_H
+#ifndef __LITEDEBUGAPI_H__
+#define __LITEDEBUGAPI_H__
 
-#include "litedebug_global.h"
 #include "liteapi/liteapi.h"
-#include <QtPlugin>
 
-class LiteDebugPlugin : public LiteApi::IPlugin
+namespace LiteApi {
+
+class IDebug : public QObject
 {
     Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
-    LiteDebugPlugin();
-    virtual bool initWithApp(LiteApi::IApplication *app);
+    IDebug(QObject *parent = 0): QObject(parent) {}
+    virtual ~IDebug() {}
+    virtual QString mimeType() const = 0;
 };
 
-#endif // LITEDEBUGPLUGIN_H
+class IDebugManager : public IDebug
+{
+    Q_OBJECT
+public:
+    IDebugManager(QObject *parent = 0) : IManager(parent) {}
+    virtual void addDebug(IDebug *debug) = 0;
+    virtual void removeDebug(IDebug *debug) = 0;
+    virtual IDebug *findDebug(const QString &mimeType) = 0;
+    virtual QList<IDebug*> debugList() const = 0;
+    virtual void setCurrentDebug(IDebug *debug) = 0;
+    virtual IDebug *currentDebug() = 0;
+signals:
+    void debugChanged(LiteApi::IDebug*);
+};
+
+} //namespace LiteApi
+
+#endif //__LITEDEBUGAPI_H__
+
