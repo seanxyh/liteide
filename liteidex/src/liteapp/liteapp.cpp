@@ -42,6 +42,7 @@
 #include <QToolBar>
 #include <QAction>
 #include <QDateTime>
+#include <QSplitter>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -77,7 +78,11 @@ LiteApp::LiteApp()
     m_dockManager->initWithApp(this);
     m_outputManager->initWithApp(this);
     m_optionManager->initWithApp(this);
-    m_mainwindow->init();
+
+    m_mainwindow->splitter()->addWidget(m_editorManager->widget());
+    m_mainwindow->splitter()->addWidget(m_outputManager->widget());
+    m_mainwindow->splitter()->setStretchFactor(0,50);
+    m_mainwindow->addToolBar(Qt::BottomToolBarArea,m_outputManager->toolBar());
 
     m_extension->addObject("LiteApi.IMimeTypeManager",m_mimeTypeManager);
     m_extension->addObject("LiteApi.IPluginManager",m_pluginManager);
@@ -87,6 +92,7 @@ LiteApp::LiteApp()
     m_extension->addObject("LiteApi.IOutputManager",m_outputManager);
     m_extension->addObject("LiteApi.IOptoinManager",m_optionManager);
     m_extension->addObject("LiteApi.QMainWindow",m_mainwindow);
+    m_extension->addObject("LiteApi.QMainWindow.QSplitter",m_mainwindow->splitter());
 
     //add actions
     connect(m_projectManager,SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(currentProjectChanged(LiteApi::IProject*)));

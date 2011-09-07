@@ -38,9 +38,6 @@ class LiteDebugPlugin : public LiteApi::IPlugin
 public:
     LiteDebugPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
-public slots:
-    void startDebug();
-    void stopDebug();
 protected:
     LiteDebug *m_liteDebug;
     QAction *m_startDebugAct;

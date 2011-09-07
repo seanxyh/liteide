@@ -37,12 +37,18 @@ class LiteDebug : public QObject
 public:
     explicit LiteDebug(LiteApi::IApplication *app, QObject *parent = 0);
     QWidget *widget();
+signals:
+    void debugStarted();
+    void debugStoped();
 public slots:
     void startDebug();
     void stopDebug();
+    void abortDebug();
     void stepOver();
     void stepInto();
     void stepOut();
+protected slots:
+    void setDebug(LiteApi::IDebug*);
 protected:
     LiteApi::IApplication *m_liteApp;
     DebugManager *m_manager;

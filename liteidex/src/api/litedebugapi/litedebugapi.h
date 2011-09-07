@@ -27,8 +27,17 @@
 #define __LITEDEBUGAPI_H__
 
 #include "liteapi/liteapi.h"
+#include <QAbstractItemModel>
 
 namespace LiteApi {
+
+enum DEBUG_MODEL_TYPE{
+    LOCALS_MODEL = 1,
+    WATCHES_MODEL,
+    CALLSTACK_MODEL,
+    BREAKPOINTS_MODEL,
+    THREADS_MODEL,
+};
 
 class IDebug : public QObject
 {
@@ -38,6 +47,7 @@ public:
     virtual ~IDebug() {}
 public:
     virtual QString mimeType() const = 0;
+    virtual QAbstractItemModel *debugModel(DEBUG_MODEL_TYPE type) = 0;
     virtual bool start() = 0;
     virtual bool stop() = 0;
     virtual bool isDebugging() = 0;

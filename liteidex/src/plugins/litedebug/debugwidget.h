@@ -29,6 +29,8 @@
 #include "liteapi/liteapi.h"
 #include "litedebugapi/litedebugapi.h"
 
+class QTabWidget;
+class QTreeView;
 class DebugWidget : public QObject
 {
     Q_OBJECT
@@ -42,6 +44,12 @@ protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
     LiteApi::IDebug *m_debug;
+    QTabWidget *m_tabWidget;
+    QTreeView *m_localsView;
+    QTreeView *m_watchesView;
+    QTreeView *m_statckView;
+    QTreeView *m_bkpointView;
+    QTreeView *m_threadsView;
 };
 
 #endif // DEBUGWIDGET_H
