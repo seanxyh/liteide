@@ -18,37 +18,34 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: litedebugplugin.h
+// Module: debugwidget.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: litedebugplugin.h,v 1.0 2011-8-12 visualfc Exp $
+// $Id: debugwidget.cpp,v 1.0 2011-8-12 visualfc Exp $
 
-#ifndef LITEDEBUGPLUGIN_H
-#define LITEDEBUGPLUGIN_H
+#include "debugwidget.h"
 
-#include "litedebug_global.h"
-#include "liteapi/liteapi.h"
-#include <QtPlugin>
-
-class LiteDebug;
-class LiteDebugPlugin : public LiteApi::IPlugin
+DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
+    QObject(parent),
+    m_liteApp(app),
+    m_widget(new QWidget),
+    m_debug(0)
 {
-    Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
-public:
-    LiteDebugPlugin();
-    virtual bool initWithApp(LiteApi::IApplication *app);
-public slots:
-    void startDebug();
-    void stopDebug();
-protected:
-    LiteDebug *m_liteDebug;
-    QAction *m_startDebugAct;
-    QAction *m_stopDebugAct;
-    QAction *m_abortDebugAct;
-    QAction *m_stepOverAct;
-    QAction *m_stepIntoAct;
-    QAction *m_stepOutAct;
-};
+}
 
-#endif // LITEDEBUGPLUGIN_H
+DebugWidget::~DebugWidget()
+{
+    if (m_widget) {
+        delete m_widget;
+    }
+}
+
+QWidget *DebugWidget::widget()
+{
+    return m_widget;
+}
+
+void DebugWidget::setDebug(LiteApi::IDebug *debug)
+{
+    m_debug = debug;
+}

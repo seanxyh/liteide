@@ -18,37 +18,33 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: litedebugplugin.h
+// Module: debugmanager.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: litedebugplugin.h,v 1.0 2011-8-12 visualfc Exp $
+// $Id: debugmanager.h,v 1.0 2011-8-12 visualfc Exp $
 
-#ifndef LITEDEBUGPLUGIN_H
-#define LITEDEBUGPLUGIN_H
+#ifndef DEBUGMANAGER_H
+#define DEBUGMANAGER_H
 
-#include "litedebug_global.h"
-#include "liteapi/liteapi.h"
-#include <QtPlugin>
+#include "litedebugapi/litedebugapi.h"
 
-class LiteDebug;
-class LiteDebugPlugin : public LiteApi::IPlugin
+using namespace LiteApi;
+
+class DebugManager : public LiteApi::IDebugManager
 {
     Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
-    LiteDebugPlugin();
-    virtual bool initWithApp(LiteApi::IApplication *app);
-public slots:
-    void startDebug();
-    void stopDebug();
+    DebugManager(QObject *parent);
+    virtual ~DebugManager();
+    virtual void addDebug(IDebug *debug);
+    virtual void removeDebug(IDebug *debug);
+    virtual IDebug *findDebug(const QString &mimeType);
+    virtual QList<IDebug*> debugList() const;
+    virtual void setCurrentDebug(IDebug *debug);
+    virtual IDebug *currentDebug();
 protected:
-    LiteDebug *m_liteDebug;
-    QAction *m_startDebugAct;
-    QAction *m_stopDebugAct;
-    QAction *m_abortDebugAct;
-    QAction *m_stepOverAct;
-    QAction *m_stepIntoAct;
-    QAction *m_stepOutAct;
+    QList<IDebug*>  m_debugList;
+    IDebug *m_currentDebug;
 };
 
-#endif // LITEDEBUGPLUGIN_H
+#endif // DEBUGMANAGER_H

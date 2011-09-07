@@ -18,37 +18,56 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: litedebugplugin.h
+// Module: debugmanager.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: litedebugplugin.h,v 1.0 2011-8-12 visualfc Exp $
+// $Id: debugmanager.cpp,v 1.0 2011-8-12 visualfc Exp $
 
-#ifndef LITEDEBUGPLUGIN_H
-#define LITEDEBUGPLUGIN_H
+#include "debugmanager.h"
 
-#include "litedebug_global.h"
-#include "liteapi/liteapi.h"
-#include <QtPlugin>
-
-class LiteDebug;
-class LiteDebugPlugin : public LiteApi::IPlugin
+DebugManager::DebugManager(QObject *parent) :
+    IDebugManager(parent),
+    m_currentDebug(0)
 {
-    Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
-public:
-    LiteDebugPlugin();
-    virtual bool initWithApp(LiteApi::IApplication *app);
-public slots:
-    void startDebug();
-    void stopDebug();
-protected:
-    LiteDebug *m_liteDebug;
-    QAction *m_startDebugAct;
-    QAction *m_stopDebugAct;
-    QAction *m_abortDebugAct;
-    QAction *m_stepOverAct;
-    QAction *m_stepIntoAct;
-    QAction *m_stepOutAct;
-};
+}
 
-#endif // LITEDEBUGPLUGIN_H
+DebugManager::~DebugManager()
+{
+    qDeleteAll(m_debugList);
+}
+
+void DebugManager::addDebug(IDebug *debug)
+{
+    m_debugList.append(debug);
+}
+
+void DebugManager::removeDebug(IDebug *debug)
+{
+    m_debugList.removeOne(debug);
+}
+
+IDebug *DebugManager::findDebug(const QString &mimeType)
+{
+    foreach(IDebug *debug, m_debugList) {
+        if (debug->mimeType() == mimeType) {
+            return debug;
+        }
+    }
+    return 0;
+}
+
+QList<IDebug*> DebugManager::debugList() const
+{
+    return m_debugList;
+}
+
+void DebugManager::setCurrentDebug(IDebug *debug)
+{
+    m_currentDebug = debug;
+    emit currentDebugChanged(m_currentDebug);
+}
+
+IDebug *DebugManager::currentDebug()
+{
+    return m_currentDebug;
+}

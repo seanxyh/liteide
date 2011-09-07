@@ -36,10 +36,21 @@ class IDebug : public QObject
 public:
     IDebug(QObject *parent = 0): QObject(parent) {}
     virtual ~IDebug() {}
+public:
     virtual QString mimeType() const = 0;
+    virtual bool start() = 0;
+    virtual bool stop() = 0;
+    virtual bool isDebugging() = 0;
+    virtual bool abort() = 0;
+    virtual bool stepOver() = 0;
+    virtual bool stepInto() = 0;
+    virtual bool stepOut() = 0;
+signals:
+    void debugStarted();
+    void debugStoped();
 };
 
-class IDebugManager : public IDebug
+class IDebugManager : public IManager
 {
     Q_OBJECT
 public:
@@ -51,7 +62,7 @@ public:
     virtual void setCurrentDebug(IDebug *debug) = 0;
     virtual IDebug *currentDebug() = 0;
 signals:
-    void debugChanged(LiteApi::IDebug*);
+    void currentDebugChanged(LiteApi::IDebug*);
 };
 
 } //namespace LiteApi
