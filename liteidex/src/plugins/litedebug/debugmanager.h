@@ -30,21 +30,21 @@
 
 using namespace LiteApi;
 
-class DebugManager : public LiteApi::IDebugManager
+class DebugManager : public LiteApi::IDebuggerManager
 {
     Q_OBJECT
 public:
     DebugManager(QObject *parent);
     virtual ~DebugManager();
-    virtual void addDebug(IDebug *debug);
-    virtual void removeDebug(IDebug *debug);
-    virtual IDebug *findDebug(const QString &mimeType);
-    virtual QList<IDebug*> debugList() const;
-    virtual void setCurrentDebug(IDebug *debug);
-    virtual IDebug *currentDebug();
+    virtual void addDebugger(IDebugger *debug);
+    virtual void removeDebugger(IDebugger *debug);
+    virtual IDebugger *findDebugger(const QString &mimeType);
+    virtual QList<IDebugger*> debuggerList() const;
+    virtual void setCurrentDebugger(IDebugger *debug);
+    virtual IDebugger *currentDebugger();
 protected:
-    QList<IDebug*>  m_debugList;
-    IDebug *m_currentDebug;
+    QList<IDebugger*>  m_debugList;
+    IDebugger *m_currentDebug;
 };
 
 #endif // DEBUGMANAGER_H

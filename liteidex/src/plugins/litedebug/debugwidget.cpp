@@ -78,7 +78,7 @@ QWidget *DebugWidget::widget()
     return m_widget;
 }
 
-void DebugWidget::setDebug(LiteApi::IDebug *debug)
+void DebugWidget::setDebug(LiteApi::IDebugger *debug)
 {
     if (m_debug == debug) {
         return;

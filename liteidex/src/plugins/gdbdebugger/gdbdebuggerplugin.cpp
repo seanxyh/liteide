@@ -18,13 +18,13 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: gdbdebugerplugin.cpp
+// Module: gdbdebuggerplugin.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
 // $Id: gdbdebugerplugin.cpp,v 1.0 2011-8-12 visualfc Exp $
 
-#include "gdbdebugerplugin.h"
-#include "gdbdebuger.h"
+#include "gdbdebuggerplugin.h"
+#include "gdbdebugger.h"
 #include "litedebugapi/litedebugapi.h"
 #include "liteapi/litefindobj.h"
 //lite_memory_check_begin
@@ -37,34 +37,34 @@
 #endif
 //lite_memory_check_end
 
-GdbDebugerPlugin::GdbDebugerPlugin()
+GdbDebuggerPlugin::GdbDebuggerPlugin()
 {
-    m_info->setId("plugin/GdbDebuger");
-    m_info->setName("GdbDebuger");
+    m_info->setId("plugin/GdbDebugger");
+    m_info->setName("GdbDebugger");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("Gdb Debuger Plugin");
+    m_info->setInfo("Gdb Debugger Plugin");
 }
 
-bool GdbDebugerPlugin::initWithApp(LiteApi::IApplication *app)
+bool GdbDebuggerPlugin::initWithApp(LiteApi::IApplication *app)
 {
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
 
-    LiteApi::IDebugManager *manager = LiteApi::findExtensionObject<LiteApi::IDebugManager*>(app,"LiteApi.IDebugManager");
+    LiteApi::IDebuggerManager *manager = LiteApi::findExtensionObject<LiteApi::IDebuggerManager*>(app,"LiteApi.IDebugManager");
     if (!manager) {
         return false;
     }
-    GdbDebuger *debug = new GdbDebuger(app);
-    manager->addDebug(debug);
-    manager->setCurrentDebug(debug);
+    GdbDebugeer *debug = new GdbDebugeer(app);
+    manager->addDebugger(debug);
+    manager->setCurrentDebugger(debug);
 
     return true;
 }
 
-QStringList GdbDebugerPlugin::dependPluginList() const
+QStringList GdbDebuggerPlugin::dependPluginList() const
 {
     return QStringList() << "plugin/litedebug";
 }
 
-Q_EXPORT_PLUGIN(GdbDebugerPlugin)
+Q_EXPORT_PLUGIN(GdbDebuggerPlugin)

@@ -23,7 +23,7 @@
 // date: 2011-8-12
 // $Id: gdbdebuger.cpp,v 1.0 2011-8-12 visualfc Exp $
 
-#include "gdbdebuger.h"
+#include "gdbdebugger.h"
 #include "fileutil/fileutil.h"
 #include "liteapi/litefindobj.h"
 
@@ -39,8 +39,8 @@
 #endif
 //lite_memory_check_end
 
-GdbDebuger::GdbDebuger(LiteApi::IApplication *app, QObject *parent) :
-    LiteApi::IDebug(parent),
+GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
+    LiteApi::IDebugger(parent),
     m_liteApp(app),
     m_envManager(0)
 {
@@ -53,39 +53,39 @@ GdbDebuger::GdbDebuger(LiteApi::IApplication *app, QObject *parent) :
     connect(m_process,SIGNAL(readyReadStandardOutput()),this,SLOT(readStdOutput()));
 }
 
-GdbDebuger::~GdbDebuger()
+GdbDebugeer::~GdbDebugeer()
 {
     if (m_process) {
          delete m_process;
     }
 }
 
-void GdbDebuger::appLoaded()
+void GdbDebugeer::appLoaded()
 {
     m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
 }
 
-QString GdbDebuger::mimeType() const
+QString GdbDebugeer::mimeType() const
 {
     return QLatin1String("debuger/gdb");
 }
 
-QAbstractItemModel *GdbDebuger::debugModel(LiteApi::DEBUG_MODEL_TYPE type)
+QAbstractItemModel *GdbDebugeer::debugModel(LiteApi::DEBUG_MODEL_TYPE type)
 {
     return 0;
 }
 
-void GdbDebuger::setWorkingDirectory(const QString &dir)
+void GdbDebugeer::setWorkingDirectory(const QString &dir)
 {
     m_process->setWorkingDirectory(dir);
 }
 
-void GdbDebuger::setEnvironment (const QStringList &environment)
+void GdbDebugeer::setEnvironment (const QStringList &environment)
 {
     m_process->setEnvironment(environment);
 }
 
-bool GdbDebuger::start(const QString &program, const QStringList &arguments)
+bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
 {
     qDebug() << program << arguments;
 
@@ -114,39 +114,39 @@ bool GdbDebuger::start(const QString &program, const QStringList &arguments)
     return true;
 }
 
-bool GdbDebuger::stop()
+bool GdbDebugeer::stop()
 {
 }
 
-bool GdbDebuger::isDebugging()
+bool GdbDebugeer::isDebugging()
 {
     return m_process->state() != QProcess::NotRunning;
 }
 
-bool GdbDebuger::abort()
+bool GdbDebugeer::abort()
 {
 }
 
-bool GdbDebuger::stepOver()
+bool GdbDebugeer::stepOver()
 {
 }
 
-bool GdbDebuger::stepInto()
+bool GdbDebugeer::stepInto()
 {
 }
 
-bool GdbDebuger::stepOut()
+bool GdbDebugeer::stepOut()
 {
 }
 
-void GdbDebuger::writeCmd(const QString &cmd)
+void GdbDebugeer::writeCmd(const QString &cmd)
 {
     QString num = QString::number(m_index++);
     QString c = QString("%1%2\r\n").arg(num,8,'0').arg(cmd);
     m_process->write(c.toLatin1());
 }
 
-void GdbDebuger::readStdError()
+void GdbDebugeer::readStdError()
 {
     qDebug() << "err" << m_process->readAllStandardError();
 }
@@ -207,7 +207,7 @@ static bool isNameChar(char c)
     return (c >= 'a' && c <= 'z') || c == '-';
 }
 
-void GdbDebuger::handleResponse(const QByteArray &buff)
+void GdbDebugeer::handleResponse(const QByteArray &buff)
 {
     if (buff.isEmpty() || buff == "(gdb) ")
         return;
@@ -315,33 +315,33 @@ void GdbDebuger::handleResponse(const QByteArray &buff)
     }
 }
 
-void GdbDebuger::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValue &result)
+void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValue &result)
 {
 
 }
 
-void GdbDebuger::handleConsoleStream(const QByteArray &data)
+void GdbDebugeer::handleConsoleStream(const QByteArray &data)
 {
 
 }
 
-void GdbDebuger::handleTargetStream(const QByteArray &data)
+void GdbDebugeer::handleTargetStream(const QByteArray &data)
 {
 
 }
 
-void GdbDebuger::handleLogStream(const QByteArray &data)
+void GdbDebugeer::handleLogStream(const QByteArray &data)
 {
 
 }
 
-void GdbDebuger::handleResultRecord(const GdbResponse &response)
+void GdbDebugeer::handleResultRecord(const GdbResponse &response)
 {
 
 }
 
 
-void GdbDebuger::initGdb()
+void GdbDebugeer::initGdb()
 {
 #ifdef Q_OS_WIN
     writeCmd("set new-console on");
@@ -357,7 +357,7 @@ void GdbDebuger::initGdb()
     //writeCmd("-exec-run");
 }
 
-void GdbDebuger::readStdOutput()
+void GdbDebugeer::readStdOutput()
 {
     int newstart = 0;
     int scan = m_inbuffer.size();

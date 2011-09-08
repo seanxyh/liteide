@@ -39,12 +39,12 @@ enum DEBUG_MODEL_TYPE{
     THREADS_MODEL,
 };
 
-class IDebug : public QObject
+class IDebugger : public QObject
 {
     Q_OBJECT
 public:
-    IDebug(QObject *parent = 0): QObject(parent) {}
-    virtual ~IDebug() {}
+    IDebugger(QObject *parent = 0): QObject(parent) {}
+    virtual ~IDebugger() {}
 public:
     virtual QString mimeType() const = 0;
     virtual QAbstractItemModel *debugModel(DEBUG_MODEL_TYPE type) = 0;
@@ -62,19 +62,19 @@ signals:
     void debugStoped();
 };
 
-class IDebugManager : public IManager
+class IDebuggerManager : public IManager
 {
     Q_OBJECT
 public:
-    IDebugManager(QObject *parent = 0) : IManager(parent) {}
-    virtual void addDebug(IDebug *debug) = 0;
-    virtual void removeDebug(IDebug *debug) = 0;
-    virtual IDebug *findDebug(const QString &mimeType) = 0;
-    virtual QList<IDebug*> debugList() const = 0;
-    virtual void setCurrentDebug(IDebug *debug) = 0;
-    virtual IDebug *currentDebug() = 0;
+    IDebuggerManager(QObject *parent = 0) : IManager(parent) {}
+    virtual void addDebugger(IDebugger *debug) = 0;
+    virtual void removeDebugger(IDebugger *debug) = 0;
+    virtual IDebugger *findDebugger(const QString &mimeType) = 0;
+    virtual QList<IDebugger*> debuggerList() const = 0;
+    virtual void setCurrentDebugger(IDebugger *debug) = 0;
+    virtual IDebugger *currentDebugger() = 0;
 signals:
-    void currentDebugChanged(LiteApi::IDebug*);
+    void currentDebuggerChanged(LiteApi::IDebugger*);
 };
 
 } //namespace LiteApi

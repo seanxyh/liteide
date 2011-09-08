@@ -35,7 +35,7 @@
 //lite_memory_check_end
 
 DebugManager::DebugManager(QObject *parent) :
-    IDebugManager(parent),
+    IDebuggerManager(parent),
     m_currentDebug(0)
 {
 }
@@ -45,19 +45,19 @@ DebugManager::~DebugManager()
     qDeleteAll(m_debugList);
 }
 
-void DebugManager::addDebug(IDebug *debug)
+void DebugManager::addDebugger(IDebugger *debug)
 {
     m_debugList.append(debug);
 }
 
-void DebugManager::removeDebug(IDebug *debug)
+void DebugManager::removeDebugger(IDebugger *debug)
 {
     m_debugList.removeOne(debug);
 }
 
-IDebug *DebugManager::findDebug(const QString &mimeType)
+IDebugger *DebugManager::findDebugger(const QString &mimeType)
 {
-    foreach(IDebug *debug, m_debugList) {
+    foreach(IDebugger *debug, m_debugList) {
         if (debug->mimeType() == mimeType) {
             return debug;
         }
@@ -65,18 +65,18 @@ IDebug *DebugManager::findDebug(const QString &mimeType)
     return 0;
 }
 
-QList<IDebug*> DebugManager::debugList() const
+QList<IDebugger*> DebugManager::debuggerList() const
 {
     return m_debugList;
 }
 
-void DebugManager::setCurrentDebug(IDebug *debug)
+void DebugManager::setCurrentDebugger(IDebugger *debug)
 {
     m_currentDebug = debug;
-    emit currentDebugChanged(m_currentDebug);
+    emit currentDebuggerChanged(m_currentDebug);
 }
 
-IDebug *DebugManager::currentDebug()
+IDebugger *DebugManager::currentDebugger()
 {
     return m_currentDebug;
 }
