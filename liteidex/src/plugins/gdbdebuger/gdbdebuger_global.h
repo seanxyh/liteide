@@ -1,0 +1,12 @@
+#ifndef GDBDEBUGER_GLOBAL_H
+#define GDBDEBUGER_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(GDBDEBUGER_LIBRARY)
+#  define GDBDEBUGERSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define GDBDEBUGERSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // GDBDEBUGER_GLOBAL_H

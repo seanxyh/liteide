@@ -45,12 +45,12 @@ LiteDebugPlugin::LiteDebugPlugin()
     m_info->setId("plugin/LiteDebug");
     m_info->setName("LiteDebug");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("LiteIDE Debug Plugin");
+    m_info->setInfo("LiteIDE Debug Manager Plugin");
 }
 
 QStringList LiteDebugPlugin::dependPluginList() const
 {
-    return QStringList() << "plugin/litebuild";
+    return QStringList() << "plugin/litebuild" <<"plugin/litefind";
 }
 
 bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
