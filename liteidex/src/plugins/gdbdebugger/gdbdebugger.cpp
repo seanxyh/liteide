@@ -114,8 +114,9 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
     return true;
 }
 
-bool GdbDebugeer::stop()
+void GdbDebugeer::stop()
 {
+    writeCmd("-gdb-exit");
 }
 
 bool GdbDebugeer::isDebugging()
@@ -123,20 +124,24 @@ bool GdbDebugeer::isDebugging()
     return m_process->state() != QProcess::NotRunning;
 }
 
-bool GdbDebugeer::abort()
+void GdbDebugeer::abort()
 {
+    m_process->kill();
 }
 
-bool GdbDebugeer::stepOver()
+void GdbDebugeer::stepOver()
 {
+    writeCmd("-exec-next");
 }
 
-bool GdbDebugeer::stepInto()
+void GdbDebugeer::stepInto()
 {
+    writeCmd("-exec-step");
 }
 
-bool GdbDebugeer::stepOut()
+void GdbDebugeer::stepOut()
 {
+    writeCmd("-exec-return");
 }
 
 void GdbDebugeer::writeCmd(const QString &cmd)
@@ -315,9 +320,35 @@ void GdbDebugeer::handleResponse(const QByteArray &buff)
     }
 }
 
+void GdbDebugeer::handleStopped(const GdbMiValue &result)
+{
+    const QByteArray reason = result.findChild("reason").data();
+    bool exit = false;
+    if (reason == "exited-normally") {
+        exit = true;
+    } else if (reason == "exited") {
+        exit = true;
+    } else if (reason == "exited-signalled") {
+        exit = true;
+    } else if (reason == "breakpoint-hit") {
+        QByteArray ar;
+        result.dumpChildren(&ar,true,4);
+        qDebug() << ar;
+        qDebug() << result.findChild("frame").findChild("fullname").data();
+        qDebug() << result.findChild("frame").findChild("line").data();
+    }
+
+    if (exit) {
+        stop();
+        return;
+    }
+}
+
 void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValue &result)
 {
-
+    if (asyncClass == "stopped") {
+        handleStopped(result);
+    }
 }
 
 void GdbDebugeer::handleConsoleStream(const QByteArray &data)
@@ -353,8 +384,8 @@ void GdbDebugeer::initGdb()
     writeCmd("set width 0");
     writeCmd("set height 0");
     writeCmd("set auto-solib-add on");
-    // writeCmd("break 1");
-    //writeCmd("-exec-run");
+    writeCmd("break main.main");
+    writeCmd("-exec-run");
 }
 
 void GdbDebugeer::readStdOutput()

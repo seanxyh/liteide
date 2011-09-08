@@ -51,12 +51,12 @@ public:
     virtual void setWorkingDirectory(const QString &dir) = 0;
     virtual void setEnvironment (const QStringList &environment) = 0;
     virtual bool start(const QString &program, const QStringList &arguments) = 0;
-    virtual bool stop() = 0;
+    virtual void stop() = 0;
     virtual bool isDebugging() = 0;
-    virtual bool abort() = 0;
-    virtual bool stepOver() = 0;
-    virtual bool stepInto() = 0;
-    virtual bool stepOut() = 0;
+    virtual void abort() = 0;
+    virtual void stepOver() = 0;
+    virtual void stepInto() = 0;
+    virtual void stepOut() = 0;
 signals:
     void debugStarted();
     void debugStoped();

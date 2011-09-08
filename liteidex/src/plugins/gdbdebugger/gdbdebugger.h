@@ -43,18 +43,19 @@ public:
     virtual void setWorkingDirectory(const QString &dir);
     virtual void setEnvironment (const QStringList &environment);
     virtual bool start(const QString &program, const QStringList &arguments);
-    virtual bool stop();
+    virtual void stop();
     virtual bool isDebugging();
-    virtual bool abort();
-    virtual bool stepOver();
-    virtual bool stepInto();
-    virtual bool stepOut();
+    virtual void abort();
+    virtual void stepOver();
+    virtual void stepInto();
+    virtual void stepOut();
 public slots:
     void appLoaded();
     void readStdError();
     void readStdOutput();
 protected:
     void handleResponse(const QByteArray &buff);
+    void handleStopped(const GdbMiValue &result);
     void handleAsyncClass(const QByteArray &asyncClass, const GdbMiValue &result);
     void handleConsoleStream(const QByteArray &data);
     void handleTargetStream(const QByteArray &data);
