@@ -39,11 +39,11 @@ public:
     virtual ~DebugWidget();
     virtual QWidget *widget();
 public slots:
-    void setDebug(LiteApi::IDebug *debug);
+    void setDebug(LiteApi::IDebugger *debug);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
-    LiteApi::IDebug *m_debug;
+    LiteApi::IDebugger *m_debug;
     QTabWidget *m_tabWidget;
     QTreeView *m_localsView;
     QTreeView *m_watchesView;

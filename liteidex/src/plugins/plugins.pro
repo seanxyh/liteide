@@ -17,5 +17,5 @@ SUBDIRS = \
     golangfmt \
     golangcode \
     golangdoc \
-    gdbdebuger \
+    gdbdebugger \
 #    qsqleditor \

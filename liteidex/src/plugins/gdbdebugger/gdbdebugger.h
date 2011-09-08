@@ -18,25 +18,25 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: gdbdebuger.h
+// Module: gdbdebugger.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: gdbdebuger.h,v 1.0 2011-8-12 visualfc Exp $
+// $Id: gdbdebugger.h,v 1.0 2011-8-12 visualfc Exp $
 
-#ifndef GDBDEBUGER_H
-#define GDBDEBUGER_H
+#ifndef GDBDEBUGGER_H
+#define GDBDEBUGGER_H
 
 #include "litedebugapi/litedebugapi.h"
 #include "liteenvapi/liteenvapi.h"
 #include "qtc_gdbmi/gdbmi.h"
 
 class QProcess;
-class GdbDebuger : public LiteApi::IDebug
+class GdbDebugeer : public LiteApi::IDebugger
 {
     Q_OBJECT
 public:
-    GdbDebuger(LiteApi::IApplication *app, QObject *parent = 0);
-    ~GdbDebuger();
+    GdbDebugeer(LiteApi::IApplication *app, QObject *parent = 0);
+    ~GdbDebugeer();
 public:
     virtual QString mimeType() const;
     virtual QAbstractItemModel *debugModel(LiteApi::DEBUG_MODEL_TYPE type);
@@ -73,4 +73,4 @@ protected:
     int     m_index;
 };
 
-#endif // GDBDEBUGER_H
+#endif // GDBDEBUGGER_H

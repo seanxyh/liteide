@@ -18,20 +18,26 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: gdbdebuger_global.h
+// Module: gdbdebugegrplugin.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-12
-// $Id: gdbdebuger_global.h,v 1.0 2011-8-12 visualfc Exp $
+// $Id: gdbdebugerplugin.h,v 1.0 2011-8-12 visualfc Exp $
 
-#ifndef GDBDEBUGER_GLOBAL_H
-#define GDBDEBUGER_GLOBAL_H
+#ifndef GDBDEBUGGERPLUGIN_H
+#define GDBDEBUGGERPLUGIN_H
 
-#include <QtCore/qglobal.h>
+#include "gdbdebugger_global.h"
+#include "liteapi/liteapi.h"
+#include <QtPlugin>
 
-#if defined(GDBDEBUGER_LIBRARY)
-#  define GDBDEBUGERSHARED_EXPORT Q_DECL_EXPORT
-#else
-#  define GDBDEBUGERSHARED_EXPORT Q_DECL_IMPORT
-#endif
+class GdbDebuggerPlugin : public LiteApi::IPlugin
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPlugin)
+public:
+    GdbDebuggerPlugin();
+    virtual bool initWithApp(LiteApi::IApplication *app);
+    virtual QStringList dependPluginList() const;
+};
 
-#endif // GDBDEBUGER_GLOBAL_H
+#endif // GDBDEBUGGERPLUGIN_H

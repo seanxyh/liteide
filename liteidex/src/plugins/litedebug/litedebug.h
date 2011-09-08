@@ -51,12 +51,12 @@ public slots:
     void stepInto();
     void stepOut();
 protected slots:
-    void setDebug(LiteApi::IDebug*);
+    void setDebugger(LiteApi::IDebugger*);
 protected:
     LiteApi::IApplication *m_liteApp;
     DebugManager *m_manager;
     DebugWidget  *m_widget;
-    LiteApi::IDebug *m_debug;
+    LiteApi::IDebugger *m_debugger;
     LiteApi::ILiteBuild *m_liteBuild;
     LiteApi::IEnvManager *m_envManager;
 };

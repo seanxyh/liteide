@@ -49,13 +49,13 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp(app),
     m_manager(new DebugManager(this)),
     m_widget(new DebugWidget(app,this)),
-    m_debug(0),
+    m_debugger(0),
     m_liteBuild(0),
     m_envManager(0)
 {
     m_manager->initWithApp(app);
 
-    connect(m_manager,SIGNAL(currentDebugChanged(LiteApi::IDebug*)),this,SLOT(setDebug(LiteApi::IDebug*)));
+    connect(m_manager,SIGNAL(currentDebuggerChanged(LiteApi::IDebugger*)),this,SLOT(setDebugger(LiteApi::IDebugger*)));
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
 }
@@ -71,22 +71,22 @@ QWidget *LiteDebug::widget()
     return m_widget->widget();
 }
 
-void LiteDebug::setDebug(LiteApi::IDebug *debug)
+void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
 {
-    m_debug = debug;
-    if (m_debug) {
-        connect(m_debug,SIGNAL(debugStarted()),this,SIGNAL(debugStarted()));
-        connect(m_debug,SIGNAL(debugStoped()),this,SIGNAL(debugStoped()));
+    m_debugger = debug;
+    if (m_debugger) {
+        connect(m_debugger,SIGNAL(debugStarted()),this,SIGNAL(debugStarted()));
+        connect(m_debugger,SIGNAL(debugStoped()),this,SIGNAL(debugStoped()));
     }
-    m_widget->setDebug(m_debug);
+    m_widget->setDebug(m_debugger);
 }
 
 void LiteDebug::startDebug()
 {
-    if (!m_debug) {
+    if (!m_debugger) {
         return;
     }
-    if (m_debug->isDebugging()) {
+    if (m_debugger->isDebugging()) {
         return;
     }
     if (!m_liteBuild || !m_liteBuild->buildManager()->currentBuild()) {
@@ -107,47 +107,47 @@ void LiteDebug::startDebug()
     if (index != -1) {
         target = targetFilepath.right(targetFilepath.length()-index);
     }
-    m_debug->setEnvironment(m_envManager->currentEnvironment().toStringList());
-    m_debug->setWorkingDirectory(workDir);
-    m_debug->start(target,args.split(" "));
+    m_debugger->setEnvironment(m_envManager->currentEnvironment().toStringList());
+    m_debugger->setWorkingDirectory(workDir);
+    m_debugger->start(target,args.split(" "));
 }
 
 void LiteDebug::stopDebug()
 {
-    if (!m_debug || !m_debug->isDebugging()) {
+    if (!m_debugger || !m_debugger->isDebugging()) {
         return;
     }
-    m_debug->stop();
+    m_debugger->stop();
 }
 
 void LiteDebug::abortDebug()
 {
-    if (!m_debug || !m_debug->isDebugging()) {
+    if (!m_debugger || !m_debugger->isDebugging()) {
         return;
     }
-    m_debug->abort();
+    m_debugger->abort();
 }
 
 void LiteDebug::stepOver()
 {
-    if (!m_debug || !m_debug->isDebugging()) {
+    if (!m_debugger || !m_debugger->isDebugging()) {
         return;
     }
-    m_debug->stepOver();
+    m_debugger->stepOver();
 }
 
 void LiteDebug::stepInto()
 {
-    if (!m_debug || !m_debug->isDebugging()) {
+    if (!m_debugger || !m_debugger->isDebugging()) {
         return;
     }
-    m_debug->stepInto();
+    m_debugger->stepInto();
 }
 
 void LiteDebug::stepOut()
 {
-    if (!m_debug || !m_debug->isDebugging()) {
+    if (!m_debugger || !m_debugger->isDebugging()) {
         return;
     }
-    m_debug->stepOut();
+    m_debugger->stepOut();
 }

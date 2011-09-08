@@ -1,4 +1,4 @@
-TARGET = gdbdebuger
+TARGET = gdbdebugger
 TEMPLATE = lib
 
 include(../../liteideplugin.pri)
@@ -8,9 +8,9 @@ include(../../3rdparty/qtc_gdbmi/qtc_gdbmi.pri)
 
 DEFINES += GDBDEBUGER_LIBRARY
 
-SOURCES += gdbdebugerplugin.cpp \
-    gdbdebuger.cpp \
+SOURCES += gdbdebuggerplugin.cpp \
+    gdbdebugger.cpp \
 
-HEADERS += gdbdebugerplugin.h\
-        gdbdebuger_global.h \
-    gdbdebuger.h \
+HEADERS += gdbdebuggerplugin.h\
+        gdbdebugger_global.h \
+    gdbdebugger.h \
