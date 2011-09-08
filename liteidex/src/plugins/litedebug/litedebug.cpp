@@ -26,10 +26,13 @@
 #include "litedebug.h"
 #include "debugmanager.h"
 #include "debugwidget.h"
+#include "liteapi/litefindobj.h"
 
 #include <QLayout>
 #include <QMenu>
 #include <QAction>
+#include <QDebug>
+
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -45,13 +48,21 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp(app),
     m_manager(new DebugManager(this)),
     m_widget(new DebugWidget(app,this)),
-    m_debug(0)
+    m_debug(0),
+    m_liteBuild(0),
+    m_envManager(0)
 {
     m_manager->initWithApp(app);
 
     connect(m_manager,SIGNAL(currentDebugChanged(LiteApi::IDebug*)),this,SLOT(setDebug(LiteApi::IDebug*)));
-
+    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
+}
+
+void LiteDebug::appLoaded()
+{
+    m_liteBuild = LiteApi::findExtensionObject<LiteApi::ILiteBuild*>(m_liteApp,"LiteApi.ILiteBuild");
+    m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
 }
 
 QWidget *LiteDebug::widget()
@@ -77,7 +88,19 @@ void LiteDebug::startDebug()
     if (m_debug->isDebugging()) {
         return;
     }
-    m_debug->start();
+    if (!m_liteBuild || !m_liteBuild->buildManager()->currentBuild()) {
+        return;
+    }
+    if (!m_envManager) {
+        return;
+    }
+
+    QString workDir = m_liteBuild->buildEnvMap().value("$WORKDIR");
+    QString target = m_liteBuild->buildEnvMap().value("${TARGETPATH}");
+    QString args = m_liteBuild->buildEnvMap().value("${TARGETARGS}");
+    m_debug->setEnvironment(m_envManager->currentEnvironment().toStringList());
+    m_debug->setWorkingDirectory(workDir);
+    m_debug->start(target,args.split(" "));
 }
 
 void LiteDebug::stopDebug()

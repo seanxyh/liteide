@@ -48,12 +48,13 @@ PluginsDialog::PluginsDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setAttribute(Qt::WA_DeleteOnClose);
 
-    m_model = new QStandardItemModel(0,5,this);
-    m_model->setHeaderData(0, Qt::Horizontal, QObject::tr("Name"));
-    m_model->setHeaderData(1, Qt::Horizontal, QObject::tr("Anchor"));
-    m_model->setHeaderData(2, Qt::Horizontal, QObject::tr("Info"));
-    m_model->setHeaderData(3, Qt::Horizontal, QObject::tr("Ver"));
-    m_model->setHeaderData(4, Qt::Horizontal, QObject::tr("FileName"));
+    m_model = new QStandardItemModel(0,6,this);
+    m_model->setHeaderData(0, Qt::Horizontal, tr("Name"));
+    m_model->setHeaderData(1, Qt::Horizontal, "ID");
+    m_model->setHeaderData(2, Qt::Horizontal, tr("Anchor"));
+    m_model->setHeaderData(3, Qt::Horizontal, tr("Info"));
+    m_model->setHeaderData(4, Qt::Horizontal, tr("Ver"));
+    m_model->setHeaderData(5, Qt::Horizontal, tr("FileName"));
     ui->treeView->setModel(m_model);
     ui->treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->treeView->setItemsExpandable(true);
@@ -73,10 +74,11 @@ void PluginsDialog::addPluginInfo(const LiteApi::PluginInfo *info, const QString
     }
     QList<QStandardItem*> items;
     items.append(new QStandardItem(info->name()));
+    items.append(new QStandardItem(info->id()));
     items.append(new QStandardItem(info->anchor()));
     items.append(new QStandardItem(info->info()));
     items.append(new QStandardItem(info->ver()));
     items.append(new QStandardItem(QFileInfo(fileName).fileName()));
-    items.at(4)->setToolTip(fileName);
+    items.at(5)->setToolTip(fileName);
     m_model->appendRow(items);
 }

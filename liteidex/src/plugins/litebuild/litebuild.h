@@ -35,12 +35,18 @@ class QComboBox;
 class ProcessEx;
 class LiteOutput;
 class QStandardItemModel;
-class LiteBuild : public QObject
+
+class LiteBuild : public LiteApi::ILiteBuild
 {
     Q_OBJECT
 public:
     explicit LiteBuild(LiteApi::IApplication *app, QObject *parent = 0);
     virtual ~LiteBuild();
+public:
+    virtual QString buildFilePath() const;
+    virtual QMap<QString,QString> buildEnvMap() const;
+    virtual LiteApi::IBuildManager *buildManager() const;
+public:
     void setCurrentBuild(LiteApi::IBuild *build);
     void resetLiteEnv(LiteApi::IProject *project);
 public slots:
@@ -57,8 +63,6 @@ public slots:
     void dbclickBuildOutput();
     void enterTextBuildOutput(QString);
     void config();
-protected:
-    QMap<QString,QString> envMap() const;
 protected:
     LiteApi::IApplication   *m_liteApp;
     BuildManager    *m_manager;

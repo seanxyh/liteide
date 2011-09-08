@@ -28,6 +28,8 @@
 
 #include "liteapi/liteapi.h"
 #include "litedebugapi/litedebugapi.h"
+#include "liteenvapi/liteenvapi.h"
+#include "litebuildapi/litebuildapi.h"
 
 class DebugManager;
 class DebugWidget;
@@ -41,6 +43,7 @@ signals:
     void debugStarted();
     void debugStoped();
 public slots:
+    void appLoaded();
     void startDebug();
     void stopDebug();
     void abortDebug();
@@ -54,6 +57,8 @@ protected:
     DebugManager *m_manager;
     DebugWidget  *m_widget;
     LiteApi::IDebug *m_debug;
+    LiteApi::ILiteBuild *m_liteBuild;
+    LiteApi::IEnvManager *m_envManager;
 };
 
 #endif // LITEDEBUG_H

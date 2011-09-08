@@ -48,12 +48,16 @@ LiteDebugPlugin::LiteDebugPlugin()
     m_info->setInfo("LiteIDE Debug Plugin");
 }
 
+QStringList LiteDebugPlugin::dependPluginList() const
+{
+    return QStringList() << "plugin/litebuild";
+}
+
 bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
 {
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
-
 
     QSplitter *splitter = LiteApi::findExtensionObject<QSplitter*>(m_liteApp,"LiteApi.QMainWindow.QSplitter");
     if (!splitter) {
