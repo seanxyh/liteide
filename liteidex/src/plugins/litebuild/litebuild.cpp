@@ -139,6 +139,15 @@ QString LiteBuild::buildFilePath() const
     return m_buildFilePath;
 }
 
+QString LiteBuild::targetFilePath() const
+{
+    QString path = m_liteideMap.value("${TARGETPATH}");
+    if (path.isEmpty()) {
+        return path;
+    }
+    return FileUtil::lookPath(path,m_envManager->currentEnvironment(),true);
+}
+
 LiteApi::IBuildManager *LiteBuild::buildManager() const
 {
     return m_manager;
@@ -251,8 +260,8 @@ QMap<QString,QString> LiteBuild::buildEnvMap() const
     QMapIterator<QString,QString> c(m_customMap);
     while(c.hasNext()) {
         c.next();
-        QString k = i.key();
-        QString v = i.value();
+        QString k = c.key();
+        QString v = c.value();
         QMapIterator<QString,QString> m(env);
         while(m.hasNext()) {
             m.next();
