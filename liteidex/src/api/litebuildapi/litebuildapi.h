@@ -191,6 +191,7 @@ public:
     }
 public:
     virtual QString buildFilePath() const = 0;
+    virtual QString targetFilePath() const = 0;
     virtual QMap<QString,QString> buildEnvMap() const = 0;
     virtual IBuildManager *buildManager() const = 0;
 signals:

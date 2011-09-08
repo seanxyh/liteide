@@ -44,6 +44,7 @@ public:
     virtual ~LiteBuild();
 public:
     virtual QString buildFilePath() const;
+    virtual QString targetFilePath() const;
     virtual QMap<QString,QString> buildEnvMap() const;
     virtual LiteApi::IBuildManager *buildManager() const;
 public:

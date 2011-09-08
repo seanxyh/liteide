@@ -27,6 +27,7 @@
 #include "debugmanager.h"
 #include "debugwidget.h"
 #include "liteapi/litefindobj.h"
+#include "fileutil/fileutil.h"
 
 #include <QLayout>
 #include <QMenu>
@@ -94,10 +95,18 @@ void LiteDebug::startDebug()
     if (!m_envManager) {
         return;
     }
+    QString targetFilepath = m_liteBuild->targetFilePath();
+    if (targetFilepath.isEmpty()) {
+        return;
+    }
 
-    QString workDir = m_liteBuild->buildEnvMap().value("$WORKDIR");
-    QString target = m_liteBuild->buildEnvMap().value("${TARGETPATH}");
+    QString workDir = m_liteBuild->buildEnvMap().value("${WORKDIR}");
+    QString target = m_liteBuild->buildEnvMap().value("${TARGETNAME}");
     QString args = m_liteBuild->buildEnvMap().value("${TARGETARGS}");
+    int index = targetFilepath.lastIndexOf(target);
+    if (index != -1) {
+        target = targetFilepath.right(targetFilepath.length()-index);
+    }
     m_debug->setEnvironment(m_envManager->currentEnvironment().toStringList());
     m_debug->setWorkingDirectory(workDir);
     m_debug->start(target,args.split(" "));
