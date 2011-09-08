@@ -75,7 +75,7 @@ public:
 };
 
 LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
-    QObject(parent),
+    LiteApi::ILiteBuild(parent),
     m_liteApp(app),
     m_manager(new BuildManager(this)),
     m_build(0),
@@ -123,6 +123,8 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     connect(m_configAct,SIGNAL(triggered()),this,SLOT(config()));
 
     m_liteApp->outputManager()->showOutput(m_output);
+
+    m_liteApp->extension()->addObject("LiteApi.ILiteBuild",this);
 }
 
 LiteBuild::~LiteBuild()
@@ -130,6 +132,16 @@ LiteBuild::~LiteBuild()
     m_liteApp->actionManager()->removeToolBar(m_toolBar);
     delete m_toolBar;
     delete m_output;
+}
+
+QString LiteBuild::buildFilePath() const
+{
+    return m_buildFilePath;
+}
+
+LiteApi::IBuildManager *LiteBuild::buildManager() const
+{
+    return m_manager;
 }
 
 void LiteBuild::appLoaded()
@@ -221,7 +233,7 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
     }
 }
 
-QMap<QString,QString> LiteBuild::envMap() const
+QMap<QString,QString> LiteBuild::buildEnvMap() const
 {
     QMap<QString,QString> env = m_liteideMap;
     QMapIterator<QString,QString> i(m_configMap);
@@ -355,11 +367,11 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
             editorName = QFileInfo(editorPath).fileName();
             build = m_manager->findBuild(editor->mimeType());
             m_buildFilePath = editor->fileName();
+            workDir = editorDir;
+            targetDir = editorDir;
+            targetName = QFileInfo(editorPath).baseName();
+            targetPath = targetDir+"/"+targetName;
         }
-        workDir = editorDir;
-        targetDir = editorDir;
-        targetName = QFileInfo(editorPath).baseName();
-        targetPath = targetDir+"/"+targetName;
     }
     LiteApi::IBuild *projectBuild = 0;
     QString projectPath;
@@ -534,7 +546,7 @@ void LiteBuild::execAction(const QString &id)
 
     QString workDir = m_liteideMap.value("${WORKDIR}");
 
-    QMap<QString,QString> env = envMap();
+    QMap<QString,QString> env = buildEnvMap();
     QString cmd;
     if (m_envManager) {
         cmd = m_build->actionCommand(ba,env,m_envManager->currentEnvironment());

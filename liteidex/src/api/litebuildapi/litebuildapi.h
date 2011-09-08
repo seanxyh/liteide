@@ -165,8 +165,6 @@ public:
     virtual BuildAction *findAction(const QString &name) = 0;
     virtual QString actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env) = 0;
     virtual QString actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv) = 0;
-signals:
-    void buildEnvChanged(QString);
 };
 
 class IBuildManager : public IManager
@@ -183,6 +181,22 @@ public:
 signals:
     void buildChanged(LiteApi::IBuild*);
 };
+
+class ILiteBuild : public IObject
+{
+    Q_OBJECT
+public:
+    ILiteBuild(QObject *parent) : IObject(parent)
+    {
+    }
+public:
+    virtual QString buildFilePath() const = 0;
+    virtual QMap<QString,QString> buildEnvMap() const = 0;
+    virtual IBuildManager *buildManager() const = 0;
+signals:
+    void currentBuildFileChanged(const QString &filePath);
+};
+
 
 } //namespace LiteApi
 

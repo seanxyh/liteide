@@ -48,7 +48,9 @@ public:
 public:
     virtual QString mimeType() const = 0;
     virtual QAbstractItemModel *debugModel(DEBUG_MODEL_TYPE type) = 0;
-    virtual bool start() = 0;
+    virtual void setWorkingDirectory(const QString &dir) = 0;
+    virtual void setEnvironment (const QStringList &environment) = 0;
+    virtual bool start(const QString &program, const QStringList &arguments) = 0;
     virtual bool stop() = 0;
     virtual bool isDebugging() = 0;
     virtual bool abort() = 0;
