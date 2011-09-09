@@ -34,17 +34,21 @@ class QProcess;
 class GdbHandleState
 {
 public:
-    GdbHandleState() : m_exited(false) {}
+    GdbHandleState() : m_exited(false),m_stopped(false) {}
     void clear()
     {
         m_msg.clear();
         m_exited = false;
+        m_stopped = false;
     }
     void setExited(bool b) {m_exited = b;}
+    void setStopped(bool b) {m_stopped = b;}
     void appendMsg(const QByteArray &m) { m_msg.append(m); }
     bool exited() { return m_exited; }
+    bool stopped() { return m_stopped; }
 public:
     bool       m_exited;
+    bool       m_stopped;
     QList<QByteArray> m_msg;
 };
 
@@ -81,11 +85,13 @@ protected:
     void handleResultRecord(const GdbResponse &response);
     void writeCmd(const QString &cmd);
     void initGdb();
+    void updateLocals();
 protected:
     LiteApi::IApplication   *m_liteApp;
     LiteApi::IEnvManager    *m_envManager;
     QProcess *m_process;
     QStandardItemModel *m_executionModel;
+    QStandardItemModel *m_localsModel;
     QString m_cmd;
     QByteArray m_inbuffer;
     GdbHandleState m_handleState;
