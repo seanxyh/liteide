@@ -45,12 +45,14 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 {
     m_tabWidget = new QTabWidget;
 
+    m_executionView = new QTreeView;
     m_localsView = new QTreeView;
     m_watchesView = new QTreeView;
     m_statckView = new QTreeView;
     m_bkpointView = new QTreeView;
     m_threadsView = new QTreeView;
 
+    m_tabWidget->addTab(m_executionView,tr("Execution"));
     m_tabWidget->addTab(m_localsView,tr("Locals"));
     m_tabWidget->addTab(m_watchesView,tr("Watches"));
     m_tabWidget->addTab(m_statckView,tr("CallStack"));
@@ -87,6 +89,7 @@ void DebugWidget::setDebug(LiteApi::IDebugger *debug)
     if (!m_debug) {
         return;
     }
+    m_executionView->setModel(debug->debugModel(LiteApi::EXECUTION_MODEL));
     m_localsView->setModel(debug->debugModel(LiteApi::LOCALS_MODEL));
     m_watchesView->setModel(debug->debugModel(LiteApi::WATCHES_MODEL));
     m_statckView->setModel(debug->debugModel(LiteApi::CALLSTACK_MODEL));

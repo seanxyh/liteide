@@ -27,8 +27,12 @@
 #include "fileutil/fileutil.h"
 #include "liteapi/litefindobj.h"
 
+#include <QStandardItemModel>
 #include <QProcess>
+#include <QFile>
 #include <QDebug>
+
+
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -45,7 +49,15 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_envManager(0)
 {
     m_process = new QProcess(this);
-    m_gdbinit = false;
+    m_executionModel = new QStandardItemModel(0,5,this);
+    m_executionModel->setHeaderData(0,Qt::Horizontal,tr("Function"));
+    m_executionModel->setHeaderData(1,Qt::Horizontal,tr("File"));
+    m_executionModel->setHeaderData(2,Qt::Horizontal,tr("Line"));
+    m_executionModel->setHeaderData(3,Qt::Horizontal,tr("Address"));
+    m_executionModel->setHeaderData(4,Qt::Horizontal,tr("Thread ID"));
+
+    m_gdbinit = false;    
+
     connect(app,SIGNAL(loaded()),this,SLOT(appLoaded()));
     connect(m_process,SIGNAL(started()),this,SIGNAL(debugStarted()));
     connect(m_process,SIGNAL(finished(int)),this,SIGNAL(debugStoped()));
@@ -72,6 +84,9 @@ QString GdbDebugeer::mimeType() const
 
 QAbstractItemModel *GdbDebugeer::debugModel(LiteApi::DEBUG_MODEL_TYPE type)
 {
+    if (type == LiteApi::EXECUTION_MODEL) {
+        return m_executionModel;
+    }
     return 0;
 }
 
@@ -87,8 +102,6 @@ void GdbDebugeer::setEnvironment (const QStringList &environment)
 
 bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
 {
-    qDebug() << program << arguments;
-
     if (!m_envManager) {
         return false;
     }
@@ -141,7 +154,7 @@ void GdbDebugeer::stepInto()
 
 void GdbDebugeer::stepOut()
 {
-    writeCmd("-exec-return");
+    writeCmd("-exec-finish");
 }
 
 void GdbDebugeer::writeCmd(const QString &cmd)
@@ -323,23 +336,9 @@ void GdbDebugeer::handleResponse(const QByteArray &buff)
 void GdbDebugeer::handleStopped(const GdbMiValue &result)
 {
     const QByteArray reason = result.findChild("reason").data();
-    bool exit = false;
-    if (reason == "exited-normally") {
-        exit = true;
-    } else if (reason == "exited") {
-        exit = true;
-    } else if (reason == "exited-signalled") {
-        exit = true;
-    } else if (reason == "breakpoint-hit") {
-        QByteArray ar;
-        result.dumpChildren(&ar,true,4);
-        qDebug() << ar;
-        qDebug() << result.findChild("frame").findChild("fullname").data();
-        qDebug() << result.findChild("frame").findChild("line").data();
-    }
-
-    if (exit) {
-        stop();
+    if (reason.startsWith("exited")) {
+        m_handleState.setExited(true);
+        m_handleState.appendMsg(reason);
         return;
     }
 }
@@ -348,6 +347,37 @@ void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValu
 {
     if (asyncClass == "stopped") {
         handleStopped(result);
+    }
+    QString thread_id = result.findChild("thread-id").data();
+    QString stopped_threads = result.findChild("stopped-threads").data();
+    GdbMiValue frame = result.findChild("frame");
+    if (frame.isValid()) {
+        QString addr = frame.findChild("addr").data();
+        QString func = frame.findChild("func").data();
+        QString file = frame.findChild("file").data();
+        QString fullname = frame.findChild("fullname").data();
+        QString line = frame.findChild("line").data();
+        QList<QStandardItem*> items;
+        items << new QStandardItem(func)
+              << new QStandardItem(file)
+              << new QStandardItem(line)
+              << new QStandardItem(addr)
+              << new QStandardItem(thread_id);
+        m_executionModel->removeRows(0,m_executionModel->rowCount());
+        m_executionModel->appendRow(items);
+        if (QFile::exists(fullname)) {
+            LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fullname,true);
+            if (editor) {
+                bool ok = false;
+                int n = line.toInt(&ok);
+                if (ok) {
+                    LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
+                    if (textEditor) {
+                        textEditor->gotoLine(n,0);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -423,9 +453,14 @@ void GdbDebugeer::readStdOutput()
     }
     m_inbuffer.clear();
 
+    if (m_handleState.exited()) {
+        stop();
+    }
+
     if (!m_gdbinit) {
         m_gdbinit = true;
         initGdb();
     }
-    //wait for cmd;
+
+    m_handleState.clear();
 }

@@ -78,8 +78,11 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
     m_stopDebugAct = new QAction(tr("Stop Debugger"),this);
     m_abortDebugAct = new QAction(tr("Abort Debugging"),this);
     m_stepOverAct = new QAction(tr("Step Over"),this);
+    m_stepOverAct->setShortcut(QKeySequence(Qt::Key_F10));
     m_stepIntoAct = new QAction(tr("Step Into"),this);
+    m_stepIntoAct->setShortcut(QKeySequence(Qt::Key_F11));
     m_stepOutAct = new QAction(tr("Step Out"),this);
+    m_stepOutAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F11));
 
     menu->addAction(m_startDebugAct);
     menu->addAction(m_stopDebugAct);

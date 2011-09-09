@@ -31,6 +31,24 @@
 #include "qtc_gdbmi/gdbmi.h"
 
 class QProcess;
+class GdbHandleState
+{
+public:
+    GdbHandleState() : m_exited(false) {}
+    void clear()
+    {
+        m_msg.clear();
+        m_exited = false;
+    }
+    void setExited(bool b) {m_exited = b;}
+    void appendMsg(const QByteArray &m) { m_msg.append(m); }
+    bool exited() { return m_exited; }
+public:
+    bool       m_exited;
+    QList<QByteArray> m_msg;
+};
+
+class QStandardItemModel;
 class GdbDebugeer : public LiteApi::IDebugger
 {
     Q_OBJECT
@@ -67,8 +85,10 @@ protected:
     LiteApi::IApplication   *m_liteApp;
     LiteApi::IEnvManager    *m_envManager;
     QProcess *m_process;
+    QStandardItemModel *m_executionModel;
     QString m_cmd;
     QByteArray m_inbuffer;
+    GdbHandleState m_handleState;
     bool    m_busy;
     bool    m_gdbinit;
     int     m_index;
