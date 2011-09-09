@@ -56,6 +56,11 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_executionModel->setHeaderData(3,Qt::Horizontal,tr("Address"));
     m_executionModel->setHeaderData(4,Qt::Horizontal,tr("Thread ID"));
 
+    m_localsModel = new QStandardItemModel(0,3,this);
+    m_localsModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
+    m_localsModel->setHeaderData(1,Qt::Horizontal,tr("Type"));
+    m_localsModel->setHeaderData(2,Qt::Horizontal,tr("Value"));
+
     m_gdbinit = false;    
 
     connect(app,SIGNAL(loaded()),this,SLOT(appLoaded()));
@@ -86,6 +91,8 @@ QAbstractItemModel *GdbDebugeer::debugModel(LiteApi::DEBUG_MODEL_TYPE type)
 {
     if (type == LiteApi::EXECUTION_MODEL) {
         return m_executionModel;
+    } else if (type == LiteApi::LOCALS_MODEL) {
+        return m_localsModel;
     }
     return 0;
 }
@@ -336,6 +343,7 @@ void GdbDebugeer::handleResponse(const QByteArray &buff)
 void GdbDebugeer::handleStopped(const GdbMiValue &result)
 {
     const QByteArray reason = result.findChild("reason").data();
+    m_handleState.setStopped(true);
     if (reason.startsWith("exited")) {
         m_handleState.setExited(true);
         m_handleState.appendMsg(reason);
@@ -398,7 +406,22 @@ void GdbDebugeer::handleLogStream(const QByteArray &data)
 
 void GdbDebugeer::handleResultRecord(const GdbResponse &response)
 {
-
+    GdbMiValue locals = response.data.findChild("locals");
+    if (locals.isValid() && locals.isList()) {
+        m_localsModel->removeRows(0,m_localsModel->rowCount());
+        for (int i = 0; i < locals.childCount(); i++) {
+            GdbMiValue child = locals.childAt(i);
+            if (child.isValid()) {
+                QString name = child.findChild("name").data();
+                QString type = child.findChild("type").data();
+                QString value = child.findChild("value").data();
+                m_localsModel->appendRow(QList<QStandardItem*>()
+                                         << new QStandardItem(name)
+                                         << new QStandardItem(type)
+                                         << new QStandardItem(value) );
+            }
+        }
+    }
 }
 
 
@@ -416,6 +439,11 @@ void GdbDebugeer::initGdb()
     writeCmd("set auto-solib-add on");
     writeCmd("break main.main");
     writeCmd("-exec-run");
+}
+
+void GdbDebugeer::updateLocals()
+{
+    writeCmd("-stack-list-locals 2");
 }
 
 void GdbDebugeer::readStdOutput()
@@ -460,6 +488,11 @@ void GdbDebugeer::readStdOutput()
     if (!m_gdbinit) {
         m_gdbinit = true;
         initGdb();
+    }
+
+    if (m_handleState.stopped()) {
+        //get locals
+        updateLocals();
     }
 
     m_handleState.clear();
