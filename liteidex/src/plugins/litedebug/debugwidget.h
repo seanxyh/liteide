@@ -45,6 +45,7 @@ protected:
     QWidget *m_widget;
     LiteApi::IDebugger *m_debug;
     QTabWidget *m_tabWidget;
+    QTreeView *m_executionView;
     QTreeView *m_localsView;
     QTreeView *m_watchesView;
     QTreeView *m_statckView;
