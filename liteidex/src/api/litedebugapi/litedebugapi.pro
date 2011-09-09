@@ -1,4 +1,4 @@
-TARGET = litebuildapi
+TARGET = litedebugapi
 TEMPLATE = lib
 
 CONFIG += staticlib
