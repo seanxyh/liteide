@@ -37,7 +37,7 @@ enum DEBUG_MODEL_TYPE{
     WATCHES_MODEL,
     CALLSTACK_MODEL,
     BREAKPOINTS_MODEL,
-    THREADS_MODEL,
+    THREADS_MODEL
 };
 
 class IDebugger : public QObject

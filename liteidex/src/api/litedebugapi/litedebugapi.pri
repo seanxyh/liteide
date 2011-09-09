@@ -1,4 +1,4 @@
-LIBS *= -l$$qtLibraryName(litebuildapi)
+LIBS *= -l$$qtLibraryName(litedebugapi)
 
 
 
