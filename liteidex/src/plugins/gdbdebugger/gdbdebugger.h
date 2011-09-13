@@ -78,6 +78,7 @@ public slots:
     void appLoaded();
     void readStdError();
     void readStdOutput();
+    void finished(int);
 protected:
     void handleResponse(const QByteArray &buff);
     void handleStopped(const GdbMiValue &result);

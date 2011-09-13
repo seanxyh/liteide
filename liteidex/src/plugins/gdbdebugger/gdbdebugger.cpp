@@ -51,12 +51,14 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_envManager(0)
 {
     m_process = new QProcess(this);
-    m_asyncModel = new QStandardItemModel(0,5,this);
-    m_asyncModel->setHeaderData(0,Qt::Horizontal,tr("Address"));
-    m_asyncModel->setHeaderData(1,Qt::Horizontal,tr("Function"));
-    m_asyncModel->setHeaderData(2,Qt::Horizontal,tr("File"));
-    m_asyncModel->setHeaderData(3,Qt::Horizontal,tr("Line"));
-    m_asyncModel->setHeaderData(4,Qt::Horizontal,tr("Thread ID"));
+    m_asyncModel = new QStandardItemModel(0,7,this);
+    m_asyncModel->setHeaderData(0,Qt::Horizontal,tr("Reasion"));
+    m_asyncModel->setHeaderData(1,Qt::Horizontal,tr("Address"));
+    m_asyncModel->setHeaderData(2,Qt::Horizontal,tr("Function"));
+    m_asyncModel->setHeaderData(3,Qt::Horizontal,tr("File"));
+    m_asyncModel->setHeaderData(4,Qt::Horizontal,tr("Line"));
+    m_asyncModel->setHeaderData(5,Qt::Horizontal,tr("Thread ID"));
+    m_asyncModel->setHeaderData(6,Qt::Horizontal,tr("Stoped Threads"));
 
     m_localsModel = new QStandardItemModel(0,3,this);
     m_localsModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
@@ -75,6 +77,7 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     connect(app,SIGNAL(loaded()),this,SLOT(appLoaded()));
     connect(m_process,SIGNAL(started()),this,SIGNAL(debugStarted()));
     connect(m_process,SIGNAL(finished(int)),this,SIGNAL(debugStoped()));
+    connect(m_process,SIGNAL(finished(int)),this,SLOT(finished(int)));
     connect(m_process,SIGNAL(readyReadStandardError()),this,SLOT(readStdError()));
     connect(m_process,SIGNAL(readyReadStandardOutput()),this,SLOT(readStdOutput()));
 }
@@ -130,7 +133,7 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
     QString goroot = m_envManager->currentEnvironment().value("GOROOT");
     if (!goroot.isEmpty()) {
         QString path = QFileInfo(QDir(goroot),"src/pkg/runtime/").path();
-        args << "--directory" << m_runtime;
+        args << "--directory" << path;
         m_runtime = path.toUtf8();
     }
 
@@ -189,7 +192,6 @@ void GdbDebugeer::stepOut()
 
 void GdbDebugeer::runJump(const QString &fileName, const QString &spec)
 {
-    qDebug() << fileName << spec;
     if (fileName.isEmpty()) {
         appendCmd("-break-insert -t "+spec.toLatin1());
     } else {
@@ -288,7 +290,6 @@ static bool isNameChar(char c)
 
 void GdbDebugeer::handleResponse(const QByteArray &buff)
 {
-    qDebug() << buff;
     if (buff.isEmpty() || buff == "(gdb) ")
         return;
 
@@ -411,6 +412,7 @@ void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValu
     if (asyncClass == "stopped") {
         handleStopped(result);
     }
+    QString reason = result.findChild("reason").data();
     QString thread_id = result.findChild("thread-id").data();
     QString stopped_threads = result.findChild("stopped-threads").data();
     GdbMiValue frame = result.findChild("frame");
@@ -421,11 +423,15 @@ void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValu
         QString fullname = frame.findChild("fullname").data();
         QString line = frame.findChild("line").data();
         QList<QStandardItem*> items;
-        items << new QStandardItem(addr)
+        items << new QStandardItem(reason)
+              << new QStandardItem(addr)
               << new QStandardItem(func)
               << new QStandardItem(file)
               << new QStandardItem(line)
-              << new QStandardItem(thread_id);
+              << new QStandardItem(thread_id)
+              << new QStandardItem(stopped_threads)
+                 ;
+
         m_asyncModel->removeRows(0,m_asyncModel->rowCount());
         m_asyncModel->appendRow(items);
         if (QFile::exists(fullname)) {
@@ -590,4 +596,11 @@ void GdbDebugeer::readStdOutput()
     }
 
     m_handleState.clear();
+}
+
+void GdbDebugeer::finished(int)
+{
+    m_localsModel->clear();
+    m_framesModel->clear();
+    m_asyncModel->clear();
 }

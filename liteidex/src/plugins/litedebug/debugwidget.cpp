@@ -27,7 +27,9 @@
 #include <QTreeView>
 #include <QTabWidget>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QPlainTextEdit>
 
 //lite_memory_check_begin
@@ -65,8 +67,12 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     m_cmdLineEdit = new QLineEdit;
     m_debugLogEdit = new QPlainTextEdit;
     m_debugLogEdit->setReadOnly(true);
+    QPushButton *clearBtn = new QPushButton(tr("Clear"));
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->addWidget(m_cmdLineEdit);
+    hLayout->addWidget(clearBtn);
     QVBoxLayout *cmdLayout = new QVBoxLayout;
-    cmdLayout->addWidget(m_cmdLineEdit);
+    cmdLayout->addLayout(hLayout);
     cmdLayout->addWidget(m_debugLogEdit);
     QWidget *cmdWidget = new QWidget;
     cmdWidget->setLayout(cmdLayout);
@@ -81,12 +87,12 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
-    layout->setSpacing(0);
     layout->addWidget(m_tabWidget);
 
     m_widget->setLayout(layout);
 
     connect(m_cmdLineEdit,SIGNAL(returnPressed()),this,SLOT(cmdLineInput()));
+    connect(clearBtn,SIGNAL(clicked()),this,SLOT(clearLog()));
 }
 
 DebugWidget::~DebugWidget()

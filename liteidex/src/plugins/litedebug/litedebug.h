@@ -33,6 +33,7 @@
 
 class DebugManager;
 class DebugWidget;
+class QLabel;
 class LiteDebug : public QObject
 {
     Q_OBJECT
@@ -40,8 +41,7 @@ public:
     explicit LiteDebug(LiteApi::IApplication *app, QObject *parent = 0);
     QWidget *widget();
 signals:
-    void debugStarted();
-    void debugStoped();
+    void debugVisible(bool);
 public slots:
     void appLoaded();
     void startDebug();
@@ -53,6 +53,8 @@ public slots:
     void stepInto();
     void stepOut();
 protected slots:
+    void showDebug();
+    void hideDebug();
     void setDebugger(LiteApi::IDebugger*);
 protected:
     LiteApi::IApplication *m_liteApp;
@@ -71,6 +73,8 @@ protected:
     QAction *m_stepOverAct;
     QAction *m_stepIntoAct;
     QAction *m_stepOutAct;
+    QLabel *m_infoLabel;
+    QAction *m_hideAct;
 };
 
 #endif // LITEDEBUG_H
