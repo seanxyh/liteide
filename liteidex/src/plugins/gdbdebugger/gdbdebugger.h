@@ -71,6 +71,7 @@ public:
     virtual void stepOver();
     virtual void stepInto();
     virtual void stepOut();
+    virtual void command(const QByteArray &cmd);
 public slots:
     void appLoaded();
     void readStdError();

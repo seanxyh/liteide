@@ -188,6 +188,17 @@ void GdbDebugeer::appendCmd(const QByteArray &cmd, bool exec)
     writeCmd();
 }
 
+void  GdbDebugeer::command(const QByteArray &cmd)
+{
+    char buf[20];
+    sprintf(buf,"%08d",m_index++);
+    QByteArray c;
+    c.append(buf);
+    c.append(cmd);
+    c.append("\r\n");
+    m_process->write(c);
+}
+
 void GdbDebugeer::writeCmd()
 {
     if (!m_gdbCommand.isEmpty()) {
@@ -400,7 +411,6 @@ void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValu
               << new QStandardItem(thread_id);
         m_executionModel->removeRows(0,m_executionModel->rowCount());
         m_executionModel->appendRow(items);
-        qDebug() << fullname;
         if (QFile::exists(fullname)) {
             LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fullname,true);
             if (editor) {
@@ -537,6 +547,7 @@ void GdbDebugeer::readStdOutput()
         handleResponse(data);
         m_busy = false;
     }
+    emit debugLog(m_inbuffer);
     m_inbuffer.clear();
 
     if (m_handleState.exited()) {
@@ -555,5 +566,6 @@ void GdbDebugeer::readStdOutput()
         updateLocals();
         updateFrames();
     }
+
     m_handleState.clear();
 }

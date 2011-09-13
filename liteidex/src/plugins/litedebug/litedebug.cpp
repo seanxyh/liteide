@@ -77,6 +77,7 @@ void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
     if (m_debugger) {
         connect(m_debugger,SIGNAL(debugStarted()),this,SIGNAL(debugStarted()));
         connect(m_debugger,SIGNAL(debugStoped()),this,SIGNAL(debugStoped()));
+        connect(m_debugger,SIGNAL(debugLog(QByteArray)),m_widget,SLOT(debugLog(QByteArray)));
     }
     m_widget->setDebug(m_debugger);
 }
@@ -95,6 +96,8 @@ void LiteDebug::startDebug()
     if (!m_envManager) {
         return;
     }
+    m_widget->clearLog();
+
     QString targetFilepath = m_liteBuild->targetFilePath();
     if (targetFilepath.isEmpty()) {
         return;
