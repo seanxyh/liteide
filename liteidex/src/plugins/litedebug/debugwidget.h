@@ -54,6 +54,7 @@ protected:
     QTreeView *m_localsView;
     //QTreeView *m_watchesView;
     QTreeView *m_statckView;
+    QTreeView *m_libraryView;
     //QTreeView *m_bkpointView;
     //QTreeView *m_threadsView;
     QLineEdit *m_cmdLineEdit;

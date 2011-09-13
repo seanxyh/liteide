@@ -72,6 +72,10 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_framesModel->setHeaderData(3,Qt::Horizontal,"File");
     m_framesModel->setHeaderData(4,Qt::Horizontal,"Line");
 
+    m_libraryModel = new QStandardItemModel(0,2,this);
+    m_libraryModel->setHeaderData(0,Qt::Horizontal,"Id");
+    m_libraryModel->setHeaderData(1,Qt::Horizontal,"Thread Groups");
+
     m_gdbinit = false;    
 
     connect(app,SIGNAL(loaded()),this,SLOT(appLoaded()));
@@ -107,6 +111,8 @@ QAbstractItemModel *GdbDebugeer::debugModel(LiteApi::DEBUG_MODEL_TYPE type)
         return m_localsModel;
     } else if (type == LiteApi::CALLSTACK_MODEL) {
         return m_framesModel;
+    } else if (type == LiteApi::LIBRARY_MODEL) {
+        return m_libraryModel;
     }
     return 0;
 }
@@ -150,6 +156,8 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
     m_gdbinit = false;
     m_busy = false;
     m_index = 0;
+    m_libraryModel->removeRows(0,m_libraryModel->rowCount());
+
     m_process->start(m_cmd,args);
 
     return true;
@@ -387,21 +395,13 @@ void GdbDebugeer::handleResponse(const QByteArray &buff)
 
 void GdbDebugeer::handleStopped(const GdbMiValue &result)
 {
-    const QByteArray reason = result.findChild("reason").data();
+    QByteArray reason = result.findChild("reason").data();
     m_handleState.setStopped(true);
     if (reason.startsWith("exited")) {
         m_handleState.setExited(true);
         m_handleState.appendMsg(reason);
         return;
     }
-}
-
-void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValue &result)
-{
-    if (asyncClass == "stopped") {
-        handleStopped(result);
-    }
-    QString reason = result.findChild("reason").data();
     QString thread_id = result.findChild("thread-id").data();
     QString stopped_threads = result.findChild("stopped-threads").data();
     GdbMiValue frame = result.findChild("frame");
@@ -412,7 +412,7 @@ void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValu
         QString fullname = frame.findChild("fullname").data();
         QString line = frame.findChild("line").data();
         QList<QStandardItem*> items;
-        items << new QStandardItem(reason)
+        items << new QStandardItem(QString(reason))
               << new QStandardItem(addr)
               << new QStandardItem(func)
               << new QStandardItem(file)
@@ -436,6 +436,25 @@ void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValu
                 }
             }
         }
+    }
+}
+
+void GdbDebugeer::handleLibrary(const GdbMiValue &result)
+{
+    QString id = result.findChild("id").data();
+    QString thread_group = result.findChild("thread-group").data();
+    m_libraryModel->appendRow(QList<QStandardItem*>()
+                              << new QStandardItem(id)
+                              << new QStandardItem(thread_group)
+                              );
+}
+
+void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValue &result)
+{
+    if (asyncClass == "stopped") {
+        handleStopped(result);        
+    } else if (asyncClass == "library-loaded") {
+        handleLibrary(result);
     }
 }
 
@@ -587,7 +606,7 @@ void GdbDebugeer::readStdOutput()
 
 void GdbDebugeer::finished(int)
 {
-    m_localsModel->clear();
-    m_framesModel->clear();
-    m_asyncModel->clear();
+    m_localsModel->removeRows(0,m_localsModel->rowCount());
+    m_framesModel->removeRows(0,m_framesModel->rowCount());
+    m_asyncModel->removeRows(0,m_asyncModel->rowCount());
 }

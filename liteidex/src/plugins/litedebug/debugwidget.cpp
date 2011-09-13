@@ -30,6 +30,7 @@
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QHeaderView>
 #include <QPlainTextEdit>
 
 //lite_memory_check_begin
@@ -52,15 +53,18 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_asyncView = new QTreeView;
     m_localsView = new QTreeView;
-    //m_watchesView = new QTreeView;
     m_statckView = new QTreeView;
+    m_libraryView = new QTreeView;
+
+    //m_watchesView = new QTreeView;
     //m_bkpointView = new QTreeView;
     //m_threadsView = new QTreeView;
 
     m_asyncView->setEditTriggers(0);
     m_localsView->setEditTriggers(0);
-   // m_watchesView->setEditTriggers(0);
     m_statckView->setEditTriggers(0);
+    m_libraryView->setEditTriggers(0);
+   // m_watchesView->setEditTriggers(0);
    // m_bkpointView->setEditTriggers(0);
    // m_threadsView->setEditTriggers(0);
 
@@ -79,8 +83,9 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_tabWidget->addTab(m_asyncView,tr("AsyncRecord"));
     m_tabWidget->addTab(m_localsView,tr("Locals"));
-//    m_tabWidget->addTab(m_watchesView,tr("Watches"));
     m_tabWidget->addTab(m_statckView,tr("CallStack"));
+    m_tabWidget->addTab(m_libraryView,tr("Library"));
+//    m_tabWidget->addTab(m_watchesView,tr("Watches"));
 //    m_tabWidget->addTab(m_bkpointView,tr("BreakPoints"));
 //    m_tabWidget->addTab(m_threadsView,tr("Threads"));
     m_tabWidget->addTab(cmdWidget,tr("Command"));
@@ -126,6 +131,18 @@ void DebugWidget::debugLog(const QByteArray &log)
     m_debugLogEdit->moveCursor(QTextCursor::End);
 }
 
+static void setResizeView(QTreeView *view)
+{
+    QAbstractItemModel *model = view->model();
+    if (!model) {
+        return;
+    }
+    if (model->columnCount() <= 0) {
+        return;
+    }
+    view->header()->setResizeMode(0,QHeaderView::ResizeToContents);
+}
+
 void DebugWidget::setDebug(LiteApi::IDebugger *debug)
 {
     if (m_debug == debug) {
@@ -137,8 +154,13 @@ void DebugWidget::setDebug(LiteApi::IDebugger *debug)
     }
     m_asyncView->setModel(debug->debugModel(LiteApi::ASYNC_MODEL));
     m_localsView->setModel(debug->debugModel(LiteApi::LOCALS_MODEL));
-    //m_watchesView->setModel(debug->debugModel(LiteApi::WATCHES_MODEL));
     m_statckView->setModel(debug->debugModel(LiteApi::CALLSTACK_MODEL));
+    m_libraryView->setModel(debug->debugModel(LiteApi::LIBRARY_MODEL));
+    setResizeView(m_asyncView);
+    setResizeView(m_localsView);
+    setResizeView(m_statckView);
+    setResizeView(m_libraryView);
+    //m_watchesView->setModel(debug->debugModel(LiteApi::WATCHES_MODEL));
     //m_bkpointView->setModel(debug->debugModel(LiteApi::BREAKPOINTS_MODEL));
     //m_threadsView->setModel(debug->debugModel(LiteApi::THREADS_MODEL));
 }
