@@ -83,18 +83,24 @@ protected:
     void handleTargetStream(const QByteArray &data);
     void handleLogStream(const QByteArray &data);
     void handleResultRecord(const GdbResponse &response);
-    void writeCmd(const QString &cmd);
+    void appendCmd(const QByteArray &cmd,bool exec = false);
+    void writeCmd();
+protected:
     void initGdb();
     void updateLocals();
+    void updateFrames();
 protected:
     LiteApi::IApplication   *m_liteApp;
     LiteApi::IEnvManager    *m_envManager;
     QProcess *m_process;
     QStandardItemModel *m_executionModel;
     QStandardItemModel *m_localsModel;
+    QStandardItemModel *m_framesModel;
     QString m_cmd;
+    QByteArray m_runtime;
     QByteArray m_inbuffer;
     GdbHandleState m_handleState;
+    QList<QByteArray> m_gdbCommand;
     bool    m_busy;
     bool    m_gdbinit;
     int     m_index;

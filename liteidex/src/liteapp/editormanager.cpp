@@ -66,6 +66,7 @@ bool EditorManager::initWithApp(IApplication *app)
 
     m_widget = new QWidget;
     m_editorTabWidget = new LiteTabWidget;
+    m_editorTabWidget->tabBar()->setTabsClosable(true);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(1);

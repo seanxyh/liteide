@@ -45,7 +45,8 @@ LiteEditorFile::LiteEditorFile(LiteApi::IApplication *app, QObject *parent)
     : LiteApi::IFile(parent),
       m_liteApp(app)
 {
-    m_codec = QTextCodec::codecForLocale();
+    //m_codec = QTextCodec::codecForLocale();
+    m_codec = QTextCodec::codecForName("utf-8");
     m_hasDecodingError = false;
     m_bReadOnly = false;
 }
