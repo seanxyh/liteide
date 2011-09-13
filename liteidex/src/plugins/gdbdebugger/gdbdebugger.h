@@ -71,6 +71,8 @@ public:
     virtual void stepOver();
     virtual void stepInto();
     virtual void stepOut();
+    virtual void execContinue();
+    virtual void runJump(const QString &fileName, const QString &spec);
     virtual void command(const QByteArray &cmd);
 public slots:
     void appLoaded();
@@ -90,11 +92,12 @@ protected:
     void initGdb();
     void updateLocals();
     void updateFrames();
+    void updateBreaks();
 protected:
     LiteApi::IApplication   *m_liteApp;
     LiteApi::IEnvManager    *m_envManager;
     QProcess *m_process;
-    QStandardItemModel *m_executionModel;
+    QStandardItemModel *m_asyncModel;
     QStandardItemModel *m_localsModel;
     QStandardItemModel *m_framesModel;
     QString m_cmd;

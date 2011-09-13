@@ -51,12 +51,12 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_envManager(0)
 {
     m_process = new QProcess(this);
-    m_executionModel = new QStandardItemModel(0,5,this);
-    m_executionModel->setHeaderData(0,Qt::Horizontal,tr("Address"));
-    m_executionModel->setHeaderData(1,Qt::Horizontal,tr("Function"));
-    m_executionModel->setHeaderData(2,Qt::Horizontal,tr("File"));
-    m_executionModel->setHeaderData(3,Qt::Horizontal,tr("Line"));
-    m_executionModel->setHeaderData(4,Qt::Horizontal,tr("Thread ID"));
+    m_asyncModel = new QStandardItemModel(0,5,this);
+    m_asyncModel->setHeaderData(0,Qt::Horizontal,tr("Address"));
+    m_asyncModel->setHeaderData(1,Qt::Horizontal,tr("Function"));
+    m_asyncModel->setHeaderData(2,Qt::Horizontal,tr("File"));
+    m_asyncModel->setHeaderData(3,Qt::Horizontal,tr("Line"));
+    m_asyncModel->setHeaderData(4,Qt::Horizontal,tr("Thread ID"));
 
     m_localsModel = new QStandardItemModel(0,3,this);
     m_localsModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
@@ -98,8 +98,8 @@ QString GdbDebugeer::mimeType() const
 
 QAbstractItemModel *GdbDebugeer::debugModel(LiteApi::DEBUG_MODEL_TYPE type)
 {
-    if (type == LiteApi::EXECUTION_MODEL) {
-        return m_executionModel;
+    if (type == LiteApi::ASYNC_MODEL) {
+        return m_asyncModel;
     } else if (type == LiteApi::LOCALS_MODEL) {
         return m_localsModel;
     } else if (type == LiteApi::CALLSTACK_MODEL) {
@@ -167,6 +167,11 @@ void GdbDebugeer::abort()
     m_process->kill();
 }
 
+void GdbDebugeer::execContinue()
+{
+    appendCmd("-exec-continue",true);
+}
+
 void GdbDebugeer::stepOver()
 {
     appendCmd("-exec-next",true);
@@ -180,6 +185,17 @@ void GdbDebugeer::stepInto()
 void GdbDebugeer::stepOut()
 {
     appendCmd("-exec-finish",true);
+}
+
+void GdbDebugeer::runJump(const QString &fileName, const QString &spec)
+{
+    qDebug() << fileName << spec;
+    if (fileName.isEmpty()) {
+        appendCmd("-break-insert -t "+spec.toLatin1());
+    } else {
+        appendCmd("-break-insert -t "+fileName.toLatin1()+":"+spec.toLatin1());
+    }
+    appendCmd("-exec-continue",true);
 }
 
 void GdbDebugeer::appendCmd(const QByteArray &cmd, bool exec)
@@ -272,6 +288,7 @@ static bool isNameChar(char c)
 
 void GdbDebugeer::handleResponse(const QByteArray &buff)
 {
+    qDebug() << buff;
     if (buff.isEmpty() || buff == "(gdb) ")
         return;
 
@@ -409,8 +426,8 @@ void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValu
               << new QStandardItem(file)
               << new QStandardItem(line)
               << new QStandardItem(thread_id);
-        m_executionModel->removeRows(0,m_executionModel->rowCount());
-        m_executionModel->appendRow(items);
+        m_asyncModel->removeRows(0,m_asyncModel->rowCount());
+        m_asyncModel->appendRow(items);
         if (QFile::exists(fullname)) {
             LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fullname,true);
             if (editor) {
@@ -509,9 +526,14 @@ void GdbDebugeer::updateLocals()
     appendCmd("-stack-list-locals 2");
 }
 
-void  GdbDebugeer::updateFrames()
+void GdbDebugeer::updateFrames()
 {
     appendCmd("-stack-list-frames");
+}
+
+void GdbDebugeer::updateBreaks()
+{
+    appendCmd("-break-info");
 }
 
 void GdbDebugeer::readStdOutput()

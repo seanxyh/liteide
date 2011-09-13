@@ -389,12 +389,12 @@ LiteApi::IFile *LiteEditor::file()
 
 int LiteEditor::line() const
 {
-    return 0;
+    return m_editorWidget->textCursor().blockNumber();
 }
 
 int LiteEditor::column() const
 {
-    return 0;
+    return m_editorWidget->textCursor().columnNumber();
 }
 
 void LiteEditor::gotoLine(int line, int column)

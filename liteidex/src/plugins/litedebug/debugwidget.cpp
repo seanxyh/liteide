@@ -55,6 +55,13 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     m_bkpointView = new QTreeView;
     m_threadsView = new QTreeView;
 
+    m_executionView->setEditTriggers(0);
+    m_localsView->setEditTriggers(0);
+    m_watchesView->setEditTriggers(0);
+    m_statckView->setEditTriggers(0);
+    m_bkpointView->setEditTriggers(0);
+    m_threadsView->setEditTriggers(0);
+
     m_cmdLineEdit = new QLineEdit;
     m_debugLogEdit = new QPlainTextEdit;
     m_debugLogEdit->setReadOnly(true);
@@ -64,12 +71,12 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     QWidget *cmdWidget = new QWidget;
     cmdWidget->setLayout(cmdLayout);
 
-    m_tabWidget->addTab(m_executionView,tr("Execution"));
+    m_tabWidget->addTab(m_executionView,tr("AsyncRecord"));
     m_tabWidget->addTab(m_localsView,tr("Locals"));
-    m_tabWidget->addTab(m_watchesView,tr("Watches"));
+//    m_tabWidget->addTab(m_watchesView,tr("Watches"));
     m_tabWidget->addTab(m_statckView,tr("CallStack"));
-    m_tabWidget->addTab(m_bkpointView,tr("BreakPoints"));
-    m_tabWidget->addTab(m_threadsView,tr("Threads"));
+//    m_tabWidget->addTab(m_bkpointView,tr("BreakPoints"));
+//    m_tabWidget->addTab(m_threadsView,tr("Threads"));
     m_tabWidget->addTab(cmdWidget,tr("Command"));
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -77,7 +84,6 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     layout->setSpacing(0);
     layout->addWidget(m_tabWidget);
 
-    m_widget->hide();
     m_widget->setLayout(layout);
 
     connect(m_cmdLineEdit,SIGNAL(returnPressed()),this,SLOT(cmdLineInput()));
@@ -123,7 +129,7 @@ void DebugWidget::setDebug(LiteApi::IDebugger *debug)
     if (!m_debug) {
         return;
     }
-    m_executionView->setModel(debug->debugModel(LiteApi::EXECUTION_MODEL));
+    m_executionView->setModel(debug->debugModel(LiteApi::ASYNC_MODEL));
     m_localsView->setModel(debug->debugModel(LiteApi::LOCALS_MODEL));
     m_watchesView->setModel(debug->debugModel(LiteApi::WATCHES_MODEL));
     m_statckView->setModel(debug->debugModel(LiteApi::CALLSTACK_MODEL));
