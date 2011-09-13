@@ -87,8 +87,6 @@ protected:
     void handleTargetStream(const QByteArray &data);
     void handleLogStream(const QByteArray &data);
     void handleResultRecord(const GdbResponse &response);
-    void appendCmd(const QByteArray &cmd,bool exec = false);
-    void writeCmd();
 protected:
     void initGdb();
     void updateLocals();

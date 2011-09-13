@@ -154,7 +154,7 @@ void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
     m_debugger = debug;
     if (m_debugger) {
         connect(m_debugger,SIGNAL(debugStarted()),this,SLOT(showDebug()));
-        connect(m_debugger,SIGNAL(debugStoped()),this,SLOT(hideDebug()));
+        //connect(m_debugger,SIGNAL(debugStoped()),this,SLOT(hideDebug()));
         connect(m_debugger,SIGNAL(debugLog(QByteArray)),m_dbgWidget,SLOT(debugLog(QByteArray)));
     }
     m_dbgWidget->setDebug(m_debugger);
