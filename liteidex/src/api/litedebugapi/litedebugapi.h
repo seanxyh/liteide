@@ -58,9 +58,11 @@ public:
     virtual void stepOver() = 0;
     virtual void stepInto() = 0;
     virtual void stepOut() = 0;
+    virtual void command(const QByteArray &cmd) = 0;
 signals:
     void debugStarted();
     void debugStoped();
+    void debugLog(const QByteArray &log);
 };
 
 class IDebuggerManager : public IManager

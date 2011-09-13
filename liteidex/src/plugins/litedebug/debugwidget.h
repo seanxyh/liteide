@@ -31,6 +31,8 @@
 
 class QTabWidget;
 class QTreeView;
+class QLineEdit;
+class QPlainTextEdit;
 class DebugWidget : public QObject
 {
     Q_OBJECT
@@ -40,6 +42,9 @@ public:
     virtual QWidget *widget();
 public slots:
     void setDebug(LiteApi::IDebugger *debug);
+    void cmdLineInput();
+    void debugLog(const QByteArray &log);
+    void clearLog();
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
@@ -51,6 +56,8 @@ protected:
     QTreeView *m_statckView;
     QTreeView *m_bkpointView;
     QTreeView *m_threadsView;
+    QLineEdit *m_cmdLineEdit;
+    QPlainTextEdit *m_debugLogEdit;
 };
 
 #endif // DEBUGWIDGET_H

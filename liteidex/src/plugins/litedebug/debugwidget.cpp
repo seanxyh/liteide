@@ -27,6 +27,9 @@
 #include <QTreeView>
 #include <QTabWidget>
 #include <QVBoxLayout>
+#include <QLineEdit>
+#include <QPlainTextEdit>
+
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -52,12 +55,22 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     m_bkpointView = new QTreeView;
     m_threadsView = new QTreeView;
 
+    m_cmdLineEdit = new QLineEdit;
+    m_debugLogEdit = new QPlainTextEdit;
+    m_debugLogEdit->setReadOnly(true);
+    QVBoxLayout *cmdLayout = new QVBoxLayout;
+    cmdLayout->addWidget(m_cmdLineEdit);
+    cmdLayout->addWidget(m_debugLogEdit);
+    QWidget *cmdWidget = new QWidget;
+    cmdWidget->setLayout(cmdLayout);
+
     m_tabWidget->addTab(m_executionView,tr("Execution"));
     m_tabWidget->addTab(m_localsView,tr("Locals"));
     m_tabWidget->addTab(m_watchesView,tr("Watches"));
     m_tabWidget->addTab(m_statckView,tr("CallStack"));
     m_tabWidget->addTab(m_bkpointView,tr("BreakPoints"));
     m_tabWidget->addTab(m_threadsView,tr("Threads"));
+    m_tabWidget->addTab(cmdWidget,tr("Command"));
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
@@ -66,6 +79,8 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_widget->hide();
     m_widget->setLayout(layout);
+
+    connect(m_cmdLineEdit,SIGNAL(returnPressed()),this,SLOT(cmdLineInput()));
 }
 
 DebugWidget::~DebugWidget()
@@ -78,6 +93,25 @@ DebugWidget::~DebugWidget()
 QWidget *DebugWidget::widget()
 {
     return m_widget;
+}
+
+void DebugWidget::cmdLineInput()
+{
+    QString text = m_cmdLineEdit->text();
+    if (!text.isEmpty() && m_debug && m_debug->isDebugging()) {
+        m_debug->command(text.toUtf8());
+    }
+}
+
+void DebugWidget::clearLog()
+{
+    m_debugLogEdit->clear();
+}
+
+void DebugWidget::debugLog(const QByteArray &log)
+{
+    m_debugLogEdit->appendPlainText(log);
+    m_debugLogEdit->moveCursor(QTextCursor::End);
 }
 
 void DebugWidget::setDebug(LiteApi::IDebugger *debug)
