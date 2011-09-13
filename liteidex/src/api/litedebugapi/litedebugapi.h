@@ -32,7 +32,7 @@
 namespace LiteApi {
 
 enum DEBUG_MODEL_TYPE{
-    EXECUTION_MODEL = 1,
+    ASYNC_MODEL = 1,
     LOCALS_MODEL,
     WATCHES_MODEL,
     CALLSTACK_MODEL,
@@ -58,6 +58,8 @@ public:
     virtual void stepOver() = 0;
     virtual void stepInto() = 0;
     virtual void stepOut() = 0;
+    virtual void execContinue() = 0;
+    virtual void runJump(const QString &fileName, const QString &spec) = 0;
     virtual void command(const QByteArray &cmd) = 0;
 signals:
     void debugStarted();

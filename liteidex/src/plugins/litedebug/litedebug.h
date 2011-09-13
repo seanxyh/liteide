@@ -45,6 +45,8 @@ signals:
 public slots:
     void appLoaded();
     void startDebug();
+    void execContinue();
+    void runJump();
     void stopDebug();
     void abortDebug();
     void stepOver();
@@ -55,10 +57,20 @@ protected slots:
 protected:
     LiteApi::IApplication *m_liteApp;
     DebugManager *m_manager;
-    DebugWidget  *m_widget;
+    QWidget      *m_widget;
+    DebugWidget  *m_dbgWidget;
+    QToolBar     *m_toolBar;
     LiteApi::IDebugger *m_debugger;
     LiteApi::ILiteBuild *m_liteBuild;
     LiteApi::IEnvManager *m_envManager;
+    QAction *m_startDebugAct;
+    QAction *m_stopDebugAct;
+    QAction *m_abortDebugAct;
+    QAction *m_execContinueAct;
+    QAction *m_runJumpAct;
+    QAction *m_stepOverAct;
+    QAction *m_stepIntoAct;
+    QAction *m_stepOutAct;
 };
 
 #endif // LITEDEBUG_H

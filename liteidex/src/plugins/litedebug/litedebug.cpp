@@ -31,7 +31,10 @@
 
 #include <QLayout>
 #include <QMenu>
+#include <QToolBar>
 #include <QAction>
+#include <QVBoxLayout>
+#include <QFileInfo>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -48,15 +51,56 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
     m_liteApp(app),
     m_manager(new DebugManager(this)),
-    m_widget(new DebugWidget(app,this)),
+    m_widget(new QWidget),
     m_debugger(0),
     m_liteBuild(0),
     m_envManager(0)
 {
     m_manager->initWithApp(app);
 
+    m_dbgWidget = new DebugWidget(app,this);
+    m_toolBar = new QToolBar;
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    layout->addWidget(m_toolBar);
+    layout->addWidget(m_dbgWidget->widget());
+    m_widget->setLayout(layout);
+
+    m_startDebugAct = new QAction(tr("Start"),this);
+    m_execContinueAct = new QAction(tr("Continue"),this);
+    m_runJumpAct = new QAction(tr("RunJump"),this);
+    m_stopDebugAct = new QAction(tr("Stop"),this);
+    m_abortDebugAct = new QAction(tr("Abort"),this);
+    m_stepOverAct = new QAction(tr("StepOver"),this);
+    m_stepOverAct->setShortcut(QKeySequence(Qt::Key_F10));
+    m_stepIntoAct = new QAction(tr("StepInto"),this);
+    m_stepIntoAct->setShortcut(QKeySequence(Qt::Key_F11));
+    m_stepOutAct = new QAction(tr("StepOut"),this);
+    m_stepOutAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F11));
+
+    m_toolBar->addAction(m_startDebugAct);
+    m_toolBar->addAction(m_execContinueAct);
+    m_toolBar->addAction(m_stopDebugAct);
+    m_toolBar->addAction(m_abortDebugAct);
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(m_runJumpAct);
+    m_toolBar->addAction(m_stepOverAct);
+    m_toolBar->addAction(m_stepIntoAct);
+    m_toolBar->addAction(m_stepOutAct);
+
     connect(m_manager,SIGNAL(currentDebuggerChanged(LiteApi::IDebugger*)),this,SLOT(setDebugger(LiteApi::IDebugger*)));
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
+
+    connect(m_startDebugAct,SIGNAL(triggered()),this,SLOT(startDebug()));
+    connect(m_execContinueAct,SIGNAL(triggered()),this,SLOT(execContinue()));
+    connect(m_runJumpAct,SIGNAL(triggered()),this,SLOT(runJump()));
+    connect(m_stopDebugAct,SIGNAL(triggered()),this,SLOT(stopDebug()));
+    connect(m_abortDebugAct,SIGNAL(triggered()),this,SLOT(abortDebug()));
+    connect(m_stepOverAct,SIGNAL(triggered()),this,SLOT(stepOver()));
+    connect(m_stepIntoAct,SIGNAL(triggered()),this,SLOT(stepInto()));
+    connect(m_stepOutAct,SIGNAL(triggered()),this,SLOT(stepOut()));
+
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
 }
 
@@ -68,7 +112,7 @@ void LiteDebug::appLoaded()
 
 QWidget *LiteDebug::widget()
 {
-    return m_widget->widget();
+    return m_widget;
 }
 
 void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
@@ -77,9 +121,9 @@ void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
     if (m_debugger) {
         connect(m_debugger,SIGNAL(debugStarted()),this,SIGNAL(debugStarted()));
         connect(m_debugger,SIGNAL(debugStoped()),this,SIGNAL(debugStoped()));
-        connect(m_debugger,SIGNAL(debugLog(QByteArray)),m_widget,SLOT(debugLog(QByteArray)));
+        connect(m_debugger,SIGNAL(debugLog(QByteArray)),m_dbgWidget,SLOT(debugLog(QByteArray)));
     }
-    m_widget->setDebug(m_debugger);
+    m_dbgWidget->setDebug(m_debugger);
 }
 
 void LiteDebug::startDebug()
@@ -96,7 +140,7 @@ void LiteDebug::startDebug()
     if (!m_envManager) {
         return;
     }
-    m_widget->clearLog();
+    m_dbgWidget->clearLog();
 
     QString targetFilepath = m_liteBuild->targetFilePath();
     if (targetFilepath.isEmpty()) {
@@ -113,6 +157,33 @@ void LiteDebug::startDebug()
     m_debugger->setEnvironment(m_envManager->currentEnvironment().toStringList());
     m_debugger->setWorkingDirectory(workDir);
     m_debugger->start(target,args.split(" "));
+}
+
+void LiteDebug::execContinue()
+{
+    if (!m_debugger || !m_debugger->isDebugging()) {
+        return;
+    }
+    m_debugger->execContinue();
+}
+
+void LiteDebug::runJump()
+{
+    LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+    if (!editor) {
+        return;
+    }
+    LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
+    if (!textEditor) {
+        return;
+    }
+    QString filePath = textEditor->fileName();
+    if (filePath.isEmpty()) {
+        return;
+    }
+    QString fileName = QFileInfo(filePath).fileName();
+    int line = textEditor->line()+1;
+    m_debugger->runJump(fileName,QString("%1").arg(line));
 }
 
 void LiteDebug::stopDebug()
