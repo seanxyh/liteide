@@ -35,6 +35,8 @@
 #include <QAction>
 #include <QVBoxLayout>
 #include <QFileInfo>
+#include <QPushButton>
+#include <QLabel>
 #include <QDebug>
 
 //lite_memory_check_begin
@@ -79,6 +81,10 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_stepOutAct = new QAction(tr("StepOut"),this);
     m_stepOutAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F11));
 
+    m_hideAct = new QAction(tr("Hide"),this);
+    m_infoLabel = new QLabel;
+    m_infoLabel->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+
     m_toolBar->addAction(m_startDebugAct);
     m_toolBar->addAction(m_execContinueAct);
     m_toolBar->addAction(m_stopDebugAct);
@@ -88,6 +94,21 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_toolBar->addAction(m_stepOverAct);
     m_toolBar->addAction(m_stepIntoAct);
     m_toolBar->addAction(m_stepOutAct);
+
+    m_toolBar->addWidget(m_infoLabel);
+    m_toolBar->addAction(m_hideAct);
+
+    QMenu *menu = m_liteApp->actionManager()->insertMenu("Debug",tr("&Debug"),"help");
+    if (menu) {
+        menu->addAction(m_startDebugAct);
+        menu->addAction(m_execContinueAct);
+        menu->addAction(m_stopDebugAct);
+        menu->addAction(m_abortDebugAct);
+        menu->addSeparator();
+        menu->addAction(m_stepOverAct);
+        menu->addAction(m_stepIntoAct);
+        menu->addAction(m_stepOutAct);
+    }
 
     connect(m_manager,SIGNAL(currentDebuggerChanged(LiteApi::IDebugger*)),this,SLOT(setDebugger(LiteApi::IDebugger*)));
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
@@ -100,6 +121,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     connect(m_stepOverAct,SIGNAL(triggered()),this,SLOT(stepOver()));
     connect(m_stepIntoAct,SIGNAL(triggered()),this,SLOT(stepInto()));
     connect(m_stepOutAct,SIGNAL(triggered()),this,SLOT(stepOut()));
+    connect(m_hideAct,SIGNAL(triggered()),this,SLOT(hideDebug()));
 
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
 }
@@ -115,12 +137,24 @@ QWidget *LiteDebug::widget()
     return m_widget;
 }
 
+void LiteDebug::showDebug()
+{
+    m_widget->show();
+    emit debugVisible(true);
+}
+
+void LiteDebug::hideDebug()
+{
+    m_widget->hide();
+    emit debugVisible(false);
+}
+
 void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
 {
     m_debugger = debug;
     if (m_debugger) {
-        connect(m_debugger,SIGNAL(debugStarted()),this,SIGNAL(debugStarted()));
-        connect(m_debugger,SIGNAL(debugStoped()),this,SIGNAL(debugStoped()));
+        connect(m_debugger,SIGNAL(debugStarted()),this,SLOT(showDebug()));
+        connect(m_debugger,SIGNAL(debugStoped()),this,SLOT(hideDebug()));
         connect(m_debugger,SIGNAL(debugLog(QByteArray)),m_dbgWidget,SLOT(debugLog(QByteArray)));
     }
     m_dbgWidget->setDebug(m_debugger);
@@ -143,7 +177,7 @@ void LiteDebug::startDebug()
     m_dbgWidget->clearLog();
 
     QString targetFilepath = m_liteBuild->targetFilePath();
-    if (targetFilepath.isEmpty()) {
+    if (targetFilepath.isEmpty() || !QFile::exists(targetFilepath)) {
         return;
     }
 
@@ -169,6 +203,9 @@ void LiteDebug::execContinue()
 
 void LiteDebug::runJump()
 {
+    if (!m_debugger || !m_debugger->isDebugging()) {
+        return;
+    }
     LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
     if (!editor) {
         return;

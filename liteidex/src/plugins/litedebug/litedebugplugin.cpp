@@ -64,43 +64,23 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
 
-    QMenu *menu = m_liteApp->actionManager()->insertMenu("Debug",tr("&Debug"),"help");
-    if (!menu) {
+    int index = splitter->indexOf(m_liteApp->outputManager()->widget());
+    if (index == -1) {
         return false;
     }
 
     m_liteDebug = new LiteDebug(app,this);
     m_liteDebug->widget()->hide();
-    int index = splitter->indexOf(m_liteApp->outputManager()->widget());
     splitter->insertWidget(index,m_liteDebug->widget());
 
-    m_startDebugAct = new QAction(tr("Start Debugging"),this);
-    m_stopDebugAct = new QAction(tr("Stop Debugger"),this);
-    m_abortDebugAct = new QAction(tr("Abort Debugging"),this);
-    m_stepOverAct = new QAction(tr("Step Over"),this);
-    m_stepOverAct->setShortcut(QKeySequence(Qt::Key_F10));
-    m_stepIntoAct = new QAction(tr("Step Into"),this);
-    m_stepIntoAct->setShortcut(QKeySequence(Qt::Key_F11));
-    m_stepOutAct = new QAction(tr("Step Out"),this);
-    m_stepOutAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F11));
-
-    menu->addAction(m_startDebugAct);
-    menu->addAction(m_stopDebugAct);
-    menu->addAction(m_abortDebugAct);
-    menu->addSeparator();
-    menu->addAction(m_stepOverAct);
-    menu->addAction(m_stepIntoAct);
-    menu->addAction(m_stepOutAct);
-
-    connect(m_startDebugAct,SIGNAL(triggered()),m_liteDebug,SLOT(startDebug()));
-    connect(m_stopDebugAct,SIGNAL(triggered()),m_liteDebug,SLOT(stopDebug()));
-    connect(m_abortDebugAct,SIGNAL(triggered()),m_liteDebug,SLOT(abortDebug()));
-    connect(m_stepOverAct,SIGNAL(triggered()),m_liteDebug,SLOT(stepOver()));
-    connect(m_stepIntoAct,SIGNAL(triggered()),m_liteDebug,SLOT(stepInto()));
-    connect(m_stepOutAct,SIGNAL(triggered()),m_liteDebug,SLOT(stepOut()));
-
-    connect(m_liteDebug,SIGNAL(debugStarted()),m_liteDebug->widget(),SLOT(show()));
-    connect(m_liteDebug,SIGNAL(debugStoped()),m_liteDebug->widget(),SLOT(hide()));
+    QMenu *view = m_liteApp->actionManager()->loadMenu("view");
+    if (view) {
+        m_viewDebug = new QAction(tr("Debug"),this);
+        m_viewDebug->setCheckable(true);
+        view->addAction(m_viewDebug);
+        connect(m_viewDebug,SIGNAL(triggered(bool)),m_liteDebug->widget(),SLOT(setVisible(bool)));
+        connect(m_liteDebug,SIGNAL(debugVisible(bool)),m_viewDebug,SLOT(setChecked(bool)));
+    }
 
     return true;
 }

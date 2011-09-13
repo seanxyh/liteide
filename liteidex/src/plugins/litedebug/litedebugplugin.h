@@ -41,12 +41,7 @@ public:
     virtual QStringList dependPluginList() const;
 protected:
     LiteDebug *m_liteDebug;
-    QAction *m_startDebugAct;
-    QAction *m_stopDebugAct;
-    QAction *m_abortDebugAct;
-    QAction *m_stepOverAct;
-    QAction *m_stepIntoAct;
-    QAction *m_stepOutAct;
+    QAction   *m_viewDebug;
 };
 
 #endif // LITEDEBUGPLUGIN_H
