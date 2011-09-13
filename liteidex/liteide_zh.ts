@@ -123,6 +123,31 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <source>Build Config Dialog</source>
         <translation>编译配置对话框</translation>
     </message>
+    <message>
+        <location filename="src/plugins/litebuild/buildconfigdialog.ui" line="26"/>
+        <source>Build ID</source>
+        <translation>编译 ID</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/buildconfigdialog.ui" line="52"/>
+        <source>Build File</source>
+        <translation>编译文件</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/buildconfigdialog.ui" line="85"/>
+        <source>LiteIDE</source>
+        <translation>LiteIDE</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/buildconfigdialog.ui" line="95"/>
+        <source>Build Config</source>
+        <translation>编译配置</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/buildconfigdialog.ui" line="105"/>
+        <source>Build Custom</source>
+        <translation>编译自定义</translation>
+    </message>
 </context>
 <context>
     <name>CreateDirDialog</name>
@@ -176,6 +201,34 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
     </message>
 </context>
 <context>
+    <name>DebugWidget</name>
+    <message>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="70"/>
+        <source>Clear</source>
+        <translation>清除</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="80"/>
+        <source>AsyncRecord</source>
+        <translation>同步记录</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="81"/>
+        <source>Locals</source>
+        <translation>本地变量</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="83"/>
+        <source>CallStack</source>
+        <translation>调用堆栈</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="86"/>
+        <source>Command</source>
+        <translation>命令</translation>
+    </message>
+</context>
+<context>
     <name>DocumentBrowser</name>
     <message>
         <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="70"/>
@@ -192,61 +245,26 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <source>Reload</source>
         <translation>刷新</translation>
     </message>
-    <message>
-        <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="91"/>
-        <source>Next</source>
-        <translation>下一个</translation>
-    </message>
-    <message>
-        <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="93"/>
-        <source>FindNext	</source>
-        <translation>查找下一个</translation>
-    </message>
-    <message>
-        <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="94"/>
-        <source>Prev</source>
-        <translation>上一个</translation>
-    </message>
-    <message>
-        <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="96"/>
-        <source>FindPrev	</source>
-        <translation>查找上一个</translation>
-    </message>
-    <message>
-        <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="102"/>
-        <source>MatchCase</source>
-        <translation>区分大小写</translation>
-    </message>
-    <message>
-        <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="103"/>
-        <source>MatchWord</source>
-        <translation>全词匹配</translation>
-    </message>
-    <message>
-        <location filename="src/utils/documentbrowser/documentbrowser.cpp" line="104"/>
-        <source>Regex</source>
-        <translation>使用正则式</translation>
-    </message>
 </context>
 <context>
     <name>EditorManager</name>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="186"/>
+        <location filename="src/liteapp/editormanager.cpp" line="187"/>
         <source>%1 is modified.</source>
         <translation>%1 被修改.</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="187"/>
+        <location filename="src/liteapp/editormanager.cpp" line="188"/>
         <source>Save Modify</source>
         <translation>保存修改内容</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="251"/>
+        <location filename="src/liteapp/editormanager.cpp" line="252"/>
         <source>All Files (*)</source>
         <translation>所有文件(*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="253"/>
+        <location filename="src/liteapp/editormanager.cpp" line="254"/>
         <source>Save As</source>
         <translation>另存为</translation>
     </message>
@@ -458,81 +476,81 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>FileManager</name>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="64"/>
         <location filename="src/liteapp/filemanager.cpp" line="65"/>
+        <location filename="src/liteapp/filemanager.cpp" line="66"/>
         <source>Clear All</source>
         <translation>清除所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="84"/>
+        <location filename="src/liteapp/filemanager.cpp" line="85"/>
         <source>Recent Files</source>
         <translation>历史文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="85"/>
+        <location filename="src/liteapp/filemanager.cpp" line="86"/>
         <source>Recent Projects</source>
         <translation>历史项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="169"/>
-        <location filename="src/liteapp/filemanager.cpp" line="190"/>
-        <location filename="src/liteapp/filemanager.cpp" line="211"/>
+        <location filename="src/liteapp/filemanager.cpp" line="170"/>
+        <location filename="src/liteapp/filemanager.cpp" line="191"/>
+        <location filename="src/liteapp/filemanager.cpp" line="212"/>
         <source>All Support File (%1)</source>
         <translation>所有支持文件(%1)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="172"/>
-        <location filename="src/liteapp/filemanager.cpp" line="193"/>
-        <location filename="src/liteapp/filemanager.cpp" line="214"/>
+        <location filename="src/liteapp/filemanager.cpp" line="173"/>
+        <location filename="src/liteapp/filemanager.cpp" line="194"/>
+        <location filename="src/liteapp/filemanager.cpp" line="215"/>
         <source>All Files (*)</source>
         <translation>所有文件(*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="305"/>
+        <location filename="src/liteapp/filemanager.cpp" line="306"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="306"/>
+        <location filename="src/liteapp/filemanager.cpp" line="307"/>
         <source>Project &apos;%1&apos; is created.
 Do you want to load?</source>
         <translation>项目文件 &apos;%1&apos;已建立,是否加载?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="256"/>
+        <location filename="src/liteapp/filemanager.cpp" line="257"/>
         <source>Open Project or File</source>
         <translation>打开项目或文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="269"/>
+        <location filename="src/liteapp/filemanager.cpp" line="270"/>
         <source>Open Files</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="282"/>
+        <location filename="src/liteapp/filemanager.cpp" line="283"/>
         <source>Open Project</source>
         <translation>打开项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="365"/>
-        <location filename="src/liteapp/filemanager.cpp" line="381"/>
+        <location filename="src/liteapp/filemanager.cpp" line="369"/>
+        <location filename="src/liteapp/filemanager.cpp" line="385"/>
         <source>&amp;%1 %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="534"/>
+        <location filename="src/liteapp/filemanager.cpp" line="538"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
         <translation>%1
 文件已经被删除，重新保存到文件还是关闭编辑器?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="535"/>
+        <location filename="src/liteapp/filemanager.cpp" line="539"/>
         <source>LiteIDE X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="553"/>
+        <location filename="src/liteapp/filemanager.cpp" line="557"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation>%1
@@ -661,98 +679,98 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteApp</name>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="111"/>
+        <location filename="src/liteapp/liteapp.cpp" line="117"/>
         <source>Console</source>
         <translation>控制台</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="309"/>
+        <location filename="src/liteapp/liteapp.cpp" line="315"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="311"/>
+        <location filename="src/liteapp/liteapp.cpp" line="317"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="313"/>
+        <location filename="src/liteapp/liteapp.cpp" line="319"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="315"/>
+        <location filename="src/liteapp/liteapp.cpp" line="321"/>
         <source>Close All</source>
         <translation>关闭所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="316"/>
+        <location filename="src/liteapp/liteapp.cpp" line="322"/>
         <source>Open Project</source>
         <translation>打开项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="317"/>
+        <location filename="src/liteapp/liteapp.cpp" line="323"/>
         <source>Save Project</source>
         <translation>保存项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="318"/>
+        <location filename="src/liteapp/liteapp.cpp" line="324"/>
         <source>Close Project</source>
         <translation>关闭项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="319"/>
+        <location filename="src/liteapp/liteapp.cpp" line="325"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="321"/>
+        <location filename="src/liteapp/liteapp.cpp" line="327"/>
         <source>Save As...</source>
         <translation>另存为...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="323"/>
+        <location filename="src/liteapp/liteapp.cpp" line="329"/>
         <source>Save All</source>
         <oldsource>Save As</oldsource>
         <translation>保存所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="325"/>
+        <location filename="src/liteapp/liteapp.cpp" line="331"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="328"/>
+        <location filename="src/liteapp/liteapp.cpp" line="334"/>
         <source>About LiteIDE...</source>
         <translation>关于LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="329"/>
+        <location filename="src/liteapp/liteapp.cpp" line="335"/>
         <source>About Plugins...</source>
         <translation>关于插件...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="348"/>
+        <location filename="src/liteapp/liteapp.cpp" line="354"/>
         <source>&amp;File</source>
         <translation>文件(&amp;F)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="349"/>
+        <location filename="src/liteapp/liteapp.cpp" line="355"/>
         <source>&amp;View</source>
         <translation>查看(&amp;V)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="351"/>
+        <location filename="src/liteapp/liteapp.cpp" line="357"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="377"/>
+        <location filename="src/liteapp/liteapp.cpp" line="383"/>
         <source>Standard ToolBar</source>
         <translation>标准工具栏</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="389"/>
+        <location filename="src/liteapp/liteapp.cpp" line="395"/>
         <source>Navigation ToolBar</source>
         <translation>导航工具栏</translation>
     </message>
@@ -783,22 +801,26 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteBuild</name>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="87"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="92"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="96"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="100"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="88"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="93"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="97"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="101"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="90"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="103"/>
         <source>Config</source>
         <translation>配置</translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="101"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="114"/>
         <source>LiteBuild</source>
         <translation>编译输出</translation>
     </message>
@@ -814,6 +836,67 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/plugins/litebuild/litebuildoption.ui" line="23"/>
         <source>The build config change will take effect after a restart of LiteIDE.</source>
         <translation>编译配置更改生效,需要重新启动LiteIDE.</translation>
+    </message>
+</context>
+<context>
+    <name>LiteDebug</name>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="72"/>
+        <source>Start</source>
+        <translation>开始</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="73"/>
+        <source>Continue</source>
+        <translation>继续执行</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="74"/>
+        <source>RunJump</source>
+        <translation>执行跳转</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="75"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="76"/>
+        <source>Abort</source>
+        <translation>中止</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="77"/>
+        <source>StepOver</source>
+        <translation>步进</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="79"/>
+        <source>StepInto</source>
+        <translation>步入</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="81"/>
+        <source>StepOut</source>
+        <translation>步出</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="84"/>
+        <source>Hide</source>
+        <translation>隐藏</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="101"/>
+        <source>&amp;Debug</source>
+        <translation>调试(&amp;D)</translation>
+    </message>
+</context>
+<context>
+    <name>LiteDebugPlugin</name>
+    <message>
+        <location filename="src/plugins/litedebug/litedebugplugin.cpp" line="78"/>
+        <source>Debug</source>
+        <translation>调试</translation>
     </message>
 </context>
 <context>
@@ -1023,7 +1106,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteOutput</name>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="62"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="63"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
@@ -1188,6 +1271,31 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <source>Close</source>
         <translation>关闭</translation>
     </message>
+    <message>
+        <location filename="src/liteapp/pluginsdialog.cpp" line="52"/>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/pluginsdialog.cpp" line="54"/>
+        <source>Anchor</source>
+        <translation>作者</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/pluginsdialog.cpp" line="55"/>
+        <source>Info</source>
+        <translation>信息</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/pluginsdialog.cpp" line="56"/>
+        <source>Ver</source>
+        <translation>版本</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/pluginsdialog.cpp" line="57"/>
+        <source>FileName</source>
+        <translation>文件名称</translation>
+    </message>
 </context>
 <context>
     <name>ProfileFile</name>
@@ -1215,37 +1323,9 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>ProjectManager</name>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="124"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="121"/>
         <source>Project</source>
         <translation>项目</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <location filename="src/liteapp/pluginsdialog.cpp" line="52"/>
-        <source>Name</source>
-        <translation>名称</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/pluginsdialog.cpp" line="53"/>
-        <source>Anchor</source>
-        <translation>作者</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/pluginsdialog.cpp" line="54"/>
-        <source>Info</source>
-        <translation>信息</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/pluginsdialog.cpp" line="55"/>
-        <source>Ver</source>
-        <translation>版本</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/pluginsdialog.cpp" line="56"/>
-        <source>FileName</source>
-        <translation>文件名称</translation>
     </message>
 </context>
 <context>
@@ -1318,7 +1398,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/litefind/replaceeditor.h" line="86"/>
-        <location filename="src/plugins/litefind/replaceeditor.h" line="149"/>
+        <location filename="src/plugins/litefind/replaceeditor.h" line="153"/>
         <source>Not find</source>
         <translation>没有找到</translation>
     </message>
