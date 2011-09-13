@@ -52,25 +52,25 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
 {
     m_process = new QProcess(this);
     m_asyncModel = new QStandardItemModel(0,7,this);
-    m_asyncModel->setHeaderData(0,Qt::Horizontal,tr("Reasion"));
-    m_asyncModel->setHeaderData(1,Qt::Horizontal,tr("Address"));
-    m_asyncModel->setHeaderData(2,Qt::Horizontal,tr("Function"));
-    m_asyncModel->setHeaderData(3,Qt::Horizontal,tr("File"));
-    m_asyncModel->setHeaderData(4,Qt::Horizontal,tr("Line"));
-    m_asyncModel->setHeaderData(5,Qt::Horizontal,tr("Thread ID"));
-    m_asyncModel->setHeaderData(6,Qt::Horizontal,tr("Stoped Threads"));
+    m_asyncModel->setHeaderData(0,Qt::Horizontal,"Reason");
+    m_asyncModel->setHeaderData(1,Qt::Horizontal,"Address");
+    m_asyncModel->setHeaderData(2,Qt::Horizontal,"Function");
+    m_asyncModel->setHeaderData(3,Qt::Horizontal,"File");
+    m_asyncModel->setHeaderData(4,Qt::Horizontal,"Line");
+    m_asyncModel->setHeaderData(5,Qt::Horizontal,"Thread ID");
+    m_asyncModel->setHeaderData(6,Qt::Horizontal,"Stoped Threads");
 
     m_localsModel = new QStandardItemModel(0,3,this);
-    m_localsModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
-    m_localsModel->setHeaderData(1,Qt::Horizontal,tr("Type"));
-    m_localsModel->setHeaderData(2,Qt::Horizontal,tr("Value"));
+    m_localsModel->setHeaderData(0,Qt::Horizontal,"Name");
+    m_localsModel->setHeaderData(1,Qt::Horizontal,"Type");
+    m_localsModel->setHeaderData(2,Qt::Horizontal,"Value");
 
     m_framesModel = new QStandardItemModel(0,5,this);
-    m_framesModel->setHeaderData(0,Qt::Horizontal,tr("Level"));
-    m_framesModel->setHeaderData(1,Qt::Horizontal,tr("Address"));
-    m_framesModel->setHeaderData(2,Qt::Horizontal,tr("Function"));
-    m_framesModel->setHeaderData(3,Qt::Horizontal,tr("File"));
-    m_framesModel->setHeaderData(4,Qt::Horizontal,tr("Line"));
+    m_framesModel->setHeaderData(0,Qt::Horizontal,"Level");
+    m_framesModel->setHeaderData(1,Qt::Horizontal,"Address");
+    m_framesModel->setHeaderData(2,Qt::Horizontal,"Function");
+    m_framesModel->setHeaderData(3,Qt::Horizontal,"File");
+    m_framesModel->setHeaderData(4,Qt::Horizontal,"Line");
 
     m_gdbinit = false;    
 
