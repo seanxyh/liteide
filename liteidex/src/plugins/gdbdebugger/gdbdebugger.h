@@ -82,6 +82,7 @@ public slots:
 protected:
     void handleResponse(const QByteArray &buff);
     void handleStopped(const GdbMiValue &result);
+    void handleLibrary(const GdbMiValue &result);
     void handleAsyncClass(const QByteArray &asyncClass, const GdbMiValue &result);
     void handleConsoleStream(const QByteArray &data);
     void handleTargetStream(const QByteArray &data);
@@ -99,6 +100,7 @@ protected:
     QStandardItemModel *m_asyncModel;
     QStandardItemModel *m_localsModel;
     QStandardItemModel *m_framesModel;
+    QStandardItemModel *m_libraryModel;
     QString m_cmd;
     QByteArray m_runtime;
     QByteArray m_inbuffer;
