@@ -97,6 +97,7 @@ LiteTabWidget::LiteTabWidget(QWidget *parent) :
     this->setLayout(mainLayout);
 
     connect(m_tabBar,SIGNAL(currentChanged(int)),this,SLOT(tabCurrentChanged(int)));
+    connect(m_tabBar,SIGNAL(tabCloseRequested(int)),this,SIGNAL(tabCloseRequested(int)));
     connect(m_closeTabAct,SIGNAL(triggered()),this,SLOT(closeCurrentTab()));
     connect(m_addTabAct,SIGNAL(triggered()),this,SIGNAL(tabAddRequest()));
     connect(m_listActGroup,SIGNAL(triggered(QAction*)),this,SLOT(selectListActGroup(QAction*)));

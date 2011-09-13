@@ -30,6 +30,8 @@
 #include <QStandardItemModel>
 #include <QProcess>
 #include <QFile>
+#include <QDir>
+#include <QFileInfo>
 #include <QDebug>
 
 
@@ -50,16 +52,23 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
 {
     m_process = new QProcess(this);
     m_executionModel = new QStandardItemModel(0,5,this);
-    m_executionModel->setHeaderData(0,Qt::Horizontal,tr("Function"));
-    m_executionModel->setHeaderData(1,Qt::Horizontal,tr("File"));
-    m_executionModel->setHeaderData(2,Qt::Horizontal,tr("Line"));
-    m_executionModel->setHeaderData(3,Qt::Horizontal,tr("Address"));
+    m_executionModel->setHeaderData(0,Qt::Horizontal,tr("Address"));
+    m_executionModel->setHeaderData(1,Qt::Horizontal,tr("Function"));
+    m_executionModel->setHeaderData(2,Qt::Horizontal,tr("File"));
+    m_executionModel->setHeaderData(3,Qt::Horizontal,tr("Line"));
     m_executionModel->setHeaderData(4,Qt::Horizontal,tr("Thread ID"));
 
     m_localsModel = new QStandardItemModel(0,3,this);
     m_localsModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
     m_localsModel->setHeaderData(1,Qt::Horizontal,tr("Type"));
     m_localsModel->setHeaderData(2,Qt::Horizontal,tr("Value"));
+
+    m_framesModel = new QStandardItemModel(0,5,this);
+    m_framesModel->setHeaderData(0,Qt::Horizontal,tr("Level"));
+    m_framesModel->setHeaderData(1,Qt::Horizontal,tr("Address"));
+    m_framesModel->setHeaderData(2,Qt::Horizontal,tr("Function"));
+    m_framesModel->setHeaderData(3,Qt::Horizontal,tr("File"));
+    m_framesModel->setHeaderData(4,Qt::Horizontal,tr("Line"));
 
     m_gdbinit = false;    
 
@@ -93,6 +102,8 @@ QAbstractItemModel *GdbDebugeer::debugModel(LiteApi::DEBUG_MODEL_TYPE type)
         return m_executionModel;
     } else if (type == LiteApi::LOCALS_MODEL) {
         return m_localsModel;
+    } else if (type == LiteApi::CALLSTACK_MODEL) {
+        return m_framesModel;
     }
     return 0;
 }
@@ -113,10 +124,17 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
         return false;
     }
 
-    FileUtil::findExecute(program);
-
     QStringList args;
-    args << "--interpreter=mi" << "--args" << program;
+    args << "--interpreter=mi";
+
+    QString goroot = m_envManager->currentEnvironment().value("GOROOT");
+    if (!goroot.isEmpty()) {
+        QString path = QFileInfo(QDir(goroot),"src/pkg/runtime/").path();
+        args << "--directory" << m_runtime;
+        m_runtime = path.toUtf8();
+    }
+
+    args << "--args" << program;
     if (!arguments.isEmpty()) {
         args << arguments;
     }
@@ -136,7 +154,7 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
 
 void GdbDebugeer::stop()
 {
-    writeCmd("-gdb-exit");
+    appendCmd("-gdb-exit",true);
 }
 
 bool GdbDebugeer::isDebugging()
@@ -151,24 +169,33 @@ void GdbDebugeer::abort()
 
 void GdbDebugeer::stepOver()
 {
-    writeCmd("-exec-next");
+    appendCmd("-exec-next",true);
 }
 
 void GdbDebugeer::stepInto()
 {
-    writeCmd("-exec-step");
+    appendCmd("-exec-step",true);
 }
 
 void GdbDebugeer::stepOut()
 {
-    writeCmd("-exec-finish");
+    appendCmd("-exec-finish",true);
 }
 
-void GdbDebugeer::writeCmd(const QString &cmd)
+void GdbDebugeer::appendCmd(const QByteArray &cmd, bool exec)
 {
-    QString num = QString::number(m_index++);
-    QString c = QString("%1%2\r\n").arg(num,8,'0').arg(cmd);
-    m_process->write(c.toLatin1());
+    m_gdbCommand.append(cmd);
+    writeCmd();
+}
+
+void GdbDebugeer::writeCmd()
+{
+    if (!m_gdbCommand.isEmpty()) {
+        QString cmd = m_gdbCommand.takeFirst();
+        QString num = QString::number(m_index++);
+        QString c = QString("%1%2\r\n").arg(num,8,'0').arg(cmd);
+        m_process->write(c.toLatin1());
+    }
 }
 
 void GdbDebugeer::readStdError()
@@ -366,13 +393,14 @@ void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValu
         QString fullname = frame.findChild("fullname").data();
         QString line = frame.findChild("line").data();
         QList<QStandardItem*> items;
-        items << new QStandardItem(func)
+        items << new QStandardItem(addr)
+              << new QStandardItem(func)
               << new QStandardItem(file)
               << new QStandardItem(line)
-              << new QStandardItem(addr)
               << new QStandardItem(thread_id);
         m_executionModel->removeRows(0,m_executionModel->rowCount());
         m_executionModel->appendRow(items);
+        qDebug() << fullname;
         if (QFile::exists(fullname)) {
             LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fullname,true);
             if (editor) {
@@ -421,6 +449,28 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
                                          << new QStandardItem(value) );
             }
         }
+        return;
+    }
+    GdbMiValue stack = response.data.findChild("stack");
+    if (stack.isValid() && stack.isList()) {
+        m_framesModel->removeRows(0,m_framesModel->rowCount());
+        for (int i = 0; i < stack.childCount(); i++) {
+            GdbMiValue child = stack.childAt(i);
+            if (child.isValid() && child.name() == "frame") {
+                QString level = child.findChild("level").data();
+                QString addr = child.findChild("addr").data();
+                QString func = child.findChild("func").data();
+                QString file = child.findChild("file").data();
+                QString line = child.findChild("line").data();
+                m_framesModel->appendRow(QList<QStandardItem*>()
+                                         << new QStandardItem(level)
+                                         << new QStandardItem(addr)
+                                         << new QStandardItem(func)
+                                         << new QStandardItem(file)
+                                         << new QStandardItem(line)
+                                         );
+            }
+        }
     }
 }
 
@@ -428,22 +478,30 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
 void GdbDebugeer::initGdb()
 {
 #ifdef Q_OS_WIN
-    writeCmd("set new-console on");
+    appendCmd("set new-console on");
 #endif
-    writeCmd("set unwindonsignal on");
-    writeCmd("set overload-resolution off");
-    writeCmd("handle SIGSEGV nopass stop print");
-    writeCmd("set breakpoint pending on");
-    writeCmd("set width 0");
-    writeCmd("set height 0");
-    writeCmd("set auto-solib-add on");
-    writeCmd("break main.main");
-    writeCmd("-exec-run");
+    appendCmd("set unwindonsignal on");
+    appendCmd("set overload-resolution off");
+    appendCmd("handle SIGSEGV nopass stop print");
+    appendCmd("set breakpoint pending on");
+    appendCmd("set width 0");
+    appendCmd("set height 0");
+    appendCmd("set auto-solib-add on");
+    if (!m_runtime.isEmpty()) {
+        appendCmd("set substitute-path /go/src/pkg/runtime "+m_runtime);
+    }
+    appendCmd("break main.main");
+    appendCmd("-exec-run");
 }
 
 void GdbDebugeer::updateLocals()
 {
-    writeCmd("-stack-list-locals 2");
+    appendCmd("-stack-list-locals 2");
+}
+
+void  GdbDebugeer::updateFrames()
+{
+    appendCmd("-stack-list-frames");
 }
 
 void GdbDebugeer::readStdOutput()
@@ -485,6 +543,8 @@ void GdbDebugeer::readStdOutput()
         stop();
     }
 
+    writeCmd();
+
     if (!m_gdbinit) {
         m_gdbinit = true;
         initGdb();
@@ -493,7 +553,7 @@ void GdbDebugeer::readStdOutput()
     if (m_handleState.stopped()) {
         //get locals
         updateLocals();
+        updateFrames();
     }
-
     m_handleState.clear();
 }
