@@ -50,12 +50,12 @@ protected:
     QWidget *m_widget;
     LiteApi::IDebugger *m_debug;
     QTabWidget *m_tabWidget;
-    QTreeView *m_executionView;
+    QTreeView *m_asyncView;
     QTreeView *m_localsView;
-    QTreeView *m_watchesView;
+    //QTreeView *m_watchesView;
     QTreeView *m_statckView;
-    QTreeView *m_bkpointView;
-    QTreeView *m_threadsView;
+    //QTreeView *m_bkpointView;
+    //QTreeView *m_threadsView;
     QLineEdit *m_cmdLineEdit;
     QPlainTextEdit *m_debugLogEdit;
 };

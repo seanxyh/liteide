@@ -157,7 +157,7 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
 
 void GdbDebugeer::stop()
 {
-    appendCmd("-gdb-exit",true);
+    command("-gdb-exit");
 }
 
 bool GdbDebugeer::isDebugging()
@@ -172,38 +172,32 @@ void GdbDebugeer::abort()
 
 void GdbDebugeer::execContinue()
 {
-    appendCmd("-exec-continue",true);
+    command("-exec-continue");
 }
 
 void GdbDebugeer::stepOver()
 {
-    appendCmd("-exec-next",true);
+    command("-exec-next");
 }
 
 void GdbDebugeer::stepInto()
 {
-    appendCmd("-exec-step",true);
+    command("-exec-step");
 }
 
 void GdbDebugeer::stepOut()
 {
-    appendCmd("-exec-finish",true);
+    command("-exec-finish");
 }
 
 void GdbDebugeer::runJump(const QString &fileName, const QString &spec)
 {
     if (fileName.isEmpty()) {
-        appendCmd("-break-insert -t "+spec.toLatin1());
+        command("-break-insert -t "+spec.toLatin1());
     } else {
-        appendCmd("-break-insert -t "+fileName.toLatin1()+":"+spec.toLatin1());
+        command("-break-insert -t "+fileName.toLatin1()+":"+spec.toLatin1());
     }
-    appendCmd("-exec-continue",true);
-}
-
-void GdbDebugeer::appendCmd(const QByteArray &cmd, bool exec)
-{
-    m_gdbCommand.append(cmd);
-    writeCmd();
+    command("-exec-continue");
 }
 
 void  GdbDebugeer::command(const QByteArray &cmd)
@@ -213,18 +207,13 @@ void  GdbDebugeer::command(const QByteArray &cmd)
     QByteArray c;
     c.append(buf);
     c.append(cmd);
+    emit debugLog(">>> "+c);
+#ifdef Q_OS_WIN
     c.append("\r\n");
+#else
+    c.append("\n");
+#endif
     m_process->write(c);
-}
-
-void GdbDebugeer::writeCmd()
-{
-    if (!m_gdbCommand.isEmpty()) {
-        QString cmd = m_gdbCommand.takeFirst();
-        QString num = QString::number(m_index++);
-        QString c = QString("%1%2\r\n").arg(num,8,'0').arg(cmd);
-        m_process->write(c.toLatin1());
-    }
 }
 
 void GdbDebugeer::readStdError()
@@ -511,35 +500,35 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
 void GdbDebugeer::initGdb()
 {
 #ifdef Q_OS_WIN
-    appendCmd("set new-console on");
+    command("set new-console on");
 #endif
-    appendCmd("set unwindonsignal on");
-    appendCmd("set overload-resolution off");
-    appendCmd("handle SIGSEGV nopass stop print");
-    appendCmd("set breakpoint pending on");
-    appendCmd("set width 0");
-    appendCmd("set height 0");
-    appendCmd("set auto-solib-add on");
+    command("set unwindonsignal on");
+    command("set overload-resolution off");
+    command("handle SIGSEGV nopass stop print");
+    command("set breakpoint pending on");
+    command("set width 0");
+    command("set height 0");
+    command("set auto-solib-add on");
     if (!m_runtime.isEmpty()) {
-        appendCmd("set substitute-path /go/src/pkg/runtime "+m_runtime);
+        command("set substitute-path /go/src/pkg/runtime "+m_runtime);
     }
-    appendCmd("break main.main");
-    appendCmd("-exec-run");
+    command("break main.main");
+    command("-exec-run");
 }
 
 void GdbDebugeer::updateLocals()
 {
-    appendCmd("-stack-list-locals 2");
+    command("-stack-list-locals 2");
 }
 
 void GdbDebugeer::updateFrames()
 {
-    appendCmd("-stack-list-frames");
+    command("-stack-list-frames");
 }
 
 void GdbDebugeer::updateBreaks()
 {
-    appendCmd("-break-info");
+    command("-break-info");
 }
 
 void GdbDebugeer::readStdOutput()
@@ -581,8 +570,6 @@ void GdbDebugeer::readStdOutput()
     if (m_handleState.exited()) {
         stop();
     }
-
-    writeCmd();
 
     if (!m_gdbinit) {
         m_gdbinit = true;
