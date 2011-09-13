@@ -1,3 +1,8 @@
+==== 2011.9.13 Ver x9 1.40625
+ * LiteDebug : new debug manager plugin
+ * GdbDebugger : new gdb debugger plugin
+ * LiteBuild : add build config and custom
+ * LiteFind : fix regexp use match case
 ==== 2011.9.1 Ver X8 1.25 ====
  * LiteFind : new find and replace plugin, remove CodeSearch plugin
  * LiteEditor : fix word api complete three parts error
