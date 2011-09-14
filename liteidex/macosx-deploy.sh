@@ -79,8 +79,8 @@ process_file2
 export deploy_file=libliteenv.dylib
 process_file
 
-export deploy_file=libdebug.dylib
+export deploy_file=liblitedebug.dylib
 process_file
 
-export deploy_file=gdbdebugger.dylib
+export deploy_file=libgdbdebugger.dylib
 process_file

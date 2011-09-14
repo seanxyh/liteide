@@ -1,4 +1,4 @@
-==== 2011.9.14 Ver X9 1.40625
+==== 2011.9.14 Ver X9 1.40625 ====
  * LiteDebug : new debug manager plugin
  * GdbDebugger : new gdb debugger plugin
  * LiteBuild : add build config and custom
