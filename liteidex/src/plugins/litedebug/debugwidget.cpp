@@ -88,7 +88,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 //    m_tabWidget->addTab(m_watchesView,tr("Watches"));
 //    m_tabWidget->addTab(m_bkpointView,tr("BreakPoints"));
 //    m_tabWidget->addTab(m_threadsView,tr("Threads"));
-    m_tabWidget->addTab(cmdWidget,tr("Command"));
+    m_tabWidget->addTab(cmdWidget,tr("Console"));
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);

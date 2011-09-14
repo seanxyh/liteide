@@ -156,6 +156,7 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
     m_gdbinit = false;
     m_busy = false;
     m_index = 0;
+    m_handleState.clear();
     m_libraryModel->removeRows(0,m_libraryModel->rowCount());
 
     m_process->start(m_cmd,args);
@@ -586,17 +587,14 @@ void GdbDebugeer::readStdOutput()
     emit debugLog(m_inbuffer);
     m_inbuffer.clear();
 
-    if (m_handleState.exited()) {
-        stop();
-    }
-
     if (!m_gdbinit) {
         m_gdbinit = true;
         initGdb();
     }
 
-    if (m_handleState.stopped()) {
-        //get locals
+    if (m_handleState.exited()) {
+        stop();
+    } else if (m_handleState.stopped()) {
         updateLocals();
         updateFrames();
     }
