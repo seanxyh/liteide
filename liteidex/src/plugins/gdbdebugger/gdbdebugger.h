@@ -105,7 +105,6 @@ protected:
     QByteArray m_runtime;
     QByteArray m_inbuffer;
     GdbHandleState m_handleState;
-    QList<QByteArray> m_gdbCommand;
     bool    m_busy;
     bool    m_gdbinit;
     int     m_index;

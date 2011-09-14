@@ -203,29 +203,34 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>DebugWidget</name>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="70"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="74"/>
         <source>Clear</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="80"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="84"/>
         <source>AsyncRecord</source>
         <translation>同步记录</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="81"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="85"/>
         <source>Locals</source>
         <translation>本地变量</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="83"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="86"/>
         <source>CallStack</source>
         <translation>调用堆栈</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="86"/>
-        <source>Command</source>
-        <translation>命令</translation>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="87"/>
+        <source>Library</source>
+        <translation>动态库</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="91"/>
+        <source>Console</source>
+        <translation>控制台</translation>
     </message>
 </context>
 <context>
