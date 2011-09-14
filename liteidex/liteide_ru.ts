@@ -11,7 +11,8 @@
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="201"/>
-        <source>Infomation</source>
+        <source>Information</source>
+        <oldsource>Infomation</oldsource>
         <translation>Информация</translation>
     </message>
     <message>
