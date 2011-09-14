@@ -11,8 +11,9 @@
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="201"/>
-        <source>Infomation</source>
-        <translation type="unfinished"></translation>
+        <source>Information</source>
+        <oldsource>Infomation</oldsource>
+        <translation>Traductions</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="207"/>
@@ -1175,7 +1176,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/liteapp/newfiledialog.ui" line="74"/>
         <location filename="src/liteapp/newfiledialog.ui" line="94"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Traductions</translation>
     </message>
     <message>
         <location filename="src/liteapp/newfiledialog.ui" line="81"/>
@@ -1185,7 +1186,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <message>
         <location filename="src/liteapp/newfiledialog.ui" line="104"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom :</translation>
     </message>
     <message>
         <location filename="src/liteapp/newfiledialog.ui" line="114"/>
