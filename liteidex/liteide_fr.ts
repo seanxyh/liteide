@@ -7,7 +7,7 @@
         <location filename="src/liteapp/aboutdialog.ui" line="20"/>
         <source>About LiteIDE</source>
         <oldsource>About Liteide</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>À propos de LiteIDE</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="201"/>
@@ -17,7 +17,7 @@
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="207"/>
         <source>Welcome:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bienvenu :</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="213"/>
@@ -28,57 +28,57 @@ LiteIDE is a simple, open source, cross-platform IDE.</source>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="224"/>
         <source>Project:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projet :</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="230"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="244"/>
         <source>Author:</source>
-        <translation type="unfinished"></translation>
+        <translation>Auteur :</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="258"/>
         <source>Version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Version :</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="272"/>
         <source>Website:</source>
-        <translation type="unfinished"></translation>
+        <translation>Site Web :</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="290"/>
         <source>Developers</source>
-        <translation type="unfinished"></translation>
+        <translation>Développeurs</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="380"/>
         <source>Translations</source>
-        <translation type="unfinished"></translation>
+        <translation>Traductions</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="392"/>
         <source>Chinese</source>
-        <translation type="unfinished"></translation>
+        <translation>Chinois</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="406"/>
         <source>Japanese</source>
-        <translation type="unfinished"></translation>
+        <translation>Japonais</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="420"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Russe</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="451"/>
         <source>Thanks to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Remerciements à...</translation>
     </message>
     <message>
         <location filename="src/liteapp/aboutdialog.ui" line="457"/>
