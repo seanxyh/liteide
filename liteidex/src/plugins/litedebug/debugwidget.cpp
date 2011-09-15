@@ -54,7 +54,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     m_tabWidget = new QTabWidget;
 
     m_asyncView = new QTreeView;
-    m_localsView = new QTreeView;
+    m_varsView = new QTreeView;
     m_statckView = new QTreeView;
     m_libraryView = new QTreeView;
 
@@ -64,7 +64,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_asyncView->setEditTriggers(0);
 
-    m_localsView->setEditTriggers(0);
+    m_varsView->setEditTriggers(0);
     m_statckView->setEditTriggers(0);
     m_libraryView->setEditTriggers(0);
    // m_watchesView->setEditTriggers(0);
@@ -85,7 +85,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     cmdWidget->setLayout(cmdLayout);
 
     m_tabWidget->addTab(m_asyncView,tr("AsyncRecord"));
-    m_tabWidget->addTab(m_localsView,tr("Locals"));
+    m_tabWidget->addTab(m_varsView,tr("Variables"));
     m_tabWidget->addTab(m_statckView,tr("CallStack"));
     m_tabWidget->addTab(m_libraryView,tr("Library"));
 //    m_tabWidget->addTab(m_watchesView,tr("Watches"));
@@ -158,11 +158,11 @@ void DebugWidget::setDebug(LiteApi::IDebugger *debug)
     }
     connect(debug,SIGNAL(modelChanged(int)),this,SLOT(modelChanged(int)));
     m_asyncView->setModel(debug->debugModel(LiteApi::ASYNC_MODEL));
-    m_localsView->setModel(debug->debugModel(LiteApi::LOCALS_MODEL));
+    m_varsView->setModel(debug->debugModel(LiteApi::VARS_MODEL));
     m_statckView->setModel(debug->debugModel(LiteApi::CALLSTACK_MODEL));
     m_libraryView->setModel(debug->debugModel(LiteApi::LIBRARY_MODEL));
     setResizeView(m_asyncView);
-    setResizeView(m_localsView);
+    setResizeView(m_varsView);
     setResizeView(m_statckView);
     setResizeView(m_libraryView);
     //m_watchesView->setModel(debug->debugModel(LiteApi::WATCHES_MODEL));

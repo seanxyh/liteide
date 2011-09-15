@@ -53,6 +53,7 @@ public:
 };
 
 class QStandardItemModel;
+class QStandardItem;
 class GdbDebugeer : public LiteApi::IDebugger
 {
     Q_OBJECT
@@ -98,9 +99,12 @@ protected:
     LiteApi::IEnvManager    *m_envManager;
     QProcess *m_process;
     QStandardItemModel *m_asyncModel;
-    QStandardItemModel *m_localsModel;
+    QStandardItemModel *m_varsModel;
     QStandardItemModel *m_framesModel;
     QStandardItemModel *m_libraryModel;
+    QStandardItem   *m_asyncItem;
+    QStandardItem   *m_localItem;
+    QStandardItem   *m_argsItem;
     QString m_cmd;
     QByteArray m_runtime;
     QByteArray m_inbuffer;
