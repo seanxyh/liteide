@@ -66,6 +66,7 @@ signals:
     void debugStarted();
     void debugStoped();
     void debugLog(const QByteArray &log);
+    void modelChanged(int type);
 };
 
 class IDebuggerManager : public IManager

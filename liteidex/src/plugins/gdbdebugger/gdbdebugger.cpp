@@ -45,13 +45,96 @@
 #endif
 //lite_memory_check_end
 
+//GdbMiValue
+/*
+    QByteArray result;
+    switch (m_type) {
+        case Invalid:
+            if (multiline)
+                result += ind(indent) + "Invalid\n";
+            else
+                result += "Invalid";
+            break;
+        case Const:
+            if (!m_name.isEmpty())
+                result += m_name + '=';
+            result += '"' + escapeCString(m_data) + '"';
+            break;
+        case Tuple:
+            if (!m_name.isEmpty())
+                result += m_name + '=';
+            if (multiline) {
+                result += "{\n";
+                dumpChildren(&result, multiline, indent + 1);
+                result += '\n' + ind(indent) + '}';
+            } else {
+                result += '{';
+                dumpChildren(&result, multiline, indent + 1);
+                result += '}';
+            }
+            break;
+        case List:
+            if (!m_name.isEmpty())
+                result += m_name + '=';
+            if (multiline) {
+                result += "[\n";
+                dumpChildren(&result, multiline, indent + 1);
+                result += '\n' + ind(indent) + ']';
+            } else {
+                result += '[';
+                dumpChildren(&result, multiline, indent + 1);
+                result += ']';
+            }
+            break;
+    }
+    return result;
+*/
+
+static void GdbMiValueToItem(QStandardItem *item, const GdbMiValue &value)
+{
+    switch (value.type()) {
+    case GdbMiValue::Invalid:
+        item->appendRow(new QStandardItem("Invalid"));
+        break;
+    case GdbMiValue::Const:
+        if (value.name().isEmpty()) {
+            item->appendRow(new QStandardItem(QString(value.data())));
+        } else {
+            item->appendRow(new QStandardItem(QString(value.name()+"="+value.data())));
+        }
+        break;
+    case GdbMiValue::List: {
+            QStandardItem *in = new QStandardItem(QString(value.name()));
+            item->appendRow(in);
+            for (int i = 0; i < value.childCount(); i++) {
+                QStandardItem *iv = new QStandardItem(QString("[%1]").arg(i));
+                in->appendRow(iv);
+                GdbMiValueToItem(iv,value.childAt(i));
+            }
+            break;
+        }
+    case GdbMiValue::Tuple: {
+            QStandardItem *iv = item;
+            if (!value.name().isEmpty()) {
+                iv = new QStandardItem(QString(value.name()));
+                item->appendRow(iv);
+            }
+            foreach (const GdbMiValue &v, value.children()) {
+                GdbMiValueToItem(iv,v);
+            }
+            break;
+       }
+    }
+}
+
 GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     LiteApi::IDebugger(parent),
     m_liteApp(app),
     m_envManager(0)
 {
     m_process = new QProcess(this);
-    m_asyncModel = new QStandardItemModel(0,7,this);
+    m_asyncModel = new QStandardItemModel(this);
+    /*
     m_asyncModel->setHeaderData(0,Qt::Horizontal,"Reason");
     m_asyncModel->setHeaderData(1,Qt::Horizontal,"Address");
     m_asyncModel->setHeaderData(2,Qt::Horizontal,"Function");
@@ -59,7 +142,7 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_asyncModel->setHeaderData(4,Qt::Horizontal,"Line");
     m_asyncModel->setHeaderData(5,Qt::Horizontal,"Thread ID");
     m_asyncModel->setHeaderData(6,Qt::Horizontal,"Stoped Threads");
-
+    */
     m_localsModel = new QStandardItemModel(0,3,this);
     m_localsModel->setHeaderData(0,Qt::Horizontal,"Name");
     m_localsModel->setHeaderData(1,Qt::Horizontal,"Type");
@@ -412,6 +495,7 @@ void GdbDebugeer::handleStopped(const GdbMiValue &result)
         QString file = frame.findChild("file").data();
         QString fullname = frame.findChild("fullname").data();
         QString line = frame.findChild("line").data();
+        /*
         QList<QStandardItem*> items;
         items << new QStandardItem(QString(reason))
               << new QStandardItem(addr)
@@ -424,6 +508,7 @@ void GdbDebugeer::handleStopped(const GdbMiValue &result)
 
         m_asyncModel->removeRows(0,m_asyncModel->rowCount());
         m_asyncModel->appendRow(items);
+        */
         if (QFile::exists(fullname)) {
             LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fullname,true);
             if (editor) {
@@ -452,11 +537,16 @@ void GdbDebugeer::handleLibrary(const GdbMiValue &result)
 
 void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValue &result)
 {
+    QStandardItem *item = new QStandardItem(QString(asyncClass));
+    GdbMiValueToItem(item,result);
+    m_asyncModel->clear();
+    m_asyncModel->appendRow(item);
     if (asyncClass == "stopped") {
         handleStopped(result);        
     } else if (asyncClass == "library-loaded") {
         handleLibrary(result);
     }
+    emit modelChanged(LiteApi::ASYNC_MODEL);
 }
 
 void GdbDebugeer::handleConsoleStream(const QByteArray &data)
@@ -606,5 +696,5 @@ void GdbDebugeer::finished(int)
 {
     m_localsModel->removeRows(0,m_localsModel->rowCount());
     m_framesModel->removeRows(0,m_framesModel->rowCount());
-    m_asyncModel->removeRows(0,m_asyncModel->rowCount());
+   // m_asyncModel->removeRows(0,m_asyncModel->rowCount());
 }

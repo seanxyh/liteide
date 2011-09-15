@@ -45,6 +45,7 @@ public slots:
     void cmdLineInput();
     void debugLog(const QByteArray &log);
     void clearLog();
+    void modelChanged(int);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
