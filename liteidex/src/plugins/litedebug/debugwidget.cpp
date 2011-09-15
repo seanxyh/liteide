@@ -32,6 +32,8 @@
 #include <QPushButton>
 #include <QHeaderView>
 #include <QPlainTextEdit>
+#include <QVariant>
+#include <QDebug>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -61,6 +63,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     //m_threadsView = new QTreeView;
 
     m_asyncView->setEditTriggers(0);
+
     m_localsView->setEditTriggers(0);
     m_statckView->setEditTriggers(0);
     m_libraryView->setEditTriggers(0);
@@ -138,6 +141,7 @@ static void setResizeView(QTreeView *view)
         return;
     }
     if (model->columnCount() <= 0) {
+        view->setHeaderHidden(true);
         return;
     }
     view->header()->setResizeMode(0,QHeaderView::ResizeToContents);
@@ -152,6 +156,7 @@ void DebugWidget::setDebug(LiteApi::IDebugger *debug)
     if (!m_debug) {
         return;
     }
+    connect(debug,SIGNAL(modelChanged(int)),this,SLOT(modelChanged(int)));
     m_asyncView->setModel(debug->debugModel(LiteApi::ASYNC_MODEL));
     m_localsView->setModel(debug->debugModel(LiteApi::LOCALS_MODEL));
     m_statckView->setModel(debug->debugModel(LiteApi::CALLSTACK_MODEL));
@@ -163,4 +168,11 @@ void DebugWidget::setDebug(LiteApi::IDebugger *debug)
     //m_watchesView->setModel(debug->debugModel(LiteApi::WATCHES_MODEL));
     //m_bkpointView->setModel(debug->debugModel(LiteApi::BREAKPOINTS_MODEL));
     //m_threadsView->setModel(debug->debugModel(LiteApi::THREADS_MODEL));
+}
+
+void DebugWidget::modelChanged(int type)
+{
+    if (type == LiteApi::ASYNC_MODEL) {
+        m_asyncView->expandAll();
+    }
 }
