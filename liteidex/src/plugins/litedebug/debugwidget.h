@@ -52,7 +52,7 @@ protected:
     LiteApi::IDebugger *m_debug;
     QTabWidget *m_tabWidget;
     QTreeView *m_asyncView;
-    QTreeView *m_localsView;
+    QTreeView *m_varsView;
     //QTreeView *m_watchesView;
     QTreeView *m_statckView;
     QTreeView *m_libraryView;

@@ -134,6 +134,8 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
 {
     m_process = new QProcess(this);
     m_asyncModel = new QStandardItemModel(this);
+    m_asyncItem = new QStandardItem;
+    m_asyncModel->appendRow(m_asyncItem);
     /*
     m_asyncModel->setHeaderData(0,Qt::Horizontal,"Reason");
     m_asyncModel->setHeaderData(1,Qt::Horizontal,"Address");
@@ -143,10 +145,11 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_asyncModel->setHeaderData(5,Qt::Horizontal,"Thread ID");
     m_asyncModel->setHeaderData(6,Qt::Horizontal,"Stoped Threads");
     */
-    m_localsModel = new QStandardItemModel(0,3,this);
-    m_localsModel->setHeaderData(0,Qt::Horizontal,"Name");
-    m_localsModel->setHeaderData(1,Qt::Horizontal,"Type");
-    m_localsModel->setHeaderData(2,Qt::Horizontal,"Value");
+    m_varsModel = new QStandardItemModel(this);
+    m_localItem = new QStandardItem(tr("Locals"));
+    m_argsItem = new QStandardItem(tr("Arguments"));
+    m_varsModel->appendRow(m_localItem);
+    m_varsModel->appendRow(m_argsItem);
 
     m_framesModel = new QStandardItemModel(0,5,this);
     m_framesModel->setHeaderData(0,Qt::Horizontal,"Level");
@@ -190,8 +193,8 @@ QAbstractItemModel *GdbDebugeer::debugModel(LiteApi::DEBUG_MODEL_TYPE type)
 {
     if (type == LiteApi::ASYNC_MODEL) {
         return m_asyncModel;
-    } else if (type == LiteApi::LOCALS_MODEL) {
-        return m_localsModel;
+    } else if (type == LiteApi::VARS_MODEL) {
+        return m_varsModel;
     } else if (type == LiteApi::CALLSTACK_MODEL) {
         return m_framesModel;
     } else if (type == LiteApi::LIBRARY_MODEL) {
@@ -537,16 +540,18 @@ void GdbDebugeer::handleLibrary(const GdbMiValue &result)
 
 void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValue &result)
 {
-    QStandardItem *item = new QStandardItem(QString(asyncClass));
-    GdbMiValueToItem(item,result);
-    m_asyncModel->clear();
-    m_asyncModel->appendRow(item);
+    m_asyncItem->removeRows(0,m_asyncItem->rowCount());
+    m_asyncItem->setText(asyncClass);
+    //QStandardItem *item = new QStandardItem(QString(asyncClass));
+    GdbMiValueToItem(m_asyncItem,result);
+    //m_asyncModel->clear();
+    //m_asyncModel->appendRow(item);
     if (asyncClass == "stopped") {
         handleStopped(result);        
     } else if (asyncClass == "library-loaded") {
         handleLibrary(result);
     }
-    emit modelChanged(LiteApi::ASYNC_MODEL);
+    //emit modelChanged(LiteApi::ASYNC_MODEL);
 }
 
 void GdbDebugeer::handleConsoleStream(const QByteArray &data)
@@ -566,22 +571,22 @@ void GdbDebugeer::handleLogStream(const QByteArray &data)
 
 void GdbDebugeer::handleResultRecord(const GdbResponse &response)
 {
-    GdbMiValue locals = response.data.findChild("locals");
-    if (locals.isValid() && locals.isList()) {
-        m_localsModel->removeRows(0,m_localsModel->rowCount());
-        for (int i = 0; i < locals.childCount(); i++) {
-            GdbMiValue child = locals.childAt(i);
+    GdbMiValue vars = response.data.findChild("variables");
+    if (vars.isValid() && vars.isList()) {
+        m_localItem->removeRows(0,m_localItem->rowCount());
+        m_argsItem->removeRows(0,m_argsItem->rowCount());
+        foreach (const GdbMiValue &child, vars.m_children) {
             if (child.isValid()) {
                 QString name = child.findChild("name").data();
-                QString type = child.findChild("type").data();
                 QString value = child.findChild("value").data();
-                m_localsModel->appendRow(QList<QStandardItem*>()
-                                         << new QStandardItem(name)
-                                         << new QStandardItem(type)
-                                         << new QStandardItem(value) );
+                if (child.findChild("arg").isValid()) {
+                    m_argsItem->appendRow(new QStandardItem(QString("%1 = %2").arg(name).arg(value)));
+                } else {
+                    m_localItem->appendRow(new QStandardItem(QString("%1 = %2").arg(name).arg(value)));
+                }
             }
         }
-        return;
+        emit modelChanged(LiteApi::VARS_MODEL);
     }
     GdbMiValue stack = response.data.findChild("stack");
     if (stack.isValid() && stack.isList()) {
@@ -628,7 +633,7 @@ void GdbDebugeer::initGdb()
 
 void GdbDebugeer::updateLocals()
 {
-    command("-stack-list-locals 2");
+    command("-stack-list-variables 1");
 }
 
 void GdbDebugeer::updateFrames()
@@ -694,7 +699,8 @@ void GdbDebugeer::readStdOutput()
 
 void GdbDebugeer::finished(int)
 {
-    m_localsModel->removeRows(0,m_localsModel->rowCount());
     m_framesModel->removeRows(0,m_framesModel->rowCount());
+    m_localItem->removeRows(0,m_localItem->rowCount());
+    m_argsItem->removeRows(9,m_argsItem->rowCount());
    // m_asyncModel->removeRows(0,m_asyncModel->rowCount());
 }
