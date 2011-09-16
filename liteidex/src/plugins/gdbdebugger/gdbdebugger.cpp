@@ -701,6 +701,6 @@ void GdbDebugeer::finished(int)
 {
     m_framesModel->removeRows(0,m_framesModel->rowCount());
     m_localItem->removeRows(0,m_localItem->rowCount());
-    m_argsItem->removeRows(9,m_argsItem->rowCount());
+    m_argsItem->removeRows(0,m_argsItem->rowCount());
    // m_asyncModel->removeRows(0,m_asyncModel->rowCount());
 }

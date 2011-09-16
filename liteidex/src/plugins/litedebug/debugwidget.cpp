@@ -140,7 +140,7 @@ static void setResizeView(QTreeView *view)
     if (!model) {
         return;
     }
-    if (model->columnCount() <= 0) {
+    if (model->columnCount() <= 1) {
         view->setHeaderHidden(true);
         return;
     }
