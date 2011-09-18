@@ -234,7 +234,9 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
         args << arguments;
     }
 
-    m_cmd = FileUtil::lookPath("gdb",m_envManager->currentEnvironment(),true);
+    QString gdb = m_envManager->currentEnvironment().value("LITEIDE_GDB","gdb");
+
+    m_cmd = FileUtil::lookPath(gdb,m_envManager->currentEnvironment(),true);
     if (m_cmd.isEmpty()) {
         return false;
     }
