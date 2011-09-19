@@ -136,6 +136,7 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
     m_fileName = fileName;
 
     QByteArray buf = file.readAll();
+    m_hasDecodingError = false;
 
     if (bCheckCodec) {
         if (mimeType == "text/html" || mimeType == "text/xml") {
@@ -166,7 +167,11 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
             m_codec = codec;
         }
     }
-    QString text = m_codec->toUnicode(buf);
+    QTextCodec::ConverterState state;
+    QString text = m_codec->toUnicode(buf,buf.size(),&state);
+    if (state.invalidChars > 0 || state.remainingChars > 0) {
+        m_hasDecodingError = true;
+    }
 /*
     QByteArray verifyBuf = m_codec->fromUnicode(text); // slow
     // the minSize trick lets us ignore unicode headers
@@ -175,9 +180,11 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
                           || memcmp(verifyBuf.constData() + verifyBuf.size() - minSize,
                                     buf.constData() + buf.size() - minSize, minSize));
 */
+    /*
     if (text.length()*2+4 < buf.length()) {
         m_hasDecodingError = true;
     }
+    */
 
     int lf = text.indexOf('\n');
     if (lf > 0 && text.at(lf-1) == QLatin1Char('\r')) {
