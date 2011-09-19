@@ -249,6 +249,9 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
 
     m_process->start(m_cmd,args);
 
+    QString log = QString("%1 %2").arg(m_cmd).arg(args.join(" "));
+    emit debugLog(log.toUtf8());
+
     return true;
 }
 

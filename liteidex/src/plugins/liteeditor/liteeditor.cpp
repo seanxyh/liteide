@@ -582,6 +582,7 @@ void LiteEditor::codecComboBoxChanged(QString codec)
     if (success) {
         emit reloaded();
         m_editorWidget->initLoadDocument();
+        setReadOnly(m_file->isReadOnly());
     }
     return;
 }
