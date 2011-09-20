@@ -40,20 +40,68 @@ public:
         m_msg.clear();
         m_exited = false;
         m_stopped = false;
+        m_changeList = false;
     }
     void setExited(bool b) {m_exited = b;}
     void setStopped(bool b) {m_stopped = b;}
+    void setChangeList(bool b) {m_changeList = b; }
     void appendMsg(const QByteArray &m) { m_msg.append(m); }
     bool exited() { return m_exited; }
     bool stopped() { return m_stopped; }
+    bool changeList() { return m_changeList; }
 public:
     bool       m_exited;
     bool       m_stopped;
+    bool       m_changeList;
     QList<QByteArray> m_msg;
+};
+
+class GdbCmd
+{
+public:
+    GdbCmd()
+    {
+    }
+    GdbCmd(const QString &cmd)
+    {
+        setCmd(cmd);
+    }
+    GdbCmd(const QStringList &cmd)
+    {
+        setCmd(cmd);
+    }
+    void setCmd(const QString &cmd)
+    {
+        m_cmd = cmd;
+        m_cookie.insert("cmd",m_cmd);
+        m_cookie.insert("cmdList",cmd.split(" ",QString::SkipEmptyParts));
+    }
+    void setCmd(const QStringList &cmd)
+    {
+        m_cmd = cmd.join(" ");
+        m_cookie.insert("cmd",m_cmd);
+        m_cookie.insert("cmdList",cmd);
+    }
+    void insert(const QString &key, const QVariant &value)
+    {
+        m_cookie.insert(key,value);
+    }
+    QByteArray makeCmd(int index) const
+    {
+        return QString("%1%2").arg(index,8,10,QLatin1Char('0')).arg(m_cmd).toUtf8();
+    }
+    QMap<QString,QVariant> cookie() const
+    {
+        return m_cookie;
+    }
+protected:
+    QString m_cmd;
+    QMap<QString,QVariant> m_cookie;
 };
 
 class QStandardItemModel;
 class QStandardItem;
+
 class GdbDebugeer : public LiteApi::IDebugger
 {
     Q_OBJECT
@@ -75,6 +123,9 @@ public:
     virtual void execContinue();
     virtual void runJump(const QString &fileName, const QString &spec);
     virtual void command(const QByteArray &cmd);
+    virtual void command(const GdbCmd &cmd);
+    virtual void createWatch(const QString &var, bool floating);
+    virtual void removeWatch(const QString &var, bool children);
 public slots:
     void appLoaded();
     void readStdError();
@@ -91,6 +142,7 @@ protected:
     void handleResultRecord(const GdbResponse &response);
 protected:
     void initGdb();
+    void updateWatch();
     void updateLocals();
     void updateFrames();
     void updateBreaks();
@@ -105,13 +157,15 @@ protected:
     QStandardItem   *m_asyncItem;
     QStandardItem   *m_localItem;
     QStandardItem   *m_argsItem;
+    QMap<int,QVariant> m_tokenCookieMap;
+    QMap<QString,QString> m_varWatchMap;
     QString m_cmd;
     QByteArray m_runtime;
     QByteArray m_inbuffer;
     GdbHandleState m_handleState;
     bool    m_busy;
     bool    m_gdbinit;
-    int     m_index;
+    int     m_token;
 };
 
 #endif // GDBDEBUGGER_H

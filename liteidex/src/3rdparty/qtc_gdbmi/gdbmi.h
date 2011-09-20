@@ -111,7 +111,7 @@ public:
 
     int            token;
     GdbResultClass resultClass;
-    GdbMiValue          data;
+    GdbMiValue     data;
     QVariant       cookie;
     QByteArray     logStreamOutput;
     QByteArray     consoleStreamOutput;

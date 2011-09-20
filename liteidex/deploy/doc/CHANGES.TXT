@@ -3,6 +3,7 @@
  * GdbDebugger : new gdb debugger plugin
  * LiteBuild : add build config and custom
  * LiteFind : fix regexp use match case
+
 ==== 2011.9.1 Ver X8 1.25 ====
  * LiteFind : new find and replace plugin, remove CodeSearch plugin
  * LiteEditor : fix word api complete three parts error
@@ -11,6 +12,7 @@
  * LiteApp : change path to standard linux path
  * LiteBuild : add build option, example execute arguments
  * FileBrowser : add new file wizard
+
 ==== 2011.8.12 Ver X7 1.09375 ====
  * Welcome : new html page, quick link, session, recent projects and files
  * GolangDoc : generic document nav
@@ -88,7 +90,7 @@
 ==== 2011.5.12 X1 v0.15625 ====
  * New LiteIDE X version
 
-=== Old version ===
+=== LiteIDE Old version ===
 
 ==== 2011.2.25  v0.2.1 ====
  * add build on MacOSX10.6
@@ -105,7 +107,6 @@
  * new project wizard : .pro/package/Makefile
  * new example goinfo, how to use local or search package
 
-
 ==== 2011.1.25 v0.1.8 ====
  * goastview plugin
 
@@ -113,7 +114,10 @@
  * add build on Linux64
 
 ==== 2011.1.12 v0.1.5 ====
-  * build error and jump to source line
+ * build error and jump to source line
 
-==== 2010.1.11 v0.1.2 ====
-  * gopromake use goroutines
+==== 2011.1.11 v0.1.2 ====
+ * gopromake use goroutines
+
+==== 2011.1.10 v0.1 ====
+ * init version 
