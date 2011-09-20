@@ -62,6 +62,7 @@ public:
     virtual void execContinue() = 0;
     virtual void runJump(const QString &fileName, const QString &spec) = 0;
     virtual void command(const QByteArray &cmd) = 0;
+    virtual void expandItem(QModelIndex index, DEBUG_MODEL_TYPE type) = 0;
 signals:
     void debugStarted();
     void debugStoped();

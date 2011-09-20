@@ -241,7 +241,8 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
     m_busy = false;
     m_token = 10000000;
     m_handleState.clear();
-    m_varWatchMap.clear();
+    m_varNameMap.clear();
+    m_nameItemMap.clear();
 
     m_varsModel->removeRows(0,m_varsModel->rowCount());
     m_libraryModel->removeRows(0,m_libraryModel->rowCount());    
@@ -301,7 +302,7 @@ void GdbDebugeer::runJump(const QString &fileName, const QString &spec)
 
 void GdbDebugeer::createWatch(const QString &var, bool floating)
 {
-    m_varWatchMap.insert(var,"nil");
+    m_varNameMap.insert(var,"nil");
     GdbCmd cmd;
     QStringList args;
     args << "-var-create";
@@ -319,7 +320,7 @@ void GdbDebugeer::createWatch(const QString &var, bool floating)
 
 void GdbDebugeer::removeWatch(const QString &var, bool children)
 {
-    QString name = m_varWatchMap.value(var);
+    QString name = m_varNameMap.value(var);
     QStringList args;
     args << "-var-delete";
     if (children) {
@@ -332,6 +333,32 @@ void GdbDebugeer::removeWatch(const QString &var, bool children)
     cmd.insert("name",name);
     cmd.insert("children",children);
     command(cmd);
+}
+
+void GdbDebugeer::expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type)
+{
+    if (type == LiteApi::VARS_MODEL) {
+        QStandardItem *parent =  m_varsModel->itemFromIndex(index);
+        if (parent->data(VarExpanded).toInt() == 1) {
+            return;
+        }
+        parent->setData(1,VarExpanded);
+        for (int i = 0; i < parent->rowCount(); i++) {
+            QStandardItem *item = parent->child(i);
+            QString name = item->data(VarNameRole).toString();
+            int num = item->data(VarNumChildRole).toInt();
+            if (num > 0) {
+                GdbCmd cmd;
+                QStringList args;
+                args << "-var-list-children";
+                args << "2";
+                args << name;
+                cmd.setCmd(args);
+                cmd.insert("name",name);
+                command(cmd);
+            }
+        }
+    }
 }
 
 void GdbDebugeer::command(const GdbCmd &cmd)
@@ -643,7 +670,7 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
                         m_localItem->appendRow(new QStandardItem(QString("%1 = %2").arg(name).arg(value)));
                     }
                     */
-                    if (!m_varWatchMap.contains(var)) {
+                    if (!m_varNameMap.contains(var)) {
                         createWatch(var,true);
                     }
                 }
@@ -676,20 +703,56 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
         //10000018^done,name="var4",numchild="0",value="4265530",type="int",thread-id="1",has_more="0"
         //10000019^done,name="var5",numchild="2",value="{...}",type="struct string",thread-id="1",has_more="0"
         //10000020^done,name="var6",numchild="3",value="0x40bc38",type="struct main.pt *",thread-id="1",has_more="0"
-        QString name = response.data.findChild("name").data();
-        QString numchild = response.data.findChild("numchild").data();
-        QString value = response.data.findChild("value").data();
-        QString type = response.data.findChild("type").data();
-        QString var = map.value("var").toString();
-        if (m_varWatchMap.contains(var)) {
-            m_varWatchMap.insert(var,name);
+        if (response.resultClass == GdbResultDone) {
+            QString name = response.data.findChild("name").data();
+            QString numchild = response.data.findChild("numchild").data();
+            QString value = response.data.findChild("value").data();
+            QString type = response.data.findChild("type").data();
+            QString var = map.value("var").toString();
+            m_varNameMap.insert(var,name);
             QStandardItem *item = new QStandardItem(var);
-            item->setData(name);
+            item->setData(name,VarNameRole);
+            m_nameItemMap.insert(name,item);
             m_varsModel->appendRow(QList<QStandardItem*>()
-                               << item
-                               << new QStandardItem(value)
-                               << new QStandardItem(type)
-                               );
+                                   << item
+                                   << new QStandardItem(value)
+                                   << new QStandardItem(type)
+                                   );
+            int num = numchild.toInt();
+            item->setData(num,VarNumChildRole);
+            if (num > 0 ){
+                updateVarListChildren(name);
+            }
+        }
+    }  else if (cmdList.at(0) == "-var-list-children") {
+        //10000022^done,numchild="2",children=[child={name="var5.str",exp="str",numchild="1",value="0x4115c6 \"\\203\\304\\b\\303d\\213\\r,\"",type="uint8 *",thread-id="1"},child={name="var5.len",exp="len",numchild="0",value="4242460",type="int",thread-id="1"}],has_more="0"
+        GdbMiValue children = response.data.findChild("children");
+        if (children.isList()) {
+            QString name = map.value("name").toString();
+            QStandardItem *parent = m_nameItemMap.value(name);
+            if (parent == 0) {
+                return;
+            }
+            for (int i = 0; i < children.childCount(); i++) {
+                GdbMiValue child = children.childAt(i);
+                if (child.name() == "child" && child.isTuple()) {
+                    QString name = child.findChild("name").data();
+                    QString exp = child.findChild("exp").data();
+                    QString numchild = response.data.findChild("numchild").data();
+                    QString value = child.findChild("value").data();
+                    QString type = child.findChild("type").data();
+                    QStandardItem *item = new QStandardItem(exp);
+                    item->setData(name,VarNameRole);
+                    m_nameItemMap.insert(name,item);
+                    parent->appendRow(QList<QStandardItem*>()
+                                      << item
+                                      << new QStandardItem(value)
+                                      << new QStandardItem(type)
+                                      );
+                    int num = numchild.toInt();
+                    item->setData(num,VarNumChildRole);
+                }
+            }
         }
     } else if (cmdList.at(0) == "-var-update") {
         m_handleState.setChangeList(true);
@@ -702,29 +765,20 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
                     QString name = child.findChild("name").data();
                     QString in_scope = child.findChild("in_scope").data();
                     QString type_changed = child.findChild("type_changed").data();
-                    QString var = m_varWatchMap.key(name);
+                    QString var = m_varNameMap.key(name);
                     if (in_scope == "false") {
                         removeWatch(var,false);
                     } else {
                         if (type_changed == "true") {
+                            //remove watch children
                             removeWatch(var,true);
-                            QStringList args;
-                            args << "-var-info-type";
-                            args << name;
-                            GdbCmd cmd;
-                            cmd.setCmd(args);
-                            cmd.insert("var",var);
-                            cmd.insert("name",name);
-                            command(cmd);
+                            //update type
+                            updateVarTypeInfo(name);
+                            //udpate children
+                            updateVarListChildren(name);
                         }
-                        QStringList args;
-                        args << "-var-evaluate-expression";
-                        args << name;
-                        GdbCmd cmd;
-                        cmd.setCmd(args);
-                        cmd.insert("var",var);
-                        cmd.insert("name",name);
-                        command(cmd);
+                        //update value
+                        updateVarValue(name);
                     }
                 }
             }
@@ -733,9 +787,18 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
         //10000062^done,ndeleted="1"
         QString var = map.value("var").toString();
         QString name = map.value("name").toString();
+        QMutableMapIterator<QString,QStandardItem*> i(m_nameItemMap);
+        QString cls = name+".";
+        while (i.hasNext()) {
+            i.next();
+            if (i.key().startsWith(cls)) {
+                i.remove();
+            }
+        }
         bool children = map.value("children").toBool();
         if (!children) {
-            m_varWatchMap.remove(var);
+            m_varNameMap.remove(var);
+            m_nameItemMap.remove(name);
         }
         for (int i = 0; i < m_varsModel->rowCount(); i++) {
             QStandardItem *item = m_varsModel->item(i,0);
@@ -751,21 +814,25 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
     } else if (cmdList.at(0) == "-var-evaluate-expression") {
         //10000035^done,value="100"
         QString value = response.data.findChild("value").data();
-        QString var = map.value("var").toString();
         QString name = map.value("name").toString();
-        for (int i = 0; i < m_varsModel->rowCount(); i++) {
-            QModelIndex index = m_varsModel->index(i,0);
-            if (index.data(Qt::UserRole+1) == name) {
-                QModelIndex v = m_varsModel->index(i,1);
-                m_varsModel->setData(v,value,Qt::DisplayRole);
-                m_varsModel->setData(v,Qt::red,Qt::TextColorRole);
-                break;
-            }
+        QStandardItem *item = m_nameItemMap.value(name);
+        if (!item) {
+            return;
+        }
+        QStandardItem *parent = item->parent();
+        QStandardItem *v = 0;
+        if (parent) {
+            v = parent->child(item->row(),1);
+        } else {
+            v = m_varsModel->item(item->row(),1);
+        }
+        if (v) {
+            v->setData(value,Qt::DisplayRole);
+            v->setData(Qt::red,Qt::TextColorRole);
         }
     } else if (cmdList.at(0) == "-var-info-type") {
         //10000060^done,type="struct string"
         QString type = response.data.findChild("type").data();
-        QString var = map.value("var").toString();
         QString name = map.value("name").toString();
         for (int i = 0; i < m_varsModel->rowCount(); i++) {
             QModelIndex index = m_varsModel->index(i,0);
@@ -817,6 +884,40 @@ void GdbDebugeer::updateFrames()
 void GdbDebugeer::updateBreaks()
 {
     command("-break-info");
+}
+
+void GdbDebugeer::updateVarTypeInfo(const QString &name)
+{
+    QStringList args;
+    args << "-var-info-type";
+    args << name;
+    GdbCmd cmd;
+    cmd.setCmd(args);
+    cmd.insert("name",name);
+    command(cmd);
+}
+
+void GdbDebugeer::updateVarListChildren(const QString &name)
+{
+    GdbCmd cmd;
+    QStringList args;
+    args << "-var-list-children";
+    args << "2";
+    args << name;
+    cmd.setCmd(args);
+    cmd.insert("name",name);
+    command(cmd);
+}
+
+void GdbDebugeer::updateVarValue(const QString &name)
+{
+    QStringList args;
+    args << "-var-evaluate-expression";
+    args << name;
+    GdbCmd cmd;
+    cmd.setCmd(args);
+    cmd.insert("name",name);
+    command(cmd);
 }
 
 void GdbDebugeer::readStdOutput()
