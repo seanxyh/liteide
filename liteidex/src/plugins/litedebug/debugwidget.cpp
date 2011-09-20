@@ -101,6 +101,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     connect(m_cmdLineEdit,SIGNAL(returnPressed()),this,SLOT(cmdLineInput()));
     connect(clearBtn,SIGNAL(clicked()),this,SLOT(clearLog()));
+    connect(m_varsView,SIGNAL(expanded(QModelIndex)),this,SLOT(expandedVarsView(QModelIndex)));
 }
 
 DebugWidget::~DebugWidget()
@@ -175,4 +176,15 @@ void DebugWidget::modelChanged(int type)
     if (type == LiteApi::ASYNC_MODEL) {
         m_asyncView->expandAll();
     }
+}
+
+void DebugWidget::expandedVarsView(QModelIndex index)
+{
+    if (!index.isValid()) {
+        return;
+    }
+    if (!m_debug) {
+        return;
+    }
+    m_debug->expandItem(index,LiteApi::VARS_MODEL);
 }

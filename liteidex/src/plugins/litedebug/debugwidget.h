@@ -46,6 +46,7 @@ public slots:
     void debugLog(const QByteArray &log);
     void clearLog();
     void modelChanged(int);
+    void expandedVarsView(QModelIndex);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;

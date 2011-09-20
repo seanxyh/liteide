@@ -108,6 +108,11 @@ class GdbDebugeer : public LiteApi::IDebugger
 public:
     GdbDebugeer(LiteApi::IApplication *app, QObject *parent = 0);
     ~GdbDebugeer();
+    enum VarItemDataRole{
+        VarNameRole = Qt::UserRole + 1,
+        VarNumChildRole,
+        VarExpanded
+    };
 public:
     virtual QString mimeType() const;
     virtual QAbstractItemModel *debugModel(LiteApi::DEBUG_MODEL_TYPE type);
@@ -123,6 +128,8 @@ public:
     virtual void execContinue();
     virtual void runJump(const QString &fileName, const QString &spec);
     virtual void command(const QByteArray &cmd);
+    virtual void expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type);
+public:
     virtual void command(const GdbCmd &cmd);
     virtual void createWatch(const QString &var, bool floating);
     virtual void removeWatch(const QString &var, bool children);
@@ -146,6 +153,9 @@ protected:
     void updateLocals();
     void updateFrames();
     void updateBreaks();
+    void updateVarTypeInfo(const QString &name);
+    void updateVarListChildren(const QString &name);
+    void updateVarValue(const QString &name);
 protected:
     LiteApi::IApplication   *m_liteApp;
     LiteApi::IEnvManager    *m_envManager;
@@ -158,7 +168,8 @@ protected:
     QStandardItem   *m_localItem;
     QStandardItem   *m_argsItem;
     QMap<int,QVariant> m_tokenCookieMap;
-    QMap<QString,QString> m_varWatchMap;
+    QMap<QString,QString> m_varNameMap;
+    QMap<QString,QStandardItem*> m_nameItemMap;
     QString m_cmd;
     QByteArray m_runtime;
     QByteArray m_inbuffer;
