@@ -252,7 +252,6 @@ void GdbDebugeer::runJump(const QString &fileName, const QString &spec)
 
 void GdbDebugeer::createWatch(const QString &var, bool floating)
 {
-    m_varNameMap.insert(var,"nil");
     GdbCmd cmd;
     QStringList args;
     args << "-var-create";
@@ -511,6 +510,9 @@ void GdbDebugeer::handleStopped(const GdbMiValue &result)
         m_handleState.appendMsg(reason);
         return;
     }
+    if (reason == "function-finished") {
+        m_handleState.setFunctionFinish(true);
+    }
     QString thread_id = result.findChild("thread-id").data();
     QString stopped_threads = result.findChild("stopped-threads").data();
     GdbMiValue frame = result.findChild("frame");
@@ -652,6 +654,12 @@ void GdbDebugeer::handleResultVarCreate(const GdbResponse &response, QMap<QStrin
     QString value = response.data.findChild("value").data();
     QString type = response.data.findChild("type").data();
     QString var = map.value("var").toString();
+    if (var.isEmpty()) {
+        var = map.value("cmdList").toStringList().last();
+    }
+    if (m_varNameMap.contains(var)) {
+        var += QString("-%1").arg(response.token);
+    }
     m_varNameMap.insert(var,name);
     QStandardItem *item = new QStandardItem(var);
     item->setData(name,VarNameRole);
@@ -745,9 +753,9 @@ void GdbDebugeer::handleResultVarDelete(const GdbResponse &response, QMap<QStrin
     if (response.resultClass != GdbResultDone) {
         return;
     }
-    bool ndeleted = false;
-    if (response.data.findChild("ndeleted").data() == "1") {
-        ndeleted = true;
+    bool ndeleted = true;
+    if (response.data.findChild("ndeleted").data() == "0") {
+        ndeleted = false;
     }
     QString var = map.value("var").toString();
     QString name = map.value("name").toString();
@@ -869,6 +877,9 @@ void GdbDebugeer::clear()
     m_handleState.clear();
     m_varNameMap.clear();
     m_nameItemMap.clear();
+    m_tokenCookieMap.clear();
+    m_changedItemList.clear();
+    m_inbuffer.clear();
 
     m_framesModel->removeRows(0,m_framesModel->rowCount());
     m_libraryModel->removeRows(0,m_libraryModel->rowCount());
