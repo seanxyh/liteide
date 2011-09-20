@@ -42,19 +42,19 @@ public:
         m_msg.clear();
         m_exited = false;
         m_stopped = false;
-        m_changeList = false;
+        m_functionFinish = false;
     }
     void setExited(bool b) {m_exited = b;}
     void setStopped(bool b) {m_stopped = b;}
-    void setChangeList(bool b) {m_changeList = b; }
+    void setFunctionFinish(bool b) {m_functionFinish = b; }
     void appendMsg(const QByteArray &m) { m_msg.append(m); }
     bool exited() { return m_exited; }
     bool stopped() { return m_stopped; }
-    bool changeList() { return m_changeList; }
+    bool functionFinish() { return m_functionFinish; }
 public:
     bool       m_exited;
     bool       m_stopped;
-    bool       m_changeList;
+    bool       m_functionFinish;
     QList<QByteArray> m_msg;
 };
 
@@ -176,8 +176,6 @@ protected:
     QStandardItemModel *m_framesModel;
     QStandardItemModel *m_libraryModel;
     QStandardItem   *m_asyncItem;
-    QStandardItem   *m_localItem;
-    QStandardItem   *m_argsItem;
     QMap<int,QVariant> m_tokenCookieMap;
     QMap<QString,QString> m_varNameMap;
     QMap<QString,QStandardItem*> m_nameItemMap;
