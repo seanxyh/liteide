@@ -30,6 +30,8 @@
 #include "liteenvapi/liteenvapi.h"
 #include "qtc_gdbmi/gdbmi.h"
 
+#include <QSet>
+
 class QProcess;
 class GdbHandleState
 {
@@ -147,7 +149,16 @@ protected:
     void handleTargetStream(const QByteArray &data);
     void handleLogStream(const QByteArray &data);
     void handleResultRecord(const GdbResponse &response);
+    void handleResultStackListFrame(const GdbResponse &response, QMap<QString,QVariant> &map);
+    void handleResultStackListVariables(const GdbResponse &response, QMap<QString,QVariant> &map);
+    void handleResultVarCreate(const GdbResponse &response, QMap<QString,QVariant> &map);
+    void handleResultVarListChildren(const GdbResponse &response, QMap<QString,QVariant> &map);
+    void handleResultVarUpdate(const GdbResponse &response, QMap<QString,QVariant> &map);
+    void handleResultVarDelete(const GdbResponse &response, QMap<QString,QVariant> &map);
+    void handleResultVarUpdateValue(const GdbResponse &response, QMap<QString,QVariant> &map);
+    void handleResultVarUpdateType(const GdbResponse &response, QMap<QString,QVariant> &map);
 protected:
+    void clear();
     void initGdb();
     void updateWatch();
     void updateLocals();
@@ -170,6 +181,7 @@ protected:
     QMap<int,QVariant> m_tokenCookieMap;
     QMap<QString,QString> m_varNameMap;
     QMap<QString,QStandardItem*> m_nameItemMap;
+    QSet<QStandardItem*> m_changedItemList;
     QString m_cmd;
     QByteArray m_runtime;
     QByteArray m_inbuffer;
