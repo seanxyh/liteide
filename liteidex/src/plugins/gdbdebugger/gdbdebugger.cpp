@@ -45,51 +45,6 @@
 #endif
 //lite_memory_check_end
 
-//GdbMiValue
-/*
-    QByteArray result;
-    switch (m_type) {
-        case Invalid:
-            if (multiline)
-                result += ind(indent) + "Invalid\n";
-            else
-                result += "Invalid";
-            break;
-        case Const:
-            if (!m_name.isEmpty())
-                result += m_name + '=';
-            result += '"' + escapeCString(m_data) + '"';
-            break;
-        case Tuple:
-            if (!m_name.isEmpty())
-                result += m_name + '=';
-            if (multiline) {
-                result += "{\n";
-                dumpChildren(&result, multiline, indent + 1);
-                result += '\n' + ind(indent) + '}';
-            } else {
-                result += '{';
-                dumpChildren(&result, multiline, indent + 1);
-                result += '}';
-            }
-            break;
-        case List:
-            if (!m_name.isEmpty())
-                result += m_name + '=';
-            if (multiline) {
-                result += "[\n";
-                dumpChildren(&result, multiline, indent + 1);
-                result += '\n' + ind(indent) + ']';
-            } else {
-                result += '[';
-                dumpChildren(&result, multiline, indent + 1);
-                result += ']';
-            }
-            break;
-    }
-    return result;
-*/
-
 static void GdbMiValueToItem(QStandardItem *item, const GdbMiValue &value)
 {
     switch (value.type()) {
@@ -146,6 +101,9 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_asyncModel->setHeaderData(6,Qt::Horizontal,"Stoped Threads");
     */
     m_varsModel = new QStandardItemModel(0,3,this);
+    m_varsModel->setHeaderData(0,Qt::Horizontal,"Name");
+    m_varsModel->setHeaderData(1,Qt::Horizontal,"Value");
+    m_varsModel->setHeaderData(2,Qt::Horizontal,"Type");
 
     m_framesModel = new QStandardItemModel(0,5,this);
     m_framesModel->setHeaderData(0,Qt::Horizontal,"Level");
@@ -237,15 +195,7 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
         return false;
     }
 
-    m_gdbinit = false;
-    m_busy = false;
-    m_token = 10000000;
-    m_handleState.clear();
-    m_varNameMap.clear();
-    m_nameItemMap.clear();
-
-    m_varsModel->removeRows(0,m_varsModel->rowCount());
-    m_libraryModel->removeRows(0,m_libraryModel->rowCount());    
+    clear();
 
     m_process->start(m_cmd,args);
 
@@ -641,6 +591,243 @@ void GdbDebugeer::handleLogStream(const QByteArray &data)
 
 }
 
+void GdbDebugeer::handleResultStackListFrame(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+    //10000015^done,stack=[frame={level="0",addr="0x0040113f",func="main.main",file="F:/hg/debug_test/hello/main.go",fullname="F:/hg/debug_test/hello/main.go",line="36"},frame={level="1",addr="0x00401f8a",func="runtime.mainstart",file="386/asm.s",fullname="c:/go/src/pkg/runtime/386/asm.s",line="96"},frame={level="2",addr="0x0040bcfe",func="runtime.initdone",file="/go/src/pkg/runtime/proc.c",fullname="c:/go/src/pkg/runtime/proc.c",line="242"},frame={level="3",addr="0x00000000",func="??"}]
+    m_framesModel->removeRows(0,m_framesModel->rowCount());
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    GdbMiValue stack = response.data.findChild("stack");
+    if (stack.isList()) {
+        for (int i = 0; i < stack.childCount(); i++) {
+            GdbMiValue child = stack.childAt(i);
+            if (child.isValid() && child.name() == "frame") {
+                QString level = child.findChild("level").data();
+                QString addr = child.findChild("addr").data();
+                QString func = child.findChild("func").data();
+                QString file = child.findChild("file").data();
+                QString line = child.findChild("line").data();
+                m_framesModel->appendRow(QList<QStandardItem*>()
+                                         << new QStandardItem(level)
+                                         << new QStandardItem(addr)
+                                         << new QStandardItem(func)
+                                         << new QStandardItem(file)
+                                         << new QStandardItem(line)
+                                         );
+            }
+        }
+    }
+}
+
+void GdbDebugeer::handleResultStackListVariables(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+    //10000014^done,variables=[{name="v"},{name="x"},{name="pt"},{name="str"},{name="sum1"},{name="y"}]
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    GdbMiValue vars = response.data.findChild("variables");
+    if (vars.isList()) {
+        foreach (const GdbMiValue &child, vars.m_children) {
+            if (child.isValid()) {
+                QString var = child.findChild("name").data();
+                if (!m_varNameMap.contains(var)) {
+                    createWatch(var,true);
+                }
+            }
+        }
+    }
+}
+
+void GdbDebugeer::handleResultVarCreate(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+    //10000018^done,name="var4",numchild="0",value="4265530",type="int",thread-id="1",has_more="0"
+    //10000019^done,name="var5",numchild="2",value="{...}",type="struct string",thread-id="1",has_more="0"
+    //10000020^done,name="var6",numchild="3",value="0x40bc38",type="struct main.pt *",thread-id="1",has_more="0"
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    QString name = response.data.findChild("name").data();
+    QString numchild = response.data.findChild("numchild").data();
+    QString value = response.data.findChild("value").data();
+    QString type = response.data.findChild("type").data();
+    QString var = map.value("var").toString();
+    m_varNameMap.insert(var,name);
+    QStandardItem *item = new QStandardItem(var);
+    item->setData(name,VarNameRole);
+    m_nameItemMap.insert(name,item);
+    m_varsModel->appendRow(QList<QStandardItem*>()
+                           << item
+                           << new QStandardItem(value)
+                           << new QStandardItem(type)
+                           );
+    int num = numchild.toInt();
+    item->setData(num,VarNumChildRole);
+    if (num > 0 ){
+        updateVarListChildren(name);
+    }
+}
+
+void GdbDebugeer::handleResultVarListChildren(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+    //10000022^done,numchild="2",children=[child={name="var5.str",exp="str",numchild="1",value="0x4115c6 \"\\203\\304\\b\\303d\\213\\r,\"",type="uint8 *",thread-id="1"},child={name="var5.len",exp="len",numchild="0",value="4242460",type="int",thread-id="1"}],has_more="0"
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    GdbMiValue children = response.data.findChild("children");
+    if (children.isList()) {
+        QString name = map.value("name").toString();
+        QStandardItem *parent = m_nameItemMap.value(name);
+        if (parent == 0) {
+            return;
+        }
+        for (int i = 0; i < children.childCount(); i++) {
+            GdbMiValue child = children.childAt(i);
+            if (child.name() == "child" && child.isTuple()) {
+                QString name = child.findChild("name").data();
+                QString exp = child.findChild("exp").data();
+                QString numchild = response.data.findChild("numchild").data();
+                QString value = child.findChild("value").data();
+                QString type = child.findChild("type").data();
+                QStandardItem *item = new QStandardItem(exp);
+                item->setData(name,VarNameRole);
+                m_nameItemMap.insert(name,item);
+                parent->appendRow(QList<QStandardItem*>()
+                                  << item
+                                  << new QStandardItem(value)
+                                  << new QStandardItem(type)
+                                  );
+                int num = numchild.toInt();
+                item->setData(num,VarNumChildRole);
+            }
+        }
+    }
+}
+
+void GdbDebugeer::handleResultVarUpdate(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+    //10000040^done,changelist=[{name="var2",in_scope="true",type_changed="false",has_more="0"}]
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    GdbMiValue list = response.data.findChild("changelist");
+    if (list.isList()) {
+        for (int i = 0; i < list.childCount(); i++) {
+            GdbMiValue child = list.childAt(i);
+            if (child.isValid()) {
+                QString name = child.findChild("name").data();
+                QString in_scope = child.findChild("in_scope").data();
+                QString type_changed = child.findChild("type_changed").data();
+                QString var = m_varNameMap.key(name);
+                if (in_scope == "false") {
+                    removeWatch(var,false);
+                } else {
+                    if (type_changed == "true") {
+                        //remove watch children
+                        removeWatch(var,true);
+                        //update type
+                        updateVarTypeInfo(name);
+                        //udpate children
+                        updateVarListChildren(name);
+                    }
+                    //update value
+                    updateVarValue(name);
+                }
+            }
+        }
+    }
+}
+
+void GdbDebugeer::handleResultVarDelete(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+    //10000062^done,ndeleted="1"
+    //10000063^done,ndeleted="0"
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    bool ndeleted = false;
+    if (response.data.findChild("ndeleted").data() == "1") {
+        ndeleted = true;
+    }
+    QString var = map.value("var").toString();
+    QString name = map.value("name").toString();
+    QMutableMapIterator<QString,QStandardItem*> i(m_nameItemMap);
+    QString cls = name+".";
+    while (i.hasNext()) {
+        i.next();
+        if (i.key().startsWith(cls)) {
+            i.remove();
+        }
+    }
+    if (ndeleted) {
+        m_varNameMap.remove(var);
+        m_nameItemMap.remove(name);
+    }
+    for (int i = 0; i < m_varsModel->rowCount(); i++) {
+        QStandardItem *item = m_varsModel->item(i,0);
+        if (item->data() == name) {
+            if (ndeleted) {
+                m_varsModel->removeRow(i);
+            } else {
+                item->removeRows(0,item->rowCount());
+            }
+            break;
+        }
+    }
+}
+
+void GdbDebugeer::handleResultVarUpdateValue(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+    //10000035^done,value="100"
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    QString value = response.data.findChild("value").data();
+    QString name = map.value("name").toString();
+    QStandardItem *item = m_nameItemMap.value(name);
+    if (!item) {
+        return;
+    }
+    QStandardItem *parent = item->parent();
+    QStandardItem *v = 0;
+    if (parent) {
+        v = parent->child(item->row(),1);
+    } else {
+        v = m_varsModel->item(item->row(),1);
+    }
+    if (v) {
+        v->setData(value,Qt::DisplayRole);
+        v->setData(Qt::red,Qt::TextColorRole);
+        m_changedItemList.insert(v);
+    }
+}
+
+void GdbDebugeer::handleResultVarUpdateType(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+    //10000060^done,type="struct string"
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    QString type = response.data.findChild("type").data();
+    QString name = map.value("name").toString();
+    QStandardItem *item = m_nameItemMap.value(name);
+    if (!item) {
+        return;
+    }
+    QStandardItem *parent = item->parent();
+    QStandardItem *v = 0;
+    if (parent) {
+        v = parent->child(item->row(),2);
+    } else {
+        v = m_varsModel->item(item->row(),2);
+    }
+    if (v) {
+        v->setData(type,Qt::DisplayRole);
+        v->setData(Qt::red,Qt::TextColorRole);
+        m_changedItemList.insert(v);
+    }
+}
+
 void GdbDebugeer::handleResultRecord(const GdbResponse &response)
 {
     if (response.cookie.type() != QVariant::Map) {
@@ -656,195 +843,37 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
         return;
     }
     if (cmdList.at(0) == "-stack-list-variables") {
-        GdbMiValue vars = response.data.findChild("variables");
-        if (vars.isList()) {
-            foreach (const GdbMiValue &child, vars.m_children) {
-                if (child.isValid()) {
-                    QString var = child.findChild("name").data();
-                    //QString value = child.findChild("value").data();
-                    //QString type = child.findChild("type").data();
-                    /*
-                    if (child.findChild("arg").isValid()) {
-                        m_argsItem->appendRow(new QStandardItem(QString("%1 = %2").arg(name).arg(value)));
-                    } else {
-                        m_localItem->appendRow(new QStandardItem(QString("%1 = %2").arg(name).arg(value)));
-                    }
-                    */
-                    if (!m_varNameMap.contains(var)) {
-                        createWatch(var,true);
-                    }
-                }
-            }
-            emit modelChanged(LiteApi::VARS_MODEL);
-        }
+        handleResultStackListVariables(response,map);
     } else if (cmdList.at(0) == "-stack-list-frames") {
-        GdbMiValue stack = response.data.findChild("stack");
-        if (stack.isList()) {
-            m_framesModel->removeRows(0,m_framesModel->rowCount());
-            for (int i = 0; i < stack.childCount(); i++) {
-                GdbMiValue child = stack.childAt(i);
-                if (child.isValid() && child.name() == "frame") {
-                    QString level = child.findChild("level").data();
-                    QString addr = child.findChild("addr").data();
-                    QString func = child.findChild("func").data();
-                    QString file = child.findChild("file").data();
-                    QString line = child.findChild("line").data();
-                    m_framesModel->appendRow(QList<QStandardItem*>()
-                                             << new QStandardItem(level)
-                                             << new QStandardItem(addr)
-                                             << new QStandardItem(func)
-                                             << new QStandardItem(file)
-                                             << new QStandardItem(line)
-                                             );
-                }
-            }
-        }
+        handleResultStackListFrame(response,map);
     } else if (cmdList.at(0) == "-var-create") {
-        //10000018^done,name="var4",numchild="0",value="4265530",type="int",thread-id="1",has_more="0"
-        //10000019^done,name="var5",numchild="2",value="{...}",type="struct string",thread-id="1",has_more="0"
-        //10000020^done,name="var6",numchild="3",value="0x40bc38",type="struct main.pt *",thread-id="1",has_more="0"
-        if (response.resultClass == GdbResultDone) {
-            QString name = response.data.findChild("name").data();
-            QString numchild = response.data.findChild("numchild").data();
-            QString value = response.data.findChild("value").data();
-            QString type = response.data.findChild("type").data();
-            QString var = map.value("var").toString();
-            m_varNameMap.insert(var,name);
-            QStandardItem *item = new QStandardItem(var);
-            item->setData(name,VarNameRole);
-            m_nameItemMap.insert(name,item);
-            m_varsModel->appendRow(QList<QStandardItem*>()
-                                   << item
-                                   << new QStandardItem(value)
-                                   << new QStandardItem(type)
-                                   );
-            int num = numchild.toInt();
-            item->setData(num,VarNumChildRole);
-            if (num > 0 ){
-                updateVarListChildren(name);
-            }
-        }
+        handleResultVarCreate(response,map);
     }  else if (cmdList.at(0) == "-var-list-children") {
-        //10000022^done,numchild="2",children=[child={name="var5.str",exp="str",numchild="1",value="0x4115c6 \"\\203\\304\\b\\303d\\213\\r,\"",type="uint8 *",thread-id="1"},child={name="var5.len",exp="len",numchild="0",value="4242460",type="int",thread-id="1"}],has_more="0"
-        GdbMiValue children = response.data.findChild("children");
-        if (children.isList()) {
-            QString name = map.value("name").toString();
-            QStandardItem *parent = m_nameItemMap.value(name);
-            if (parent == 0) {
-                return;
-            }
-            for (int i = 0; i < children.childCount(); i++) {
-                GdbMiValue child = children.childAt(i);
-                if (child.name() == "child" && child.isTuple()) {
-                    QString name = child.findChild("name").data();
-                    QString exp = child.findChild("exp").data();
-                    QString numchild = response.data.findChild("numchild").data();
-                    QString value = child.findChild("value").data();
-                    QString type = child.findChild("type").data();
-                    QStandardItem *item = new QStandardItem(exp);
-                    item->setData(name,VarNameRole);
-                    m_nameItemMap.insert(name,item);
-                    parent->appendRow(QList<QStandardItem*>()
-                                      << item
-                                      << new QStandardItem(value)
-                                      << new QStandardItem(type)
-                                      );
-                    int num = numchild.toInt();
-                    item->setData(num,VarNumChildRole);
-                }
-            }
-        }
+        handleResultVarListChildren(response,map);
     } else if (cmdList.at(0) == "-var-update") {
-        m_handleState.setChangeList(true);
-        //10000040^done,changelist=[{name="var2",in_scope="true",type_changed="false",has_more="0"}]
-        GdbMiValue list = response.data.findChild("changelist");
-        if (list.isList()) {
-            for (int i = 0; i < list.childCount(); i++) {
-                GdbMiValue child = list.childAt(i);
-                if (child.isValid()) {
-                    QString name = child.findChild("name").data();
-                    QString in_scope = child.findChild("in_scope").data();
-                    QString type_changed = child.findChild("type_changed").data();
-                    QString var = m_varNameMap.key(name);
-                    if (in_scope == "false") {
-                        removeWatch(var,false);
-                    } else {
-                        if (type_changed == "true") {
-                            //remove watch children
-                            removeWatch(var,true);
-                            //update type
-                            updateVarTypeInfo(name);
-                            //udpate children
-                            updateVarListChildren(name);
-                        }
-                        //update value
-                        updateVarValue(name);
-                    }
-                }
-            }
-        }
+        handleResultVarUpdate(response,map);
     } else if (cmdList.at(0) == "-var-delete") {
-        //10000062^done,ndeleted="1"
-        QString var = map.value("var").toString();
-        QString name = map.value("name").toString();
-        QMutableMapIterator<QString,QStandardItem*> i(m_nameItemMap);
-        QString cls = name+".";
-        while (i.hasNext()) {
-            i.next();
-            if (i.key().startsWith(cls)) {
-                i.remove();
-            }
-        }
-        bool children = map.value("children").toBool();
-        if (!children) {
-            m_varNameMap.remove(var);
-            m_nameItemMap.remove(name);
-        }
-        for (int i = 0; i < m_varsModel->rowCount(); i++) {
-            QStandardItem *item = m_varsModel->item(i,0);
-            if (item->data() == name) {
-                if (children) {
-                    item->removeRows(0,item->rowCount());
-                } else {
-                    m_varsModel->removeRow(i);
-                }
-                break;
-            }
-        }
+        handleResultVarDelete(response,map);
     } else if (cmdList.at(0) == "-var-evaluate-expression") {
-        //10000035^done,value="100"
-        QString value = response.data.findChild("value").data();
-        QString name = map.value("name").toString();
-        QStandardItem *item = m_nameItemMap.value(name);
-        if (!item) {
-            return;
-        }
-        QStandardItem *parent = item->parent();
-        QStandardItem *v = 0;
-        if (parent) {
-            v = parent->child(item->row(),1);
-        } else {
-            v = m_varsModel->item(item->row(),1);
-        }
-        if (v) {
-            v->setData(value,Qt::DisplayRole);
-            v->setData(Qt::red,Qt::TextColorRole);
-        }
+        handleResultVarUpdateValue(response,map);
     } else if (cmdList.at(0) == "-var-info-type") {
-        //10000060^done,type="struct string"
-        QString type = response.data.findChild("type").data();
-        QString name = map.value("name").toString();
-        for (int i = 0; i < m_varsModel->rowCount(); i++) {
-            QModelIndex index = m_varsModel->index(i,0);
-            if (index.data(Qt::UserRole+1) == name) {
-                QModelIndex v = m_varsModel->index(i,2);
-                m_varsModel->setData(v,type,Qt::DisplayRole);
-                break;
-            }
-        }
+        handleResultVarUpdateType(response,map);
     }
 }
 
+void GdbDebugeer::clear()
+{
+    m_gdbinit = false;
+    m_busy = false;
+    m_token = 10000000;
+    m_handleState.clear();
+    m_varNameMap.clear();
+    m_nameItemMap.clear();
+
+    m_framesModel->removeRows(0,m_framesModel->rowCount());
+    m_libraryModel->removeRows(0,m_libraryModel->rowCount());
+    m_varsModel->removeRows(0,m_varsModel->rowCount());
+}
 
 void GdbDebugeer::initGdb()
 {
@@ -868,6 +897,10 @@ void GdbDebugeer::initGdb()
 
 void GdbDebugeer::updateWatch()
 {
+    foreach(QStandardItem *item, m_changedItemList) {
+        item->setData(Qt::black,Qt::TextColorRole);
+    }
+    m_changedItemList.clear();
     command("-var-update *");
 }
 
@@ -974,6 +1007,5 @@ void GdbDebugeer::readStdOutput()
 
 void GdbDebugeer::finished(int)
 {
-    m_framesModel->removeRows(0,m_framesModel->rowCount());
-   // m_asyncModel->removeRows(0,m_asyncModel->rowCount());
+    clear();
 }
