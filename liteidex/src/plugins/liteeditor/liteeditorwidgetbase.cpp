@@ -83,7 +83,8 @@ protected:
 };
 
 LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
-    : QPlainTextEdit(parent)
+    : QPlainTextEdit(parent),
+      m_editorMark(0)
 {
     setLineWrapMode(QPlainTextEdit::NoWrap);
     //document()->setDocumentLayout(new BaseTextDocumentLayout(document()));
@@ -109,14 +110,9 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     //setFrameStyle(QFrame::NoFrame);
 }
 
-LiteEditorWidgetBase::~LiteEditorWidgetBase()
+void LiteEditorWidgetBase::setEditorMark(LiteApi::IEditorMark *mark)
 {
-    QMutableMapIterator<int,QList<LiteEditorMark*> > i(m_numMarksMap);
-    while (i.hasNext()) {
-        i.next();
-        qDeleteAll(i.value());
-    }
-    m_numMarksMap.clear();
+    m_editorMark = mark;
 }
 
 void LiteEditorWidgetBase::setTabWidth(int n)
@@ -263,18 +259,8 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
             if (selected)
                 painter.restore();
         }
-        if (m_marksVisible) {
-            QMap<int,QList<LiteEditorMark*> >::const_iterator it = m_numMarksMap.find(blockNumber);
-            if (it != m_numMarksMap.end()) {
-                int xoffset = 0;
-                foreach(LiteEditorMark *mark, it.value()) {
-                    const int height = fmLineSpacing - 1;
-                    const int width = int(0.5 + height);
-                    const QRect r(xoffset, top, width, height);
-                    mark->paint(&painter,r);
-                    xoffset += 2;
-                }
-            }
+        if (m_marksVisible && m_editorMark) {
+            m_editorMark->paint(&painter,blockNumber,0,top,fmLineSpacing-0.5,fmLineSpacing-1);
         }
 
         block = nextVisibleBlock;
@@ -665,40 +651,3 @@ void LiteEditorWidgetBase::hideTip()
 {
     QToolTip::hideText();
 }
-
-void LiteEditorWidgetBase::insertMark(int num, const QIcon &icon, const QString &name)
-{
-    QMap<int,QList<LiteEditorMark*> >::iterator it = m_numMarksMap.find(num);
-    if (it == m_numMarksMap.end()) {
-        it = m_numMarksMap.insert(num,QList<LiteEditorMark*>());
-    } else {
-        foreach(LiteEditorMark *mark,it.value()) {
-            if (mark->name() == name) {
-                return;
-            }
-        }
-    }
-    LiteEditorMark *mark = new LiteEditorMark(this);
-    mark->setIcon(icon);
-    mark->setName(name);
-    it.value().append(mark);
-}
-
-void LiteEditorWidgetBase::removeMark(int num, const QString &name)
-{
-    QMap<int,QList<LiteEditorMark*> >::iterator it = m_numMarksMap.find(num);
-    if (it == m_numMarksMap.end()) {
-        return;
-    }
-    QMutableListIterator<LiteEditorMark*> i(it.value());
-    while (i.hasNext()) {
-        i.next();
-        LiteEditorMark *mark = i.value();
-        if (mark->name() == name) {
-            i.remove();
-            delete mark;
-            break;
-        }
-    }
-}
-

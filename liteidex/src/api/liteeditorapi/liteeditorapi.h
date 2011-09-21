@@ -69,6 +69,29 @@ signals:
     void wordCompleted(const QString &func, const QStringList &args);
 };
 
+class IEditorMarkTypeManager : public IManager
+{
+    Q_OBJECT
+public:
+    IEditorMarkTypeManager(QObject *parent = 0) : IManager(parent) {}
+    virtual void registerMark(int type, int priority, const QIcon &icon) = 0;
+    virtual QList<int> markTypeList() const = 0;
+    virtual QIcon markIcon(int type) const = 0;
+    virtual int markPriority(int typ) const = 0;
+};
+
+class IEditorMark : public QObject
+{
+    Q_OBJECT
+public:
+    IEditorMark(QObject *parent) : QObject(parent) {}
+    virtual void addMark(int number, int type) = 0;
+    virtual void removeMark(int number, int type) = 0;
+    virtual QList<int> markNumberList() const = 0;
+    virtual QList<int> markTypeList(int number) const = 0;
+    virtual void paint(QPainter *painter, int number, int x, int y, int w, int h) const = 0;
+};
+
 } //namespace LiteApi
 
 

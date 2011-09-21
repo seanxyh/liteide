@@ -27,16 +27,16 @@
 #define LITEEDITORWIDGETBASE_H
 
 #include <QPlainTextEdit>
-#include "liteeditormark.h"
+#include "liteeditorapi/liteeditorapi.h"
 
 class LiteEditorWidgetBase : public QPlainTextEdit
 {
     Q_OBJECT
 public:
     LiteEditorWidgetBase(QWidget *parent = 0);
-    virtual ~LiteEditorWidgetBase();
     void initLoadDocument();
     void setTabWidth(int n);
+    void setEditorMark(LiteApi::IEditorMark *mark);
 public:
     int extraAreaWidth();
     void extraAreaPaintEvent(QPaintEvent *e);
@@ -45,8 +45,6 @@ public:
     void resizeEvent(QResizeEvent *e);
     void showTip(const QString &tip);
     void hideTip();
-    void insertMark(int num, const QIcon &icon, const QString &name);
-    void removeMark(int num, const QString &name);
 protected slots:
     virtual void highlightCurrentLine();
     virtual void slotUpdateExtraAreaWidth();
@@ -97,7 +95,7 @@ protected:
     void indentEnter(QTextCursor cur);
 protected:
     QWidget *m_extraArea;
-    QMap<int,QList<LiteEditorMark*> > m_numMarksMap;
+    LiteApi::IEditorMark *m_editorMark;
     bool m_lineNumbersVisible;
     bool m_marksVisible;
     bool m_autoIndent;

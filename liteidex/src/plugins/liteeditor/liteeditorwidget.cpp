@@ -50,7 +50,8 @@
 //lite_memory_check_end
 
 LiteEditorWidget::LiteEditorWidget(QWidget *parent) :
-    LiteEditorWidgetBase(parent), m_completer(0)
+    LiteEditorWidgetBase(parent),
+    m_completer(0)
 {
 }
 

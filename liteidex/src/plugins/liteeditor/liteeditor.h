@@ -27,6 +27,7 @@
 #define LITEEDITOR_H
 
 #include "liteapi/liteapi.h"
+#include "liteeditorapi/liteeditorapi.h"
 #include "extension/extension.h"
 #include <QSet>
 #include <QHash>
@@ -51,6 +52,7 @@ public:
     LiteEditor(LiteApi::IApplication *app);
     virtual ~LiteEditor();
     void setCompleter(LiteCompleter *complter);
+    void setEditorMark(LiteApi::IEditorMark *mark);
     void createActions();
     void createToolBars();
     virtual LiteApi::IExtension *extension();
