@@ -29,6 +29,7 @@
 #include "liteapi/litefindobj.h"
 #include "fileutil/fileutil.h"
 
+
 #include <QLayout>
 #include <QMenu>
 #include <QToolBar>
@@ -123,13 +124,19 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     connect(m_stepOutAct,SIGNAL(triggered()),this,SLOT(stepOut()));
     connect(m_hideAct,SIGNAL(triggered()),this,SLOT(hideDebug()));
 
-    m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
+    m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);    
 }
 
 void LiteDebug::appLoaded()
 {
     m_liteBuild = LiteApi::findExtensionObject<LiteApi::ILiteBuild*>(m_liteApp,"LiteApi.ILiteBuild");
     m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
+
+    LiteApi::IEditorMarkTypeManager *markTypeManager = LiteApi::findExtensionObject<LiteApi::IEditorMarkTypeManager*>(m_liteApp,"LiteApi.IEditorMarkTypeManager");
+    if (markTypeManager) {
+        markTypeManager->registerMark(BrackPointMark,QIcon(":/images/brackpoint.png"));
+        markTypeManager->registerMark(CurrentLineMark,QIcon(":/images/currentline.png"));
+    }
 }
 
 QWidget *LiteDebug::widget()

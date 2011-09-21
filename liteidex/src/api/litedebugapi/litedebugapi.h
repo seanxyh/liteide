@@ -41,6 +41,11 @@ enum DEBUG_MODEL_TYPE{
     LIBRARY_MODEL
 };
 
+enum DEBUG_EDITOR_MARKTYPE {
+    BrackPointMark = 1000,
+    CurrentLineMark = 2000
+};
+
 class IDebugger : public QObject
 {
     Q_OBJECT
