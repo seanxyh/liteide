@@ -34,6 +34,7 @@
 #include <QPlainTextEdit>
 #include <QVariant>
 #include <QDebug>
+#include <QFile>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)

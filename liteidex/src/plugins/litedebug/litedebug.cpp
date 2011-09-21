@@ -161,8 +161,9 @@ void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
     m_debugger = debug;
     if (m_debugger) {
         connect(m_debugger,SIGNAL(debugStarted()),this,SLOT(showDebug()));
-        //connect(m_debugger,SIGNAL(debugStoped()),this,SLOT(hideDebug()));
+        connect(m_debugger,SIGNAL(debugStoped()),this,SLOT(debugStoped()));
         connect(m_debugger,SIGNAL(debugLog(QByteArray)),m_dbgWidget,SLOT(debugLog(QByteArray)));
+        connect(m_debugger,SIGNAL(setCurrentLine(QString,int)),this,SLOT(setCurrentLine(QString,int)));
     }
     m_dbgWidget->setDebug(m_debugger);
 }
@@ -269,3 +270,43 @@ void LiteDebug::stepOut()
     }
     m_debugger->stepOut();
 }
+
+void LiteDebug::clearLastLine()
+{
+    if (!m_last.fileName.isEmpty()) {
+        LiteApi::IEditor *lastEditor = m_liteApp->editorManager()->findEditor(m_last.fileName,true);
+        if (lastEditor) {
+            LiteApi::IEditorMark *lastMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(lastEditor,"LiteApi.IEditorMark");
+            if (lastMark) {
+                lastMark->removeMark(m_last.line,LiteApi::CurrentLineMark);
+            }
+        }
+    }
+    m_last.fileName.clear();
+}
+
+void LiteDebug::debugStoped()
+{
+    clearLastLine();
+}
+
+void LiteDebug::setCurrentLine(const QString &fileName, int line)
+{
+    clearLastLine();
+    if (QFile::exists(fileName)) {
+        LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName,true);
+        if (editor) {
+            m_last.fileName = fileName;
+            m_last.line = line;
+            LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
+            if (textEditor) {
+                textEditor->gotoLine(line,0);
+            }
+            LiteApi::IEditorMark *editMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
+            if (editMark) {
+                editMark->addMark(line,LiteApi::CurrentLineMark);
+            }
+        }
+    }
+}
+

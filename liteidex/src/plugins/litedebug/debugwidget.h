@@ -33,6 +33,7 @@ class QTabWidget;
 class QTreeView;
 class QLineEdit;
 class QPlainTextEdit;
+
 class DebugWidget : public QObject
 {
     Q_OBJECT
