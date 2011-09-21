@@ -55,7 +55,7 @@ protected slots:
     QChar characterAt(int pos) const;
     void handleHomeKey(bool anchor);
 public slots:
-    void gotoLine(int line, int column);
+    void gotoLine(int line, int column, bool center);
     void gotoLineStart();
     void gotoLineStartWithSelection();
     void gotoLineEnd();

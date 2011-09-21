@@ -378,7 +378,7 @@ void LiteEditorWidgetBase::slotUpdateBlockNotify(const QTextBlock &)
 
 }
 
-void LiteEditorWidgetBase::gotoLine(int line, int column)
+void LiteEditorWidgetBase::gotoLine(int line, int column, bool center)
 {
     const int blockNumber = line - 1;
     const QTextBlock &block = document()->findBlockByNumber(blockNumber);
@@ -394,7 +394,11 @@ void LiteEditorWidgetBase::gotoLine(int line, int column)
             cursor.setPosition(pos);
         }
         setTextCursor(cursor);
-        centerCursor();
+        if (center) {
+            centerCursor();
+        } else {
+            ensureCursorVisible();
+        }
     }
 }
 

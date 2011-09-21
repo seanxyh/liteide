@@ -403,9 +403,9 @@ int LiteEditor::column() const
     return m_editorWidget->textCursor().columnNumber();
 }
 
-void LiteEditor::gotoLine(int line, int column)
+void LiteEditor::gotoLine(int line, int column, bool center)
 {
-    m_editorWidget->gotoLine(line,column);
+    m_editorWidget->gotoLine(line,column,center);
 }
 
 void LiteEditor::applyOption(QString id)
