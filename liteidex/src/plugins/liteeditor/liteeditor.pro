@@ -25,7 +25,8 @@ SOURCES += liteeditorplugin.cpp \
     liteeditorwidget.cpp \
     litecompleter.cpp \
     litewordcompleter.cpp \
-    wordapimanager.cpp
+    wordapimanager.cpp \
+    liteeditormark.cpp
 
 HEADERS += liteeditorplugin.h\
         liteeditor_global.h \
@@ -39,7 +40,8 @@ HEADERS += liteeditorplugin.h\
     liteeditorwidget.h \
     litecompleter.h \
     litewordcompleter.h \
-    wordapimanager.h
+    wordapimanager.h \
+    liteeditormark.h
 
 FORMS += \
     liteeditoroption.ui
