@@ -71,7 +71,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     m_startDebugAct = new QAction(tr("Start"),this);
     m_execContinueAct = new QAction(tr("Continue"),this);
-    m_runJumpAct = new QAction(tr("RunJump"),this);
+    m_runToLineAct = new QAction(tr("RunToLine"),this);
     m_stopDebugAct = new QAction(tr("Stop"),this);
     m_abortDebugAct = new QAction(tr("Abort"),this);
     m_stepOverAct = new QAction(tr("StepOver"),this);
@@ -90,7 +90,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_toolBar->addAction(m_stopDebugAct);
     m_toolBar->addAction(m_abortDebugAct);
     m_toolBar->addSeparator();
-    m_toolBar->addAction(m_runJumpAct);
+    m_toolBar->addAction(m_runToLineAct);
     m_toolBar->addAction(m_stepOverAct);
     m_toolBar->addAction(m_stepIntoAct);
     m_toolBar->addAction(m_stepOutAct);
@@ -115,7 +115,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     connect(m_startDebugAct,SIGNAL(triggered()),this,SLOT(startDebug()));
     connect(m_execContinueAct,SIGNAL(triggered()),this,SLOT(execContinue()));
-    connect(m_runJumpAct,SIGNAL(triggered()),this,SLOT(runJump()));
+    connect(m_runToLineAct,SIGNAL(triggered()),this,SLOT(runToLine()));
     connect(m_stopDebugAct,SIGNAL(triggered()),this,SLOT(stopDebug()));
     connect(m_abortDebugAct,SIGNAL(triggered()),this,SLOT(abortDebug()));
     connect(m_stepOverAct,SIGNAL(triggered()),this,SLOT(stepOver()));
@@ -201,7 +201,7 @@ void LiteDebug::execContinue()
     m_debugger->execContinue();
 }
 
-void LiteDebug::runJump()
+void LiteDebug::runToLine()
 {
     if (!m_debugger || !m_debugger->isDebugging()) {
         return;
@@ -220,7 +220,7 @@ void LiteDebug::runJump()
     }
     QString fileName = QFileInfo(filePath).fileName();
     int line = textEditor->line()+1;
-    m_debugger->runJump(fileName,QString("%1").arg(line));
+    m_debugger->runToLine(fileName,line);
 }
 
 void LiteDebug::stopDebug()
