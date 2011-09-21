@@ -67,7 +67,7 @@ signals:
     void debugStarted();
     void debugStoped();
     void debugLog(const QByteArray &log);
-    void modelChanged(int type);
+    void setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &index, bool expanded);
 };
 
 class IDebuggerManager : public IManager

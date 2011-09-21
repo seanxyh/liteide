@@ -157,7 +157,6 @@ void DebugWidget::setDebug(LiteApi::IDebugger *debug)
     if (!m_debug) {
         return;
     }
-    connect(debug,SIGNAL(modelChanged(int)),this,SLOT(modelChanged(int)));
     m_asyncView->setModel(debug->debugModel(LiteApi::ASYNC_MODEL));
     m_varsView->setModel(debug->debugModel(LiteApi::VARS_MODEL));
     m_statckView->setModel(debug->debugModel(LiteApi::CALLSTACK_MODEL));
@@ -166,16 +165,7 @@ void DebugWidget::setDebug(LiteApi::IDebugger *debug)
     setResizeView(m_varsView);
     setResizeView(m_statckView);
     setResizeView(m_libraryView);
-    //m_watchesView->setModel(debug->debugModel(LiteApi::WATCHES_MODEL));
-    //m_bkpointView->setModel(debug->debugModel(LiteApi::BREAKPOINTS_MODEL));
-    //m_threadsView->setModel(debug->debugModel(LiteApi::THREADS_MODEL));
-}
-
-void DebugWidget::modelChanged(int type)
-{
-    if (type == LiteApi::ASYNC_MODEL) {
-        m_asyncView->expandAll();
-    }
+    connect(m_debug,SIGNAL(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)),this,SLOT(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)));
 }
 
 void DebugWidget::expandedVarsView(QModelIndex index)
@@ -187,4 +177,20 @@ void DebugWidget::expandedVarsView(QModelIndex index)
         return;
     }
     m_debug->expandItem(index,LiteApi::VARS_MODEL);
+}
+void DebugWidget::setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &index, bool expanded)
+{
+    if (!index.isValid()) {
+        return;
+    }
+    if (!m_debug) {
+        return;
+    }
+    QTreeView *view = 0;
+    if (type == LiteApi::VARS_MODEL) {
+        view = m_varsView;
+    }
+    if (view) {
+        view->setExpanded(index,expanded);
+    }
 }
