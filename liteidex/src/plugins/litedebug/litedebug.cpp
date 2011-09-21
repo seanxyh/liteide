@@ -81,6 +81,9 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_stepIntoAct->setShortcut(QKeySequence(Qt::Key_F11));
     m_stepOutAct = new QAction(tr("StepOut"),this);
     m_stepOutAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F11));
+    m_toggleBreakPointAct = new QAction(tr("BreakPoint"),this);
+    m_toggleBreakPointAct->setShortcut(QKeySequence(Qt::Key_F9));
+    m_toggleBreakPointAct->setToolTip(tr("Insert/Remove Breakpoint"));
 
     m_hideAct = new QAction(tr("Hide"),this);
     m_infoLabel = new QLabel;
@@ -95,6 +98,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_toolBar->addAction(m_stepOverAct);
     m_toolBar->addAction(m_stepIntoAct);
     m_toolBar->addAction(m_stepOutAct);
+    m_toolBar->addAction(m_toggleBreakPointAct);
 
     m_toolBar->addWidget(m_infoLabel);
     m_toolBar->addAction(m_hideAct);
@@ -122,6 +126,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     connect(m_stepOverAct,SIGNAL(triggered()),this,SLOT(stepOver()));
     connect(m_stepIntoAct,SIGNAL(triggered()),this,SLOT(stepInto()));
     connect(m_stepOutAct,SIGNAL(triggered()),this,SLOT(stepOut()));
+    connect(m_toggleBreakPointAct,SIGNAL(triggered()),this,SLOT(toggleBreakPoint()));
     connect(m_hideAct,SIGNAL(triggered()),this,SLOT(hideDebug()));
 
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);    
@@ -134,7 +139,7 @@ void LiteDebug::appLoaded()
 
     LiteApi::IEditorMarkTypeManager *markTypeManager = LiteApi::findExtensionObject<LiteApi::IEditorMarkTypeManager*>(m_liteApp,"LiteApi.IEditorMarkTypeManager");
     if (markTypeManager) {
-        markTypeManager->registerMark(BrackPointMark,QIcon(":/images/brackpoint.png"));
+        markTypeManager->registerMark(BreakPointMark,QIcon(":/images/breakpoint.png"));
         markTypeManager->registerMark(CurrentLineMark,QIcon(":/images/currentline.png"));
     }
 }
@@ -227,8 +232,7 @@ void LiteDebug::runToLine()
         return;
     }
     QString fileName = QFileInfo(filePath).fileName();
-    int line = textEditor->line()+1;
-    m_debugger->runToLine(fileName,line);
+    m_debugger->runToLine(fileName,textEditor->line());
 }
 
 void LiteDebug::stopDebug()
@@ -271,18 +275,42 @@ void LiteDebug::stepOut()
     m_debugger->stepOut();
 }
 
+void LiteDebug::toggleBreakPoint()
+{
+    LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+    if (!editor) {
+        return;
+    }
+    LiteApi::IEditorMark *editMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
+    if (!editMark) {
+        return;
+    }
+    LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
+    if (!textEditor) {
+        return;
+    }
+    int line = textEditor->line();
+    QList<int> marks = editMark->lineTypeList(line);
+    qDebug() << "toggleBreakPoint" << line << marks;
+    if (marks.contains(LiteApi::BreakPointMark)) {
+        editMark->removeMark(line,LiteApi::BreakPointMark);
+    } else {
+        editMark->addMark(line,LiteApi::BreakPointMark);
+    }
+}
+
 void LiteDebug::clearLastLine()
 {
-    if (!m_last.fileName.isEmpty()) {
-        LiteApi::IEditor *lastEditor = m_liteApp->editorManager()->findEditor(m_last.fileName,true);
+    if (!m_lastLine.fileName.isEmpty()) {
+        LiteApi::IEditor *lastEditor = m_liteApp->editorManager()->findEditor(m_lastLine.fileName,true);
         if (lastEditor) {
             LiteApi::IEditorMark *lastMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(lastEditor,"LiteApi.IEditorMark");
             if (lastMark) {
-                lastMark->removeMark(m_last.line,LiteApi::CurrentLineMark);
+                lastMark->removeMark(m_lastLine.line,LiteApi::CurrentLineMark);
             }
         }
     }
-    m_last.fileName.clear();
+    m_lastLine.fileName.clear();
 }
 
 void LiteDebug::debugStoped()
@@ -293,15 +321,15 @@ void LiteDebug::debugStoped()
 void LiteDebug::setCurrentLine(const QString &fileName, int line)
 {
     bool center = true;
-    if (m_last.fileName == fileName) {
+    if (m_lastLine.fileName == fileName) {
         center = false;
     }
     clearLastLine();
     if (QFile::exists(fileName)) {
         LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName,true);
         if (editor) {
-            m_last.fileName = fileName;
-            m_last.line = line;
+            m_lastLine.fileName = fileName;
+            m_lastLine.line = line;
             LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
             if (textEditor) {
                 textEditor->gotoLine(line,0,center);

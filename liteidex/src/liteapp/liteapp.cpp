@@ -218,6 +218,11 @@ QSettings *LiteApp::settings()
     return m_settings;
 }
 
+QMap<QString,QVariant> &LiteApp::cookie()
+{
+    return m_cookie;
+}
+
 QString LiteApp::resourcePath() const
 {
     return m_resourcePath;

@@ -42,7 +42,7 @@ enum DEBUG_MODEL_TYPE{
 };
 
 enum DEBUG_EDITOR_MARKTYPE {
-    BrackPointMark = 1000,
+    BreakPointMark = 1000,
     CurrentLineMark = 2000
 };
 

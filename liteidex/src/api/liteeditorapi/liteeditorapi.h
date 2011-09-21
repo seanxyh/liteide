@@ -87,8 +87,8 @@ public:
     IEditorMark(QObject *parent) : QObject(parent) {}
     virtual void addMark(int line, int type) = 0;
     virtual void removeMark(int line, int type) = 0;
-    virtual QList<int> markNumberList() const = 0;
-    virtual QList<int> markTypeList(int line) const = 0;
+    virtual QList<int> markLineList() const = 0;
+    virtual QList<int> lineTypeList(int line) const = 0;
     virtual void paint(QPainter *painter, int blockNumber, int x, int y, int w, int h) const = 0;
 signals:
     void markChanged();
