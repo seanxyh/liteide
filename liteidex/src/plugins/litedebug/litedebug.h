@@ -63,6 +63,7 @@ public slots:
     void stepOver();
     void stepInto();
     void stepOut();
+    void toggleBreakPoint();
 protected slots:
     void showDebug();
     void hideDebug();
@@ -87,9 +88,10 @@ protected:
     QAction *m_stepOverAct;
     QAction *m_stepIntoAct;
     QAction *m_stepOutAct;
+    QAction *m_toggleBreakPointAct;
     QLabel *m_infoLabel;
     QAction *m_hideAct;
-    CurrentLine m_last;
+    CurrentLine m_lastLine;
 };
 
 #endif // LITEDEBUG_H

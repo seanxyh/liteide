@@ -110,6 +110,10 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     //setFrameStyle(QFrame::NoFrame);
 }
 
+LiteEditorWidgetBase::~LiteEditorWidgetBase()
+{
+}
+
 void LiteEditorWidgetBase::setEditorMark(LiteApi::IEditorMark *mark)
 {
     m_editorMark = mark;

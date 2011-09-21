@@ -34,6 +34,7 @@ class LiteEditorWidgetBase : public QPlainTextEdit
     Q_OBJECT
 public:
     LiteEditorWidgetBase(QWidget *parent = 0);
+    virtual ~LiteEditorWidgetBase();
     void initLoadDocument();
     void setTabWidth(int n);
     void setEditorMark(LiteApi::IEditorMark *mark);

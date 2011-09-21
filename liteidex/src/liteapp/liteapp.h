@@ -64,6 +64,7 @@ public:
 
     virtual QMainWindow *mainWindow() const;
     virtual QSettings *settings();
+    virtual QMap<QString,QVariant> &cookie();
 
     virtual QString resourcePath() const;
     virtual QString applicationPath() const;
@@ -107,6 +108,7 @@ protected:
     OptionManager   *m_optionManager;
     TextOutput    *m_logOutput;
     LiteAppOptionFactory *m_liteAppOptionFactory;
+    QMap<QString,QVariant> m_cookie;
     QString         m_pluginPath;
     QString         m_resourcePath;
 protected:

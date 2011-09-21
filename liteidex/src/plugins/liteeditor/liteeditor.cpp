@@ -395,7 +395,7 @@ LiteApi::IFile *LiteEditor::file()
 
 int LiteEditor::line() const
 {
-    return m_editorWidget->textCursor().blockNumber();
+    return m_editorWidget->textCursor().blockNumber()+1;
 }
 
 int LiteEditor::column() const

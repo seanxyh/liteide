@@ -16,6 +16,8 @@ protected:
     QMap<int,QIcon> m_typeIconMap;
 };
 
+typedef QMap<int,QList<int> > MarkTypesMap;
+
 class LiteEditorMark : public LiteApi::IEditorMark
 {
     Q_OBJECT
@@ -23,12 +25,14 @@ public:
     explicit LiteEditorMark(LiteApi::IEditorMarkTypeManager *manager, QObject *parent = 0);
     virtual void addMark(int line, int type);
     virtual void removeMark(int line, int type);
-    virtual QList<int> markNumberList() const;
-    virtual QList<int> markTypeList(int line) const;
+    virtual QList<int> markLineList() const;
+    virtual QList<int> lineTypeList(int line) const;
     virtual void paint(QPainter *painter, int blockNumber, int x, int y, int w, int h) const;
 protected:
     LiteApi::IEditorMarkTypeManager *m_manager;
-    QMap<int,QList<int> > m_numberMarkTypesMap;    
+    MarkTypesMap m_lineMarkTypesMap;
 };
+
+Q_DECLARE_METATYPE(MarkTypesMap);
 
 #endif // LITEEDITORMARK_H

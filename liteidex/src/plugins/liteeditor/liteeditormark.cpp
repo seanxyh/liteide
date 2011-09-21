@@ -44,9 +44,9 @@ void LiteEditorMark::paint(QPainter *painter, const QRect &rect) const
 
 void LiteEditorMark::addMark(int line, int type)
 {
-    QMap<int, QList<int> >::iterator it = m_numberMarkTypesMap.find(line);
-    if (it == m_numberMarkTypesMap.end()) {
-        m_numberMarkTypesMap.insert(line,QList<int>() << type);
+    QMap<int, QList<int> >::iterator it = m_lineMarkTypesMap.find(line);
+    if (it == m_lineMarkTypesMap.end()) {
+        m_lineMarkTypesMap.insert(line,QList<int>() << type);
         emit markChanged();
     } else {
         if (!it.value().contains(type)) {
@@ -59,28 +59,28 @@ void LiteEditorMark::addMark(int line, int type)
 
 void LiteEditorMark::removeMark(int line, int type)
 {
-    QMap<int, QList<int> >::iterator it = m_numberMarkTypesMap.find(line);
-    if (it != m_numberMarkTypesMap.end()) {
+    QMap<int, QList<int> >::iterator it = m_lineMarkTypesMap.find(line);
+    if (it != m_lineMarkTypesMap.end()) {
         it.value().removeOne(type);
         emit markChanged();
     }
 }
 
-QList<int> LiteEditorMark::markNumberList() const
+QList<int> LiteEditorMark::markLineList() const
 {
-    return m_numberMarkTypesMap.keys();
+    return m_lineMarkTypesMap.keys();
 }
 
-QList<int> LiteEditorMark::markTypeList(int line) const
+QList<int> LiteEditorMark::lineTypeList(int line) const
 {
-    return m_numberMarkTypesMap.value(line);
+    return m_lineMarkTypesMap.value(line);
 }
 
 void LiteEditorMark::paint(QPainter *painter, int blockNumber, int x, int y, int w, int h) const
 {
     const int line = blockNumber + 1;
-    QMap<int, QList<int> >::const_iterator it = m_numberMarkTypesMap.find(line);
-    if (it != m_numberMarkTypesMap.end()) {
+    QMap<int, QList<int> >::const_iterator it = m_lineMarkTypesMap.find(line);
+    if (it != m_lineMarkTypesMap.end()) {
         int offset = x;
         foreach(int type, it.value()) {
             const QIcon &icon = m_manager->markIcon(type);
