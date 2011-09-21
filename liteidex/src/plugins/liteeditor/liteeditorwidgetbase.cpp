@@ -92,7 +92,7 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     setLayoutDirection(Qt::LeftToRight);
     viewport()->setMouseTracking(true);
     m_lineNumbersVisible = true;
-    m_marksVisible = false;
+    m_marksVisible = true;
     m_lastSaveRevision = 0;
     m_extraAreaSelectionNumber = -1;
     m_autoIndent = true;

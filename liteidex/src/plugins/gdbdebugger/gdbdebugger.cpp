@@ -180,7 +180,7 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
     if (!goroot.isEmpty()) {
         QString path = QFileInfo(QDir(goroot),"src/pkg/runtime/").path();
        // args << "--directory" << path;
-        m_runtime = path.toUtf8();
+        m_runtimeFilePath = path.toUtf8();
     }
 
     args << "--args" << program;
@@ -190,16 +190,16 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
 
     QString gdb = m_envManager->currentEnvironment().value("LITEIDE_GDB","gdb");
 
-    m_cmd = FileUtil::lookPath(gdb,m_envManager->currentEnvironment(),true);
-    if (m_cmd.isEmpty()) {
+    m_gdbFilePath = FileUtil::lookPath(gdb,m_envManager->currentEnvironment(),true);
+    if (m_gdbFilePath.isEmpty()) {
         return false;
     }
 
     clear();
 
-    m_process->start(m_cmd,args);
+    m_process->start(m_gdbFilePath,args);
 
-    QString log = QString("%1 %2").arg(m_cmd).arg(args.join(" "));
+    QString log = QString("%1 %2").arg(m_gdbFilePath).arg(args.join(" "));
     emit debugLog(log.toUtf8());
 
     return true;
@@ -240,13 +240,15 @@ void GdbDebugeer::stepOut()
     command("-exec-finish");
 }
 
-void GdbDebugeer::runJump(const QString &fileName, const QString &spec)
+void GdbDebugeer::runToLine(const QString &fileName, int line)
 {
-    if (fileName.isEmpty()) {
-        command("-break-insert -t "+spec.toLatin1());
-    } else {
-        command("-break-insert -t "+fileName.toLatin1()+":"+spec.toLatin1());
-    }
+    GdbCmd cmd;
+    QStringList args;
+    args << "-break-insert";
+    args << "-t";
+    args << QString("%1:%2").arg(fileName).arg(line);
+    cmd.setCmd(args);
+    command(cmd);
     command("-exec-continue");
 }
 
@@ -497,22 +499,20 @@ void GdbDebugeer::handleResponse(const QByteArray &buff)
 void GdbDebugeer::handleStopped(const GdbMiValue &result)
 {
     QByteArray reason = result.findChild("reason").data();
+    m_handleState.setReason(reason);
     m_handleState.setStopped(true);
     if (reason.startsWith("exited")) {
         m_handleState.setExited(true);
-        m_handleState.appendMsg(reason);
+        m_handleState.setReason(reason);
         return;
     }
-    if (reason == "function-finished") {
-        m_handleState.setFunctionFinish(true);
-    }
-    QString thread_id = result.findChild("thread-id").data();
-    QString stopped_threads = result.findChild("stopped-threads").data();
+//    QString thread_id = result.findChild("thread-id").data();
+//    QString stopped_threads = result.findChild("stopped-threads").data();
     GdbMiValue frame = result.findChild("frame");
     if (frame.isValid()) {
-        QString addr = frame.findChild("addr").data();
-        QString func = frame.findChild("func").data();
-        QString file = frame.findChild("file").data();
+//        QString addr = frame.findChild("addr").data();
+//        QString func = frame.findChild("func").data();
+//        QString file = frame.findChild("file").data();
         QString fullname = frame.findChild("fullname").data();
         QString line = frame.findChild("line").data();
         /*
@@ -803,7 +803,7 @@ void GdbDebugeer::handleResultVarUpdateValue(const GdbResponse &response, QMap<Q
     if (v) {
         v->setData(value,Qt::DisplayRole);
         v->setData(Qt::red,Qt::TextColorRole);
-        m_changedItemList.insert(v);
+        m_varChangedItemList.insert(v);
     }
 }
 
@@ -829,7 +829,7 @@ void GdbDebugeer::handleResultVarUpdateType(const GdbResponse &response, QMap<QS
     if (v) {
         v->setData(type,Qt::DisplayRole);
         v->setData(Qt::red,Qt::TextColorRole);
-        m_changedItemList.insert(v);
+        m_varChangedItemList.insert(v);
     }
 }
 
@@ -875,7 +875,7 @@ void GdbDebugeer::clear()
     m_varNameMap.clear();
     m_nameItemMap.clear();
     m_tokenCookieMap.clear();
-    m_changedItemList.clear();
+    m_varChangedItemList.clear();
     m_inbuffer.clear();
 
     m_framesModel->removeRows(0,m_framesModel->rowCount());
@@ -895,9 +895,9 @@ void GdbDebugeer::initGdb()
     command("set width 0");
     command("set height 0");
     command("set auto-solib-add on");
-    if (!m_runtime.isEmpty()) {
-        command("-environment-directory "+m_runtime);
-        command("set substitute-path /go/src/pkg/runtime "+m_runtime);
+    if (!m_runtimeFilePath.isEmpty()) {
+        command("-environment-directory "+m_runtimeFilePath);
+        command("set substitute-path /go/src/pkg/runtime "+m_runtimeFilePath);
     }
     command("break main.main");
     command("-exec-run");
@@ -905,10 +905,10 @@ void GdbDebugeer::initGdb()
 
 void GdbDebugeer::updateWatch()
 {
-    foreach(QStandardItem *item, m_changedItemList) {
+    foreach(QStandardItem *item, m_varChangedItemList) {
         item->setData(Qt::black,Qt::TextColorRole);
     }
-    m_changedItemList.clear();
+    m_varChangedItemList.clear();
     command("-var-update *");
 }
 

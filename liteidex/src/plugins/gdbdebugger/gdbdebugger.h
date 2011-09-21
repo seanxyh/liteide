@@ -39,23 +39,20 @@ public:
     GdbHandleState() : m_exited(false),m_stopped(false) {}
     void clear()
     {
-        m_msg.clear();
+        m_reason.clear();
         m_exited = false;
         m_stopped = false;
-        m_functionFinish = false;
     }
     void setExited(bool b) {m_exited = b;}
     void setStopped(bool b) {m_stopped = b;}
-    void setFunctionFinish(bool b) {m_functionFinish = b; }
-    void appendMsg(const QByteArray &m) { m_msg.append(m); }
-    bool exited() { return m_exited; }
-    bool stopped() { return m_stopped; }
-    bool functionFinish() { return m_functionFinish; }
+    void setReason(const QByteArray &reason) { m_reason = reason; }
+    bool exited() const { return m_exited; }
+    bool stopped() const { return m_stopped; }
+    QByteArray reason() const { return m_reason; }
 public:
     bool       m_exited;
     bool       m_stopped;
-    bool       m_functionFinish;
-    QList<QByteArray> m_msg;
+    QByteArray m_reason;
 };
 
 class GdbCmd
@@ -128,7 +125,7 @@ public:
     virtual void stepInto();
     virtual void stepOut();
     virtual void execContinue();
-    virtual void runJump(const QString &fileName, const QString &spec);
+    virtual void runToLine(const QString &fileName, int line);
     virtual void command(const QByteArray &cmd);
     virtual void expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type);
 public:
@@ -179,9 +176,9 @@ protected:
     QMap<int,QVariant> m_tokenCookieMap;
     QMap<QString,QString> m_varNameMap;
     QMap<QString,QStandardItem*> m_nameItemMap;
-    QSet<QStandardItem*> m_changedItemList;
-    QString m_cmd;
-    QByteArray m_runtime;
+    QSet<QStandardItem*> m_varChangedItemList;
+    QString m_gdbFilePath;
+    QByteArray m_runtimeFilePath;
     QByteArray m_inbuffer;
     GdbHandleState m_handleState;
     bool    m_busy;
