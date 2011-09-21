@@ -29,6 +29,7 @@
 #include "golanghighlighter.h"
 #include "litewordcompleter.h"
 #include "wordapimanager.h"
+#include "liteeditormark.h"
 #include <QDir>
 #include <QFileInfo>
 #include "mimetype/mimetype.h"
@@ -71,10 +72,14 @@ LiteEditorFileFactory::LiteEditorFileFactory(LiteApi::IApplication *app, QObject
     }
     m_mimeTypes.removeDuplicates();
 
-    m_manager = new WordApiManager(this);
-    if (m_manager->initWithApp(app)) {
-        m_liteApp->extension()->addObject("LiteApi.IWordApiManager",m_manager);
-        m_manager->load(m_liteApp->resourcePath()+"/wordapi");
+    m_wordApiManager = new WordApiManager(this);
+    if (m_wordApiManager->initWithApp(app)) {
+        m_liteApp->extension()->addObject("LiteApi.IWordApiManager",m_wordApiManager);
+        m_wordApiManager->load(m_liteApp->resourcePath()+"/wordapi");
+    }
+    m_markTypeManager = new LiteEditorMarkTypeManager(this);
+    if (m_markTypeManager->initWithApp(app)) {
+        m_liteApp->extension()->addObject("LiteApi.IEditorMarkTypeManager",m_markTypeManager);
     }
 }
 
@@ -98,6 +103,7 @@ void LiteEditorFileFactory::colorStyleChanged()
 LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QString &mimeType)
 {
     LiteEditor *editor = new LiteEditor(m_liteApp);
+    editor->setEditorMark(new LiteEditorMark(m_markTypeManager,editor));
     if (!editor->open(fileName,mimeType)) {
         delete editor;
         return 0;
@@ -114,7 +120,7 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
     LiteWordCompleter *wordCompleter = new LiteWordCompleter(editor);
     editor->setCompleter(wordCompleter);
     if (wordCompleter) {
-        LiteApi::IWordApi *wordApi = m_manager->findWordApi(mimeType);
+        LiteApi::IWordApi *wordApi = m_wordApiManager->findWordApi(mimeType);
         if (wordApi && wordApi->loadApi()) {
             wordCompleter->appendItems(wordApi->wordList(),false);
             wordCompleter->completer()->model()->sort(0);

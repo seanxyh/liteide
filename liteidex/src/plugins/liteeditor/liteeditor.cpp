@@ -120,6 +120,12 @@ const ColorStyleScheme *LiteEditor::colorStyleScheme() const
     return m_colorStyleScheme;
 }
 
+void LiteEditor::setEditorMark(LiteApi::IEditorMark *mark)
+{
+    m_editorWidget->setEditorMark(mark);
+    m_extension->addObject("LiteApi.IEditorMark",mark);
+}
+
 void LiteEditor::setCompleter(LiteCompleter *complter)
 {
     if (m_completer) {

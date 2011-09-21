@@ -30,6 +30,7 @@
 #include "qtc_texteditor/katehighlighter.h"
 
 class WordApiManager;
+class LiteEditorMarkTypeManager;
 class LiteEditor;
 class LiteEditorFileFactory : public LiteApi::IEditorFactory
 {
@@ -43,7 +44,8 @@ public slots:
     void colorStyleChanged();
 protected:
     LiteApi::IApplication *m_liteApp;
-    WordApiManager *m_manager;
+    WordApiManager *m_wordApiManager;
+    LiteEditorMarkTypeManager *m_markTypeManager;
     QStringList m_mimeTypes;
     KateHighlighter *m_kate;
 };
