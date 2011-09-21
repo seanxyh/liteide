@@ -73,6 +73,7 @@ signals:
     void debugStoped();
     void debugLog(const QByteArray &log);
     void setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &index, bool expanded);
+    void setCurrentLine(const QString &fileName, int line);
 };
 
 class IDebuggerManager : public IManager

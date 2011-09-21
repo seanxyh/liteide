@@ -26,7 +26,6 @@
 #include "gdbdebugger.h"
 #include "fileutil/fileutil.h"
 #include "liteapi/litefindobj.h"
-#include "liteeditorapi/liteeditorapi.h"
 
 #include <QStandardItemModel>
 #include <QProcess>
@@ -121,7 +120,6 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
 
     connect(app,SIGNAL(loaded()),this,SLOT(appLoaded()));
     connect(m_process,SIGNAL(started()),this,SIGNAL(debugStarted()));
-    connect(m_process,SIGNAL(finished(int)),this,SIGNAL(debugStoped()));
     connect(m_process,SIGNAL(finished(int)),this,SLOT(finished(int)));
     connect(m_process,SIGNAL(readyReadStandardError()),this,SLOT(readStdError()));
     connect(m_process,SIGNAL(readyReadStandardOutput()),this,SLOT(readStdOutput()));
@@ -530,23 +528,7 @@ void GdbDebugeer::handleStopped(const GdbMiValue &result)
         m_asyncModel->removeRows(0,m_asyncModel->rowCount());
         m_asyncModel->appendRow(items);
         */
-        if (QFile::exists(fullname)) {
-            LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fullname,true);
-            if (editor) {
-                bool ok = false;
-                int n = line.toInt(&ok);
-                if (ok) {
-                    LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
-                    if (textEditor) {
-                        textEditor->gotoLine(n,0);
-                    }
-                    LiteApi::IEditorMark *editMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
-                    if (editMark) {
-                        editMark->addMark(n,LiteApi::CurrentLineMark);
-                    }
-                }
-            }
-        }
+        emit setCurrentLine(fullname,line.toInt());
     }
 }
 
@@ -1021,4 +1003,5 @@ void GdbDebugeer::readStdOutput()
 void GdbDebugeer::finished(int)
 {
     clear();
+    emit debugStoped();
 }

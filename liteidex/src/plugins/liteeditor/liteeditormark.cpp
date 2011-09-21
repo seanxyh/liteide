@@ -38,10 +38,12 @@ void LiteEditorMark::addMark(int line, int type)
     QMap<int, QList<int> >::iterator it = m_numberMarkTypesMap.find(line);
     if (it == m_numberMarkTypesMap.end()) {
         m_numberMarkTypesMap.insert(line,QList<int>() << type);
+        emit markChanged();
     } else {
         if (!it.value().contains(type)) {
             it.value().append(type);
             qSort(it.value());
+            emit markChanged();
         }
     }
 }
@@ -51,6 +53,7 @@ void LiteEditorMark::removeMark(int line, int type)
     QMap<int, QList<int> >::iterator it = m_numberMarkTypesMap.find(line);
     if (it != m_numberMarkTypesMap.end()) {
         it.value().removeOne(type);
+        emit markChanged();
     }
 }
 

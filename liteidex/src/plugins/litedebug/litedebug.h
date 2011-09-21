@@ -35,6 +35,16 @@
 class DebugManager;
 class DebugWidget;
 class QLabel;
+
+struct CurrentLine
+{
+    CurrentLine() : line(0)
+    {
+    }
+    QString  fileName;
+    int      line;
+};
+
 class LiteDebug : public QObject
 {
     Q_OBJECT
@@ -57,7 +67,10 @@ protected slots:
     void showDebug();
     void hideDebug();
     void setDebugger(LiteApi::IDebugger*);
+    void debugStoped();
+    void setCurrentLine(const QString &fileName, int line);
 protected:
+    void clearLastLine();
     LiteApi::IApplication *m_liteApp;
     DebugManager *m_manager;
     QWidget      *m_widget;
@@ -76,6 +89,7 @@ protected:
     QAction *m_stepOutAct;
     QLabel *m_infoLabel;
     QAction *m_hideAct;
+    CurrentLine m_last;
 };
 
 #endif // LITEDEBUG_H

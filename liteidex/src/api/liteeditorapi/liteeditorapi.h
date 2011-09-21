@@ -90,6 +90,8 @@ public:
     virtual QList<int> markNumberList() const = 0;
     virtual QList<int> markTypeList(int line) const = 0;
     virtual void paint(QPainter *painter, int blockNumber, int x, int y, int w, int h) const = 0;
+signals:
+    void markChanged();
 };
 
 } //namespace LiteApi

@@ -113,6 +113,9 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
 void LiteEditorWidgetBase::setEditorMark(LiteApi::IEditorMark *mark)
 {
     m_editorMark = mark;
+    if (m_editorMark) {
+        connect(m_editorMark,SIGNAL(markChanged()),m_extraArea,SLOT(update()));
+    }
 }
 
 void LiteEditorWidgetBase::setTabWidth(int n)
