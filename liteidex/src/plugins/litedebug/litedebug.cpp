@@ -129,7 +129,10 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     connect(m_toggleBreakPointAct,SIGNAL(triggered()),this,SLOT(toggleBreakPoint()));
     connect(m_hideAct,SIGNAL(triggered()),this,SLOT(hideDebug()));
 
-    m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);    
+    connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
+    connect(m_liteApp->editorManager(),SIGNAL(editorAboutToClose(LiteApi::IEditor*)),this,SLOT(editorAboutToClose(LiteApi::IEditor*)));
+
+    m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);        
 }
 
 void LiteDebug::appLoaded()
@@ -142,6 +145,39 @@ void LiteDebug::appLoaded()
         markTypeManager->registerMark(BreakPointMark,QIcon(":/images/breakpoint.png"));
         markTypeManager->registerMark(CurrentLineMark,QIcon(":/images/currentline.png"));
     }
+}
+
+void LiteDebug::editorCreated(LiteApi::IEditor *editor)
+{
+    if (!editor) {
+        return;
+    }
+    LiteApi::IEditorMark *editorMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
+    if (!editorMark) {
+        return;
+    }
+    QList<int> bpList = m_fileBpListMap.value(editor->fileName());
+    foreach (int line, bpList) {
+        editorMark->addMark(line,LiteApi::BreakPointMark);
+    }
+}
+
+void LiteDebug::editorAboutToClose(LiteApi::IEditor *editor)
+{
+    if (!editor) {
+        return;
+    }
+    LiteApi::IEditorMark *editorMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
+    if (!editorMark) {
+        return;
+    }
+    QList<int> bpList;
+    foreach(int line, editorMark->markLineList()) {
+        if (editorMark->lineTypeList(line).contains(LiteApi::BreakPointMark)) {
+            bpList.append(line);
+        }
+    }
+    m_fileBpListMap.insert(editor->fileName(),bpList);
 }
 
 QWidget *LiteDebug::widget()
@@ -281,8 +317,8 @@ void LiteDebug::toggleBreakPoint()
     if (!editor) {
         return;
     }
-    LiteApi::IEditorMark *editMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
-    if (!editMark) {
+    LiteApi::IEditorMark *editorMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
+    if (!editorMark) {
         return;
     }
     LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
@@ -290,12 +326,12 @@ void LiteDebug::toggleBreakPoint()
         return;
     }
     int line = textEditor->line();
-    QList<int> marks = editMark->lineTypeList(line);
+    QList<int> marks = editorMark->lineTypeList(line);
     qDebug() << "toggleBreakPoint" << line << marks;
     if (marks.contains(LiteApi::BreakPointMark)) {
-        editMark->removeMark(line,LiteApi::BreakPointMark);
+        editorMark->removeMark(line,LiteApi::BreakPointMark);
     } else {
-        editMark->addMark(line,LiteApi::BreakPointMark);
+        editorMark->addMark(line,LiteApi::BreakPointMark);
     }
 }
 

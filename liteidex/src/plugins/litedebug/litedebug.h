@@ -55,6 +55,8 @@ signals:
     void debugVisible(bool);
 public slots:
     void appLoaded();
+    void editorCreated(LiteApi::IEditor*);
+    void editorAboutToClose(LiteApi::IEditor*);
     void startDebug();
     void execContinue();
     void runToLine();
@@ -92,6 +94,7 @@ protected:
     QLabel *m_infoLabel;
     QAction *m_hideAct;
     CurrentLine m_lastLine;
+    QHash<QString,QList<int> > m_fileBpListMap;
 };
 
 #endif // LITEDEBUG_H
