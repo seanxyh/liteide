@@ -89,4 +89,3 @@ void LiteEditorMark::paint(QPainter *painter, int blockNumber, int x, int y, int
         }
     }
 }
-
