@@ -292,6 +292,10 @@ void LiteDebug::debugStoped()
 
 void LiteDebug::setCurrentLine(const QString &fileName, int line)
 {
+    bool center = true;
+    if (m_last.fileName == fileName) {
+        center = false;
+    }
     clearLastLine();
     if (QFile::exists(fileName)) {
         LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName,true);
@@ -300,7 +304,7 @@ void LiteDebug::setCurrentLine(const QString &fileName, int line)
             m_last.line = line;
             LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
             if (textEditor) {
-                textEditor->gotoLine(line,0);
+                textEditor->gotoLine(line,0,center);
             }
             LiteApi::IEditorMark *editMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
             if (editMark) {

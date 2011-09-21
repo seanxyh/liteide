@@ -74,7 +74,7 @@ public:
 
     virtual int line() const;
     virtual int column() const;
-    virtual void gotoLine(int line, int column);
+    virtual void gotoLine(int line, int column, bool center);
     const ColorStyleScheme *colorStyleScheme() const;
 signals:
     void colorStyleChanged();

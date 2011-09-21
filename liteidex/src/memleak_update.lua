@@ -24,9 +24,10 @@ function update_memleak(file,name)
 	f:close()
 	local find = string.find(data,"//lite_memory_check_begin")
 	if find ~= nil then
-		print("find memleak",file)
+		print("skip file:",file)
 		return
 	end
+	print(">>process file:",file)
 	local i = 0
 	local last = 0
 	while true do
@@ -47,7 +48,6 @@ end
 function process_file(file,name)
 	local ext = string.match(file,"%.%w+$")
 	if ext == ".cpp" then
-		print(file)
 		update_memleak(file,name)
 	end
 end
