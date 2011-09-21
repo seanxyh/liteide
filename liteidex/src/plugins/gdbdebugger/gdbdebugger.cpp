@@ -297,14 +297,7 @@ void GdbDebugeer::expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type)
             QString name = item->data(VarNameRole).toString();
             int num = item->data(VarNumChildRole).toInt();
             if (num > 0) {
-                GdbCmd cmd;
-                QStringList args;
-                args << "-var-list-children";
-                args << "2";
-                args << name;
-                cmd.setCmd(args);
-                cmd.insert("name",name);
-                command(cmd);
+                updateVarListChildren(name);
             }
         }
     }
@@ -689,6 +682,8 @@ void GdbDebugeer::handleResultVarListChildren(const GdbResponse &response, QMap<
         if (parent == 0) {
             return;
         }
+        int num = response.data.findChild("numchild").data().toInt();
+        parent->setData(num,VarNumChildRole);
         for (int i = 0; i < children.childCount(); i++) {
             GdbMiValue child = children.childAt(i);
             if (child.name() == "child" && child.isTuple()) {
@@ -778,6 +773,8 @@ void GdbDebugeer::handleResultVarDelete(const GdbResponse &response, QMap<QStrin
                 m_varsModel->removeRow(i);
             } else {
                 item->removeRows(0,item->rowCount());
+                item->setData(0,VarExpanded);
+                emit setExpand(LiteApi::VARS_MODEL,m_varsModel->indexFromItem(item),false);
             }
             break;
         }
@@ -946,7 +943,7 @@ void GdbDebugeer::updateVarListChildren(const QString &name)
     GdbCmd cmd;
     QStringList args;
     args << "-var-list-children";
-    args << "2";
+    args << "1";
     args << name;
     cmd.setCmd(args);
     cmd.insert("name",name);
