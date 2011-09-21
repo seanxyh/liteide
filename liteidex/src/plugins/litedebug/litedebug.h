@@ -30,6 +30,7 @@
 #include "litedebugapi/litedebugapi.h"
 #include "liteenvapi/liteenvapi.h"
 #include "litebuildapi/litebuildapi.h"
+#include "liteeditorapi/liteeditorapi.h"
 
 class DebugManager;
 class DebugWidget;

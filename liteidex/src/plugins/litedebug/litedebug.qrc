@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/breakpoint.png</file>
+        <file>images/currentline.png</file>
+    </qresource>
+</RCC>

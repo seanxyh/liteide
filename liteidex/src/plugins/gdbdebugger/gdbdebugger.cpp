@@ -26,6 +26,7 @@
 #include "gdbdebugger.h"
 #include "fileutil/fileutil.h"
 #include "liteapi/litefindobj.h"
+#include "liteeditorapi/liteeditorapi.h"
 
 #include <QStandardItemModel>
 #include <QProcess>
@@ -538,6 +539,10 @@ void GdbDebugeer::handleStopped(const GdbMiValue &result)
                     LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
                     if (textEditor) {
                         textEditor->gotoLine(n,0);
+                    }
+                    LiteApi::IEditorMark *editMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
+                    if (editMark) {
+                        editMark->addMark(n,LiteApi::CurrentLineMark);
                     }
                 }
             }

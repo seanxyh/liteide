@@ -17,3 +17,6 @@ HEADERS += litedebugplugin.h\
     debugmanager.h \
     debugwidget.h \
     litedebug.h
+
+RESOURCES += \
+    litedebug.qrc
