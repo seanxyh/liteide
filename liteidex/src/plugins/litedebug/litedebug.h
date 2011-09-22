@@ -56,7 +56,6 @@ signals:
 public slots:
     void appLoaded();
     void editorCreated(LiteApi::IEditor*);
-    void editorAboutToClose(LiteApi::IEditor*);
     void startDebug();
     void continueRun();
     void runToLine();
@@ -65,6 +64,7 @@ public slots:
     void stepOver();
     void stepInto();
     void stepOut();
+    void showLine();
     void toggleBreakPoint();
 protected slots:
     void setDebugger(LiteApi::IDebugger*);
@@ -74,22 +74,21 @@ protected slots:
 protected:
     void clearLastLine();
     LiteApi::IApplication *m_liteApp;
+    LiteApi::IEnvManager *m_envManager;
+    LiteApi::ILiteBuild *m_liteBuild;
+    LiteApi::IDebugger *m_debugger;
     DebugManager *m_manager;
     QWidget      *m_widget;
     DebugWidget  *m_dbgWidget;
     QToolBar     *m_toolBar;
-    LiteApi::IDebugger *m_debugger;
-    LiteApi::ILiteBuild *m_liteBuild;
-    LiteApi::IEnvManager *m_envManager;
     QAction *m_startDebugAct;
     QAction *m_stopDebugAct;
-    QAction *m_runToLineAct;
+    QAction *m_showLineAct;
     QAction *m_stepOverAct;
     QAction *m_stepIntoAct;
     QAction *m_stepOutAct;
+    QAction *m_runToLineAct;
     QAction *m_insertBreakAct;
-    QLabel *m_infoLabel;
-    QAction *m_hideAct;
     CurrentLine m_lastLine;
     QMultiMap<QString,int> m_fileBpMap;
 };

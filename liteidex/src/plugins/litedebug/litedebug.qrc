@@ -3,7 +3,6 @@
         <file>images/breakmark.png</file>
         <file>images/insertbreak.png</file>
         <file>images/linemark.png</file>
-        <file>images/restart.png</file>
         <file>images/runtoline.png</file>
         <file>images/showline.png</file>
         <file>images/stepinto.png</file>
@@ -11,5 +10,6 @@
         <file>images/stepover.png</file>
         <file>images/stopdebug.png</file>
         <file>images/startdebug.png</file>
+        <file>images/showline.png</file>
     </qresource>
 </RCC>
