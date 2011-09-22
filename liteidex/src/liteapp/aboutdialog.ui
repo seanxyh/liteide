@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>345</height>
+    <width>582</width>
+    <height>432</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>About LiteIDE</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1,0">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0">
      <property name="spacing">
@@ -173,19 +173,6 @@ p, li { white-space: pre-wrap; }
     </layout>
    </item>
    <item>
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -283,6 +270,19 @@ LiteIDE is a simple, open source, cross-platform IDE.</string>
          </layout>
         </widget>
        </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_6">
@@ -373,6 +373,19 @@ LiteIDE is a simple, open source, cross-platform IDE.</string>
          </layout>
         </widget>
        </item>
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_3">
@@ -425,6 +438,20 @@ LiteIDE is a simple, open source, cross-platform IDE.</string>
            <widget class="QLabel" name="label_37">
             <property name="text">
              <string notr="true">Lockals &lt;lockalsash@gmail.com&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>French</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLabel" name="label_20">
+            <property name="text">
+             <string>TomBoss &lt;tomboss@gmx.com&gt;</string>
             </property>
            </widget>
           </item>
