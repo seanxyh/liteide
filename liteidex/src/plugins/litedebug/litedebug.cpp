@@ -166,6 +166,9 @@ void LiteDebug::editorCreated(LiteApi::IEditor *editor)
     foreach (int line, bpList) {
         editorMark->addMark(line,LiteApi::BreakPointMark);
     }
+    if (m_lastLine.fileName == editor->fileName()) {
+        editorMark->addMark(m_lastLine.line,LiteApi::CurrentLineMark);
+    }
 }
 
 QWidget *LiteDebug::widget()
