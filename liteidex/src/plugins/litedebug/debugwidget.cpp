@@ -120,7 +120,7 @@ QWidget *DebugWidget::widget()
 void DebugWidget::cmdLineInput()
 {
     QString text = m_cmdLineEdit->text();
-    if (!text.isEmpty() && m_debug && m_debug->isDebugging()) {
+    if (!text.isEmpty() && m_debug && m_debug->isRunning()) {
         m_debug->command(text.toUtf8());
     }
 }

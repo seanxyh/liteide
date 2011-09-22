@@ -156,9 +156,12 @@ void LiteDebug::editorCreated(LiteApi::IEditor *editor)
     if (!editorMark) {
         return;
     }
-    QList<int> bpList = m_fileBpListMap.value(editor->fileName());
+    QList<int> bpList = m_fileBpMap.values(editor->fileName());
     foreach (int line, bpList) {
         editorMark->addMark(line,LiteApi::BreakPointMark);
+//        if (m_debugger && m_debugger->isRunning()) {
+//            m_debugger->insertBreakPoint(editor->fileName(),line);
+//        }
     }
 }
 
@@ -171,13 +174,12 @@ void LiteDebug::editorAboutToClose(LiteApi::IEditor *editor)
     if (!editorMark) {
         return;
     }
-    QList<int> bpList;
-    foreach(int line, editorMark->markLineList()) {
-        if (editorMark->lineTypeList(line).contains(LiteApi::BreakPointMark)) {
-            bpList.append(line);
-        }
-    }
-    m_fileBpListMap.insert(editor->fileName(),bpList);
+//    m_fileBpMap.remove(editor->fileName());
+//    foreach(int line, editorMark->markLineList()) {
+//        if (editorMark->lineTypeList(line).contains(LiteApi::BreakPointMark)) {
+//            m_fileBpMap.insert(editor->fileName(),line);
+//        }
+//    }
 }
 
 QWidget *LiteDebug::widget()
@@ -214,7 +216,7 @@ void LiteDebug::startDebug()
     if (!m_debugger) {
         return;
     }
-    if (m_debugger->isDebugging()) {
+    if (m_debugger->isRunning()) {
         return;
     }
     if (!m_liteBuild || !m_liteBuild->buildManager()->currentBuild()) {
@@ -237,6 +239,20 @@ void LiteDebug::startDebug()
     if (index != -1) {
         target = targetFilepath.right(targetFilepath.length()-index);
     }
+//    QMultiMap<QString,int> bks;
+//    foreach(LiteApi::IEditor *editor,m_liteApp->editorManager()->editorList()) {
+//        LiteApi::IEditorMark *editorMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
+//        if (!editorMark) {
+//            continue;
+//        }
+//        QString fileName = editor->fileName();
+//        foreach(int line, editorMark->markLineList()) {
+//            if (editorMark->lineTypeList(line).contains(LiteApi::BreakPointMark)) {
+//                bks.insert(fileName,line);
+//            }
+//        }
+//    }
+    m_debugger->setInitBreakTable(m_fileBpMap);
     m_debugger->setEnvironment(m_envManager->currentEnvironment().toStringList());
     m_debugger->setWorkingDirectory(workDir);
     m_debugger->start(target,args.split(" "));
@@ -244,7 +260,7 @@ void LiteDebug::startDebug()
 
 void LiteDebug::execContinue()
 {
-    if (!m_debugger || !m_debugger->isDebugging()) {
+    if (!m_debugger || !m_debugger->isRunning()) {
         return;
     }
     m_debugger->execContinue();
@@ -252,7 +268,7 @@ void LiteDebug::execContinue()
 
 void LiteDebug::runToLine()
 {
-    if (!m_debugger || !m_debugger->isDebugging()) {
+    if (!m_debugger || !m_debugger->isRunning()) {
         return;
     }
     LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
@@ -273,7 +289,7 @@ void LiteDebug::runToLine()
 
 void LiteDebug::stopDebug()
 {
-    if (!m_debugger || !m_debugger->isDebugging()) {
+    if (!m_debugger || !m_debugger->isRunning()) {
         return;
     }
     m_debugger->stop();
@@ -281,7 +297,7 @@ void LiteDebug::stopDebug()
 
 void LiteDebug::abortDebug()
 {
-    if (!m_debugger || !m_debugger->isDebugging()) {
+    if (!m_debugger || !m_debugger->isRunning()) {
         return;
     }
     m_debugger->abort();
@@ -289,7 +305,7 @@ void LiteDebug::abortDebug()
 
 void LiteDebug::stepOver()
 {
-    if (!m_debugger || !m_debugger->isDebugging()) {
+    if (!m_debugger || !m_debugger->isRunning()) {
         return;
     }
     m_debugger->stepOver();
@@ -297,7 +313,7 @@ void LiteDebug::stepOver()
 
 void LiteDebug::stepInto()
 {
-    if (!m_debugger || !m_debugger->isDebugging()) {
+    if (!m_debugger || !m_debugger->isRunning()) {
         return;
     }
     m_debugger->stepInto();
@@ -305,7 +321,7 @@ void LiteDebug::stepInto()
 
 void LiteDebug::stepOut()
 {
-    if (!m_debugger || !m_debugger->isDebugging()) {
+    if (!m_debugger || !m_debugger->isRunning()) {
         return;
     }
     m_debugger->stepOut();
@@ -327,11 +343,18 @@ void LiteDebug::toggleBreakPoint()
     }
     int line = textEditor->line();
     QList<int> marks = editorMark->lineTypeList(line);
-    qDebug() << "toggleBreakPoint" << line << marks;
     if (marks.contains(LiteApi::BreakPointMark)) {
         editorMark->removeMark(line,LiteApi::BreakPointMark);
+        m_fileBpMap.remove(editor->fileName(),line);
+        if (m_debugger && m_debugger->isRunning()) {
+            m_debugger->removeBreakPoint(editor->fileName(),line);
+        }
     } else {
         editorMark->addMark(line,LiteApi::BreakPointMark);
+        m_fileBpMap.insert(editor->fileName(),line);
+        if (m_debugger && m_debugger->isRunning()) {
+            m_debugger->insertBreakPoint(editor->fileName(),line);
+        }
     }
 }
 

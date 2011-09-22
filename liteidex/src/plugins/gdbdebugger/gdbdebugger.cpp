@@ -209,7 +209,7 @@ void GdbDebugeer::stop()
     command("-gdb-exit");
 }
 
-bool GdbDebugeer::isDebugging()
+bool GdbDebugeer::isRunning()
 {
     return m_process->state() != QProcess::NotRunning;
 }
@@ -302,6 +302,42 @@ void GdbDebugeer::expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type)
             }
         }
     }
+}
+
+void GdbDebugeer::setInitBreakTable(const QMultiMap<QString,int> &bks)
+{
+    m_initBks = bks;
+}
+
+void GdbDebugeer::insertBreakPoint(const QString &fileName, int line)
+{
+    QString location = QString("%1:%2").arg(fileName).arg(line);
+    if (m_locationBkMap.contains(location)) {
+        return;
+    }
+    QStringList args;
+    args << "-break-insert";
+    args << QString("%1:%2").arg(fileName).arg(line);
+    GdbCmd cmd;
+    cmd.setCmd(args);
+    cmd.insert("file",fileName);
+    cmd.insert("line",line);
+    command(cmd);
+}
+
+void GdbDebugeer::removeBreakPoint(const QString &fileName, int line)
+{
+    QString location = QString("%1:%2").arg(fileName).arg(line);
+    QString number = m_locationBkMap.key(location);
+    if (number.isEmpty()) {
+        return;
+    }
+    QStringList args;
+    args << "-break-delete";
+    args << number;
+    GdbCmd cmd;
+    cmd.setCmd(args);
+    command(cmd);
 }
 
 void GdbDebugeer::command(const GdbCmd &cmd)
@@ -528,7 +564,9 @@ void GdbDebugeer::handleStopped(const GdbMiValue &result)
         m_asyncModel->removeRows(0,m_asyncModel->rowCount());
         m_asyncModel->appendRow(items);
         */
-        emit setCurrentLine(fullname,line.toInt());
+        if (!fullname.isEmpty()) {
+            emit setCurrentLine(fullname,line.toInt());
+        }
     }
 }
 
@@ -820,6 +858,37 @@ void GdbDebugeer::handleResultVarUpdateType(const GdbResponse &response, QMap<QS
     }
 }
 
+void GdbDebugeer::handleBreakInsert(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+// >>> 10000029-break-insert F:/hg/debug_test/hello/main.go:31
+// 10000029^done,bkpt={number="2",type="breakpoint",disp="keep",enabled="y",addr="0x004010dd",func="main.test",file="F:/hg/debug_test/hello/main.go",fullname="F:/hg/debug_test/hello/main.go",line="31",times="0",original-location="F:/hg/debug_test/hello/main.go:31"}
+
+// >>> 10000046-break-insert F:/hg/debug_test/hello/main.go:37
+// 10000046^done,bkpt={number="3",type="breakpoint",disp="keep",enabled="y",addr="0x0040118a",func="main.main",file="F:/hg/debug_test/hello/main.go",fullname="F:/hg/debug_test/hello/main.go",line="37",times="0",original-location="F:/hg/debug_test/hello/main.go:37"}
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    GdbMiValue bkpt = response.data.findChild("bkpt");
+    if (bkpt.isTuple()) {
+        QString number = bkpt.findChild("number").data();
+        QString org_location= bkpt.findChild("original-location").data();
+        m_locationBkMap.insert(number,org_location);
+    }
+}
+
+void GdbDebugeer::handleBreakDelete(const GdbResponse &response, QMap<QString,QVariant> &map)
+{
+    if (response.resultClass != GdbResultDone) {
+        return;
+    }
+    QStringList cmdList = map.value("cmdList").toStringList();
+    if (cmdList.size() != 2) {
+        return;
+    }
+    QString number = cmdList.at(1);
+    m_locationBkMap.remove(number);
+}
+
 void GdbDebugeer::handleResultRecord(const GdbResponse &response)
 {
     if (response.cookie.type() != QVariant::Map) {
@@ -850,6 +919,10 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
         handleResultVarUpdateValue(response,map);
     } else if (cmdList.at(0) == "-var-info-type") {
         handleResultVarUpdateType(response,map);
+    } else if (cmdList.at(0) == "-break-insert") {
+        handleBreakInsert(response,map);
+    } else if (cmdList.at(0) == "-break-delete") {
+        handleBreakDelete(response,map);
     }
 }
 
@@ -887,6 +960,17 @@ void GdbDebugeer::initGdb()
         command("set substitute-path /go/src/pkg/runtime "+m_runtimeFilePath);
     }
     command("break main.main");
+
+    QMapIterator<QString,int> i(m_initBks);
+    while (i.hasNext()) {
+        i.next();
+        QString fileName = i.key();
+        QList<int> lines = m_initBks.values(fileName);
+        foreach(int line, lines) {
+            insertBreakPoint(fileName,line);
+        }
+    }
+
     command("-exec-run");
 }
 
