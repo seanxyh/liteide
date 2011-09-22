@@ -34,15 +34,21 @@ class ActionManager : public IActionManager
 {
     Q_OBJECT
 public:
+    ActionManager(QObject *parent = 0);
     virtual QMenu *insertMenu(const QString &id, const QString &title, const QString &idBefore = QString());
     virtual QMenu *loadMenu(const QString &id);
-    virtual QList<QMenu*>  menuList() const;
-    virtual void addToolBar(QToolBar* toolBar);
+    virtual void removeMenu(QMenu *menu);
+    virtual QList<QString>  menuList() const;
+    virtual QToolBar *insertToolBar(const QString &id, const QString &title, const QString &before = QString());
+    virtual QToolBar *loadToolBar(const QString &id);
     virtual void removeToolBar(QToolBar* toolBar);
-    virtual void showToolBar(QToolBar* toolBar);
-    virtual void hideToolBar(QToolBar* toolBar);
+    virtual QList<QString> toolBarList() const;
+    void setToolBarView(QMenu *menu, QAction *baseAct);
 protected:
     QMap<QString,QMenu*>   m_idMenuMap;
+    QMap<QString,QToolBar*> m_idToolBarMap;
+    QMenu *m_viewMenu;
+    QAction *m_viewBaseAct;
 };
 
 #endif // ACTIONMANAGER_H

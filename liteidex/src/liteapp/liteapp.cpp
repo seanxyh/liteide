@@ -105,13 +105,11 @@ LiteApp::LiteApp()
 
     createActions();
     createMenus();
+
+    QAction *baseViewAct = m_viewMenu->addSeparator();
+    m_actionManager->setToolBarView(m_viewMenu,baseViewAct);
+
     createToolBars();
-
-    m_extension->addObject("LiteApi.NavToolBar",m_navToolBar);
-
-    m_viewMenu->addAction(m_stdToolBar->toggleViewAction());
-    m_viewMenu->addAction(m_navToolBar->toggleViewAction());
-    m_viewMenu->addSeparator();
 
     m_logOutput = new TextOutput;
     m_outputManager->addOutuput(m_logOutput,tr("Console"));
@@ -358,7 +356,6 @@ void LiteApp::createMenus()
 {
     m_fileMenu = m_actionManager->insertMenu("file",tr("&File"));
     m_viewMenu = m_actionManager->insertMenu("view",tr("&View"));
-    //m_toolMenu = m_actionManager->addMenu("tool",tr("&Tools"));
     m_helpMenu = m_actionManager->insertMenu("help",tr("&Help"));
 
     m_fileMenu->addAction(m_newAct);
@@ -385,8 +382,7 @@ void LiteApp::createMenus()
 
 void LiteApp::createToolBars()
 {
-    m_stdToolBar = m_mainwindow->addToolBar(tr("Standard ToolBar"));
-    m_stdToolBar->setObjectName("StandardToolBar");
+    m_stdToolBar = m_actionManager->insertToolBar("toolbar/std",tr("Standard ToolBar"));
     m_stdToolBar->addAction(m_newAct);
     m_stdToolBar->addSeparator();
     m_stdToolBar->addAction(m_openAct);
@@ -397,8 +393,7 @@ void LiteApp::createToolBars()
     m_stdToolBar->addAction(m_saveProjectAct);
     m_stdToolBar->addAction(m_closeProjectAct);
 
-    m_navToolBar = m_mainwindow->addToolBar(tr("Navigation ToolBar"));
-    m_navToolBar->setObjectName("NavigationToolBar");
+    m_navToolBar = m_actionManager->insertToolBar("toolbar/nav",tr("Navigation ToolBar"));
 }
 
 void LiteApp::currentProjectChanged(IProject *project)

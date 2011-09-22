@@ -62,7 +62,8 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_manager->initWithApp(app);
 
     m_dbgWidget = new DebugWidget(app,this);
-    m_toolBar = new QToolBar;
+    m_toolBar =  m_liteApp->actionManager()->insertToolBar("toolbar/litedebug",tr("Debug ToolBar"),"toolbar/nav");
+
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
     layout->setSpacing(0);
@@ -108,11 +109,6 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_toolBar->addAction(m_stepIntoAct);
     m_toolBar->addAction(m_stepOutAct);
     m_toolBar->addAction(m_runToLineAct);
-
-    m_toolBar->addWidget(m_infoLabel);
-    m_toolBar->addAction(m_hideAct);
-
-    m_liteApp->actionManager()->addToolBar(m_toolBar);
 
     QMenu *menu = m_liteApp->actionManager()->insertMenu("Debug",tr("&Debug"),"help");
     if (menu) {
