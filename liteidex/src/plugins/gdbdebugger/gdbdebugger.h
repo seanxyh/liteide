@@ -124,7 +124,7 @@ public:
     virtual void stepOver();
     virtual void stepInto();
     virtual void stepOut();
-    virtual void execContinue();
+    virtual void continueRun();
     virtual void runToLine(const QString &fileName, int line);
     virtual void command(const QByteArray &cmd);
     virtual void expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type);
