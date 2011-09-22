@@ -66,49 +66,58 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
     layout->setSpacing(0);
-    layout->addWidget(m_toolBar);
+    //layout->addWidget(m_toolBar);
     layout->addWidget(m_dbgWidget->widget());
     m_widget->setLayout(layout);
 
-    m_startDebugAct = new QAction(tr("Start"),this);
-    m_execContinueAct = new QAction(tr("Continue"),this);
-    m_runToLineAct = new QAction(tr("RunToLine"),this);
-    m_stopDebugAct = new QAction(tr("Stop"),this);
-    m_abortDebugAct = new QAction(tr("Abort"),this);
-    m_stepOverAct = new QAction(tr("StepOver"),this);
+    m_startDebugAct = new QAction(QIcon(":/images/startdebug.png"),tr("Go"),this);
+    m_startDebugAct->setShortcut(QKeySequence(Qt::Key_F5));
+    m_startDebugAct->setToolTip("Start Debugging");
+
+    m_runToLineAct = new QAction(QIcon(":/images/runtoline.png"),tr("RunToLine"),this);
+    m_runToLineAct->setToolTip("Run to Line");
+
+    m_stopDebugAct = new QAction(QIcon(":/images/stopdebug.png"),tr("Stop"),this);
+    m_stopDebugAct->setToolTip("Stop Debugger");
+
+    m_stepOverAct = new QAction(QIcon(":/images/stepover.png"),tr("StepOver"),this);
     m_stepOverAct->setShortcut(QKeySequence(Qt::Key_F10));
-    m_stepIntoAct = new QAction(tr("StepInto"),this);
+    m_stepOverAct->setToolTip("Step Over");
+
+    m_stepIntoAct = new QAction(QIcon(":/images/stepinto.png"),tr("StepInto"),this);
     m_stepIntoAct->setShortcut(QKeySequence(Qt::Key_F11));
-    m_stepOutAct = new QAction(tr("StepOut"),this);
+    m_stepIntoAct->setToolTip("Step Info");
+
+    m_stepOutAct = new QAction(QIcon(":/images/stepout.png"),tr("StepOut"),this);
     m_stepOutAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F11));
-    m_toggleBreakPointAct = new QAction(tr("BreakPoint"),this);
-    m_toggleBreakPointAct->setShortcut(QKeySequence(Qt::Key_F9));
-    m_toggleBreakPointAct->setToolTip(tr("Insert/Remove Breakpoint"));
+    m_stepOutAct->setToolTip("Step Out");
+
+    m_insertBreakAct = new QAction(QIcon(":/images/insertbreak.png"),tr("BreakPoint"),this);
+    m_insertBreakAct->setShortcut(QKeySequence(Qt::Key_F9));
+    m_insertBreakAct->setToolTip(tr("Insert/Remove Breakpoint"));
 
     m_hideAct = new QAction(tr("Hide"),this);
     m_infoLabel = new QLabel;
     m_infoLabel->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
 
     m_toolBar->addAction(m_startDebugAct);
-    m_toolBar->addAction(m_execContinueAct);
+    m_toolBar->addAction(m_insertBreakAct);
     m_toolBar->addAction(m_stopDebugAct);
-    m_toolBar->addAction(m_abortDebugAct);
     m_toolBar->addSeparator();
-    m_toolBar->addAction(m_runToLineAct);
     m_toolBar->addAction(m_stepOverAct);
     m_toolBar->addAction(m_stepIntoAct);
     m_toolBar->addAction(m_stepOutAct);
-    m_toolBar->addAction(m_toggleBreakPointAct);
+    m_toolBar->addAction(m_runToLineAct);
 
     m_toolBar->addWidget(m_infoLabel);
     m_toolBar->addAction(m_hideAct);
 
+    m_liteApp->actionManager()->addToolBar(m_toolBar);
+
     QMenu *menu = m_liteApp->actionManager()->insertMenu("Debug",tr("&Debug"),"help");
     if (menu) {
         menu->addAction(m_startDebugAct);
-        menu->addAction(m_execContinueAct);
         menu->addAction(m_stopDebugAct);
-        menu->addAction(m_abortDebugAct);
         menu->addSeparator();
         menu->addAction(m_stepOverAct);
         menu->addAction(m_stepIntoAct);
@@ -119,20 +128,19 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
 
     connect(m_startDebugAct,SIGNAL(triggered()),this,SLOT(startDebug()));
-    connect(m_execContinueAct,SIGNAL(triggered()),this,SLOT(execContinue()));
     connect(m_runToLineAct,SIGNAL(triggered()),this,SLOT(runToLine()));
     connect(m_stopDebugAct,SIGNAL(triggered()),this,SLOT(stopDebug()));
-    connect(m_abortDebugAct,SIGNAL(triggered()),this,SLOT(abortDebug()));
     connect(m_stepOverAct,SIGNAL(triggered()),this,SLOT(stepOver()));
     connect(m_stepIntoAct,SIGNAL(triggered()),this,SLOT(stepInto()));
     connect(m_stepOutAct,SIGNAL(triggered()),this,SLOT(stepOut()));
-    connect(m_toggleBreakPointAct,SIGNAL(triggered()),this,SLOT(toggleBreakPoint()));
-    connect(m_hideAct,SIGNAL(triggered()),this,SLOT(hideDebug()));
+    connect(m_insertBreakAct,SIGNAL(triggered()),this,SLOT(toggleBreakPoint()));
 
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_liteApp->editorManager(),SIGNAL(editorAboutToClose(LiteApi::IEditor*)),this,SLOT(editorAboutToClose(LiteApi::IEditor*)));
 
-    m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);        
+    m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
+
+    debugStoped();
 }
 
 void LiteDebug::appLoaded()
@@ -142,8 +150,8 @@ void LiteDebug::appLoaded()
 
     LiteApi::IEditorMarkTypeManager *markTypeManager = LiteApi::findExtensionObject<LiteApi::IEditorMarkTypeManager*>(m_liteApp,"LiteApi.IEditorMarkTypeManager");
     if (markTypeManager) {
-        markTypeManager->registerMark(BreakPointMark,QIcon(":/images/breakpoint.png"));
-        markTypeManager->registerMark(CurrentLineMark,QIcon(":/images/currentline.png"));
+        markTypeManager->registerMark(BreakPointMark,QIcon(":/images/breakmark.png"));
+        markTypeManager->registerMark(CurrentLineMark,QIcon(":/images/linemark.png"));
     }
 }
 
@@ -187,23 +195,11 @@ QWidget *LiteDebug::widget()
     return m_widget;
 }
 
-void LiteDebug::showDebug()
-{
-    m_widget->show();
-    emit debugVisible(true);
-}
-
-void LiteDebug::hideDebug()
-{
-    m_widget->hide();
-    emit debugVisible(false);
-}
-
 void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
 {
     m_debugger = debug;
     if (m_debugger) {
-        connect(m_debugger,SIGNAL(debugStarted()),this,SLOT(showDebug()));
+        connect(m_debugger,SIGNAL(debugStarted()),this,SLOT(debugStarted()));
         connect(m_debugger,SIGNAL(debugStoped()),this,SLOT(debugStoped()));
         connect(m_debugger,SIGNAL(debugLog(QByteArray)),m_dbgWidget,SLOT(debugLog(QByteArray)));
         connect(m_debugger,SIGNAL(setCurrentLine(QString,int)),this,SLOT(setCurrentLine(QString,int)));
@@ -217,6 +213,7 @@ void LiteDebug::startDebug()
         return;
     }
     if (m_debugger->isRunning()) {
+        m_debugger->continueRun();
         return;
     }
     if (!m_liteBuild || !m_liteBuild->buildManager()->currentBuild()) {
@@ -239,31 +236,19 @@ void LiteDebug::startDebug()
     if (index != -1) {
         target = targetFilepath.right(targetFilepath.length()-index);
     }
-//    QMultiMap<QString,int> bks;
-//    foreach(LiteApi::IEditor *editor,m_liteApp->editorManager()->editorList()) {
-//        LiteApi::IEditorMark *editorMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
-//        if (!editorMark) {
-//            continue;
-//        }
-//        QString fileName = editor->fileName();
-//        foreach(int line, editorMark->markLineList()) {
-//            if (editorMark->lineTypeList(line).contains(LiteApi::BreakPointMark)) {
-//                bks.insert(fileName,line);
-//            }
-//        }
-//    }
+
     m_debugger->setInitBreakTable(m_fileBpMap);
     m_debugger->setEnvironment(m_envManager->currentEnvironment().toStringList());
     m_debugger->setWorkingDirectory(workDir);
     m_debugger->start(target,args.split(" "));
 }
 
-void LiteDebug::execContinue()
+void LiteDebug::continueRun()
 {
     if (!m_debugger || !m_debugger->isRunning()) {
         return;
     }
-    m_debugger->execContinue();
+    m_debugger->continueRun();
 }
 
 void LiteDebug::runToLine()
@@ -372,9 +357,29 @@ void LiteDebug::clearLastLine()
     m_lastLine.fileName.clear();
 }
 
+void LiteDebug::debugStarted()
+{
+    m_startDebugAct->setToolTip("Continue");
+    m_stopDebugAct->setEnabled(true);
+    m_stepOverAct->setEnabled(true);
+    m_stepIntoAct->setEnabled(true);
+    m_stepOutAct->setEnabled(true);
+    m_runToLineAct->setEnabled(true);
+
+    m_widget->show();
+}
+
 void LiteDebug::debugStoped()
 {
+    m_startDebugAct->setToolTip("Start Debugging");
+    m_stopDebugAct->setEnabled(false);
+    m_stepOverAct->setEnabled(false);
+    m_stepIntoAct->setEnabled(false);
+    m_stepOutAct->setEnabled(false);
+    m_runToLineAct->setEnabled(false);
     clearLastLine();
+
+    m_widget->hide();
 }
 
 void LiteDebug::setCurrentLine(const QString &fileName, int line)

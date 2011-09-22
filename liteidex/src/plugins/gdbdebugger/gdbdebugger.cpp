@@ -219,7 +219,7 @@ void GdbDebugeer::abort()
     m_process->kill();
 }
 
-void GdbDebugeer::execContinue()
+void GdbDebugeer::continueRun()
 {
     command("-exec-continue");
 }

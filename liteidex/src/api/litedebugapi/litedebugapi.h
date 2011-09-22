@@ -64,7 +64,7 @@ public:
     virtual void stepOver() = 0;
     virtual void stepInto() = 0;
     virtual void stepOut() = 0;
-    virtual void execContinue() = 0;
+    virtual void continueRun() = 0;
     virtual void runToLine(const QString &fileName, int line) = 0;
     virtual void command(const QByteArray &cmd) = 0;
     virtual void expandItem(QModelIndex index, DEBUG_MODEL_TYPE type) = 0;

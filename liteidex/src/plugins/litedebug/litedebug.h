@@ -58,7 +58,7 @@ public slots:
     void editorCreated(LiteApi::IEditor*);
     void editorAboutToClose(LiteApi::IEditor*);
     void startDebug();
-    void execContinue();
+    void continueRun();
     void runToLine();
     void stopDebug();
     void abortDebug();
@@ -67,9 +67,8 @@ public slots:
     void stepOut();
     void toggleBreakPoint();
 protected slots:
-    void showDebug();
-    void hideDebug();
     void setDebugger(LiteApi::IDebugger*);
+    void debugStarted();
     void debugStoped();
     void setCurrentLine(const QString &fileName, int line);
 protected:
@@ -84,13 +83,11 @@ protected:
     LiteApi::IEnvManager *m_envManager;
     QAction *m_startDebugAct;
     QAction *m_stopDebugAct;
-    QAction *m_abortDebugAct;
-    QAction *m_execContinueAct;
     QAction *m_runToLineAct;
     QAction *m_stepOverAct;
     QAction *m_stepIntoAct;
     QAction *m_stepOutAct;
-    QAction *m_toggleBreakPointAct;
+    QAction *m_insertBreakAct;
     QLabel *m_infoLabel;
     QAction *m_hideAct;
     CurrentLine m_lastLine;
