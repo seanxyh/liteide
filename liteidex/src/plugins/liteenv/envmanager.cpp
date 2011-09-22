@@ -124,12 +124,15 @@ void Env::loadEnv(EnvManager *manager, const QString &filePath)
 
 EnvManager::EnvManager(QObject *parent)
     : LiteApi::IEnvManager(parent),
-      m_curEnv(0)
+      m_curEnv(0),m_toolBar(0)
 {
 }
 
 EnvManager::~EnvManager()
 {
+    if (m_toolBar) {
+        m_liteApp->actionManager()->removeToolBar(m_toolBar);
+    }
     if (m_curEnv) {
         m_liteApp->settings()->setValue("LiteEnv/current",m_curEnv->id());
     }
@@ -203,8 +206,7 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
     }
     loadEnvFiles(m_liteApp->resourcePath()+"/environment");
 
-    m_toolBar = new QToolBar(tr("LiteEnv"));
-    m_toolBar->setObjectName("LiteEnv");
+    m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/liteenv",tr("Environment ToolBar"));
 
     m_envCmb = new QComboBox;
     m_envCmb->setToolTip(tr("Environment"));
@@ -223,7 +225,6 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
         this->setCurrentEnvId(id);
     }
 
-    m_liteApp->actionManager()->addToolBar(m_toolBar);
     connect(m_envCmb,SIGNAL(activated(QString)),this,SLOT(envActivated(QString)));
 
     return true;

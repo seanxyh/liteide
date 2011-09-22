@@ -84,9 +84,8 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     if (m_manager->initWithApp(m_liteApp)) {
         m_manager->load(m_liteApp->resourcePath()+"/build");
         m_liteApp->extension()->addObject("LiteApi.IBuildManager",m_manager);
-    }
-    m_toolBar = new QToolBar;
-    m_toolBar->setObjectName("BuildToolBar");
+    }    
+    m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/litebuild",tr("Build ToolBar"));
 
     m_liteideModel = new QStandardItemModel(0,2,this);
     m_liteideModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
@@ -103,8 +102,6 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_configAct = new QAction(QIcon(":/images/config.png"),tr("Config"),this);
     m_toolBar->addAction(m_configAct);
     m_toolBar->addSeparator();
-
-    m_liteApp->actionManager()->addToolBar(m_toolBar);
 
     m_process = new ProcessEx(this);
     m_output = new LiteOutput;
@@ -130,7 +127,6 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
 LiteBuild::~LiteBuild()
 {
     m_liteApp->actionManager()->removeToolBar(m_toolBar);
-    delete m_toolBar;
     delete m_output;
 }
 
@@ -232,9 +228,6 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
         build =  m_manager->findBuild(project->mimeType());
         if (build) {
             m_buildFilePath = project->fileName();
-            m_liteApp->actionManager()->showToolBar(m_toolBar);
-        } else {
-            m_liteApp->actionManager()->hideToolBar(m_toolBar);
         }
         setCurrentBuild(build);
     } else {
@@ -424,11 +417,6 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
         m_liteideMap.insert("${TARGETPATH}",targetPath);
         m_liteideMap.insert("${TARGETDIR}",targetDir);
         m_liteideMap.insert("${TARGETNAME}",targetName);
-    }
-    if (build) {
-        m_liteApp->actionManager()->showToolBar(m_toolBar);
-    } else {
-        m_liteApp->actionManager()->hideToolBar(m_toolBar);
     }
     setCurrentBuild(build);
 }

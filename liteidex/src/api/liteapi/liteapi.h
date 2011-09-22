@@ -344,11 +344,12 @@ public:
     IActionManager(QObject *parent = 0) : IManager(parent) {}
     virtual QMenu *insertMenu(const QString &id, const QString &title, const QString &idBefore = QString()) = 0;
     virtual QMenu *loadMenu(const QString &id) = 0;
-    virtual QList<QMenu*>  menuList() const = 0;
-    virtual void addToolBar(QToolBar* toolBar) = 0;
+    virtual void removeMenu(QMenu *menu) = 0;
+    virtual QList<QString>  menuList() const = 0;
+    virtual QToolBar *insertToolBar(const QString &id, const QString &title, const QString &before = QString()) = 0;
+    virtual QToolBar *loadToolBar(const QString &id) = 0;
     virtual void removeToolBar(QToolBar* toolBar) = 0;
-    virtual void showToolBar(QToolBar* toolBar) = 0;
-    virtual void hideToolBar(QToolBar* toolBar) = 0;
+    virtual QList<QString> toolBarList() const = 0;
 };
 
 class IPlugin;
