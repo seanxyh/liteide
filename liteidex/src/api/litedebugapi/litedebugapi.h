@@ -59,7 +59,7 @@ public:
     virtual void setEnvironment (const QStringList &environment) = 0;
     virtual bool start(const QString &program, const QStringList &arguments) = 0;
     virtual void stop() = 0;
-    virtual bool isDebugging() = 0;
+    virtual bool isRunning() = 0;
     virtual void abort() = 0;
     virtual void stepOver() = 0;
     virtual void stepInto() = 0;
@@ -68,6 +68,9 @@ public:
     virtual void runToLine(const QString &fileName, int line) = 0;
     virtual void command(const QByteArray &cmd) = 0;
     virtual void expandItem(QModelIndex index, DEBUG_MODEL_TYPE type) = 0;
+    virtual void setInitBreakTable(const QMultiMap<QString,int> &bks) = 0;
+    virtual void insertBreakPoint(const QString &fileName, int line) = 0;
+    virtual void removeBreakPoint(const QString &fileName, int line) = 0;
 signals:
     void debugStarted();
     void debugStoped();

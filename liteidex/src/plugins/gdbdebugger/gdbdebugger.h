@@ -119,7 +119,7 @@ public:
     virtual void setEnvironment (const QStringList &environment);
     virtual bool start(const QString &program, const QStringList &arguments);
     virtual void stop();
-    virtual bool isDebugging();
+    virtual bool isRunning();
     virtual void abort();
     virtual void stepOver();
     virtual void stepInto();
@@ -128,6 +128,9 @@ public:
     virtual void runToLine(const QString &fileName, int line);
     virtual void command(const QByteArray &cmd);
     virtual void expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type);
+    virtual void setInitBreakTable(const QMultiMap<QString,int> &bks);
+    virtual void insertBreakPoint(const QString &fileName, int line);
+    virtual void removeBreakPoint(const QString &fileName, int line);
 public:
     virtual void command(const GdbCmd &cmd);
     virtual void createWatch(const QString &var, bool floating);
@@ -154,6 +157,8 @@ protected:
     void handleResultVarDelete(const GdbResponse &response, QMap<QString,QVariant> &map);
     void handleResultVarUpdateValue(const GdbResponse &response, QMap<QString,QVariant> &map);
     void handleResultVarUpdateType(const GdbResponse &response, QMap<QString,QVariant> &map);
+    void handleBreakInsert(const GdbResponse &response, QMap<QString,QVariant> &map);
+    void handleBreakDelete(const GdbResponse &response, QMap<QString,QVariant> &map);
 protected:
     void clear();
     void initGdb();
@@ -181,6 +186,8 @@ protected:
     QByteArray m_runtimeFilePath;
     QByteArray m_inbuffer;
     GdbHandleState m_handleState;
+    QMultiMap<QString,int>  m_initBks;
+    QMap<QString,QString> m_locationBkMap;
     bool    m_busy;
     bool    m_gdbinit;
     int     m_token;

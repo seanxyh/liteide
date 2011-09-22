@@ -94,7 +94,7 @@ protected:
     QLabel *m_infoLabel;
     QAction *m_hideAct;
     CurrentLine m_lastLine;
-    QHash<QString,QList<int> > m_fileBpListMap;
+    QMultiMap<QString,int> m_fileBpMap;
 };
 
 #endif // LITEDEBUG_H
