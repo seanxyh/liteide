@@ -43,12 +43,14 @@ public:
     virtual QToolBar *loadToolBar(const QString &id);
     virtual void removeToolBar(QToolBar* toolBar);
     virtual QList<QString> toolBarList() const;
-    void setToolBarView(QMenu *menu, QAction *baseAct);
+    virtual void insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act);
+    void setViewMenu(QMenu *menu, QAction *baseToolBarAct, QAction *basePaneAct);
 protected:
     QMap<QString,QMenu*>   m_idMenuMap;
     QMap<QString,QToolBar*> m_idToolBarMap;
     QMenu *m_viewMenu;
-    QAction *m_viewBaseAct;
+    QAction *m_baseToolBarAct;
+    QAction *m_basePaneAct;
 };
 
 #endif // ACTIONMANAGER_H

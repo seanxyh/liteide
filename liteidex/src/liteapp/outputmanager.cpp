@@ -179,7 +179,7 @@ void OutputManager::selectedOutputAct(QAction *act)
     } else {
         m_lastOutputAct = act;
     }
-    if (!m_lastOutputAct.isNull()) {
+    if (m_lastOutputAct.isNull()) {
         m_stackedWidget->hide();
     } else  {
         QWidget *w = m_widgetActionMap.key(act);

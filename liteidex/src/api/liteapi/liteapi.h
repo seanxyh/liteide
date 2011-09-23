@@ -337,6 +337,13 @@ signals:
     void currentOutputChanged(QWidget *w);
 };
 
+enum VIEWMENU_ACTION_POS
+{
+    ViewMenuToolBarPos = 1,
+    ViewMenuPanePos,
+    ViewMenuPagePos,
+};
+
 class IActionManager : public IManager
 {
     Q_OBJECT
@@ -350,6 +357,7 @@ public:
     virtual QToolBar *loadToolBar(const QString &id) = 0;
     virtual void removeToolBar(QToolBar* toolBar) = 0;
     virtual QList<QString> toolBarList() const = 0;
+    virtual void insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act) = 0;
 };
 
 class IPlugin;

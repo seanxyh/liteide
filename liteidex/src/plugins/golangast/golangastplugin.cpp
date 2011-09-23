@@ -50,7 +50,7 @@ bool GolangAstPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
     m_golangAst = new GolangAst(m_liteApp,this);
-    QDockWidget *dock = m_liteApp->dockManager()->addDock(m_golangAst->widget(),tr("GoAstView"));
+    QDockWidget *dock = m_liteApp->dockManager()->addDock(m_golangAst->widget(),tr("Golang AstView Pane"));
     connect(dock,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(checkEnableGolangAst()));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(checkEnableGolangAst()));

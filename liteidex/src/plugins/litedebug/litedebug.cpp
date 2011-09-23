@@ -63,6 +63,8 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_manager->initWithApp(app);
 
     m_toolBar =  m_liteApp->actionManager()->insertToolBar("toolbar/litedebug",tr("Debug ToolBar"),"toolbar/nav");
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_toolBar->toggleViewAction());
+
     m_output = new TextOutput;
 
     QVBoxLayout *layout = new QVBoxLayout;

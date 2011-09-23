@@ -73,14 +73,12 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
     m_liteDebug->widget()->hide();
     splitter->insertWidget(index,m_liteDebug->widget());
 
-    QMenu *view = m_liteApp->actionManager()->loadMenu("view");
-    if (view) {
-        m_viewDebug = new QAction(tr("Debug"),this);
-        m_viewDebug->setCheckable(true);
-        view->addAction(m_viewDebug);
-        connect(m_viewDebug,SIGNAL(triggered(bool)),m_liteDebug->widget(),SLOT(setVisible(bool)));
-        connect(m_liteDebug,SIGNAL(debugVisible(bool)),m_viewDebug,SLOT(setChecked(bool)));
-    }
+    m_viewDebug = new QAction(tr("Debug Pane"),this);
+    m_viewDebug->setCheckable(true);
+    connect(m_viewDebug,SIGNAL(triggered(bool)),m_liteDebug->widget(),SLOT(setVisible(bool)));
+    connect(m_liteDebug,SIGNAL(debugVisible(bool)),m_viewDebug,SLOT(setChecked(bool)));
+
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuPanePos,m_viewDebug);
 
     return true;
 }

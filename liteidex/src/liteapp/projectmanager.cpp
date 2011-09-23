@@ -118,7 +118,7 @@ void ProjectManager::setCurrentProject(IProject *project)
             m_mainLayout = new QVBoxLayout;
             m_mainLayout->setMargin(0);
             m_widget->setLayout(m_mainLayout);
-            m_liteApp->dockManager()->addDock(m_widget,tr("Project"));
+            m_liteApp->dockManager()->addDock(m_widget,tr("Project Pane"));
         }
         m_mainLayout->addWidget(m_currentProject->widget());
         m_liteApp->dockManager()->showDock(m_widget);

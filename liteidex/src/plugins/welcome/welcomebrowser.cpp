@@ -167,7 +167,7 @@ QWidget *WelcomeBrowser::widget()
 
 QString WelcomeBrowser::name() const
 {
-    return tr("Welcome");
+    return tr("Welcome Page");
 }
 
 QString WelcomeBrowser::mimeType() const
