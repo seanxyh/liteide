@@ -44,7 +44,7 @@ public:
 public slots:
     void setDebug(LiteApi::IDebugger *debug);
     void cmdLineInput();
-    void debugLog(const QByteArray &log);
+    void appendLog(const QString &log);
     void clearLog();
     void expandedVarsView(QModelIndex);
     void setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &index, bool expanded);

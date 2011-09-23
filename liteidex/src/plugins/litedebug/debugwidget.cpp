@@ -130,7 +130,7 @@ void DebugWidget::clearLog()
     m_debugLogEdit->clear();
 }
 
-void DebugWidget::debugLog(const QByteArray &log)
+void DebugWidget::appendLog(const QString &log)
 {
     m_debugLogEdit->appendPlainText(log);
     m_debugLogEdit->moveCursor(QTextCursor::End);
@@ -188,9 +188,23 @@ void DebugWidget::setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &i
         return;
     }
     QTreeView *view = 0;
-    if (type == LiteApi::VARS_MODEL) {
+    switch (type) {
+    case LiteApi::VARS_MODEL:
         view = m_varsView;
+        break;
+    case LiteApi::ASYNC_MODEL:
+        view = m_asyncView;
+        break;
+    case LiteApi::CALLSTACK_MODEL:
+        view = m_statckView;
+        break;
+    case LiteApi::LIBRARY_MODEL:
+        view = m_libraryView;
+        break;
+    default:
+        view = 0;
     }
+
     if (view) {
         view->setExpanded(index,expanded);
     }
