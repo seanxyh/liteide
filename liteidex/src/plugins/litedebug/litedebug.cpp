@@ -72,39 +72,41 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     m_startDebugAct = new QAction(QIcon(":/images/startdebug.png"),tr("Go"),this);
     m_startDebugAct->setShortcut(QKeySequence(Qt::Key_F5));
-    m_startDebugAct->setToolTip("Start Debugging");
+    m_startDebugAct->setToolTip("Start Debugging (F5)");
 
     m_stopDebugAct = new QAction(QIcon(":/images/stopdebug.png"),tr("Stop"),this);
-    m_stopDebugAct->setToolTip("Stop Debugger");
+    m_stopDebugAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F5));
+    m_stopDebugAct->setToolTip("Stop Debugger (Shift+F5)");
 
     m_showLineAct = new QAction(QIcon(":/images/showline.png"),tr("ShowLine"),this);
     m_showLineAct->setToolTip("Show Current Line");
 
-    m_stepOverAct = new QAction(QIcon(":/images/stepover.png"),tr("StepOver"),this);
-    m_stepOverAct->setShortcut(QKeySequence(Qt::Key_F10));
-    m_stepOverAct->setToolTip("Step Over");
-
     m_stepIntoAct = new QAction(QIcon(":/images/stepinto.png"),tr("StepInto"),this);
     m_stepIntoAct->setShortcut(QKeySequence(Qt::Key_F11));
-    m_stepIntoAct->setToolTip("Step Info");
+    m_stepIntoAct->setToolTip("Step Info (F11)");
+
+    m_stepOverAct = new QAction(QIcon(":/images/stepover.png"),tr("StepOver"),this);
+    m_stepOverAct->setShortcut(QKeySequence(Qt::Key_F10));
+    m_stepOverAct->setToolTip("Step Over (F10)");
 
     m_stepOutAct = new QAction(QIcon(":/images/stepout.png"),tr("StepOut"),this);
     m_stepOutAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F11));
-    m_stepOutAct->setToolTip("Step Out");
+    m_stepOutAct->setToolTip("Step Out (Shift+F11)");
 
     m_runToLineAct = new QAction(QIcon(":/images/runtoline.png"),tr("RunToLine"),this);
-    m_runToLineAct->setToolTip("Run to Line");
+    m_runToLineAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_F10));
+    m_runToLineAct->setToolTip("Run to Line (Ctrl+F10)");
 
     m_insertBreakAct = new QAction(QIcon(":/images/insertbreak.png"),tr("BreakPoint"),this);
     m_insertBreakAct->setShortcut(QKeySequence(Qt::Key_F9));
-    m_insertBreakAct->setToolTip(tr("Insert/Remove Breakpoint"));
+    m_insertBreakAct->setToolTip(tr("Insert/Remove Breakpoint (F9)"));
 
     m_toolBar->addAction(m_startDebugAct);
     m_toolBar->addAction(m_stopDebugAct);
     m_toolBar->addSeparator();
     m_toolBar->addAction(m_showLineAct);
-    m_toolBar->addAction(m_stepOverAct);
     m_toolBar->addAction(m_stepIntoAct);
+    m_toolBar->addAction(m_stepOverAct);
     m_toolBar->addAction(m_stepOutAct);
     m_toolBar->addAction(m_runToLineAct);
     m_toolBar->addSeparator();
@@ -116,8 +118,8 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
         menu->addAction(m_stopDebugAct);
         menu->addSeparator();
         menu->addAction(m_showLineAct);
-        menu->addAction(m_stepOverAct);
         menu->addAction(m_stepIntoAct);
+        menu->addAction(m_stepOverAct);
         menu->addAction(m_stepOutAct);
         menu->addAction(m_runToLineAct);
     }
@@ -261,14 +263,6 @@ void LiteDebug::stopDebug()
     m_debugger->stop();
 }
 
-void LiteDebug::abortDebug()
-{
-    if (!m_debugger || !m_debugger->isRunning()) {
-        return;
-    }
-    m_debugger->abort();
-}
-
 void LiteDebug::stepOver()
 {
     if (!m_debugger || !m_debugger->isRunning()) {
@@ -354,7 +348,7 @@ void LiteDebug::clearLastLine()
 
 void LiteDebug::debugStarted()
 {
-    m_startDebugAct->setToolTip("Continue");
+    m_startDebugAct->setToolTip("Continue (F5)");
     m_stopDebugAct->setEnabled(true);
     m_showLineAct->setEnabled(true);
     m_stepOverAct->setEnabled(true);
@@ -362,13 +356,14 @@ void LiteDebug::debugStarted()
     m_stepOutAct->setEnabled(true);
     m_runToLineAct->setEnabled(true);
 
-    m_widget->show();
+    m_liteApp->outputManager()->setCurrentOutput(0);
+    m_widget->show();    
     emit debugVisible(true);
 }
 
 void LiteDebug::debugStoped()
 {
-    m_startDebugAct->setToolTip("Start Debugging");
+    m_startDebugAct->setToolTip("Start Debugging (F5)");
     m_stopDebugAct->setEnabled(false);
     m_stepOverAct->setEnabled(false);
     m_showLineAct->setEnabled(false);

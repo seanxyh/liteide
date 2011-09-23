@@ -60,7 +60,6 @@ public:
     virtual bool start(const QString &program, const QStringList &arguments) = 0;
     virtual void stop() = 0;
     virtual bool isRunning() = 0;
-    virtual void abort() = 0;
     virtual void stepOver() = 0;
     virtual void stepInto() = 0;
     virtual void stepOut() = 0;

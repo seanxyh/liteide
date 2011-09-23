@@ -120,7 +120,6 @@ public:
     virtual bool start(const QString &program, const QStringList &arguments);
     virtual void stop();
     virtual bool isRunning();
-    virtual void abort();
     virtual void stepOver();
     virtual void stepInto();
     virtual void stepOut();

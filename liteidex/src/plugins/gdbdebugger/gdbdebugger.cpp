@@ -207,16 +207,14 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
 void GdbDebugeer::stop()
 {
     command("-gdb-exit");
+    if (!m_process->waitForFinished(300)) {
+        m_process->kill();
+    }
 }
 
 bool GdbDebugeer::isRunning()
 {
     return m_process->state() != QProcess::NotRunning;
-}
-
-void GdbDebugeer::abort()
-{
-    m_process->kill();
 }
 
 void GdbDebugeer::continueRun()
@@ -959,7 +957,6 @@ void GdbDebugeer::initGdb()
         command("-environment-directory "+m_runtimeFilePath);
         command("set substitute-path /go/src/pkg/runtime "+m_runtimeFilePath);
     }
-    command("break main.main");
 
     QMapIterator<QString,int> i(m_initBks);
     while (i.hasNext()) {
