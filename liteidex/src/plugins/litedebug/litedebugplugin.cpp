@@ -73,7 +73,7 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
     m_liteDebug->widget()->hide();
     splitter->insertWidget(index,m_liteDebug->widget());
 
-    m_viewDebug = new QAction(tr("Debug Pane"),this);
+    m_viewDebug = new QAction(tr("Debug Window"),this);
     m_viewDebug->setCheckable(true);
     connect(m_viewDebug,SIGNAL(triggered(bool)),m_liteDebug->widget(),SLOT(setVisible(bool)));
     connect(m_liteDebug,SIGNAL(debugVisible(bool)),m_viewDebug,SLOT(setChecked(bool)));

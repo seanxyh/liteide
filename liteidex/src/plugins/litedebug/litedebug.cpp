@@ -75,30 +75,30 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     m_startDebugAct = new QAction(QIcon(":/images/startdebug.png"),tr("Go"),this);
     m_startDebugAct->setShortcut(QKeySequence(Qt::Key_F5));
-    m_startDebugAct->setToolTip("Start Debugging (F5)");
+    m_startDebugAct->setToolTip(tr("Start Debugging (F5)"));
 
     m_stopDebugAct = new QAction(QIcon(":/images/stopdebug.png"),tr("Stop"),this);
     m_stopDebugAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F5));
-    m_stopDebugAct->setToolTip("Stop Debugger (Shift+F5)");
+    m_stopDebugAct->setToolTip(tr("Stop Debugger (Shift+F5)"));
 
     m_showLineAct = new QAction(QIcon(":/images/showline.png"),tr("ShowLine"),this);
-    m_showLineAct->setToolTip("Show Current Line");
+    m_showLineAct->setToolTip(tr("Show Current Line"));
 
     m_stepIntoAct = new QAction(QIcon(":/images/stepinto.png"),tr("StepInto"),this);
     m_stepIntoAct->setShortcut(QKeySequence(Qt::Key_F11));
-    m_stepIntoAct->setToolTip("Step Info (F11)");
+    m_stepIntoAct->setToolTip(tr("Step Info (F11)"));
 
     m_stepOverAct = new QAction(QIcon(":/images/stepover.png"),tr("StepOver"),this);
     m_stepOverAct->setShortcut(QKeySequence(Qt::Key_F10));
-    m_stepOverAct->setToolTip("Step Over (F10)");
+    m_stepOverAct->setToolTip(tr("Step Over (F10)"));
 
     m_stepOutAct = new QAction(QIcon(":/images/stepout.png"),tr("StepOut"),this);
     m_stepOutAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F11));
-    m_stepOutAct->setToolTip("Step Out (Shift+F11)");
+    m_stepOutAct->setToolTip(tr("Step Out (Shift+F11)"));
 
     m_runToLineAct = new QAction(QIcon(":/images/runtoline.png"),tr("RunToLine"),this);
     m_runToLineAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_F10));
-    m_runToLineAct->setToolTip("Run to Line (Ctrl+F10)");
+    m_runToLineAct->setToolTip(tr("Run to Line (Ctrl+F10)"));
 
     m_insertBreakAct = new QAction(QIcon(":/images/insertbreak.png"),tr("BreakPoint"),this);
     m_insertBreakAct->setShortcut(QKeySequence(Qt::Key_F9));
@@ -143,9 +143,9 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
 
-    m_liteApp->outputManager()->addOutuput(m_output,tr("LiteDebug"));
+    m_liteApp->outputManager()->addOutuput(m_output,tr("Debug Output"));
 
-    m_startDebugAct->setToolTip("Start Debugging (F5)");
+    m_startDebugAct->setToolTip(tr("Start Debugging (F5)"));
     m_stopDebugAct->setEnabled(false);
     m_stepOverAct->setEnabled(false);
     m_showLineAct->setEnabled(false);
@@ -381,7 +381,7 @@ void LiteDebug::clearLastLine()
 
 void LiteDebug::debugStarted()
 {
-    m_startDebugAct->setToolTip("Continue (F5)");
+    m_startDebugAct->setToolTip(tr("Continue (F5)"));
     m_stopDebugAct->setEnabled(true);
     m_showLineAct->setEnabled(true);
     m_stepOverAct->setEnabled(true);
@@ -396,7 +396,7 @@ void LiteDebug::debugStarted()
 
 void LiteDebug::debugStoped()
 {
-    m_startDebugAct->setToolTip("Start Debugging (F5)");
+    m_startDebugAct->setToolTip(tr("Start Debugging (F5)"));
     m_stopDebugAct->setEnabled(false);
     m_stepOverAct->setEnabled(false);
     m_showLineAct->setEnabled(false);
