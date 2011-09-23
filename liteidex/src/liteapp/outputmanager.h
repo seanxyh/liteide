@@ -27,6 +27,7 @@
 #define OUTPUTMANAGER_H
 
 #include "liteapi/liteapi.h"
+#include <QPointer>
 
 using namespace LiteApi;
 
@@ -61,7 +62,7 @@ protected:
     QStackedWidget    *m_stackedWidget;
     QToolBar          *m_outputToolBar;
     QActionGroup      *m_outputActGroup;
-    QAction            *m_lastOutputAct;
+    QPointer<QAction>  m_lastOutputAct;
     QMap<QWidget*,QAction*>   m_widgetActionMap;
     QWidget         *m_buttonsWidget;
     QMap<QWidget*,QToolButton*> m_widgetButtonMap;
