@@ -233,7 +233,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_viewGodocAct,SIGNAL(triggered()),this,SLOT(viewGodoc()));
 
 
-    QDockWidget *dock = m_liteApp->dockManager()->addDock(m_widget,tr("File Browser Pane"));
+    QDockWidget *dock = m_liteApp->dockManager()->addDock(m_widget,tr("File Browser"));
     connect(dock,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedTreeView(QModelIndex)));
     connect(m_filterCombo,SIGNAL(activated(QString)),this,SLOT(activatedFilter(QString)));

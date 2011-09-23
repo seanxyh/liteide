@@ -100,7 +100,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_customModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
     m_customModel->setHeaderData(1,Qt::Horizontal,tr("Value"));
 
-    m_configAct = new QAction(QIcon(":/images/config.png"),tr("Config"),this);
+    m_configAct = new QAction(QIcon(":/images/config.png"),tr("BuildConfig"),this);
     m_toolBar->addAction(m_configAct);
     m_toolBar->addSeparator();
 
@@ -109,7 +109,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     connect(m_output,SIGNAL(hideOutput()),m_liteApp->outputManager(),SLOT(setCurrentOutput()));
     connect(m_output->m_stopAct,SIGNAL(triggered()),this,SLOT(stopAction()));
 
-    m_liteApp->outputManager()->addOutuput(m_output,tr("LiteBuild"));
+    m_liteApp->outputManager()->addOutuput(m_output,tr("Build Output"));
 
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(currentProjectChanged(LiteApi::IProject*)));

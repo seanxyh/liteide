@@ -62,7 +62,7 @@ QWidget *OptionsBrowser::widget()
 
 QString OptionsBrowser::name() const
 {
-    return tr("Options Page");
+    return tr("Options");
 }
 
 QString OptionsBrowser::mimeType() const
