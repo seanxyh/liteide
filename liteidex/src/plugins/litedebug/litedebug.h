@@ -60,7 +60,6 @@ public slots:
     void continueRun();
     void runToLine();
     void stopDebug();
-    void abortDebug();
     void stepOver();
     void stepInto();
     void stepOut();
@@ -84,8 +83,8 @@ protected:
     QAction *m_startDebugAct;
     QAction *m_stopDebugAct;
     QAction *m_showLineAct;
-    QAction *m_stepOverAct;
     QAction *m_stepIntoAct;
+    QAction *m_stepOverAct;
     QAction *m_stepOutAct;
     QAction *m_runToLineAct;
     QAction *m_insertBreakAct;

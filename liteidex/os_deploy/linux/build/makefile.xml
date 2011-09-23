@@ -9,7 +9,7 @@
 		<action id="Rebuild" img="make/rebuild.png" key="CTRL+F7" cmd="${MAKE}" args="-B ${PROJECTPATH} all" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
 		<action id="Clean" img="make/clean.png" cmd="${MAKE}" args="${PROJECTNAME} clean" save="project" output="true"/>
 		<action id="Install" img="make/install.png" cmd="${MAKE}" args="${PROJECTNAME} install" save="project" output="true"/>
-		<action id="Exec" img="make/exec.png" key="F5" cmd="${TERM}" args="-e ${GOEXEC} -w ${WORKDIR} ${TARGETPATH}" output="false"/>
+		<action id="Exec" img="make/exec.png" key="CTRL+SHIFT+F5" cmd="${TERM}" args="-e ${GOEXEC} -w ${WORKDIR} ${TARGETPATH}" output="false"/>
 		<action id="Run" img="make/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="" output="true" codec="utf-8"/>
 		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
 	</mime-type>

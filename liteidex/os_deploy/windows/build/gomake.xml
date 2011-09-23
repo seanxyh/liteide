@@ -10,7 +10,7 @@
 		<action id="Nuke" img="go/nuke.png" cmd="${GOMAKE}" args="${PROJECTNAME} nuke" save="project" output="true"/>
 		<action id="Install" img="go/install.png" cmd="${GOMAKE}" args="${PROJECTNAME} install" save="project" output="true"/>
 		<action id="Test" img="go/test.png" key = "ALT+F5" cmd="gotest" args="${PROJECTNAME}" save="project" output="true" codec="utf-8"/>
-		<action id="Exec" img="go/exec.png" key="F5" cmd="${GOEXEC}" args="${TARGETNAME} ${TARGETARGS}" output="false"/>
+		<action id="Exec" img="go/exec.png" key="CTRL+SHIFT+F5" cmd="${GOEXEC}" args="${TARGETNAME} ${TARGETARGS}" output="false"/>
 		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="${TARGETARGS}" output="true" codec="utf-8"/>
 		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
 	</mime-type>

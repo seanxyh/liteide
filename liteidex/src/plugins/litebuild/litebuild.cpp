@@ -337,7 +337,7 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
         QAction *act = m_toolBar->addAction(ba->id());
         if (!ba->key().isEmpty()) {
             act->setShortcut(QKeySequence(ba->key()));
-            act->setToolTip(QString("%1(%2)").arg(ba->id()).arg(ba->key()));
+            act->setToolTip(QString("%1 (%2)").arg(ba->id()).arg(ba->key()));
         }
         if (!ba->img().isEmpty()) {
             QIcon icon(ba->img());
