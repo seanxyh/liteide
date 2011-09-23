@@ -115,7 +115,9 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("Golang Document Browser"));
-    m_docBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/golangdoc");
+    QStringList paths;
+    paths << m_liteApp->resourcePath()+"/golangdoc";
+    m_docBrowser->setSearchPaths(paths);
 
     m_godocFindComboBox = new QComboBox;
     m_godocFindComboBox->setEditable(true);

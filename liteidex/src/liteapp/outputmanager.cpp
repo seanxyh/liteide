@@ -135,7 +135,7 @@ void OutputManager::hideOutput(QWidget *w)
         if (m_lastOutputAct == btn->defaultAction()) {
             m_lastOutputAct->setChecked(false);
             m_stackedWidget->hide();
-            m_lastOutputAct = NULL;
+            m_lastOutputAct = 0;
         }
     }
 }
@@ -143,7 +143,7 @@ void OutputManager::hideOutput(QWidget *w)
 
 QWidget *OutputManager::currentOutput()
 {
-    if (m_lastOutputAct == NULL) {
+    if (m_lastOutputAct.isNull()) {
         return 0;
     }
     return m_stackedWidget->currentWidget();
@@ -163,10 +163,10 @@ void OutputManager::setCurrentOutput(QWidget *w)
         }
     } else {
         m_stackedWidget->hide();
-        if (m_lastOutputAct) {
+        if (!m_lastOutputAct.isNull()) {
             m_lastOutputAct->setChecked(false);
         }
-        m_lastOutputAct = NULL;
+        m_lastOutputAct = 0;
     }
     emit currentOutputChanged(w);
 }
@@ -175,11 +175,11 @@ void OutputManager::selectedOutputAct(QAction *act)
 {
     if (m_lastOutputAct == act) {
         act->setChecked(false);
-        m_lastOutputAct = NULL;
+        m_lastOutputAct = 0;
     } else {
         m_lastOutputAct = act;
     }
-    if (m_lastOutputAct == NULL) {
+    if (!m_lastOutputAct.isNull()) {
         m_stackedWidget->hide();
     } else  {
         QWidget *w = m_widgetActionMap.key(act);
