@@ -249,7 +249,7 @@ LiteIDE is a simple, open source, cross-platform IDE.</string>
           <item row="2" column="1">
            <widget class="QLabel" name="label_16">
             <property name="text">
-             <string notr="true">X9 (1.40625)</string>
+             <string notr="true">X10 (1.5625)</string>
             </property>
            </widget>
           </item>
