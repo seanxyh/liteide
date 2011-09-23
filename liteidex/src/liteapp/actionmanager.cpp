@@ -43,7 +43,8 @@
 ActionManager::ActionManager(QObject *parent) :
     IActionManager(parent),
     m_viewMenu(0),
-    m_viewBaseAct(0)
+    m_baseToolBarAct(0),
+    m_basePaneAct(0)
 {
 }
 
@@ -110,10 +111,6 @@ QToolBar *ActionManager::insertToolBar(const QString &id, const QString &title, 
     }
     m_idToolBarMap.insert(id,toolBar);
 
-    if (m_viewMenu) {
-        m_viewMenu->insertAction(m_viewBaseAct,toolBar->toggleViewAction());
-    }
-
     return toolBar;
 }
 
@@ -139,8 +136,20 @@ void ActionManager::removeToolBar(QToolBar* toolBar)
     m_liteApp->mainWindow()->removeToolBar(toolBar);
 }
 
-void ActionManager::setToolBarView(QMenu *menu, QAction *baseAct)
+void ActionManager::insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act)
+{
+    if (pos == ViewMenuToolBarPos) {
+        m_viewMenu->insertAction(m_baseToolBarAct,act);
+    } else if (pos == ViewMenuPanePos) {
+        m_viewMenu->insertAction(m_basePaneAct,act);
+    } else {
+        m_viewMenu->addAction(act);
+    }
+}
+
+void ActionManager::setViewMenu(QMenu *menu, QAction *baseToolBarAct, QAction *basePaneAct)
 {
     m_viewMenu = menu;
-    m_viewBaseAct = baseAct;
+    m_baseToolBarAct = baseToolBarAct;
+    m_basePaneAct = basePaneAct;
 }

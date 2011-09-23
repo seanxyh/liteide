@@ -56,10 +56,7 @@ QDockWidget *DockManager::addDock(QWidget *widget, const QString &title, Qt::Doc
     dock->setAllowedAreas(alowedAreas);
     dock->setFeatures(features);
     m_liteApp->mainWindow()->addDockWidget(area, dock);
-    QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
-    if (menu) {
-        menu->addAction(dock->toggleViewAction());
-    }
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuPanePos,dock->toggleViewAction());
     m_widgetDockMap.insert(widget,dock);
 
     return dock;

@@ -111,10 +111,10 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     mainLayout->addWidget(m_findResultListView);
     m_widget->setLayout(mainLayout);
 
-    m_liteApp->dockManager()->addDock(m_widget,tr("GolangDoc"),Qt::LeftDockWidgetArea);
+    m_liteApp->dockManager()->addDock(m_widget,tr("Golang Doc Pane"),Qt::LeftDockWidgetArea);
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
-    m_docBrowser->setName(tr("Golang Document Browser"));
+    m_docBrowser->setName(tr("Golang Document Browser Page"));
     QStringList paths;
     paths << m_liteApp->resourcePath()+"/golangdoc";
     m_docBrowser->setSearchPaths(paths);
@@ -125,10 +125,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_docBrowser->toolBar()->addWidget(m_godocFindComboBox);
 
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
-    QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
-    if (menu) {
-        menu->addAction(m_browserAct);
-    }
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuPagePos,m_browserAct);
 
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));

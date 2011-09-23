@@ -86,6 +86,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
         m_liteApp->extension()->addObject("LiteApi.IBuildManager",m_manager);
     }    
     m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/litebuild",tr("Build ToolBar"));
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_toolBar->toggleViewAction());
 
     m_liteideModel = new QStandardItemModel(0,2,this);
     m_liteideModel->setHeaderData(0,Qt::Horizontal,tr("Name"));

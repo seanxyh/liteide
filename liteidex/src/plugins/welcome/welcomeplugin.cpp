@@ -60,10 +60,7 @@ bool WelcomePlugin::initWithApp(LiteApi::IApplication *app)
 
     m_welcome = new WelcomeBrowser(app,this);
     m_welcomeAct = m_liteApp->editorManager()->registerBrowser(m_welcome);
-    QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
-    if (menu) {
-        menu->addAction(m_welcomeAct);
-    }
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuPagePos,m_welcomeAct);
     m_welcomeAct->toggle();
 
     QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/nav");

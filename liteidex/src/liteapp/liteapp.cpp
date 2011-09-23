@@ -105,11 +105,15 @@ LiteApp::LiteApp()
 
     createActions();
     createMenus();
-
-    QAction *baseViewAct = m_viewMenu->addSeparator();
-    m_actionManager->setToolBarView(m_viewMenu,baseViewAct);
-
     createToolBars();
+
+    QAction *baseToolBarAct = m_viewMenu->addSeparator();
+    QAction *basePaneAct = m_viewMenu->addSeparator();
+    m_actionManager->setViewMenu(m_viewMenu,baseToolBarAct,basePaneAct);
+
+    m_actionManager->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_stdToolBar->toggleViewAction());
+    m_actionManager->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_navToolBar->toggleViewAction());
+
 
     m_logOutput = new TextOutput;
     m_outputManager->addOutuput(m_logOutput,tr("Console"));
