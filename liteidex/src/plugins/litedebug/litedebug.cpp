@@ -63,6 +63,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_manager->initWithApp(app);
 
     m_toolBar =  m_liteApp->actionManager()->insertToolBar("toolbar/litedebug",tr("Debug ToolBar"),"toolbar/nav");
+    m_output = new TextOutput;
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
@@ -140,7 +141,22 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
 
-    debugStoped();
+    m_liteApp->outputManager()->addOutuput(m_output,tr("LiteDebug"));
+
+    m_startDebugAct->setToolTip("Start Debugging (F5)");
+    m_stopDebugAct->setEnabled(false);
+    m_stepOverAct->setEnabled(false);
+    m_showLineAct->setEnabled(false);
+    m_stepIntoAct->setEnabled(false);
+    m_stepOutAct->setEnabled(false);
+    m_runToLineAct->setEnabled(false);
+}
+
+LiteDebug::~LiteDebug()
+{
+    if (m_output) {
+        delete m_output;
+    }
 }
 
 void LiteDebug::appLoaded()
@@ -184,10 +200,25 @@ void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
     if (m_debugger) {
         connect(m_debugger,SIGNAL(debugStarted()),this,SLOT(debugStarted()));
         connect(m_debugger,SIGNAL(debugStoped()),this,SLOT(debugStoped()));
-        connect(m_debugger,SIGNAL(debugLog(QByteArray)),m_dbgWidget,SLOT(debugLog(QByteArray)));
+        connect(m_debugger,SIGNAL(debugLog(LiteApi::DEBUG_LOG_TYPE,QString)),this,SLOT(debugLog(LiteApi::DEBUG_LOG_TYPE,QString)));
         connect(m_debugger,SIGNAL(setCurrentLine(QString,int)),this,SLOT(setCurrentLine(QString,int)));
     }
     m_dbgWidget->setDebug(m_debugger);
+}
+
+void LiteDebug::debugLog(LiteApi::DEBUG_LOG_TYPE type, const QString &log)
+{
+    switch(type) {
+    case LiteApi::DebugConsoleLog:
+        m_dbgWidget->appendLog(log);
+        break;
+    case LiteApi::DebugRuntimeLog:
+        m_output->appendTag1(log);
+        break;
+    case LiteApi::DebugOutputLog:
+        m_output->append(log);
+        break;
+    }
 }
 
 void LiteDebug::startDebug()
@@ -372,6 +403,7 @@ void LiteDebug::debugStoped()
     m_runToLineAct->setEnabled(false);
     clearLastLine();
 
+    m_liteApp->outputManager()->setCurrentOutput(m_output);
     m_widget->hide();
     emit debugVisible(false);
 }

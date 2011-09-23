@@ -31,6 +31,7 @@
 #include "liteenvapi/liteenvapi.h"
 #include "litebuildapi/litebuildapi.h"
 #include "liteeditorapi/liteeditorapi.h"
+#include "textoutput/textoutput.h"
 
 class DebugManager;
 class DebugWidget;
@@ -50,6 +51,7 @@ class LiteDebug : public QObject
     Q_OBJECT
 public:
     explicit LiteDebug(LiteApi::IApplication *app, QObject *parent = 0);
+    virtual ~LiteDebug();
     QWidget *widget();
 signals:
     void debugVisible(bool);
@@ -67,6 +69,7 @@ public slots:
     void toggleBreakPoint();
 protected slots:
     void setDebugger(LiteApi::IDebugger*);
+    void debugLog(LiteApi::DEBUG_LOG_TYPE type, const QString &log);
     void debugStarted();
     void debugStoped();
     void setCurrentLine(const QString &fileName, int line);
@@ -80,6 +83,7 @@ protected:
     QWidget      *m_widget;
     DebugWidget  *m_dbgWidget;
     QToolBar     *m_toolBar;
+    TextOutput   *m_output;
     QAction *m_startDebugAct;
     QAction *m_stopDebugAct;
     QAction *m_showLineAct;

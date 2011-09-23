@@ -199,7 +199,7 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
     m_process->start(m_gdbFilePath,args);
 
     QString log = QString("%1 %2").arg(m_gdbFilePath).arg(args.join(" "));
-    emit debugLog(log.toUtf8());
+    emit debugLog(LiteApi::DebugRuntimeLog,log);
 
     return true;
 }
@@ -342,7 +342,7 @@ void GdbDebugeer::command(const GdbCmd &cmd)
 {
     m_token++;
     QByteArray buf = cmd.makeCmd(m_token);
-    emit debugLog(">>> "+buf);
+    emit debugLog(LiteApi::DebugConsoleLog,">>> "+QString(buf));
 #ifdef Q_OS_WIN
     buf.append("\r\n");
 #else
@@ -539,29 +539,10 @@ void GdbDebugeer::handleStopped(const GdbMiValue &result)
         m_handleState.setReason(reason);
         return;
     }
-//    QString thread_id = result.findChild("thread-id").data();
-//    QString stopped_threads = result.findChild("stopped-threads").data();
     GdbMiValue frame = result.findChild("frame");
     if (frame.isValid()) {
-//        QString addr = frame.findChild("addr").data();
-//        QString func = frame.findChild("func").data();
-//        QString file = frame.findChild("file").data();
         QString fullname = frame.findChild("fullname").data();
         QString line = frame.findChild("line").data();
-        /*
-        QList<QStandardItem*> items;
-        items << new QStandardItem(QString(reason))
-              << new QStandardItem(addr)
-              << new QStandardItem(func)
-              << new QStandardItem(file)
-              << new QStandardItem(line)
-              << new QStandardItem(thread_id)
-              << new QStandardItem(stopped_threads)
-                 ;
-
-        m_asyncModel->removeRows(0,m_asyncModel->rowCount());
-        m_asyncModel->appendRow(items);
-        */
         if (!fullname.isEmpty()) {
             emit setCurrentLine(fullname,line.toInt());
         }
@@ -591,7 +572,7 @@ void GdbDebugeer::handleAsyncClass(const QByteArray &asyncClass, const GdbMiValu
     } else if (asyncClass == "library-loaded") {
         handleLibrary(result);
     }
-    //emit modelChanged(LiteApi::ASYNC_MODEL);
+    emit setExpand(LiteApi::ASYNC_MODEL,m_asyncModel->indexFromItem(m_asyncItem),true);
 }
 
 void GdbDebugeer::handleConsoleStream(const QByteArray &data)
@@ -1062,7 +1043,10 @@ void GdbDebugeer::readStdOutput()
         handleResponse(data);
         m_busy = false;
     }
-    emit debugLog(m_inbuffer);
+    emit debugLog(LiteApi::DebugConsoleLog,QString(m_inbuffer));
+    if (!m_gdbinit) {
+        emit debugLog(LiteApi::DebugOutputLog,m_inbuffer);
+    }
     m_inbuffer.clear();
 
     if (!m_gdbinit) {
@@ -1081,8 +1065,9 @@ void GdbDebugeer::readStdOutput()
     m_handleState.clear();
 }
 
-void GdbDebugeer::finished(int)
+void GdbDebugeer::finished(int code)
 {
     clear();
     emit debugStoped();
+    emit debugLog(LiteApi::DebugRuntimeLog,QString("program exited code %1").arg(code));
 }

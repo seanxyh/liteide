@@ -41,6 +41,12 @@ enum DEBUG_MODEL_TYPE{
     LIBRARY_MODEL
 };
 
+enum DEBUG_LOG_TYPE {
+    DebugConsoleLog = 1,
+    DebugOutputLog,
+    DebugRuntimeLog
+};
+
 enum DEBUG_EDITOR_MARKTYPE {
     BreakPointMark = 1000,
     CurrentLineMark = 2000
@@ -73,7 +79,7 @@ public:
 signals:
     void debugStarted();
     void debugStoped();
-    void debugLog(const QByteArray &log);
+    void debugLog(LiteApi::DEBUG_LOG_TYPE type, const QString &log);
     void setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &index, bool expanded);
     void setCurrentLine(const QString &fileName, int line);
 };

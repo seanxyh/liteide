@@ -119,8 +119,6 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     connect(m_output,SIGNAL(enterText(QString)),this,SLOT(enterTextBuildOutput(QString)));
     connect(m_configAct,SIGNAL(triggered()),this,SLOT(config()));
 
-    m_liteApp->outputManager()->showOutput(m_output);
-
     m_liteApp->extension()->addObject("LiteApi.ILiteBuild",this);
 }
 
