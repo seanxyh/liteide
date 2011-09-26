@@ -196,7 +196,7 @@ void TerminalEdit::mouseReleaseEvent(QMouseEvent *e)
 void TerminalEdit::mouseDoubleClickEvent(QMouseEvent *e)
 {
     if (m_selectCursor.hasSelection()) {
-        m_selectCursor.setCharFormat(m_normalFmt);
+        m_selectCursor.mergeCharFormat(m_normalFmt);
     }
     m_selectCursor = cursorForPosition(e->pos());
     m_selectCursor.select(QTextCursor::LineUnderCursor);
