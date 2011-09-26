@@ -30,6 +30,8 @@
 #include "liteenvapi/liteenvapi.h"
 #include "litebuildapi/litebuildapi.h"
 
+#include <QTextCursor>
+
 class BuildManager;
 class QComboBox;
 class ProcessEx;
@@ -61,7 +63,7 @@ public slots:
     void extOutput(const QByteArray &output,bool bError);
     void extFinish(bool error,int exitCode, QString msg);
     void stopAction();
-    void dbclickBuildOutput();
+    void dbclickBuildOutput(const QTextCursor &cur);
     void enterTextBuildOutput(QString);
     void config();
 protected:

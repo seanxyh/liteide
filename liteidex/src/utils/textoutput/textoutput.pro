@@ -5,6 +5,8 @@ CONFIG += staticlib
 
 include(../../liteideutils.pri)
 
-HEADERS += textoutput.h
+HEADERS += textoutput.h \
+    terminaledit.h
 
-SOURCES += textoutput.cpp
+SOURCES += textoutput.cpp \
+    terminaledit.cpp

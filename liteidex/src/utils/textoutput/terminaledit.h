@@ -18,52 +18,49 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: textoutput.h
+// Module: terminaledit.h
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2011-3-26
-// $Id: textoutput.h,v 1.0 2011-5-12 visualfc Exp $
+// date: 2011-8-12
+// $Id: terminaledit.h,v 1.0 2011-8-12 visualfc Exp $
 
-#ifndef TEXTOUTPUT_H
-#define TEXTOUTPUT_H
+#ifndef TERMINALEDIT_H
+#define TERMINALEDIT_H
 
-#include <QWidget>
-#include <QTextEdit>
-#include <QToolButton>
 #include <QPlainTextEdit>
+#include <QTextCharFormat>
 
-class QTextEdit;
-class QToolBar;
-class QLabel;
-class TerminalEdit;
-
-class TextOutput : public QWidget
+class QLineEdit;
+class TerminalEdit : public QPlainTextEdit
 {
     Q_OBJECT
 public:
-    explicit TextOutput(bool readOnly = true, QWidget *parent = 0);
-    void append(const QString &text);
-    void append(const QString &text,const QBrush &foreground);
-    void appendTag0(const QString &text);
-    void appendTag1(const QString &text);
-    void moveToEnd();
-    void updateExistsTextColor(const QBrush &foreground = Qt::gray);
-    void setReadOnly(bool bo);
-    void setMaxLine(int max);
-    QPlainTextEdit *plainTextEdit();
+    explicit TerminalEdit(QWidget *parent = 0);
+    void append(const QString &text, QTextCharFormat *fmt = 0);
+    void clearAll();
 signals:
-    void dbclickEvent(QTextCursor);
-    void enterText(QString);
-    void hideOutput();
+    void enterText(const QString &text);
+    void dbclickEvent(const QTextCursor &cur);
 public slots:
-    void clear();
+    void contextMenuRequested(QPoint);
+    void selectCopy();
 protected:
-    QToolBar      *m_toolBar;
-    QToolButton   *m_closeBtn;
-    TerminalEdit  *m_editor;
-    QLabel        *m_infoLabel;
-    QAction       *m_clearAct;
-    QAction       *m_hideAct;
-    QTextCharFormat m_fmt;
+    virtual void keyPressEvent(QKeyEvent *e);
+    virtual void keyReleaseEvent(QKeyEvent *e);
+    virtual void mousePressEvent(QMouseEvent *e);
+    virtual void mouseMoveEvent(QMouseEvent *e);
+    virtual void mouseReleaseEvent(QMouseEvent *e);
+    virtual void mouseDoubleClickEvent(QMouseEvent *e);
+protected:
+    QLineEdit *m_lineEdit;
+    QMenu     *m_menu;
+    QAction   *m_selCopyAct;
+    QAction   *m_pasteAct;
+    int        m_lastPos;
+    bool       m_bPress;
+    int        m_leftPos;
+    QTextCursor m_selectCursor;
+    QTextCharFormat m_normalFmt;
+    QTextCharFormat m_selectFmt;
 };
 
-#endif // TEXTOUTPUT_H
+#endif // TERMINALEDIT_H
