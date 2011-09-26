@@ -196,6 +196,7 @@ protected:
     QMap<QString,QString> m_locationBkMap;
     bool    m_busy;
     bool    m_gdbinit;
+    bool    m_gdbexit;
     int     m_token;
 };
 
