@@ -124,7 +124,7 @@ void WelcomeBrowser::loadData()
 
     QStringList sessionList;
     sessionList.append("<ul>");
-    sessionList.append(QString("<li><a href=session:default>default</a></li>"));
+    sessionList.append(QString("<li><a href=\"session:default\">default</a></li>"));
     sessionList.append("</ul>");
 
 
@@ -133,7 +133,7 @@ void WelcomeBrowser::loadData()
     QStringList recentProjects = m_liteApp->fileManager()->recentProjects();
     foreach (QString file, recentProjects) {
         QFileInfo info(file);
-        projectList.append(QString("<li><a href=proj:%1>%2</a> <span class=\"recent\">%3</span></li>")
+        projectList.append(QString("<li><a href=\"proj:%1\">%2</a> <span class=\"recent\">%3</span></li>")
                            .arg(info.filePath())
                            .arg(info.fileName())
                            .arg(QDir::toNativeSeparators(info.filePath())));
@@ -145,7 +145,7 @@ void WelcomeBrowser::loadData()
     QStringList recentFiles = m_liteApp->fileManager()->recentFiles();
     foreach (QString file, recentFiles) {
         QFileInfo info(file);
-        fileList.append(QString("<li><a href=file:%1>%2</a> <span class=\"recent\">%3</span></li>")
+        fileList.append(QString("<li><a href=\"file:%1\">%2</a> <span class=\"recent\">%3</span></li>")
                         .arg(info.filePath())
                         .arg(info.fileName())
                         .arg(QDir::toNativeSeparators(info.filePath())));

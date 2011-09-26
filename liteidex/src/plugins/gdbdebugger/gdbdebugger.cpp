@@ -32,6 +32,7 @@
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
+#include <QTextCodec>
 #include <QDebug>
 
 
@@ -342,7 +343,7 @@ void GdbDebugeer::command(const GdbCmd &cmd)
 {
     m_token++;
     QByteArray buf = cmd.makeCmd(m_token);
-    emit debugLog(LiteApi::DebugConsoleLog,">>> "+QString(buf));
+    emit debugLog(LiteApi::DebugConsoleLog,">>> "+QString::fromUtf8(buf));
 #ifdef Q_OS_WIN
     buf.append("\r\n");
 #else
@@ -924,6 +925,7 @@ void GdbDebugeer::clear()
 
 void GdbDebugeer::initGdb()
 {
+    command("set charset utf-8");
 #ifdef Q_OS_WIN
     command("set new-console on");
 #endif
@@ -1043,9 +1045,9 @@ void GdbDebugeer::readStdOutput()
         handleResponse(data);
         m_busy = false;
     }
-    emit debugLog(LiteApi::DebugConsoleLog,QString(m_inbuffer));
+    emit debugLog(LiteApi::DebugConsoleLog,QString::fromUtf8(m_inbuffer));
     if (!m_gdbinit) {
-        emit debugLog(LiteApi::DebugOutputLog,m_inbuffer);
+        emit debugLog(LiteApi::DebugOutputLog,QString::fromUtf8(m_inbuffer));
     }
     m_inbuffer.clear();
 
