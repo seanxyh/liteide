@@ -208,32 +208,27 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>DebugWidget</name>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="78"/>
-        <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="88"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="72"/>
         <source>AsyncRecord</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="89"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="73"/>
         <source>Variables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="90"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="74"/>
         <source>CallStack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="91"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="75"/>
         <source>Library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="95"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="76"/>
         <source>Console</source>
         <translation type="unfinished"></translation>
     </message>
@@ -838,7 +833,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="112"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="114"/>
         <source>Build Output</source>
         <oldsource>Build</oldsource>
         <translation type="unfinished"></translation>
@@ -860,17 +855,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteDebug</name>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="80"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="83"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="91"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="94"/>
         <source>StepOver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="87"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="90"/>
         <source>StepInto</source>
         <translation type="unfinished"></translation>
     </message>
@@ -880,85 +875,85 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="76"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="79"/>
         <source>Go</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="78"/>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="148"/>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="399"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="81"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="151"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="409"/>
         <source>Start Debugging (F5)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="82"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="85"/>
         <source>Stop Debugger (Shift+F5)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="84"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="87"/>
         <source>ShowLine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="85"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="88"/>
         <source>Show Current Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="89"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="92"/>
         <source>Step Info (F11)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="93"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="96"/>
         <source>Step Over (F10)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="95"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="98"/>
         <source>StepOut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="97"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="100"/>
         <source>Step Out (Shift+F11)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="99"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="102"/>
         <source>RunToLine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="101"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="104"/>
         <source>Run to Line (Ctrl+F10)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="103"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="106"/>
         <source>BreakPoint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="105"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="108"/>
         <source>Insert/Remove Breakpoint (F9)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="146"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="149"/>
         <source>Debug Output</source>
         <oldsource>Debug</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="384"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="394"/>
         <source>Continue (F5)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="118"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="121"/>
         <source>&amp;Debug</source>
         <translation type="unfinished"></translation>
     </message>
@@ -984,85 +979,85 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteEditor</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="160"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="162"/>
         <source>Undo</source>
         <translation>Défaire</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="161"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="163"/>
         <source>Redo</source>
         <translation>Refaire</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="162"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="164"/>
         <source>Cut</source>
         <translation>Couper</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="163"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="165"/>
         <source>Copy</source>
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="164"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="166"/>
         <source>Paste</source>
         <translation>Coller</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="165"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="167"/>
         <source>File is writable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="166"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="513"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="168"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="515"/>
         <source>Export HTML</source>
         <translation>Exporter en HTML</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="168"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="540"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="170"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="542"/>
         <source>Export PDF</source>
         <translation>Exporter en PDF</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="169"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="564"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="171"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="566"/>
         <source>Print Document</source>
         <translation>Imprimer le document</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="170"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="172"/>
         <source>Print Preview Document</source>
         <translation>Aperçu de l&apos;impression du document</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="235"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="237"/>
         <source>editor</source>
         <translation>éditeur</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="355"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="357"/>
         <source>File Is ReadOnly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="358"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="360"/>
         <source>File Is Writable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="521"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="523"/>
         <source>Can not write file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="522"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="524"/>
         <source>LiteIDE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="581"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="583"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1478,6 +1473,24 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
+    <name>TerminalEdit</name>
+    <message>
+        <location filename="src/utils/textoutput/terminaledit.cpp" line="68"/>
+        <source>Copy</source>
+        <translation type="unfinished">Copier</translation>
+    </message>
+    <message>
+        <location filename="src/utils/textoutput/terminaledit.cpp" line="70"/>
+        <source>Paste</source>
+        <translation type="unfinished">Coller</translation>
+    </message>
+    <message>
+        <location filename="src/utils/textoutput/terminaledit.cpp" line="72"/>
+        <source>Select All</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TextEditor::Internal::ColorScheme</name>
     <message>
         <location filename="src/3rdparty/qtc_texteditor/colorscheme.cpp" line="212"/>
@@ -1488,12 +1501,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>TextOutput</name>
     <message>
-        <location filename="src/utils/textoutput/textoutput.cpp" line="94"/>
+        <location filename="src/utils/textoutput/textoutput.cpp" line="66"/>
         <source>Hide</source>
         <translation>Masquer</translation>
     </message>
     <message>
-        <location filename="src/utils/textoutput/textoutput.cpp" line="97"/>
+        <location filename="src/utils/textoutput/textoutput.cpp" line="69"/>
         <source>Clear</source>
         <translation>Effacer</translation>
     </message>

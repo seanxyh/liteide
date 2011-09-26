@@ -209,32 +209,27 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>DebugWidget</name>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="78"/>
-        <source>Clear</source>
-        <translation>清除</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="88"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="72"/>
         <source>AsyncRecord</source>
         <translation>同步记录</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="89"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="73"/>
         <source>Variables</source>
         <translation>变量</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="90"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="74"/>
         <source>CallStack</source>
         <translation>调用堆栈</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="91"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="75"/>
         <source>Library</source>
         <translation>动态库</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/debugwidget.cpp" line="95"/>
+        <location filename="src/plugins/litedebug/debugwidget.cpp" line="76"/>
         <source>Console</source>
         <translation>控制台</translation>
     </message>
@@ -841,7 +836,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>编译配置</translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="112"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="114"/>
         <source>Build Output</source>
         <oldsource>Build</oldsource>
         <translation>编译输出</translation>
@@ -863,17 +858,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteDebug</name>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="80"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="83"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="91"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="94"/>
         <source>StepOver</source>
         <translation>逐过程</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="87"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="90"/>
         <source>StepInto</source>
         <translation>逐语句</translation>
     </message>
@@ -883,85 +878,85 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>调试工具栏</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="76"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="79"/>
         <source>Go</source>
         <translation>GO</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="78"/>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="148"/>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="399"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="81"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="151"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="409"/>
         <source>Start Debugging (F5)</source>
         <translation>开始调试 (F5)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="82"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="85"/>
         <source>Stop Debugger (Shift+F5)</source>
         <translation>停止调试 (Shift+F5)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="84"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="87"/>
         <source>ShowLine</source>
         <translation>显示当前行</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="85"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="88"/>
         <source>Show Current Line</source>
         <translation>显示当前行</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="89"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="92"/>
         <source>Step Info (F11)</source>
         <translation>逐语句 (F11)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="93"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="96"/>
         <source>Step Over (F10)</source>
         <translation>逐过程 (F10)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="95"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="98"/>
         <source>StepOut</source>
         <translation>跳出</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="97"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="100"/>
         <source>Step Out (Shift+F11)</source>
         <translation>跳出 (Shift+F11)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="99"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="102"/>
         <source>RunToLine</source>
         <translation>运行到当前行</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="101"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="104"/>
         <source>Run to Line (Ctrl+F10)</source>
         <translation>运行到当前行 (Ctrl+F10)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="103"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="106"/>
         <source>BreakPoint</source>
         <translation>断点</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="105"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="108"/>
         <source>Insert/Remove Breakpoint (F9)</source>
         <translation>插入/删除 断点 (F9)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="146"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="149"/>
         <source>Debug Output</source>
         <oldsource>Debug</oldsource>
         <translation>调试输出</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="384"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="394"/>
         <source>Continue (F5)</source>
         <translation>继续 (F5)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="118"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="121"/>
         <source>&amp;Debug</source>
         <translation>调试(&amp;D)</translation>
     </message>
@@ -987,85 +982,85 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteEditor</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="160"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="162"/>
         <source>Undo</source>
         <translation>撤消</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="161"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="163"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="162"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="164"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="163"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="165"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="164"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="166"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="165"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="167"/>
         <source>File is writable</source>
         <translation>文件可写</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="166"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="513"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="168"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="515"/>
         <source>Export HTML</source>
         <translation>输出HTML文档</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="168"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="540"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="170"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="542"/>
         <source>Export PDF</source>
         <translation>输出PDF文档</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="169"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="564"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="171"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="566"/>
         <source>Print Document</source>
         <translation>文档打印</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="170"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="172"/>
         <source>Print Preview Document</source>
         <translation>文档打印预览</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="235"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="237"/>
         <source>editor</source>
         <translation>编辑器</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="355"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="357"/>
         <source>File Is ReadOnly</source>
         <translation>文件只读</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="358"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="360"/>
         <source>File Is Writable</source>
         <translation>文件可写</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="521"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="523"/>
         <source>Can not write file %1</source>
         <translation>无法写入文件 %1</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="522"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="524"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="581"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="583"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation>是否取消对文件 %1 的修改并重新加载?</translation>
     </message>
@@ -1483,6 +1478,24 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
+    <name>TerminalEdit</name>
+    <message>
+        <location filename="src/utils/textoutput/terminaledit.cpp" line="68"/>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <location filename="src/utils/textoutput/terminaledit.cpp" line="70"/>
+        <source>Paste</source>
+        <translation>粘贴</translation>
+    </message>
+    <message>
+        <location filename="src/utils/textoutput/terminaledit.cpp" line="72"/>
+        <source>Select All</source>
+        <translation>选择所有</translation>
+    </message>
+</context>
+<context>
     <name>TextEditor::Internal::ColorScheme</name>
     <message>
         <location filename="src/3rdparty/qtc_texteditor/colorscheme.cpp" line="212"/>
@@ -1493,12 +1506,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>TextOutput</name>
     <message>
-        <location filename="src/utils/textoutput/textoutput.cpp" line="94"/>
+        <location filename="src/utils/textoutput/textoutput.cpp" line="66"/>
         <source>Hide</source>
         <translation>隐藏</translation>
     </message>
     <message>
-        <location filename="src/utils/textoutput/textoutput.cpp" line="97"/>
+        <location filename="src/utils/textoutput/textoutput.cpp" line="69"/>
         <source>Clear</source>
         <translation>清除</translation>
     </message>
