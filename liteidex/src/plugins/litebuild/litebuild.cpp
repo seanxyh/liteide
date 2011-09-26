@@ -538,10 +538,11 @@ void LiteBuild::execAction(const QString &id)
     QString args = m_build->actionArgs(ba,env);
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
-
+    if (ba->readline()) {
+        m_output->setReadOnly(false);
+    }
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,workDir);
-        m_output->setReadOnly(true);
         m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")
                              .arg(id).arg(ba->cmd()).arg(ba->args()));
         m_output->appendTag1(QString("<run=\"%1 %2\" workdir=\"%3\"/>\n").
@@ -549,7 +550,6 @@ void LiteBuild::execAction(const QString &id)
         m_output->append(QString("Start process %1\n").arg(b?"success":"false"));
         m_output->appendTag0(QString("</action>\n"));
     } else {
-        m_output->setReadOnly(false);
         m_process->setUserData(0,cmd);
         m_process->setUserData(1,args);
         m_process->setUserData(2,codec);

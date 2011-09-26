@@ -66,7 +66,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_toolBar->toggleViewAction());
 
     m_output = new TextOutput;
-    m_output->setReadOnly(false);
+    m_output->setReadOnly(true);
     m_output->setMaxLine(1024);
     connect(m_output,SIGNAL(hideOutput()),m_liteApp->outputManager(),SLOT(setCurrentOutput()));
 
@@ -398,7 +398,7 @@ void LiteDebug::debugStarted()
     m_stepIntoAct->setEnabled(true);
     m_stepOutAct->setEnabled(true);
     m_runToLineAct->setEnabled(true);
-
+    m_output->setReadOnly(false);
     m_liteApp->outputManager()->setCurrentOutput(m_output);
     m_widget->show();    
     emit debugVisible(true);
@@ -414,7 +414,7 @@ void LiteDebug::debugStoped()
     m_stepOutAct->setEnabled(false);
     m_runToLineAct->setEnabled(false);
     clearLastLine();
-
+    m_output->setReadOnly(true);
     m_liteApp->outputManager()->setCurrentOutput(m_output);
     m_widget->hide();
     emit debugVisible(false);

@@ -164,6 +164,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 act->setArgs(attrs.value("args").toString());
                 act->setSave(attrs.value("save").toString());
                 act->setOutput(attrs.value("output").toString());
+                act->setReadline(attrs.value("readline").toString());
                 act->setCodec(attrs.value("codec").toString());
                 act->setRegex(attrs.value("regex").toString());
                 QString img = attrs.value("img").toString();

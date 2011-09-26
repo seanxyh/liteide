@@ -34,15 +34,17 @@ namespace LiteApi {
 class BuildAction
 {  
 public:
-    BuildAction(): m_output(false) {}
+    BuildAction(): m_output(false),m_readline(false) {}
     void setId(const QString &id) { m_id = id; }
     void setKey(const QString &key) { m_key = key; }
     void setCmd(const QString &bin) { m_cmd = bin; }
     void setArgs(const QString &args) { m_args = args; }
     void setSave(const QString &save) { m_save = save; }
-
-    void setOutput(const QString &open) {
-        m_output = QVariant(open).toBool();
+    void setOutput(const QString &text) {
+        m_output = QVariant(text).toBool();
+    }
+    void setReadline(const QString &text) {
+        m_readline = QVariant(text).toBool();
     }
     void setCodec(const QString &codec) { m_codec = codec; }
     void setRegex(const QString &regex) { m_regex = regex; }
@@ -54,6 +56,7 @@ public:
     QString args() const { return m_args; }
     QString save() const { return m_save; }
     bool output() const { return m_output; }
+    bool readline() const {return m_readline; }
     QString codec() const { return m_codec; }
     QString regex() const { return m_regex; }
     QString img() const { return m_img; }
@@ -69,6 +72,7 @@ public:
         m_save.clear();
         m_task.clear();
         m_output = false;
+        m_readline = false;
     }
     bool isEmpty() {
         return m_id.isEmpty();
@@ -85,6 +89,7 @@ protected:
     QString m_img;
     QStringList m_task;
     bool    m_output;
+    bool    m_readline;
 };
 
 class BuildLookup
