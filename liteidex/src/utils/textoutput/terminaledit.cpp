@@ -88,7 +88,7 @@ void TerminalEdit::append(const QString &text, QTextCharFormat *fmt)
     QTextCursor cur = this->textCursor();
     cur.movePosition(QTextCursor::End);
     if (fmt) {
-        cur.mergeCharFormat(*fmt);
+        cur.setCharFormat(*fmt);
     }
     cur.insertText(text);
     this->setTextCursor(cur);

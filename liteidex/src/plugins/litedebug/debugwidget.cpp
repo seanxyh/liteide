@@ -50,7 +50,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
     m_liteApp(app),
     m_widget(new QWidget),
-    m_debug(0)
+    m_debugger(0)
 {
     m_tabWidget = new QTabWidget;
 
@@ -59,22 +59,16 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     m_statckView = new QTreeView;
     m_libraryView = new QTreeView;
 
-    //m_watchesView = new QTreeView;
-    //m_bkpointView = new QTreeView;
-    //m_threadsView = new QTreeView;
-
     m_asyncView->setEditTriggers(0);
 
     m_varsView->setEditTriggers(0);
     m_statckView->setEditTriggers(0);
     m_libraryView->setEditTriggers(0);
-   // m_watchesView->setEditTriggers(0);
-   // m_bkpointView->setEditTriggers(0);
-   // m_threadsView->setEditTriggers(0);
 
     m_cmdLineEdit = new QLineEdit;
     m_debugLogEdit = new QPlainTextEdit;
     m_debugLogEdit->setReadOnly(true);
+
     QPushButton *clearBtn = new QPushButton(tr("Clear"));
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->addWidget(m_cmdLineEdit);
@@ -89,9 +83,6 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     m_tabWidget->addTab(m_varsView,tr("Variables"));
     m_tabWidget->addTab(m_statckView,tr("CallStack"));
     m_tabWidget->addTab(m_libraryView,tr("Library"));
-//    m_tabWidget->addTab(m_watchesView,tr("Watches"));
-//    m_tabWidget->addTab(m_bkpointView,tr("BreakPoints"));
-//    m_tabWidget->addTab(m_threadsView,tr("Threads"));
     m_tabWidget->addTab(cmdWidget,tr("Console"));
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -120,8 +111,8 @@ QWidget *DebugWidget::widget()
 void DebugWidget::cmdLineInput()
 {
     QString text = m_cmdLineEdit->text();
-    if (!text.isEmpty() && m_debug && m_debug->isRunning()) {
-        m_debug->command(text.toUtf8());
+    if (!text.isEmpty() && m_debugger && m_debugger->isRunning()) {
+        m_debugger->command(text.toUtf8());
     }
 }
 
@@ -149,13 +140,13 @@ static void setResizeView(QTreeView *view)
     view->header()->setResizeMode(0,QHeaderView::ResizeToContents);
 }
 
-void DebugWidget::setDebug(LiteApi::IDebugger *debug)
+void DebugWidget::setDebugger(LiteApi::IDebugger *debug)
 {
-    if (m_debug == debug) {
+    if (m_debugger == debug) {
         return;
     }
-    m_debug = debug;
-    if (!m_debug) {
+    m_debugger = debug;
+    if (!m_debugger) {
         return;
     }
     m_asyncView->setModel(debug->debugModel(LiteApi::ASYNC_MODEL));
@@ -166,7 +157,7 @@ void DebugWidget::setDebug(LiteApi::IDebugger *debug)
     setResizeView(m_varsView);
     setResizeView(m_statckView);
     setResizeView(m_libraryView);
-    connect(m_debug,SIGNAL(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)),this,SLOT(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)));
+    connect(m_debugger,SIGNAL(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)),this,SLOT(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)));
 }
 
 void DebugWidget::expandedVarsView(QModelIndex index)
@@ -174,17 +165,17 @@ void DebugWidget::expandedVarsView(QModelIndex index)
     if (!index.isValid()) {
         return;
     }
-    if (!m_debug) {
+    if (!m_debugger) {
         return;
     }
-    m_debug->expandItem(index,LiteApi::VARS_MODEL);
+    m_debugger->expandItem(index,LiteApi::VARS_MODEL);
 }
 void DebugWidget::setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &index, bool expanded)
 {
     if (!index.isValid()) {
         return;
     }
-    if (!m_debug) {
+    if (!m_debugger) {
         return;
     }
     QTreeView *view = 0;

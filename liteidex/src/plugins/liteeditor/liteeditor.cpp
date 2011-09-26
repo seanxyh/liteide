@@ -73,6 +73,8 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
 {
     m_widget = new QWidget;
     m_editorWidget = new LiteEditorWidget(m_widget);
+    m_editorWidget->setCursorWidth(2);
+
     m_colorStyleScheme = new ColorStyleScheme(this);
     m_defPalette = m_editorWidget->palette();
 

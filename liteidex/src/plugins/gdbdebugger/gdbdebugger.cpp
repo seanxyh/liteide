@@ -351,6 +351,11 @@ void GdbDebugeer::command(const GdbCmd &cmd)
     m_process->write(buf);
 }
 
+void GdbDebugeer::enterText(const QString &text)
+{
+    m_process->write(text.toUtf8());
+}
+
 void  GdbDebugeer::command(const QByteArray &cmd)
 {
     command(GdbCmd(cmd));
@@ -522,7 +527,10 @@ void GdbDebugeer::handleResponse(const QByteArray &buff)
         break;
     }
     default: {
-        qDebug() << "UNKNOWN RESPONSE TYPE" << c;
+        from--;
+        QByteArray out(from,to-from);
+        out.append("\n");
+        emit debugLog(LiteApi::DebugApplationLog,QString::fromUtf8(out));
         break;
     }
     }
@@ -925,7 +933,7 @@ void GdbDebugeer::clear()
 void GdbDebugeer::initGdb()
 {
 #ifdef Q_OS_WIN
-    command("set new-console on");
+//    command("set new-console on");
 #endif
     command("set unwindonsignal on");
     command("set overload-resolution off");
@@ -1050,9 +1058,6 @@ void GdbDebugeer::readStdOutput()
         m_busy = false;
     }
     emit debugLog(LiteApi::DebugConsoleLog,QString::fromUtf8(m_inbuffer));
-    if (!m_gdbinit) {
-        emit debugLog(LiteApi::DebugOutputLog,QString::fromUtf8(m_inbuffer));
-    }
     m_inbuffer.clear();
 
     if (!m_gdbinit) {

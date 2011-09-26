@@ -67,6 +67,7 @@ public slots:
     void stepOut();
     void showLine();
     void toggleBreakPoint();
+    void enterAppInputText(QString);
 protected slots:
     void setDebugger(LiteApi::IDebugger*);
     void debugLog(LiteApi::DEBUG_LOG_TYPE type, const QString &log);

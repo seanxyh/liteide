@@ -66,6 +66,8 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_toolBar->toggleViewAction());
 
     m_output = new TextOutput;
+    m_output->setReadOnly(false);
+    m_output->setMaxLine(1024);
     connect(m_output,SIGNAL(hideOutput()),m_liteApp->outputManager(),SLOT(setCurrentOutput()));
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -139,8 +141,8 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     connect(m_stepOutAct,SIGNAL(triggered()),this,SLOT(stepOut()));
     connect(m_insertBreakAct,SIGNAL(triggered()),this,SLOT(toggleBreakPoint()));
     connect(m_showLineAct,SIGNAL(triggered()),this,SLOT(showLine()));
-
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
+    connect(m_output,SIGNAL(enterText(QString)),this,SLOT(enterAppInputText(QString)));
 
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
 
@@ -206,7 +208,7 @@ void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
         connect(m_debugger,SIGNAL(debugLog(LiteApi::DEBUG_LOG_TYPE,QString)),this,SLOT(debugLog(LiteApi::DEBUG_LOG_TYPE,QString)));
         connect(m_debugger,SIGNAL(setCurrentLine(QString,int)),this,SLOT(setCurrentLine(QString,int)));
     }
-    m_dbgWidget->setDebug(m_debugger);
+    m_dbgWidget->setDebugger(m_debugger);
 }
 
 void LiteDebug::debugLog(LiteApi::DEBUG_LOG_TYPE type, const QString &log)
@@ -216,9 +218,9 @@ void LiteDebug::debugLog(LiteApi::DEBUG_LOG_TYPE type, const QString &log)
         m_dbgWidget->appendLog(log);
         break;
     case LiteApi::DebugRuntimeLog:
-        m_output->appendTag1(log);
+        m_output->appendTag1(QString("<%1>\n").arg(log));
         break;
-    case LiteApi::DebugOutputLog:
+    case LiteApi::DebugApplationLog:
         m_output->append(log);
         break;
     }
@@ -394,7 +396,7 @@ void LiteDebug::debugStarted()
     m_stepOutAct->setEnabled(true);
     m_runToLineAct->setEnabled(true);
 
-    m_liteApp->outputManager()->setCurrentOutput(0);
+    m_liteApp->outputManager()->setCurrentOutput(m_output);
     m_widget->show();    
     emit debugVisible(true);
 }
@@ -436,6 +438,13 @@ void LiteDebug::setCurrentLine(const QString &fileName, int line)
                 editMark->addMark(line,LiteApi::CurrentLineMark);
             }
         }
+    }
+}
+
+void LiteDebug::enterAppInputText(QString text)
+{
+    if (m_debugger && m_debugger->isRunning()) {
+        m_debugger->enterText(text);
     }
 }
 

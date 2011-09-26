@@ -130,6 +130,7 @@ public:
     virtual void continueRun();
     virtual void runToLine(const QString &fileName, int line);
     virtual void command(const QByteArray &cmd);
+    virtual void enterText(const QString &text);
     virtual void expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type);
     virtual void setInitBreakTable(const QMultiMap<QString,int> &bks);
     virtual void insertBreakPoint(const QString &fileName, int line);
