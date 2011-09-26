@@ -1,5 +1,5 @@
-==== 2011.9.23 Ver X10 1.5625 ====
- * LiteEditor : interface line mark
+==== 2011.9.26 Ver X10 1.5625 ====
+ * LiteEditor : add line mark api
  * LiteDebug : new debug toolbar
  * LiteDebug : insert/remove break
  * LiteDebug : breakpoint and current line mark
@@ -7,7 +7,7 @@
  * GdbDebugger : variables expand
  * GdbDebugger : call stack
  * GdbDebugger : library
-
+ 
 ==== 2011.9.14 Ver X9 1.40625 ====
  * LiteDebug : new debug manager plugin
  * GdbDebugger : new gdb debugger plugin
