@@ -24,6 +24,7 @@
 // $Id: textoutput.cpp,v 1.0 2011-5-12 visualfc Exp $
 
 #include "textoutput.h"
+#include "terminaledit.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -45,42 +46,13 @@
 #endif
 //lite_memory_check_end
 
-TextOutEdit::TextOutEdit(QWidget *parent) : QPlainTextEdit(parent)
-{
-}
-
-void TextOutEdit::mouseDoubleClickEvent(QMouseEvent *e)
-{
-    e->accept();
-    emit dbclickEvent();
-}
-
-void TextOutEdit::keyPressEvent(QKeyEvent *e)
-{
-    if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return) {
-#ifdef Q_OS_WIN
-    m_inputText += "\r\n";
-#else
-    m_inputText += "\n";
-#endif
-        emit enterText(m_inputText);
-        m_inputText.clear();
-        e->ignore();
-        return;
-    } else {
-        m_inputText += e->text();
-    }
-    QPlainTextEdit::keyPressEvent(e);
-}
-
-
 TextOutput::TextOutput(bool readOnly, QWidget *parent) :
     QWidget(parent)
 {
     m_toolBar = new QToolBar(this);
     m_toolBar->setIconSize(QSize(16,16));
 
-    m_editor = new TextOutEdit(this);
+    m_editor = new TerminalEdit(this);
     m_editor->setReadOnly(readOnly);
     m_fmt = m_editor->currentCharFormat();
 
@@ -104,8 +76,8 @@ TextOutput::TextOutput(bool readOnly, QWidget *parent) :
     m_toolBar->addSeparator();
     m_toolBar->addAction(m_hideAct);
 
-    connect(m_editor,SIGNAL(dbclickEvent()),this,SIGNAL(dbclickEvent()));
-    connect(m_editor,SIGNAL(enterText(QString)),this,SIGNAL(enterText(QString)));
+    connect(m_editor,SIGNAL(dbclickEvent(QTextCursor)),this,SIGNAL(dbclickEvent(QTextCursor)));
+    connect(m_editor,SIGNAL(inputText(QString)),this,SIGNAL(enterText(QString)));
     connect(m_clearAct,SIGNAL(triggered()),this,SLOT(clear()));
     connect(m_hideAct,SIGNAL(triggered()),this,SIGNAL(hideOutput()));
 }
@@ -167,4 +139,14 @@ void TextOutput::updateExistsTextColor(const QBrush &foreground)
     m_editor->setTextCursor(all);
     m_editor->setTextCursor(cur);
     m_editor->setCurrentCharFormat(m_fmt);
+}
+
+void TextOutput::setReadOnly(bool bo)
+{
+    m_editor->setReadOnly(bo);
+}
+
+void TextOutput::setMaxLine(int max)
+{
+    m_editor->setMaximumBlockCount(max);;
 }

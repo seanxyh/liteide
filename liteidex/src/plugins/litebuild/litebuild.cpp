@@ -106,6 +106,8 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
 
     m_process = new ProcessEx(this);
     m_output = new LiteOutput;
+    m_output->setMaxLine(1024);
+
     connect(m_output,SIGNAL(hideOutput()),m_liteApp->outputManager(),SLOT(setCurrentOutput()));
     connect(m_output->m_stopAct,SIGNAL(triggered()),this,SLOT(stopAction()));
 
@@ -116,7 +118,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     connect(m_process,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(extOutput(QByteArray,bool)));
     connect(m_process,SIGNAL(extFinish(bool,int,QString)),this,SLOT(extFinish(bool,int,QString)));
-    connect(m_output,SIGNAL(dbclickEvent()),this,SLOT(dbclickBuildOutput()));
+    connect(m_output,SIGNAL(dbclickEvent(QTextCursor)),this,SLOT(dbclickBuildOutput(QTextCursor)));
     connect(m_output,SIGNAL(enterText(QString)),this,SLOT(enterTextBuildOutput(QString)));
     connect(m_configAct,SIGNAL(triggered()),this,SLOT(config()));
 
@@ -453,7 +455,8 @@ void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)
 
 void LiteBuild::extFinish(bool error,int exitCode, QString msg)
 {
-    m_output->plainTextEdit()->setReadOnly(true);
+    m_output->setReadOnly(true);
+
     if (error) {
         m_output->appendTag1(QString("<error msg=\"%1\" />").arg(msg));
     } else {
@@ -554,12 +557,9 @@ void LiteBuild::execAction(const QString &id)
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
 
-    if (m_output->plainTextEdit()->document()->lineCount() > 1024) {
-        m_output->clear();
-    }
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,workDir);
-        m_output->plainTextEdit()->setReadOnly(true);
+        m_output->setReadOnly(true);
         m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">")
                              .arg(id).arg(ba->cmd()).arg(ba->args()));
         m_output->appendTag1(QString("<run=\"%1 %2\" workdir=\"%3\"/>").
@@ -569,7 +569,7 @@ void LiteBuild::execAction(const QString &id)
         m_output->moveToEnd();
         return;
     } else {
-        m_output->plainTextEdit()->setReadOnly(false);
+        m_output->setReadOnly(false);
         m_process->setUserData(0,cmd);
         m_process->setUserData(1,args);
         m_process->setUserData(2,codec);
@@ -600,9 +600,8 @@ void LiteBuild::enterTextBuildOutput(QString text)
     }
 }
 
-void LiteBuild::dbclickBuildOutput()
+void LiteBuild::dbclickBuildOutput(const QTextCursor &cur)
 {
-    QTextCursor cur = m_output->plainTextEdit()->textCursor();
     QRegExp rep(m_outputRegex);//"([\\w\\d:_\\\\/\\.]+):(\\d+)");
 
     int index = rep.indexIn(cur.block().text());
@@ -619,9 +618,6 @@ void LiteBuild::dbclickBuildOutput()
     int line = fileLine.toInt(&ok);
     if (!ok)
         return;
-
-    cur.select(QTextCursor::LineUnderCursor);
-    m_output->plainTextEdit()->setTextCursor(cur);
 
     LiteApi::IProject *project = m_liteApp->projectManager()->currentProject();
     if (project) {
