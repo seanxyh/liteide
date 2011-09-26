@@ -349,18 +349,22 @@ void LiteDebug::toggleBreakPoint()
         return;
     }
     int line = textEditor->line();
+    QString fileName = editor->fileName();
+    if (fileName.isEmpty()) {
+        return;
+    }
     QList<int> marks = editorMark->lineTypeList(line);
     if (marks.contains(LiteApi::BreakPointMark)) {
         editorMark->removeMark(line,LiteApi::BreakPointMark);
-        m_fileBpMap.remove(editor->fileName(),line);
+        m_fileBpMap.remove(fileName,line);
         if (m_debugger && m_debugger->isRunning()) {
-            m_debugger->removeBreakPoint(editor->fileName(),line);
+            m_debugger->removeBreakPoint(fileName,line);
         }
     } else {
         editorMark->addMark(line,LiteApi::BreakPointMark);
-        m_fileBpMap.insert(editor->fileName(),line);
+        m_fileBpMap.insert(fileName,line);
         if (m_debugger && m_debugger->isRunning()) {
-            m_debugger->insertBreakPoint(editor->fileName(),line);
+            m_debugger->insertBreakPoint(fileName,line);
         }
     }
 }
