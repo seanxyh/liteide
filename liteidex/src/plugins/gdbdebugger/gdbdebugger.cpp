@@ -925,7 +925,6 @@ void GdbDebugeer::clear()
 
 void GdbDebugeer::initGdb()
 {
-    command("set charset utf-8");
 #ifdef Q_OS_WIN
     command("set new-console on");
 #endif
