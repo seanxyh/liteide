@@ -3,10 +3,11 @@
  * LiteDebug : new debug toolbar
  * LiteDebug : insert/remove break
  * LiteDebug : breakpoint and current line mark
- * GdbDebugger : async record
- * GdbDebugger : variables expand
- * GdbDebugger : call stack
- * GdbDebugger : library
+ * GdbDebugger : async record view
+ * GdbDebugger : variables expand tree
+ * GdbDebugger : call stack view
+ * GdbDebugger : load library view
+ * TerminalEdit : provided to LiteBuild and LiteDebug 
  
 ==== 2011.9.14 Ver X9 1.40625 ====
  * LiteDebug : new debug manager plugin

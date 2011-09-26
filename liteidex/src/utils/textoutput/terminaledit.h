@@ -43,6 +43,7 @@ signals:
 public slots:
     void contextMenuRequested(QPoint);
     void selectCopy();
+    void selectAll();
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
     virtual void keyReleaseEvent(QKeyEvent *e);
@@ -55,6 +56,7 @@ protected:
     QMenu     *m_menu;
     QAction   *m_selCopyAct;
     QAction   *m_pasteAct;
+    QAction   *m_selAllAct;
     int        m_lastPos;
     bool       m_bPress;
     int        m_leftPos;

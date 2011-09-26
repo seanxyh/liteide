@@ -114,16 +114,6 @@ void TextOutput::appendTag1(const QString &text)
     m_editor->append(text,&f);
 }
 
-void TextOutput::moveToEnd()
-{
-    m_editor->moveCursor(QTextCursor::End);
-}
-
-QPlainTextEdit *TextOutput::plainTextEdit()
-{
-    return m_editor;
-}
-
 void TextOutput::updateExistsTextColor(const QBrush &foreground)
 {
     QTextCharFormat f = m_fmt;

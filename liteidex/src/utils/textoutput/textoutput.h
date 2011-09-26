@@ -45,11 +45,9 @@ public:
     void append(const QString &text,const QBrush &foreground);
     void appendTag0(const QString &text);
     void appendTag1(const QString &text);
-    void moveToEnd();
     void updateExistsTextColor(const QBrush &foreground = Qt::gray);
     void setReadOnly(bool bo);
     void setMaxLine(int max);
-    QPlainTextEdit *plainTextEdit();
 signals:
     void dbclickEvent(QTextCursor);
     void enterText(QString);

@@ -446,7 +446,6 @@ void LiteBuild::extFinish(bool error,int exitCode, QString msg)
         m_output->appendTag1(QString("<exit code=\"%1\" msg=\"%2\"/>\n").arg(exitCode).arg(msg));
     }
     m_output->appendTag0(QString("</action>\n"));
-    m_output->moveToEnd();
 
     if (!error && exitCode == 0) {
         QStringList task = m_process->userData(3).toStringList();
@@ -549,8 +548,6 @@ void LiteBuild::execAction(const QString &id)
                              arg(cmd).arg(args).arg(workDir));
         m_output->append(QString("Start process %1\n").arg(b?"success":"false"));
         m_output->appendTag0(QString("</action>\n"));
-        m_output->moveToEnd();
-        return;
     } else {
         m_output->setReadOnly(false);
         m_process->setUserData(0,cmd);
@@ -561,7 +558,6 @@ void LiteBuild::execAction(const QString &id)
                              .arg(id).arg(ba->cmd()).arg(ba->args()));
         m_output->appendTag1(QString("<start=\"%1 %2\" workdir=\"%3\"/>\n").
                              arg(cmd).arg(args).arg(workDir));
-        m_output->moveToEnd();
         m_process->start(cmd,arguments);
     }
 }
