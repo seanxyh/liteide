@@ -87,7 +87,11 @@ public:
     }
     QByteArray makeCmd(int index) const
     {
+#ifdef Q_OS_WIN
+        return QString("%1%2").arg(index,8,10,QLatin1Char('0')).arg(m_cmd).toLatin1();
+#else
         return QString("%1%2").arg(index,8,10,QLatin1Char('0')).arg(m_cmd).toUtf8();
+#endif
     }
     QMap<QString,QVariant> cookie() const
     {
