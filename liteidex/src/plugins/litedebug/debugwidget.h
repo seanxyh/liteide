@@ -28,6 +28,7 @@
 
 #include "liteapi/liteapi.h"
 #include "litedebugapi/litedebugapi.h"
+#include "textoutput/terminaledit.h"
 
 class QTabWidget;
 class QTreeView;
@@ -42,7 +43,7 @@ public:
     virtual ~DebugWidget();
     virtual QWidget *widget();
 public slots:
-    void setDebug(LiteApi::IDebugger *debug);
+    void setDebugger(LiteApi::IDebugger *debug);
     void cmdLineInput();
     void appendLog(const QString &log);
     void clearLog();
@@ -51,17 +52,15 @@ public slots:
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
-    LiteApi::IDebugger *m_debug;
+    LiteApi::IDebugger *m_debugger;
     QTabWidget *m_tabWidget;
     QTreeView *m_asyncView;
     QTreeView *m_varsView;
-    //QTreeView *m_watchesView;
     QTreeView *m_statckView;
     QTreeView *m_libraryView;
-    //QTreeView *m_bkpointView;
-    //QTreeView *m_threadsView;
     QLineEdit *m_cmdLineEdit;
     QPlainTextEdit *m_debugLogEdit;
+    TerminalEdit   *m_appoutEdit;
 };
 
 #endif // DEBUGWIDGET_H

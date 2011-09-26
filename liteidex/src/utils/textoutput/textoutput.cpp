@@ -77,7 +77,7 @@ TextOutput::TextOutput(bool readOnly, QWidget *parent) :
     m_toolBar->addAction(m_hideAct);
 
     connect(m_editor,SIGNAL(dbclickEvent(QTextCursor)),this,SIGNAL(dbclickEvent(QTextCursor)));
-    connect(m_editor,SIGNAL(inputText(QString)),this,SIGNAL(enterText(QString)));
+    connect(m_editor,SIGNAL(enterText(QString)),this,SIGNAL(enterText(QString)));
     connect(m_clearAct,SIGNAL(triggered()),this,SLOT(clear()));
     connect(m_hideAct,SIGNAL(triggered()),this,SIGNAL(hideOutput()));
 }
@@ -89,16 +89,14 @@ void TextOutput::clear()
 
 void TextOutput::append(const QString &text)
 {
-    m_editor->setCurrentCharFormat(m_fmt);
-    m_editor->appendPlainText(text);
+    m_editor->append(text,&m_fmt);
 }
 
 void TextOutput::append(const QString &text,const QBrush &foreground)
 {
     QTextCharFormat f = m_fmt;
     f.setForeground(foreground);
-    m_editor->setCurrentCharFormat(f);
-    m_editor->appendPlainText(text);
+    m_editor->append(text,&f);
 }
 
 void TextOutput::appendTag0(const QString &text)
@@ -106,16 +104,14 @@ void TextOutput::appendTag0(const QString &text)
     QTextCharFormat f = m_fmt;
     f.setFontWeight(QFont::Bold);
     f.setForeground(Qt::darkBlue);
-    m_editor->setCurrentCharFormat(f);
-    m_editor->appendPlainText(text);
+    m_editor->append(text,&f);
 }
 
 void TextOutput::appendTag1(const QString &text)
 {
     QTextCharFormat f = m_fmt;
     f.setForeground(Qt::darkBlue);
-    m_editor->setCurrentCharFormat(f);
-    m_editor->appendPlainText(text);
+    m_editor->append(text,&f);
 }
 
 void TextOutput::moveToEnd()
@@ -132,13 +128,9 @@ void TextOutput::updateExistsTextColor(const QBrush &foreground)
 {
     QTextCharFormat f = m_fmt;
     f.setForeground(foreground);
-    QTextCursor cur = m_editor->textCursor();
     QTextCursor all = m_editor->textCursor();
     all.select(QTextCursor::Document);
     all.setCharFormat(f);
-    m_editor->setTextCursor(all);
-    m_editor->setTextCursor(cur);
-    m_editor->setCurrentCharFormat(m_fmt);
 }
 
 void TextOutput::setReadOnly(bool bo)

@@ -433,24 +433,7 @@ void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)
     if (!codecName.isEmpty()) {
         codec = QTextCodec::codecForName(codecName.toAscii());
     }
-    int len = data.length();
-    if (len >= 1 && data.at(len-1) == '\n') {
-        int right = 1;
-        if (len >= 2 && data.at(len-2) == '\r') {
-            right++;
-        }
-        if (codec) {
-            m_output->append(codec->toUnicode(data.left(len-right)));
-        } else {
-            m_output->append(data.left(len-right));
-        }
-    } else {
-        if (codec) {
-            m_output->append(codec->toUnicode(data));
-        } else {
-            m_output->append(data);
-        }
-    }
+    m_output->append(codec->toUnicode(data));
 }
 
 void LiteBuild::extFinish(bool error,int exitCode, QString msg)
@@ -458,11 +441,11 @@ void LiteBuild::extFinish(bool error,int exitCode, QString msg)
     m_output->setReadOnly(true);
 
     if (error) {
-        m_output->appendTag1(QString("<error msg=\"%1\" />").arg(msg));
+        m_output->appendTag1(QString("<error msg=\"%1\" />\n").arg(msg));
     } else {
-        m_output->appendTag1(QString("<exit code=\"%1\" msg=\"%2\"/>").arg(exitCode).arg(msg));
+        m_output->appendTag1(QString("<exit code=\"%1\" msg=\"%2\"/>\n").arg(exitCode).arg(msg));
     }
-    m_output->appendTag0(QString("</action>"));
+    m_output->appendTag0(QString("</action>\n"));
     m_output->moveToEnd();
 
     if (!error && exitCode == 0) {
@@ -560,12 +543,12 @@ void LiteBuild::execAction(const QString &id)
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,workDir);
         m_output->setReadOnly(true);
-        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">")
+        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")
                              .arg(id).arg(ba->cmd()).arg(ba->args()));
-        m_output->appendTag1(QString("<run=\"%1 %2\" workdir=\"%3\"/>").
+        m_output->appendTag1(QString("<run=\"%1 %2\" workdir=\"%3\"/>\n").
                              arg(cmd).arg(args).arg(workDir));
-        m_output->append(QString("Start process %1").arg(b?"success":"false"));
-        m_output->appendTag0(QString("</action>"));
+        m_output->append(QString("Start process %1\n").arg(b?"success":"false"));
+        m_output->appendTag0(QString("</action>\n"));
         m_output->moveToEnd();
         return;
     } else {
@@ -574,9 +557,9 @@ void LiteBuild::execAction(const QString &id)
         m_process->setUserData(1,args);
         m_process->setUserData(2,codec);
         m_process->setWorkingDirectory(workDir);
-        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">")
+        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")
                              .arg(id).arg(ba->cmd()).arg(ba->args()));
-        m_output->appendTag1(QString("<start=\"%1 %2\" workdir=\"%3\"/>").
+        m_output->appendTag1(QString("<start=\"%1 %2\" workdir=\"%3\"/>\n").
                              arg(cmd).arg(args).arg(workDir));
         m_output->moveToEnd();
         m_process->start(cmd,arguments);
