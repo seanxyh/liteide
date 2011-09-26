@@ -337,11 +337,13 @@ void GdbDebugeer::removeBreakPoint(const QString &fileName, int line)
     command(cmd);
 }
 
-void GdbDebugeer::command(const GdbCmd &cmd)
+void GdbDebugeer::command_helper(const GdbCmd &cmd, bool emitOut)
 {
     m_token++;
     QByteArray buf = cmd.makeCmd(m_token);
-    emit debugLog(LiteApi::DebugConsoleLog,">>> "+QString::fromUtf8(buf));
+    if (emitOut) {
+        emit debugLog(LiteApi::DebugConsoleLog,">>> "+QString::fromUtf8(buf));
+    }
 #ifdef Q_OS_WIN
     buf.append("\r\n");
 #else
@@ -351,6 +353,11 @@ void GdbDebugeer::command(const GdbCmd &cmd)
     m_process->write(buf);
 }
 
+void GdbDebugeer::command(const GdbCmd &cmd)
+{
+    command_helper(cmd,true);
+}
+
 void GdbDebugeer::enterText(const QString &text)
 {
     m_process->write(text.toUtf8());
@@ -358,12 +365,12 @@ void GdbDebugeer::enterText(const QString &text)
 
 void  GdbDebugeer::command(const QByteArray &cmd)
 {
-    command(GdbCmd(cmd));
+    command_helper(GdbCmd(cmd),false);
 }
 
 void GdbDebugeer::readStdError()
 {
-    qDebug() << "err" << m_process->readAllStandardError();
+    emit debugLog(LiteApi::DebugErrorLog,QString::fromUtf8(m_process->readAllStandardError()));
 }
 
 /*

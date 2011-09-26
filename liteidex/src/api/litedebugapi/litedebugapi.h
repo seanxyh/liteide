@@ -44,7 +44,8 @@ enum DEBUG_MODEL_TYPE{
 enum DEBUG_LOG_TYPE {
     DebugConsoleLog = 1,
     DebugApplationLog,
-    DebugRuntimeLog
+    DebugRuntimeLog,
+    DebugErrorLog
 };
 
 enum DEBUG_EDITOR_MARKTYPE {

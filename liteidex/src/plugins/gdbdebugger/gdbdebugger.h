@@ -139,6 +139,8 @@ public:
     virtual void command(const GdbCmd &cmd);
     virtual void createWatch(const QString &var, bool floating);
     virtual void removeWatch(const QString &var, bool children);
+protected:
+    void command_helper(const GdbCmd &cmd, bool emitOut);
 public slots:
     void appLoaded();
     void readStdError();
