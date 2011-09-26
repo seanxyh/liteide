@@ -915,6 +915,7 @@ void GdbDebugeer::clear()
     m_tokenCookieMap.clear();
     m_varChangedItemList.clear();
     m_inbuffer.clear();
+    m_locationBkMap.clear();
 
     m_framesModel->removeRows(0,m_framesModel->rowCount());
     m_libraryModel->removeRows(0,m_libraryModel->rowCount());
@@ -952,6 +953,7 @@ void GdbDebugeer::initGdb()
             insertBreakPoint(fileName,line);
         }
     }
+    command("-break-insert main.main");
 
     command("-exec-run");
 }
