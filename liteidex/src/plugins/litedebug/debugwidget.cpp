@@ -65,25 +65,15 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     m_statckView->setEditTriggers(0);
     m_libraryView->setEditTriggers(0);
 
-    m_cmdLineEdit = new QLineEdit;
-    m_debugLogEdit = new QPlainTextEdit;
-    m_debugLogEdit->setReadOnly(true);
-
-    QPushButton *clearBtn = new QPushButton(tr("Clear"));
-    QHBoxLayout *hLayout = new QHBoxLayout;
-    hLayout->addWidget(m_cmdLineEdit);
-    hLayout->addWidget(clearBtn);
-    QVBoxLayout *cmdLayout = new QVBoxLayout;
-    cmdLayout->addLayout(hLayout);
-    cmdLayout->addWidget(m_debugLogEdit);
-    QWidget *cmdWidget = new QWidget;
-    cmdWidget->setLayout(cmdLayout);
+    m_debugLogEdit = new TerminalEdit;
+    m_debugLogEdit->setReadOnly(false);
+    m_debugLogEdit->setMaximumBlockCount(1024);
 
     m_tabWidget->addTab(m_asyncView,tr("AsyncRecord"));
     m_tabWidget->addTab(m_varsView,tr("Variables"));
     m_tabWidget->addTab(m_statckView,tr("CallStack"));
     m_tabWidget->addTab(m_libraryView,tr("Library"));
-    m_tabWidget->addTab(cmdWidget,tr("Console"));
+    m_tabWidget->addTab(m_debugLogEdit,tr("Console"));
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
@@ -91,8 +81,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_widget->setLayout(layout);
 
-    connect(m_cmdLineEdit,SIGNAL(returnPressed()),this,SLOT(cmdLineInput()));
-    connect(clearBtn,SIGNAL(clicked()),this,SLOT(clearLog()));
+    connect(m_debugLogEdit,SIGNAL(enterText(QString)),this,SLOT(enterText(QString)));
     connect(m_varsView,SIGNAL(expanded(QModelIndex)),this,SLOT(expandedVarsView(QModelIndex)));
 }
 
@@ -108,11 +97,11 @@ QWidget *DebugWidget::widget()
     return m_widget;
 }
 
-void DebugWidget::cmdLineInput()
+void DebugWidget::enterText(const QString &text)
 {
-    QString text = m_cmdLineEdit->text();
-    if (!text.isEmpty() && m_debugger && m_debugger->isRunning()) {
-        m_debugger->command(text.toUtf8());
+    QString cmd = text.simplified();
+    if (!cmd.isEmpty() && m_debugger && m_debugger->isRunning()) {
+        m_debugger->command(cmd.toUtf8());
     }
 }
 
@@ -123,8 +112,7 @@ void DebugWidget::clearLog()
 
 void DebugWidget::appendLog(const QString &log)
 {
-    m_debugLogEdit->appendPlainText(log);
-    m_debugLogEdit->moveCursor(QTextCursor::End);
+    m_debugLogEdit->append(log);
 }
 
 static void setResizeView(QTreeView *view)

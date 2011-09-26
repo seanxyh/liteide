@@ -44,7 +44,7 @@ public:
     virtual QWidget *widget();
 public slots:
     void setDebugger(LiteApi::IDebugger *debug);
-    void cmdLineInput();
+    void enterText(const QString &cmd);
     void appendLog(const QString &log);
     void clearLog();
     void expandedVarsView(QModelIndex);
@@ -58,9 +58,7 @@ protected:
     QTreeView *m_varsView;
     QTreeView *m_statckView;
     QTreeView *m_libraryView;
-    QLineEdit *m_cmdLineEdit;
-    QPlainTextEdit *m_debugLogEdit;
-    TerminalEdit   *m_appoutEdit;
+    TerminalEdit *m_debugLogEdit;
 };
 
 #endif // DEBUGWIDGET_H

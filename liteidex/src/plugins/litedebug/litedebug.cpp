@@ -220,6 +220,9 @@ void LiteDebug::debugLog(LiteApi::DEBUG_LOG_TYPE type, const QString &log)
     case LiteApi::DebugRuntimeLog:
         m_output->appendTag1(QString("<%1>\n").arg(log));
         break;
+    case LiteApi::DebugErrorLog:
+        m_output->appendTag1(QString("<Error %1>\n").arg(log));
+        break;
     case LiteApi::DebugApplationLog:
         m_output->append(log);
         break;
