@@ -118,6 +118,7 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_libraryModel->setHeaderData(1,Qt::Horizontal,"Thread Groups");
 
     m_gdbinit = false;    
+    m_gdbexit = false;
 
     connect(app,SIGNAL(loaded()),this,SLOT(appLoaded()));
     connect(m_process,SIGNAL(started()),this,SIGNAL(debugStarted()));
@@ -922,6 +923,7 @@ void GdbDebugeer::handleResultRecord(const GdbResponse &response)
 void GdbDebugeer::clear()
 {
     m_gdbinit = false;
+    m_gdbexit = false;
     m_busy = false;
     m_token = 10000000;
     m_handleState.clear();
@@ -939,9 +941,6 @@ void GdbDebugeer::clear()
 
 void GdbDebugeer::initGdb()
 {
-#ifdef Q_OS_WIN
-//    command("set new-console on");
-#endif
     command("set unwindonsignal on");
     command("set overload-resolution off");
     command("handle SIGSEGV nopass stop print");
@@ -1072,7 +1071,8 @@ void GdbDebugeer::readStdOutput()
         initGdb();
     }
 
-    if (m_handleState.exited()) {
+    if (m_handleState.exited() && !m_gdbexit) {
+        m_gdbexit = true;
         stop();
     } else if (m_handleState.stopped()) {
         updateWatch();
