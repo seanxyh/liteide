@@ -178,9 +178,7 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
 
     QString goroot = m_envManager->currentEnvironment().value("GOROOT");
     if (!goroot.isEmpty()) {
-        QString path = QFileInfo(QDir(goroot),"src/pkg/runtime/").path();
-       // args << "--directory" << path;
-        m_runtimeFilePath = path.toUtf8();
+        m_runtimeFilePath = QFileInfo(QDir(goroot),"src/pkg/runtime/").path();
     }
 
     args << "--args" << program;
@@ -936,8 +934,13 @@ void GdbDebugeer::initGdb()
     command("set height 0");
     command("set auto-solib-add on");
     if (!m_runtimeFilePath.isEmpty()) {
-        command("-environment-directory "+m_runtimeFilePath);
-        command("set substitute-path /go/src/pkg/runtime "+m_runtimeFilePath);
+#ifdef Q_OS_WIN
+        command("-environment-directory "+m_runtimeFilePath.toLatin1());
+        command("set substitute-path /go/src/pkg/runtime "+m_runtimeFilePath.toLatin1());
+#else
+        command("-environment-directory "+m_runtimeFilePath.toUtf8());
+        command("set substitute-path /go/src/pkg/runtime "+m_runtimeFilePath.toUtf8());
+#endif
     }
 
     QMapIterator<QString,int> i(m_initBks);

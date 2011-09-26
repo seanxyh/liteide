@@ -186,7 +186,7 @@ protected:
     QMap<QString,QStandardItem*> m_nameItemMap;
     QSet<QStandardItem*> m_varChangedItemList;
     QString m_gdbFilePath;
-    QByteArray m_runtimeFilePath;
+    QString m_runtimeFilePath;
     QByteArray m_inbuffer;
     GdbHandleState m_handleState;
     QMultiMap<QString,int>  m_initBks;
