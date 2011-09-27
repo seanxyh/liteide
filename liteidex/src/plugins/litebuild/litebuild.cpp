@@ -538,8 +538,10 @@ void LiteBuild::execAction(const QString &id)
     QString args = m_build->actionArgs(ba,env);
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
-    if (ba->readline()) {
+    if (ba->output() && ba->readline()) {
         m_output->setReadOnly(false);
+    } else {
+        m_output->setReadOnly(true);
     }
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,workDir);
