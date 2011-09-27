@@ -124,7 +124,6 @@ LiteApp::LiteApp()
     m_optionManager->setAction(m_optionAct);
 
     this->appendConsole("LiteApp","Init");
-    this->appendConsole("LiteApp","ObjectIdList",m_extension->objectMetaList().join(";"));
 
     m_liteAppOptionFactory = new LiteAppOptionFactory(this,this);
 
@@ -140,6 +139,8 @@ void LiteApp::load()
     loadState();
     m_projectManager->setCurrentProject(0);
     emit loaded();
+    appendConsole("LiteApp","loaded");
+    appendConsole("LiteApp","ObjectIdList",m_extension->objectMetaList().join(";"));
 }
 
 LiteApp::~LiteApp()
@@ -262,14 +263,15 @@ void LiteApp::appendConsole(const QString &model, const QString &action, const Q
 {
     QDateTime dt = QDateTime::currentDateTime();
     QString text = dt.toString("yyyy-M-d");
-    text += QLatin1Char('@');
+    text += QLatin1Char('$');
     text += dt.toString("hh:mm:ss");
-    text += QLatin1Char('@');
+    text += QLatin1Char('$');
     text += model;
-    text += QLatin1Char('@');
+    text += QLatin1Char('$');
     text += action;
-    text += QLatin1Char('@');
+    text += QLatin1Char('$');
     text += log;
+    text += QLatin1Char('\n');
     m_logOutput->append(text);
 }
 
