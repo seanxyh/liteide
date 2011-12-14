@@ -61,6 +61,8 @@
       <item> uint16 </item>
       <item> uint32 </item>
       <item> uint64 </item>
+      <item> rune </item>
+      <item> error </item>	
     </list>
     <list name="functions">
       <item> append </item>
