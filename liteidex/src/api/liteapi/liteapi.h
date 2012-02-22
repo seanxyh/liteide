@@ -79,6 +79,7 @@ public:
     virtual QList<IMimeType*> mimeTypeList() const= 0;
     virtual IMimeType *findMimeType(const QString &type) const = 0;
     virtual QString findFileMimeType(const QString &fileName) const = 0;
+    virtual QStringList findAllFilesByMimeType(const QString &dir, const QString &type, int deep = 0) const = 0;
 };
 
 class IFile : public QObject
@@ -341,7 +342,7 @@ enum VIEWMENU_ACTION_POS
 {
     ViewMenuToolBarPos = 1,
     ViewMenuPanePos,
-    ViewMenuPagePos,
+    ViewMenuPagePos
 };
 
 class IActionManager : public IManager

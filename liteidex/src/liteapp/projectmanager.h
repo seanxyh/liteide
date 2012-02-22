@@ -37,6 +37,9 @@ class QStackedWidget;
 class QStandardItem;
 class QStandardItemModel;
 class QVBoxLayout;
+class QComboBox;
+class QStackedLayout;
+class QActionGroup;
 
 class ProjectManager : public IProjectManager
 {
@@ -44,6 +47,7 @@ class ProjectManager : public IProjectManager
 public:
     ProjectManager();
     ~ProjectManager();
+    virtual bool initWithApp(IApplication *app);
     virtual IProject *openProject(const QString &fileName, const QString &mimeType);
     virtual void addFactory(IProjectFactory *factory);
     virtual void removeFactory(IProjectFactory *factory);
@@ -54,16 +58,21 @@ public:
     virtual IProject *currentProject() const;
     virtual QList<IEditor*> editorList(IProject *project) const;
     QWidget *widget();
-public slots:
+public slots:    
     virtual void saveProject(IProject *project = 0);
     virtual void closeProject(IProject *project = 0);
+    void currentEditorChanged(LiteApi::IEditor*);
+    void triggeredProject(QAction* act);
 protected:
     virtual void closeProjectHelper(IProject *project);
 protected:
+    QMap<QString,QAction*>   m_mapNameToAction;
     QPointer<IProject>      m_currentProject;
     QList<IProjectFactory*>    m_factoryList;
     QWidget                 *m_widget;
     QVBoxLayout             *m_mainLayout;
+    QMenu                   *m_projectMenu;
+    QActionGroup            *m_projectActGroup;
 };
 
 #endif // PROJECTMANAGER_H

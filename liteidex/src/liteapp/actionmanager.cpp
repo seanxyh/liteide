@@ -48,6 +48,27 @@ ActionManager::ActionManager(QObject *parent) :
 {
 }
 
+bool ActionManager::initWithApp(IApplication *app)
+{
+    if (!IActionManager::initWithApp(app)) {
+        return false;
+    }
+
+    insertMenu("file",tr("&File"));
+    m_viewMenu = insertMenu("view",tr("&View"));
+    m_baseToolBarAct = m_viewMenu->addSeparator();
+    m_basePaneAct = m_viewMenu->addSeparator();
+    insertMenu("help",tr("&Help"));
+
+    QToolBar *stdToolBar = insertToolBar("toolbar/std",tr("Standard ToolBar"));
+    QToolBar *navToolBar = insertToolBar("toolbar/nav",tr("Navigation ToolBar"));
+
+    insertViewMenu(LiteApi::ViewMenuToolBarPos,stdToolBar->toggleViewAction());
+    insertViewMenu(LiteApi::ViewMenuToolBarPos,navToolBar->toggleViewAction());
+
+    return true;
+}
+
 QMenu *ActionManager::insertMenu(const QString &id, const QString &title, const QString &idBefore)
 {    
     QMenu *menu = m_idMenuMap.value(id);
@@ -145,11 +166,4 @@ void ActionManager::insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act)
     } else {
         m_viewMenu->addAction(act);
     }
-}
-
-void ActionManager::setViewMenu(QMenu *menu, QAction *baseToolBarAct, QAction *basePaneAct)
-{
-    m_viewMenu = menu;
-    m_baseToolBarAct = baseToolBarAct;
-    m_basePaneAct = basePaneAct;
 }

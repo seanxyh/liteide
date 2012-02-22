@@ -106,3 +106,19 @@ void MimeTypeManager::loadMimeTypes(const QString &path)
         MimeType::loadMimeTypes(this,QFileInfo(dir,fileName).absoluteFilePath());
     }
 }
+
+QStringList MimeTypeManager::findAllFilesByMimeType(const QString &dirPath, const QString &type, int deep) const
+{
+    LiteApi::IMimeType *mimeType = findMimeType(type);
+    if (mimeType) {
+        QDir dir(dirPath);
+        for (int i = 0; i <= deep; i++) {
+            QStringList files = dir.entryList(QStringList() << mimeType->globPatterns(),QDir::Files);
+            if (!files.isEmpty()) {
+                return files;
+            }
+            dir.cdUp();
+        }
+    }
+    return QStringList();
+}

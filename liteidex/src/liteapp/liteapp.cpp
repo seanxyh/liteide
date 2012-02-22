@@ -69,14 +69,14 @@ LiteApp::LiteApp()
       m_mimeTypeManager(new MimeTypeManager),
       m_optionManager(new OptionManager)
 {
+    m_actionManager->initWithApp(this);
+    m_dockManager->initWithApp(this);
+    m_outputManager->initWithApp(this);
     m_mimeTypeManager->initWithApp(this);
     m_pluginManager->initWithApp(this);
     m_projectManager->initWithApp(this);
     m_editorManager->initWithApp(this);
     m_fileManager->initWithApp(this);
-    m_actionManager->initWithApp(this);
-    m_dockManager->initWithApp(this);
-    m_outputManager->initWithApp(this);
     m_optionManager->initWithApp(this);
 
     m_mainwindow->splitter()->addWidget(m_editorManager->widget());
@@ -96,6 +96,7 @@ LiteApp::LiteApp()
 
     //add actions
     connect(m_projectManager,SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(currentProjectChanged(LiteApi::IProject*)));
+    connect(m_editorManager,SIGNAL(currentEditorChanged(LiteApi::IEditor*)),m_projectManager,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     connect(m_editorManager,SIGNAL(currentEditorChanged(LiteApi::IEditor*)),m_mainwindow,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     connect(m_editorManager,SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     connect(m_editorManager,SIGNAL(tabAddRequest()),m_fileManager,SLOT(openEditors()));
@@ -106,14 +107,6 @@ LiteApp::LiteApp()
     createActions();
     createMenus();
     createToolBars();
-
-    QAction *baseToolBarAct = m_viewMenu->addSeparator();
-    QAction *basePaneAct = m_viewMenu->addSeparator();
-    m_actionManager->setViewMenu(m_viewMenu,baseToolBarAct,basePaneAct);
-
-    m_actionManager->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_stdToolBar->toggleViewAction());
-    m_actionManager->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_navToolBar->toggleViewAction());
-
 
     m_logOutput = new TextOutput;
     m_outputManager->addOutuput(m_logOutput,tr("Console"));
@@ -360,9 +353,9 @@ void LiteApp::createActions()
 
 void LiteApp::createMenus()
 {
-    m_fileMenu = m_actionManager->insertMenu("file",tr("&File"));
-    m_viewMenu = m_actionManager->insertMenu("view",tr("&View"));
-    m_helpMenu = m_actionManager->insertMenu("help",tr("&Help"));
+    m_fileMenu = m_actionManager->loadMenu("file");
+    m_viewMenu = m_actionManager->loadMenu("view");
+    m_helpMenu = m_actionManager->loadMenu("help");
 
     m_fileMenu->addAction(m_newAct);
     m_fileMenu->addAction(m_openAct);
@@ -388,7 +381,7 @@ void LiteApp::createMenus()
 
 void LiteApp::createToolBars()
 {
-    m_stdToolBar = m_actionManager->insertToolBar("toolbar/std",tr("Standard ToolBar"));
+    m_stdToolBar = m_actionManager->loadToolBar("toolbar/std");
     m_stdToolBar->addAction(m_newAct);
     m_stdToolBar->addSeparator();
     m_stdToolBar->addAction(m_openAct);
@@ -399,7 +392,7 @@ void LiteApp::createToolBars()
     m_stdToolBar->addAction(m_saveProjectAct);
     m_stdToolBar->addAction(m_closeProjectAct);
 
-    m_navToolBar = m_actionManager->insertToolBar("toolbar/nav",tr("Navigation ToolBar"));
+    m_navToolBar = m_actionManager->loadToolBar("toolbar/nav");
 }
 
 void LiteApp::currentProjectChanged(IProject *project)
