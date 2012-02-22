@@ -28,10 +28,15 @@
 #include <QFileInfo>
 #include <QComboBox>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 #include <QStackedWidget>
 #include <QStandardItemModel>
 #include <QStandardItem>
-#include <QToolBar>
+#include <QStackedLayout>
+#include <QMenu>
+#include <QActionGroup>
+#include <QDebug>
 #include "fileutil/fileutil.h"
 
 //lite_memory_check_begin
@@ -57,9 +62,72 @@ ProjectManager::~ProjectManager()
     }
 }
 
+bool ProjectManager::initWithApp(IApplication *app)
+{
+    if (!IProjectManager::initWithApp(app)) {
+        return false;
+    }
+
+    m_widget = new QWidget;
+    m_mainLayout = new QVBoxLayout;
+    m_mainLayout->setMargin(0);
+
+    QWidget *head = new QWidget;
+    QHBoxLayout *headLayout = new QHBoxLayout;
+    headLayout->setMargin(0);
+
+    QPushButton *btn = new QPushButton(tr("Projects"));
+    m_projectMenu = new QMenu(m_widget);
+    m_projectActGroup = new QActionGroup(m_widget);
+    btn->setMenu(m_projectMenu);
+
+    headLayout->addStretch(1);
+    headLayout->addWidget(btn);
+    head->setLayout(headLayout);
+
+    m_mainLayout->addWidget(head,0,Qt::AlignTop);
+    m_widget->setLayout(m_mainLayout);
+    m_liteApp->dockManager()->addDock(m_widget,tr("Projects"));
+
+    connect(m_projectMenu,SIGNAL(triggered(QAction*)),this,SLOT(triggeredProject(QAction*)));
+
+    return true;
+}
+
 QWidget *ProjectManager::widget()
 {
     return m_widget;
+}
+
+void ProjectManager::triggeredProject(QAction* act)
+{
+    QString fileName = act->text();
+    m_liteApp->fileManager()->openProject(fileName);
+}
+
+void ProjectManager::currentEditorChanged(LiteApi::IEditor* editor)
+{
+    if (!editor) {
+        return;
+    }
+//    QString fileName = editor->fileName();
+//    IProject *project = 0;
+//    foreach (IProjectFactory *factory , m_factoryList) {
+//        project = factory->findByEditor(editor);
+//        if (project) {
+//            break;
+//        }
+//    }
+//    if (project) {
+//        QAction *act = m_mapNameToAction.value(fileName);
+//        if (act == 0) {
+//            act = m_projectActGroup->addAction(fileName);
+//            act->setCheckable(true);
+//            m_mapNameToAction.insert(fileName,act);
+//            m_projectMenu->addAction(act);
+//        }
+//        setCurrentProject(project);
+//    }
 }
 
 IProject *ProjectManager::openProject(const QString &fileName, const QString &mimeType)
@@ -76,6 +144,16 @@ IProject *ProjectManager::openProject(const QString &fileName, const QString &mi
             }
         }
     }
+    if (project) {
+        QAction *act = m_mapNameToAction.value(fileName);
+        if (act == 0) {
+            act = m_projectActGroup->addAction(fileName);
+            act->setCheckable(true);
+            m_mapNameToAction.insert(fileName,act);
+            m_projectMenu->addAction(act);
+        }
+    }
+
     if (project) {
         setCurrentProject(project);
     }
@@ -112,18 +190,16 @@ void ProjectManager::setCurrentProject(IProject *project)
         closeProjectHelper(m_currentProject);
     }
     m_currentProject = project;
+
     if (m_currentProject) {
-        if (m_widget == 0) {
-            m_widget = new QWidget;
-            m_mainLayout = new QVBoxLayout;
-            m_mainLayout->setMargin(0);
-            m_widget->setLayout(m_mainLayout);
-            m_liteApp->dockManager()->addDock(m_widget,tr("Project"));
-        }
         m_mainLayout->addWidget(m_currentProject->widget());
-        m_liteApp->dockManager()->showDock(m_widget);
         m_currentProject->load();
-        m_liteApp->appendConsole("ProjectManager","loadProject",project->name());
+        QAction *act = m_mapNameToAction.value(project->fileName());
+        if (act) {
+            act->setChecked(true);
+        }
+
+        m_liteApp->appendConsole("ProjectManager","loadProject",m_currentProject->name());
     }
     emit currentProjectChanged(project);
 }
@@ -186,7 +262,10 @@ void ProjectManager::closeProjectHelper(IProject *project)
     }
     if (m_mainLayout) {
         m_mainLayout->removeWidget(cur->widget());
-        m_liteApp->dockManager()->hideDock(m_widget);
+    }
+    QAction *act = m_mapNameToAction.value(cur->fileName());
+    if (act) {
+        act->setChecked(false);
     }
 
     m_liteApp->appendConsole("ProjectManager","closeProject",cur->name());

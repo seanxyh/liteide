@@ -35,6 +35,7 @@ class ActionManager : public IActionManager
     Q_OBJECT
 public:
     ActionManager(QObject *parent = 0);
+    virtual bool initWithApp(IApplication *app);
     virtual QMenu *insertMenu(const QString &id, const QString &title, const QString &idBefore = QString());
     virtual QMenu *loadMenu(const QString &id);
     virtual void removeMenu(QMenu *menu);
@@ -44,7 +45,6 @@ public:
     virtual void removeToolBar(QToolBar* toolBar);
     virtual QList<QString> toolBarList() const;
     virtual void insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act);
-    void setViewMenu(QMenu *menu, QAction *baseToolBarAct, QAction *basePaneAct);
 protected:
     QMap<QString,QMenu*>   m_idMenuMap;
     QMap<QString,QToolBar*> m_idToolBarMap;
