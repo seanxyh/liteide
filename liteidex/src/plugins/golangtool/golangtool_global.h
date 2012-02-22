@@ -1,0 +1,12 @@
+#ifndef GOLANGTOOL_GLOBAL_H
+#define GOLANGTOOL_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(GOLANGTOOL_LIBRARY)
+#  define GOLANGTOOLSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define GOLANGTOOLSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // GOLANGTOOL_GLOBAL_H

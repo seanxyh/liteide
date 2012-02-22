@@ -14,8 +14,8 @@ SUBDIRS = \
     profileproject  \
     filebrowser \
     golangast \
-    golangfmt \
+    golangtool \
+#   golangfmt \
     golangcode \
     golangdoc \
     gdbdebugger \
-#    qsqleditor \
