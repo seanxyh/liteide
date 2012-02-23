@@ -79,7 +79,7 @@ bool ModelFileImpl::save(const QString &/*fileName*/)
     return false;
 }
 
-QString ModelFileImpl::fileName() const
+QString ModelFileImpl::filePath() const
 {
     return m_fileName;
 }

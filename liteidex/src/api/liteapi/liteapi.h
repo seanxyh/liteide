@@ -88,11 +88,11 @@ class IFile : public QObject
 public:
     IFile(QObject *parent = 0) : QObject(parent) {}
     virtual ~IFile() { }
-    virtual bool open(const QString &fileName, const QString &mimeType) = 0;
+    virtual bool open(const QString &filePath, const QString &mimeType) = 0;
     virtual bool reload() = 0;
-    virtual bool save(const QString &fileName) = 0;
+    virtual bool save(const QString &filePath) = 0;
     virtual bool isReadOnly() const = 0;
-    virtual QString fileName() const = 0;
+    virtual QString filePath() const = 0;
     virtual QString mimeType() const = 0;
 };
 
@@ -161,14 +161,14 @@ class IEditor : public IView
     Q_OBJECT
 public:
     IEditor(QObject *parent = 0) : IView(parent) {}
-    virtual bool open(const QString &fileName,const QString &mimeType) = 0;
+    virtual bool open(const QString &filePath,const QString &mimeType) = 0;
     virtual bool reload() = 0;
     virtual bool save() = 0;
-    virtual bool saveAs(const QString &fileName) = 0;
+    virtual bool saveAs(const QString &filePath) = 0;
     virtual void setReadOnly(bool b) = 0;
     virtual bool isReadOnly() const = 0;
     virtual bool isModified() const = 0;
-    virtual QString fileName() const = 0;
+    virtual QString filePath() const = 0;
     virtual QString mimeType() const = 0;
 signals:
     void modificationChanged(bool);
@@ -228,18 +228,18 @@ public:
     virtual void setReadOnly(bool /*b*/) {}
     virtual bool isReadOnly() const { return true; }
     virtual bool isModified() const { return false; }
-    virtual QString fileName() const { return QString(); }
+    virtual QString filePath() const { return QString(); }
 };
 
 class IProject : public IView
 {
     Q_OBJECT
 public:
-    virtual QString fileName() const = 0;
+    virtual QString filePath() const = 0;
     virtual QString mimeType() const = 0;
     virtual QStringList fileNameList() const = 0;
     virtual QStringList filePathList() const = 0;
-    virtual QString fileNameToFullPath(const QString &fileName) = 0;
+    virtual QString fileNameToFullPath(const QString &filePath) = 0;
     virtual QString target() const = 0;
     virtual QString targetPath() const = 0;
     virtual QString workPath() const = 0;

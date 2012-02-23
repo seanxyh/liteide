@@ -38,19 +38,19 @@ public:
         ItemRoot = 1,
         ItemFolder,
         ItemProFile,
-        ItemFile,
+        ItemFile
     };
 public:
-    virtual bool open(const QString &fileName, const QString &mimeType);
+    virtual bool open(const QString &filePath, const QString &mimeType);
     virtual bool reload();
-    virtual bool save(const QString &fileName);
+    virtual bool save(const QString &filePath);
     virtual bool isReadOnly() const;
-    virtual QString fileName() const;
+    virtual QString filePath() const;
     virtual QString mimeType() const;
 public:
     virtual void updateModel() = 0;
 protected:
-    virtual bool loadFile(const QString &fileName) = 0;
+    virtual bool loadFile(const QString &filePath) = 0;
 public:
     virtual QString target() const = 0;
     virtual QString targetPath() const = 0;
@@ -60,7 +60,7 @@ public:
     QStringList values(const QString &key) const;
     QStringList fileNameList() const;
     QStringList filePathList() const;
-    QString fileNameToFullPath(const QString &fileName);
+    QString fileNameToFullPath(const QString &filePath);
 protected:
     LiteApi::IApplication *m_liteApp;
     QStandardItemModel       *m_model;

@@ -236,8 +236,8 @@ void FileManager::newFile()
         filePath = dir.absolutePath();
     } else {
         IEditor *editor = m_liteApp->editorManager()->currentEditor();
-        if (editor && !editor->fileName().isEmpty()) {
-            filePath = QFileInfo(editor->fileName()).absolutePath();
+        if (editor && !editor->filePath().isEmpty()) {
+            filePath = QFileInfo(editor->filePath()).absolutePath();
         }
     }
     if (filePath.isEmpty()) {
@@ -483,7 +483,7 @@ void FileManager::editorCreated(LiteApi::IEditor *editor)
     if (!editor) {
         return;
     }
-    QString fileName = editor->fileName();
+    QString fileName = editor->filePath();
     if (!fileName.isEmpty()) {
         updateFileState(fileName);
         m_fileWatcher->addPath(fileName);
@@ -495,7 +495,7 @@ void FileManager::editorAboutToClose(LiteApi::IEditor *editor)
     if (!editor) {
         return;
     }
-    QString fileName = editor->fileName();
+    QString fileName = editor->filePath();
     if (!fileName.isEmpty()) {
         m_fileStateMap.remove(fileName);
         m_changedFiles.removeAll(fileName);
@@ -508,7 +508,7 @@ void FileManager::editorSaved(LiteApi::IEditor *editor)
     if (!editor) {
         return;
     }
-    updateFileState(editor->fileName());
+    updateFileState(editor->filePath());
 }
 
 void FileManager::fileChanged(QString fileName)

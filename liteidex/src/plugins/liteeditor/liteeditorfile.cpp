@@ -51,7 +51,7 @@ LiteEditorFile::LiteEditorFile(LiteApi::IApplication *app, QObject *parent)
     m_bReadOnly = false;
 }
 
-QString LiteEditorFile::fileName() const
+QString LiteEditorFile::filePath() const
 {
     return m_fileName;
 }

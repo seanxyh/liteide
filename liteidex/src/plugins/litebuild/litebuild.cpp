@@ -195,7 +195,7 @@ void LiteBuild::resetLiteEnv(LiteApi::IProject *project)
     QString projectPath,projectDir,projectName;
     QString workDir,targetPath,targetDir,targetName;
     if (project) {
-        projectPath = project->fileName();
+        projectPath = project->filePath();
         projectDir = QFileInfo(projectPath).absolutePath();
         projectName = QFileInfo(projectPath).fileName();
         workDir = project->workPath();
@@ -228,7 +228,7 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
         connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
         build =  m_manager->findBuild(project->mimeType());
         if (build) {
-            m_buildFilePath = project->fileName();
+            m_buildFilePath = project->filePath();
         }
         setCurrentBuild(build);
     } else {
@@ -363,13 +363,13 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
 
     LiteApi::IBuild *build = 0;
     if (editor) {
-        QString fileName = editor->fileName();
+        QString fileName = editor->filePath();
         if (!fileName.isEmpty()) {
             editorPath = fileName;
             editorDir = QFileInfo(editorPath).absolutePath();
             editorName = QFileInfo(editorPath).fileName();
             build = m_manager->findBuild(editor->mimeType());
-            m_buildFilePath = editor->fileName();
+            m_buildFilePath = editor->filePath();
             workDir = editorDir;
             targetDir = editorDir;
             targetName = QFileInfo(editorPath).baseName();

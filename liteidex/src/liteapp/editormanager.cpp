@@ -124,7 +124,7 @@ void EditorManager::addEditor(IEditor *editor)
         if (w == 0) {
             return;
         }
-        m_editorTabWidget->addTab(w,QIcon(),editor->name(),editor->fileName());
+        m_editorTabWidget->addTab(w,QIcon(),editor->name(),editor->filePath());
         m_widgetEditorMap.insert(w,editor);
         emit editorCreated(editor);
         connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(modificationChanged(bool)));
@@ -184,7 +184,7 @@ bool EditorManager::closeEditor(IEditor *editor)
     }
 
     if (cur->isModified() && !cur->isReadOnly()) {
-        QString text = QString(tr("%1 is modified.")).arg(cur->fileName());
+        QString text = QString(tr("%1 is modified.")).arg(cur->filePath());
         int ret = QMessageBox::question(m_editorTabWidget,tr("Save Modify"),text,QMessageBox::Save | QMessageBox::No | QMessageBox::Cancel);
         if (ret == QMessageBox::Cancel) {
             return false;
@@ -238,7 +238,7 @@ bool EditorManager::saveEditorAs(IEditor *editor)
     if (cur == 0) {
         return false;
     }
-    QString fileName = cur->fileName();
+    QString fileName = cur->filePath();
     if (fileName.isEmpty()) {
         return false;
     }
@@ -319,7 +319,7 @@ IEditor *EditorManager::findEditor(const QString &fileName, bool canonical) cons
     QMapIterator<QWidget *, IEditor *> i(m_widgetEditorMap);
     while (i.hasNext()) {
         i.next();
-        if (FileUtil::compareFile(i.value()->fileName(),fileName,canonical)) {
+        if (FileUtil::compareFile(i.value()->filePath(),fileName,canonical)) {
             return i.value();
         }
     }

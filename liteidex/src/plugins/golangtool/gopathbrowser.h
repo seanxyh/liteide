@@ -6,10 +6,7 @@
 #include "liteenvapi/liteenvapi.h"
 #include <QModelIndex>
 
-namespace Ui {
-class GopathBrowser;
-}
-
+class QTreeView;
 class GopathModel;
 class GopathBrowser : public QObject
 {
@@ -18,13 +15,14 @@ class GopathBrowser : public QObject
 public:
     explicit GopathBrowser(LiteApi::IApplication *app,QObject *parent = 0);
     ~GopathBrowser();
+    QWidget *widget() const;
 public slots:
     void pathIndexChanged(const QModelIndex & index);
     void reload();
 private:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
-    Ui::GopathBrowser *ui;
+    QTreeView *m_pathTree;
     LiteApi::IEnvManager *m_envManager;
     GopathModel *m_model;
     QStringList m_gopath;

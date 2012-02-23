@@ -410,7 +410,7 @@ void LiteApp::currentEditorChanged(IEditor *editor)
         connect(editor,SIGNAL(modificationChanged(bool)),this,SLOT(editorModifyChanged(bool)));
     }
     m_saveAct->setEnabled(b && editor->isModified() && !editor->isReadOnly());
-    m_saveAsAct->setEnabled(editor && !editor->fileName().isEmpty());
+    m_saveAsAct->setEnabled(editor && !editor->filePath().isEmpty());
     m_saveAllAct->setEnabled(b);
     m_closeAct->setEnabled(b);
     m_closeAllAct->setEnabled(b);
@@ -471,7 +471,7 @@ void LiteApp::saveSession(const QString &name)
     QString editorName;
     IProject *project = m_projectManager->currentProject();
     if (project) {
-        projectName = project->fileName();
+        projectName = project->filePath();
     }
 
     QStringList fileList;
@@ -479,13 +479,13 @@ void LiteApp::saveSession(const QString &name)
         if (ed->mimeType().indexOf("liteide/") == 0) {
             continue;
         }
-        if (ed->fileName().isEmpty()) {
+        if (ed->filePath().isEmpty()) {
             continue;
         }
         if (ed == m_editorManager->currentEditor()) {
-            editorName = ed->fileName();
+            editorName = ed->filePath();
         } else {
-            fileList.append(ed->fileName());
+            fileList.append(ed->filePath());
         }
     }
     QString session = "session/"+name;

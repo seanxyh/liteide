@@ -6,21 +6,17 @@
 
 GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
-    m_liteApp(app),
-    m_widget(new QWidget),
-    ui(new Ui::GopathBrowser)
+    m_liteApp(app)
 {
-    ui->setupUi(m_widget);
+    m_widget = new QWidget;
+    m_pathTree = new QTreeView;
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(m_pathTree);
+    m_widget->setLayout(layout);
     m_model = new GopathModel(this);
-    ui->pathTreeView->setModel(m_model);
-    m_liteApp->dockManager()->addDock(m_widget,tr("GOPATH Browser"));
-    /*
-    m_widget->setStyleSheet("QTreeView::item:hover{background-color:rgb(0,255,0,50)}"
-                            "QTreeView::item:selected{background-color:rgb(0,0,255,100)}"
-                            "QTreeView::item:!active{background-color:transparent}");
-    */
-    //connect(ui->pathTreeView,SIGNAL(pressed(QModelIndex)),this,SLOT(pathTreePressed(QModelIndex)));
-    connect(ui->pathTreeView->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(pathIndexChanged(QModelIndex)));
+    m_pathTree->setModel(m_model);
+
+    connect(m_pathTree->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(pathIndexChanged(QModelIndex)));
 
     m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
     if (m_envManager) {
@@ -31,8 +27,12 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
 
 GopathBrowser::~GopathBrowser()
 {
-    delete ui;
     delete m_widget;
+}
+
+QWidget *GopathBrowser::widget() const
+{
+    return m_pathTree;
 }
 
 void GopathBrowser::reload()
@@ -64,8 +64,8 @@ void GopathBrowser::pathIndexChanged(const QModelIndex & index)
         }
         if (newIndex != oldIndex) {
             m_model->setStartIndex(newIndex);
-            ui->pathTreeView->update(oldIndex);
-            ui->pathTreeView->update(newIndex);
+            m_pathTree->update(oldIndex);
+            m_pathTree->update(newIndex);
         }
     }
 }

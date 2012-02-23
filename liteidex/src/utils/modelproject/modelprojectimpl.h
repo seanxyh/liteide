@@ -45,17 +45,17 @@ public:
     virtual QIcon icon() const;
 public:
     virtual LiteApi::IFile *file();
-    virtual QString fileName() const;
+    virtual QString filePath() const;
     virtual QString mimeType() const;
     virtual QStringList fileNameList() const;
     virtual QStringList filePathList() const;
-    virtual QString fileNameToFullPath(const QString &fileName);
+    virtual QString fileNameToFullPath(const QString &filePath);
     virtual QString target() const;
     virtual QString targetPath() const;
     virtual QString workPath() const;
     virtual void load();
 public:
-    virtual bool open(const QString &fileName, const QString &mimeType);
+    virtual bool open(const QString &filePath, const QString &mimeType);
     void setModelFile(ModelFileImpl *file);
 protected slots:
     virtual void doubleClickedTree(QModelIndex index);

@@ -37,6 +37,7 @@
 #include <QMenu>
 #include <QActionGroup>
 #include <QDebug>
+#include <QScrollArea>
 #include "fileutil/fileutil.h"
 
 //lite_memory_check_begin
@@ -50,7 +51,7 @@
 //lite_memory_check_end
 
 ProjectManager::ProjectManager()
-    : m_widget(0), m_mainLayout(0)
+    : m_widget(0), m_scrollArea(0)
 {
 }
 
@@ -69,16 +70,19 @@ bool ProjectManager::initWithApp(IApplication *app)
     }
 
     m_widget = new QWidget;
-    m_mainLayout = new QVBoxLayout;
-    m_mainLayout->setMargin(0);
+    m_projectMenu = new QMenu(m_widget);
+    m_projectActGroup = new QActionGroup(m_widget);
 
+    QBoxLayout *layout = new QVBoxLayout;
+    m_scrollArea = new QScrollArea(m_widget);
+    m_scrollArea->setFrameShape(QFrame::NoFrame);
+    m_scrollArea->setWidgetResizable(true);
+    /*
     QWidget *head = new QWidget;
     QHBoxLayout *headLayout = new QHBoxLayout;
     headLayout->setMargin(0);
 
     QPushButton *btn = new QPushButton(tr("Projects"));
-    m_projectMenu = new QMenu(m_widget);
-    m_projectActGroup = new QActionGroup(m_widget);
     btn->setMenu(m_projectMenu);
 
     headLayout->addStretch(1);
@@ -86,7 +90,9 @@ bool ProjectManager::initWithApp(IApplication *app)
     head->setLayout(headLayout);
 
     m_mainLayout->addWidget(head,0,Qt::AlignTop);
-    m_widget->setLayout(m_mainLayout);
+    */
+    layout->addWidget(m_scrollArea);
+    m_widget->setLayout(layout);
     m_liteApp->dockManager()->addDock(m_widget,tr("Projects"));
 
     connect(m_projectMenu,SIGNAL(triggered(QAction*)),this,SLOT(triggeredProject(QAction*)));
@@ -132,7 +138,7 @@ void ProjectManager::currentEditorChanged(LiteApi::IEditor* editor)
 
 IProject *ProjectManager::openProject(const QString &fileName, const QString &mimeType)
 {
-    if (m_currentProject && m_currentProject->fileName() == fileName) {
+    if (m_currentProject && m_currentProject->filePath() == fileName) {
         return m_currentProject;
     }
     IProject *project = 0;
@@ -192,9 +198,9 @@ void ProjectManager::setCurrentProject(IProject *project)
     m_currentProject = project;
 
     if (m_currentProject) {
-        m_mainLayout->addWidget(m_currentProject->widget());
+        m_scrollArea->setWidget(m_currentProject->widget());
         m_currentProject->load();
-        QAction *act = m_mapNameToAction.value(project->fileName());
+        QAction *act = m_mapNameToAction.value(project->filePath());
         if (act) {
             act->setChecked(true);
         }
@@ -215,7 +221,7 @@ QList<IEditor*> ProjectManager::editorList(IProject *project) const
     if (project) {
         foreach (QString fileName, project->filePathList()) {
              foreach(IEditor *editor, m_liteApp->editorManager()->editorList()) {
-                if (FileUtil::compareFile(editor->fileName(),fileName)) {
+                if (FileUtil::compareFile(editor->filePath(),fileName)) {
                     editors << editor;
                     break;
                 }
@@ -257,13 +263,12 @@ void ProjectManager::closeProjectHelper(IProject *project)
 
     emit projectAboutToClose(cur);
 
+    m_scrollArea->takeWidget();
+
     foreach (IEditor *editor, editorList(cur)) {
         m_liteApp->editorManager()->closeEditor(editor);
     }
-    if (m_mainLayout) {
-        m_mainLayout->removeWidget(cur->widget());
-    }
-    QAction *act = m_mapNameToAction.value(cur->fileName());
+    QAction *act = m_mapNameToAction.value(cur->filePath());
     if (act) {
         act->setChecked(false);
     }

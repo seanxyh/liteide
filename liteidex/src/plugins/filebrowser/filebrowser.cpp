@@ -294,7 +294,7 @@ void FileBrowser::currentEditorChanged(LiteApi::IEditor *editor)
     if (!editor) {
         return;
     }
-    QString fileName = editor->fileName();
+    QString fileName = editor->filePath();
     if (fileName.isEmpty()) {
         return;
     }
