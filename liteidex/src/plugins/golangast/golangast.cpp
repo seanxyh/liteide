@@ -147,7 +147,7 @@ void GolangAst::editorCreated(LiteApi::IEditor *editor)
         return;
     }
     if (editor) {
-        QString fileName = editor->fileName();
+        QString fileName = editor->filePath();
         if (!fileName.isEmpty()) {
             QFileInfo info(fileName);
             if (info.suffix() == "go") {
@@ -182,7 +182,7 @@ void GolangAst::editorChanged(LiteApi::IEditor *editor)
             m_stackedWidget->setCurrentWidget(w);
         }
         if (editor) {
-            QString fileName = editor->fileName();
+            QString fileName = editor->filePath();
             if (!fileName.isEmpty()) {
                 QFileInfo info(fileName);
                 m_workPath = info.absolutePath();
@@ -202,7 +202,7 @@ void GolangAst::editorChanged(LiteApi::IEditor *editor)
 void GolangAst::editorSaved(LiteApi::IEditor *editor)
 {
     if (editor) {
-        QString fileName = editor->fileName();
+        QString fileName = editor->filePath();
         QFileInfo info(fileName);
         if (!fileName.isEmpty() && info.suffix() == "go" && m_updateFilePaths.contains(info.filePath())) {
             updateAst();

@@ -46,9 +46,9 @@ public:
 public:
     virtual LiteApi::IExtension *extension();
     virtual QWidget *widget();
-    virtual bool open(const QString &fileName,const QString &mimeType);
+    virtual bool open(const QString &filePath,const QString &mimeType);
     virtual QString name() const;
-    virtual QString fileName() const;
+    virtual QString filePath() const;
     virtual QString mimeType() const;
     void setName(const QString &t);
     QUrl resolveUrl(const QUrl &url) const;

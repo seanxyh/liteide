@@ -33,7 +33,7 @@ class ProfileFile : public ModelFileImpl
 public:
     ProfileFile(LiteApi::IApplication *app, QObject *parent);
 protected:
-    virtual bool loadFile(const QString &fileName);
+    virtual bool loadFile(const QString &filePath);
     virtual void updateModel();
 public:
     virtual QString target() const;

@@ -35,11 +35,11 @@ class LiteEditorFile : public LiteApi::IFile
 public:
     LiteEditorFile(LiteApi::IApplication *app, QObject *parent = 0);
 
-    virtual bool open(const QString &fileName, const QString &mimeType);
+    virtual bool open(const QString &filePath, const QString &mimeType);
     virtual bool reload();
-    virtual bool save(const QString &fileName);
+    virtual bool save(const QString &filePath);
     virtual bool isReadOnly() const;
-    virtual QString fileName() const;
+    virtual QString filePath() const;
     virtual QString mimeType() const;
 public:
     void setDocument(QTextDocument *document);
@@ -47,7 +47,7 @@ public:
     void setTextCodec(const QString &name);
     QString textCodec() const;
     bool reloadByCodec(const QString &codecName);
-    bool open(const QString &fileName, const QString &mimeType, bool bCheckCodec);
+    bool open(const QString &filePath, const QString &mimeType, bool bCheckCodec);
 protected:
     enum LineTerminatorMode {
         LFLineTerminator,

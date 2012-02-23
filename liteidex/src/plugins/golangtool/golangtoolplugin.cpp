@@ -1,5 +1,5 @@
 #include "golangtoolplugin.h"
-#include "gopathbrowser.h"
+#include "gopathprojectfactor.h"
 
 GolangToolPlugin::GolangToolPlugin()
 {
@@ -14,7 +14,7 @@ bool GolangToolPlugin::initWithApp(LiteApi::IApplication *app)
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
-    new GopathBrowser(app,this);
+    app->projectManager()->addFactory(new GopathProjectFactor(app,this));
     return true;
 }
 

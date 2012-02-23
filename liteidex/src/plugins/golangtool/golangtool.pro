@@ -7,15 +7,18 @@ DEFINES += GOLANGTOOL_LIBRARY
 
 SOURCES += golangtoolplugin.cpp \
     gopathbrowser.cpp \
-    gopathmodel.cpp
+    gopathmodel.cpp \
+    gopathproject.cpp \
+    gopathprojectfactor.cpp
 
 HEADERS += golangtoolplugin.h\
         golangtool_global.h \
     gopathbrowser.h \
-    gopathmodel.h
+    gopathmodel.h \
+    gopathproject.h \
+    gopathprojectfactor.h
 
-FORMS += \
-    gopathbrowser.ui
+FORMS +=
 
 RESOURCES += \
     golangtool.qrc

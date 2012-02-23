@@ -81,7 +81,7 @@ QWidget *ModelProjectImpl::widget()
 
 QString ModelProjectImpl::name() const
 {
-    return QFileInfo(m_file->fileName()).fileName();
+    return QFileInfo(m_file->filePath()).fileName();
 }
 
 QIcon ModelProjectImpl::icon() const
@@ -94,10 +94,10 @@ LiteApi::IFile *ModelProjectImpl::file()
     return m_file;
 }
 
-QString ModelProjectImpl::fileName() const
+QString ModelProjectImpl::filePath() const
 {
     if (m_file) {
-        return m_file->fileName();
+        return m_file->filePath();
     }
     return QString();
 }
@@ -157,7 +157,7 @@ QString ModelProjectImpl::targetPath() const
 
 QString ModelProjectImpl::workPath() const
 {
-    return QFileInfo(m_file->fileName()).absolutePath();
+    return QFileInfo(m_file->filePath()).absolutePath();
 }
 
 
@@ -167,7 +167,7 @@ void ModelProjectImpl::editorSaved(LiteApi::IEditor *editor)
         return;
     }
 
-    if (FileUtil::compareFile(editor->fileName(),m_file->fileName())) {
+    if (FileUtil::compareFile(editor->filePath(),m_file->filePath())) {
         bool success = m_file->reload();
         if (success) {
             m_file->updateModel();

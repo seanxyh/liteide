@@ -185,11 +185,11 @@ void LiteDebug::editorCreated(LiteApi::IEditor *editor)
     if (!editorMark) {
         return;
     }
-    QList<int> bpList = m_fileBpMap.values(editor->fileName());
+    QList<int> bpList = m_fileBpMap.values(editor->filePath());
     foreach (int line, bpList) {
         editorMark->addMark(line,LiteApi::BreakPointMark);
     }
-    if (m_lastLine.fileName == editor->fileName()) {
+    if (m_lastLine.fileName == editor->filePath()) {
         editorMark->addMark(m_lastLine.line,LiteApi::CurrentLineMark);
     }
 }
@@ -286,7 +286,7 @@ void LiteDebug::runToLine()
     if (!textEditor) {
         return;
     }
-    QString filePath = textEditor->fileName();
+    QString filePath = textEditor->filePath();
     if (filePath.isEmpty()) {
         return;
     }
@@ -355,7 +355,7 @@ void LiteDebug::toggleBreakPoint()
         return;
     }
     int line = textEditor->line();
-    QString fileName = editor->fileName();
+    QString fileName = editor->filePath();
     if (fileName.isEmpty()) {
         return;
     }

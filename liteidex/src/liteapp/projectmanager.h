@@ -40,6 +40,7 @@ class QVBoxLayout;
 class QComboBox;
 class QStackedLayout;
 class QActionGroup;
+class QScrollArea;
 
 class ProjectManager : public IProjectManager
 {
@@ -70,7 +71,7 @@ protected:
     QPointer<IProject>      m_currentProject;
     QList<IProjectFactory*>    m_factoryList;
     QWidget                 *m_widget;
-    QVBoxLayout             *m_mainLayout;
+    QScrollArea             *m_scrollArea;
     QMenu                   *m_projectMenu;
     QActionGroup            *m_projectActGroup;
 };

@@ -296,7 +296,7 @@ QWidget *LiteEditor::widget()
 
 QString LiteEditor::name() const
 {
-    return QFileInfo(m_file->fileName()).fileName();
+    return QFileInfo(m_file->filePath()).fileName();
 }
 
 QIcon LiteEditor::icon() const
@@ -329,7 +329,7 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
 
 bool LiteEditor::reload()
 {
-    bool success = open(fileName(),mimeType());
+    bool success = open(filePath(),mimeType());
     if (success) {
         emit reloaded();
     }
@@ -341,7 +341,7 @@ bool LiteEditor::save()
     if (m_bReadOnly) {
         return false;
     }
-    return m_file->save(m_file->fileName());
+    return m_file->save(m_file->filePath());
 }
 
 bool LiteEditor::saveAs(const QString &fileName)
@@ -374,12 +374,12 @@ bool LiteEditor::isModified() const
     return m_file->document()->isModified();
 }
 
-QString LiteEditor::fileName() const
+QString LiteEditor::filePath() const
 {
     if (!m_file) {
         return QString();
     }
-    return m_file->fileName();
+    return m_file->filePath();
 }
 
 QString LiteEditor::mimeType() const
@@ -510,7 +510,7 @@ void LiteEditor::exportHtml()
 {
     QString title;
     if (m_file) {
-        title = QFileInfo(m_file->fileName()).baseName();
+        title = QFileInfo(m_file->filePath()).baseName();
     }
     QString fileName = QFileDialog::getSaveFileName(m_widget, tr("Export HTML"),
                                                     title, "*.html");
@@ -537,7 +537,7 @@ void LiteEditor::exportPdf()
 //! [0]
     QString title;
     if (m_file) {
-        title = QFileInfo(m_file->fileName()).baseName();
+        title = QFileInfo(m_file->filePath()).baseName();
     }
     QString fileName = QFileDialog::getSaveFileName(m_widget, tr("Export PDF"),
                                                     title, "*.pdf");
@@ -580,7 +580,7 @@ void LiteEditor::codecComboBoxChanged(QString codec)
         return;
     }
     if (m_file->document()->isModified()) {
-        QString text = QString(tr("Cancel file %1 modify and reload ?")).arg(m_file->fileName());
+        QString text = QString(tr("Cancel file %1 modify and reload ?")).arg(m_file->filePath());
         int ret = QMessageBox::question(m_liteApp->mainWindow(),"LiteIDE X",text,QMessageBox::Yes|QMessageBox::No);
         if (ret != QMessageBox::Yes) {
             return;

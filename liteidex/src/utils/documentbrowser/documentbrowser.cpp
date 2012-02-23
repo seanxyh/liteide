@@ -162,7 +162,7 @@ QString DocumentBrowser::name() const
     return m_name;
 }
 
-QString DocumentBrowser::fileName() const
+QString DocumentBrowser::filePath() const
 {
     return m_fileName;
 }
