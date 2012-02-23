@@ -12,6 +12,7 @@ class GolangToolPlugin : public LiteApi::IPlugin
 public:
     GolangToolPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
+    virtual QStringList dependPluginList() const;
 };
 
 #endif // GOLANGTOOLPLUGIN_H

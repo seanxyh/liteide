@@ -1,4 +1,5 @@
 #include "golangtoolplugin.h"
+#include "gopathbrowser.h"
 
 GolangToolPlugin::GolangToolPlugin()
 {
@@ -13,7 +14,14 @@ bool GolangToolPlugin::initWithApp(LiteApi::IApplication *app)
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
+    new GopathBrowser(app,this);
     return true;
 }
+
+QStringList GolangToolPlugin::dependPluginList() const
+{
+    return QStringList() << "plugin/liteenv";
+}
+
 
 Q_EXPORT_PLUGIN(GolangToolPlugin)
