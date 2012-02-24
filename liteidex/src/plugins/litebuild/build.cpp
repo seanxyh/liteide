@@ -233,6 +233,19 @@ QString Build::actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, co
         i.next();
         cmd.replace(i.key(),i.value());
     }
+    QRegExp rx("\\$\\{(\\w+)\\}");
+    int pos = 0;
+    QStringList list;
+    while ((pos = rx.indexIn(cmd, pos)) != -1) {
+         list << rx.cap(1);
+         pos += rx.matchedLength();
+    }
+    foreach (QString str, list) {
+        if (env.contains(str)) {
+            cmd.replace("${"+str+"}",env.value(str));
+        }
+    }
+
     return FileUtil::lookPath(cmd,env,true);
 }
 

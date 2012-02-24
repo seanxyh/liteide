@@ -7,11 +7,12 @@
 
 class QTreeView;
 class GopathModel;
+class GopathBrowser;
 class GopathProject : public LiteApi::IProject
 {
     Q_OBJECT
 public:
-    explicit GopathProject(QWidget *widget);
+    explicit GopathProject(GopathBrowser *browser);
     ~GopathProject();
     virtual QWidget *widget();
     virtual QString name() const;
@@ -25,8 +26,9 @@ public:
     virtual QString workPath() const;
     virtual void load();
 public slots:
+    void startPathChanged(const QString &path);
 protected:
-    QWidget *m_widget;
+    GopathBrowser *m_browser;
     QString m_path;
 };
 

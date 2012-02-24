@@ -1,7 +1,8 @@
 #include "gopathbrowser.h"
-#include "ui_gopathbrowser.h"
 #include "gopathmodel.h"
 #include "liteapi/litefindobj.h"
+#include <QTreeView>
+#include <QVBoxLayout>
 #include <QDebug>
 
 GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
@@ -9,12 +10,16 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp(app)
 {
     m_widget = new QWidget;
+
     m_pathTree = new QTreeView;
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(m_pathTree);
-    m_widget->setLayout(layout);
+    m_pathTree->setHeaderHidden(true);
     m_model = new GopathModel(this);
     m_pathTree->setModel(m_model);
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setMargin(0);
+    layout->addWidget(m_pathTree);
+    m_widget->setLayout(layout);
 
     connect(m_pathTree->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(pathIndexChanged(QModelIndex)));
 
@@ -32,7 +37,7 @@ GopathBrowser::~GopathBrowser()
 
 QWidget *GopathBrowser::widget() const
 {
-    return m_pathTree;
+    return m_widget;
 }
 
 void GopathBrowser::reload()
@@ -46,7 +51,6 @@ void GopathBrowser::reload()
 #else
     m_gopath = gopath.split(":",QString::SkipEmptyParts);
 #endif
-    qDebug() << m_gopath;
     m_model->setPathList(m_gopath);
 }
 
@@ -66,6 +70,7 @@ void GopathBrowser::pathIndexChanged(const QModelIndex & index)
             m_model->setStartIndex(newIndex);
             m_pathTree->update(oldIndex);
             m_pathTree->update(newIndex);
+            emit startPathChanged(m_model->filePath(newIndex));
         }
     }
 }

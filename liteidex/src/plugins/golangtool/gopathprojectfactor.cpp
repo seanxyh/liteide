@@ -13,6 +13,13 @@ GopathProjectFactor::GopathProjectFactor(LiteApi::IApplication *app, QObject *pa
     connect(m_liteApp->projectManager(),SIGNAL(projectAboutToClose(LiteApi::IProject*)),this,SLOT(projectAboutToClose(LiteApi::IProject*)));
 }
 
+GopathProjectFactor::~GopathProjectFactor()
+{
+    if (m_browser) {
+        delete m_browser;
+    }
+}
+
 QStringList GopathProjectFactor::mimeTypes() const
 {
     return m_mimeTypes;
@@ -21,7 +28,7 @@ QStringList GopathProjectFactor::mimeTypes() const
 LiteApi::IProject *GopathProjectFactor::open(const QString &fileName, const QString &mimeType)
 {
     if (m_mimeTypes.contains(mimeType)) {        
-        return new GopathProject(m_browser->widget());
+        return new GopathProject(m_browser);
     }
     return 0;
 }
