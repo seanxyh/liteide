@@ -19,6 +19,8 @@ public:
 public slots:
     void pathIndexChanged(const QModelIndex & index);
     void reload();
+signals:
+    void startPathChanged(const QString& path);
 private:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;

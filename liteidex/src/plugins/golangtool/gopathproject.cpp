@@ -1,6 +1,7 @@
 #include "gopathproject.h"
 #include "gopathmodel.h"
 #include "liteapi/litefindobj.h"
+#include "gopathbrowser.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QTreeView>
@@ -9,18 +10,25 @@
 #include <QStringList>
 #include <QDebug>
 
-GopathProject::GopathProject(QWidget *widget) : m_widget(widget)
+GopathProject::GopathProject(GopathBrowser *browser) : m_browser(browser)
 {
+    connect(m_browser,SIGNAL(startPathChanged(QString)),this,SLOT(startPathChanged(QString)));
 }
 
 GopathProject::~GopathProject()
 {
-    m_widget->hide();
+    m_browser->widget()->hide();
+}
+
+void GopathProject::startPathChanged(const QString &path)
+{
+    m_path = path;
+    emit reloaded();
 }
 
 QWidget *GopathProject::widget()
 {
-    return m_widget;
+    return m_browser->widget();
 }
 
 QString GopathProject::name() const
@@ -77,5 +85,5 @@ QString GopathProject::workPath() const
 
 void GopathProject::load()
 {
-    m_widget->show();
+    m_browser->widget()->show();
 }

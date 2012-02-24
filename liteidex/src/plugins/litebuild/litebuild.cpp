@@ -528,6 +528,7 @@ void LiteBuild::execAction(const QString &id)
     QString workDir = m_liteideMap.value("${WORKDIR}");
 
     QMap<QString,QString> env = buildEnvMap();
+
     QString cmd;
     if (m_envManager) {
         cmd = m_build->actionCommand(ba,env,m_envManager->currentEnvironment());
