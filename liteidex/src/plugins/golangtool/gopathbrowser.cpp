@@ -52,6 +52,8 @@ void GopathBrowser::reload()
     m_gopath = gopath.split(":",QString::SkipEmptyParts);
 #endif
     m_model->setPathList(m_gopath);
+    m_model->findPath("f:/vfc/go-hg/src/pkg/exp/wingui");
+    m_model->findPath("f:/vfc/go-hg/src/pkg/linux");
 }
 
 void GopathBrowser::pathIndexChanged(const QModelIndex & index)

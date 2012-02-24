@@ -4,14 +4,22 @@
 #include <QIcon>
 #include <QFont>
 #include <QFileIconProvider>
+#include <QFileSystemWatcher>
 #include <QDebug>
 
-PathNode::PathNode() : m_parent(0), m_children(0)
+PathNode::PathNode(GopathModel *model) :
+    m_model(model),
+    m_parent(0),
+    m_children(0)
 {
 
 }
 
-PathNode::PathNode(const QString &path, PathNode *parent) : m_parent(parent), m_children(0), m_path(path)
+PathNode::PathNode(GopathModel *model, const QString &path, PathNode *parent) :
+    m_model(model),
+    m_parent(parent),
+    m_children(0),
+    m_path(path)
 {
     QFileInfo info(path);
     if (parent && parent->parent() == 0) {
@@ -19,10 +27,16 @@ PathNode::PathNode(const QString &path, PathNode *parent) : m_parent(parent), m_
     } else {
         m_text = info.fileName();
     }
+    if (info.isDir() && !m_path.isEmpty()) {
+        m_model->fileWatcher()->addPath(m_path);
+    }
 }
 
 PathNode::~PathNode()
 {
+    if (this->isDir() && !m_path.isEmpty())  {
+        m_model->fileWatcher()->removePath(m_path);
+    }
     if (m_children) {
         qDeleteAll(m_children->begin(),m_children->end());
         delete m_children;
@@ -38,7 +52,7 @@ QList<PathNode*>* PathNode::children()
             if (info.isDir()) {
                 QDir dir(m_path);
                 foreach(QFileInfo childInfo, dir.entryInfoList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot,QDir::DirsFirst)) {
-                    m_children->append(new PathNode(childInfo.filePath(),this));
+                    m_children->append(new PathNode(this->m_model,childInfo.filePath(),this));
                 }
             }
         }
@@ -79,6 +93,11 @@ QString PathNode::text() const
     return m_text;
 }
 
+bool PathNode::isDir() const
+{
+    return QFileInfo(m_path).isDir();
+}
+
 QFileInfo PathNode::fileInfo() const
 {
     return QFileInfo(m_path);
@@ -92,17 +111,79 @@ void PathNode::clear()
     }
 }
 
+void PathNode::reload()
+{
+    clear();
+    if (m_children == 0) {
+        m_children = new QList<PathNode*>();
+    }
+    if (!m_path.isEmpty()) {
+        QFileInfo info(m_path);
+        if (info.isDir()) {
+            QDir dir(m_path);
+            foreach(QFileInfo childInfo, dir.entryInfoList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot,QDir::DirsFirst)) {
+                m_children->append(new PathNode(this->m_model,childInfo.filePath(),this));
+            }
+        }
+    }
+}
+
+PathNode *PathNode::findPath(const QString &path)
+{
+    if (!path.startsWith(m_path)) {
+        return 0;
+    }
+    if (path == m_path) {
+        return this;
+    }
+    QStringList nameList = path.right(path.length()-m_path.length()).split("/",QString::SkipEmptyParts);
+    PathNode *parent = this;
+    bool find = false;
+    foreach (QString name,nameList) {
+        find = false;
+        QList<PathNode*>* chilren = parent->children();
+        for (int i = 0; i < chilren->count(); i++) {
+            PathNode *node = chilren->at(i);
+            if (!node->isDir()) {
+                continue;
+            }
+            if (node->m_text == name) {
+                parent = node;
+                find = true;
+                break;
+            }
+        }
+        if (!find) {
+            return 0;
+        }
+    }
+    return parent;
+}
+
 
 GopathModel::GopathModel(QObject *parent) :
     QAbstractItemModel(parent),
-    m_rootNode(new PathNode),
-    m_iconProvider(new QFileIconProvider)
+    m_rootNode(new PathNode(this)),
+    m_iconProvider(new QFileIconProvider),
+    m_fileWatcher(new QFileSystemWatcher(this))
 {
+    connect(m_fileWatcher,SIGNAL(directoryChanged(QString)),this,SLOT(directoryChanged(QString)));
 }
 
 GopathModel::~GopathModel()
 {
     delete m_rootNode;
+    delete m_iconProvider;
+}
+
+void GopathModel::directoryChanged(const QString &path)
+{
+    foreach(QModelIndex index,this->findPath(path)) {
+        PathNode *node = nodeFromIndex(index);
+        this->beginRemoveRows(index,0,this->rowCount(index));
+        node->reload();
+        this->endRemoveRows();
+    }
 }
 
 PathNode *GopathModel::nodeFromIndex(const QModelIndex &index) const
@@ -131,10 +212,58 @@ QString GopathModel::filePath(const QModelIndex &index) const
 void GopathModel::setPathList(const QStringList &pathList)
 {
     m_rootNode->clear();
+    m_pathList.clear();
     foreach(QString path, pathList) {
-        m_rootNode->children()->append(new PathNode(path,m_rootNode));
+        QString spath = QDir::fromNativeSeparators(QDir::cleanPath(path));
+        m_pathList.append(spath);
+        m_rootNode->children()->append(new PathNode(this,spath,m_rootNode));
     }
     reset();
+}
+
+QModelIndex GopathModel::findPathHelper(const QString &path, const QModelIndex &parentIndex) const
+{
+    PathNode *node = nodeFromIndex(parentIndex);
+    if (!path.startsWith(node->path())) {
+        return QModelIndex();
+    }
+    if (path == node->path()) {
+        return QModelIndex();
+    }
+    QStringList nameList = path.right(path.length()-node->path().length()).split("/",QString::SkipEmptyParts);
+    QModelIndex parent = parentIndex;
+    bool find = false;
+    foreach (QString name,nameList) {
+        find = false;
+
+        for (int i = 0; i < this->rowCount(parent); i++) {
+            QModelIndex index = this->index(i,0,parent);
+            PathNode *node = nodeFromIndex(index);
+            if (node->isDir() && node->text() == name) {
+                parent = index;
+                find = true;
+                break;
+            }
+        }
+        if (!find) {
+            return QModelIndex();
+        }
+   }
+   return parent;
+}
+
+QList<QModelIndex> GopathModel::findPath(const QString &path) const
+{
+    QList<QModelIndex> list;
+    QString cpath = QDir::fromNativeSeparators(QDir::cleanPath(path));
+    for (int i = 0; i < this->rowCount(); i++) {
+        QModelIndex find = findPathHelper(cpath,this->index(i,0));
+        if (find.isValid()) {
+            list.append(find);
+        }
+     }
+
+    return list;
 }
 
 int GopathModel::rowCount(const QModelIndex &parent) const
@@ -186,4 +315,9 @@ QVariant GopathModel::data(const QModelIndex &index, int role) const
     }
     }
     return QVariant();
+}
+
+QFileSystemWatcher* GopathModel::fileWatcher() const
+{
+    return m_fileWatcher;
 }
