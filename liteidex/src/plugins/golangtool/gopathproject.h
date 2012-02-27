@@ -25,6 +25,7 @@ public:
     virtual QString targetPath() const;
     virtual QString workPath() const;
     virtual void load();
+    GopathBrowser *browser();
 public slots:
     void startPathChanged(const QString &path);
 protected:

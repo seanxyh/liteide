@@ -20,6 +20,11 @@ GopathProject::~GopathProject()
     m_browser->widget()->hide();
 }
 
+GopathBrowser *GopathProject::browser()
+{
+    return m_browser;
+}
+
 void GopathProject::startPathChanged(const QString &path)
 {
     m_path = path;

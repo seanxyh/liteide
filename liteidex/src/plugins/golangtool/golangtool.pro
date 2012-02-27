@@ -9,16 +9,19 @@ SOURCES += golangtoolplugin.cpp \
     gopathbrowser.cpp \
     gopathmodel.cpp \
     gopathproject.cpp \
-    gopathprojectfactor.cpp
+    gopathprojectfactor.cpp \
+    importgopathdialog.cpp
 
 HEADERS += golangtoolplugin.h\
         golangtool_global.h \
     gopathbrowser.h \
     gopathmodel.h \
     gopathproject.h \
-    gopathprojectfactor.h
+    gopathprojectfactor.h \
+    importgopathdialog.h
 
-FORMS +=
+FORMS += \
+    importgopathdialog.ui
 
 RESOURCES += \
     golangtool.qrc

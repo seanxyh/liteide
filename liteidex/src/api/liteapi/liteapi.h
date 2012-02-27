@@ -293,6 +293,7 @@ public:
     virtual void setCurrentProject(IProject *project) = 0;
     virtual IProject *currentProject() const = 0;
     virtual QList<IEditor*> editorList(IProject *project) const = 0;
+    virtual void addImportAction(QAction *act) = 0;
 public slots:
     virtual void saveProject(IProject *project = 0) = 0;
     virtual void closeProject(IProject *project = 0) = 0;

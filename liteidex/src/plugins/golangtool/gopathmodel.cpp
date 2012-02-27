@@ -180,9 +180,13 @@ void GopathModel::directoryChanged(const QString &path)
 {
     foreach(QModelIndex index,this->findPath(path)) {
         PathNode *node = nodeFromIndex(index);
-        this->beginRemoveRows(index,0,this->rowCount(index));
-        node->reload();
-        this->endRemoveRows();
+        if (this->rowCount(index) > 0) {
+            this->beginRemoveRows(index,0,this->rowCount(index)-1);
+            node->reload();
+            this->endRemoveRows();
+        } else {
+            node->reload();
+        }
     }
 }
 

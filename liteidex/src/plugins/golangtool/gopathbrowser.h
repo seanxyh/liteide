@@ -16,18 +16,20 @@ public:
     explicit GopathBrowser(LiteApi::IApplication *app,QObject *parent = 0);
     ~GopathBrowser();
     QWidget *widget() const;
+    void setPathList(const QStringList &pathList);
+    QStringList pathList() const;
+    QStringList systemGopathList() const;
 public slots:
     void pathIndexChanged(const QModelIndex & index);
-    void reload();
+    void reloadEnv();
 signals:
     void startPathChanged(const QString& path);
 private:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
     QTreeView *m_pathTree;
-    LiteApi::IEnvManager *m_envManager;
     GopathModel *m_model;
-    QStringList m_gopath;
+    QStringList m_pathList;
 };
 
 #endif // GOPATHBROWSER_H
