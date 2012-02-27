@@ -3,6 +3,8 @@
 #include "liteapi/litefindobj.h"
 #include <QTreeView>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 #include <QDebug>
 
 GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
@@ -22,12 +24,8 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_widget->setLayout(layout);
 
     connect(m_pathTree->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(pathIndexChanged(QModelIndex)));
-
-    m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
-    if (m_envManager) {
-        connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(reload()));
-        reload();
-    }
+    LiteApi::IEnvManager* envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
+    connect(envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(reloadEnv()));
 }
 
 GopathBrowser::~GopathBrowser()
@@ -40,20 +38,49 @@ QWidget *GopathBrowser::widget() const
     return m_widget;
 }
 
-void GopathBrowser::reload()
+void GopathBrowser::setPathList(const QStringList &pathList)
 {
-   QString gopath= m_envManager->currentEnvironment().value("GOPATH");
-   if (gopath.isEmpty()) {
-       gopath = m_envManager->currentEnvironment().value("GOROOT");
-   }
+    m_pathList = pathList;
+    QStringList allPathList = systemGopathList()+m_pathList;
+    m_model->setPathList(allPathList);
+    int row = 0;
+    if (m_model->rowCount() > 0) {
+        row = m_model->rowCount()-1;
+    }
+    m_pathTree->expand(m_model->index(row,0));
+    m_model->setStartIndex(m_model->index(row,0));
+    LiteApi::IEnvManager* envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
 #ifdef Q_OS_WIN
-    m_gopath = gopath.split(";",QString::SkipEmptyParts);
+    envManager->currentEnvironment().insert("GOPATH",allPathList.join(";"));
 #else
-    m_gopath = gopath.split(":",QString::SkipEmptyParts);
+    envManager->currentEnvironment().insert("GOPATH",allPathList.join(":"));
 #endif
-    m_model->setPathList(m_gopath);
-    m_model->findPath("f:/vfc/go-hg/src/pkg/exp/wingui");
-    m_model->findPath("f:/vfc/go-hg/src/pkg/linux");
+}
+
+QStringList GopathBrowser::pathList() const
+{
+    return m_pathList;
+}
+
+QStringList GopathBrowser::systemGopathList() const
+{
+    LiteApi::IEnvManager* envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
+    QString gopath= envManager->currentEnvironment().value("GOPATH");
+    if (gopath.isEmpty()) {
+        gopath = envManager->currentEnvironment().value("GOROOT");
+    }
+    QStringList list;
+ #ifdef Q_OS_WIN
+     list = gopath.split(";",QString::SkipEmptyParts);
+ #else
+     list = gopath.split(":",QString::SkipEmptyParts);
+ #endif
+     return list;
+}
+
+void GopathBrowser::reloadEnv()
+{
+    this->setPathList(m_pathList);
 }
 
 void GopathBrowser::pathIndexChanged(const QModelIndex & index)

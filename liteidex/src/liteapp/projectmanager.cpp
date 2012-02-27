@@ -73,24 +73,27 @@ bool ProjectManager::initWithApp(IApplication *app)
     m_projectMenu = new QMenu(m_widget);
     m_projectActGroup = new QActionGroup(m_widget);
 
+    m_importMenu = new QMenu(m_widget);
+
+    QAction *openProjectAct = new QAction(QIcon(":/images/openproject.png"),tr("Project File"),this);
+    connect(openProjectAct,SIGNAL(triggered()),m_liteApp->fileManager(),SLOT(openProjects()));
+    m_importMenu->addAction(openProjectAct);
+    m_importMenu->addSeparator();
+
     QBoxLayout *layout = new QVBoxLayout;
+    layout->setMargin(0);
     m_scrollArea = new QScrollArea(m_widget);
     m_scrollArea->setFrameShape(QFrame::NoFrame);
     m_scrollArea->setWidgetResizable(true);
-    /*
-    QWidget *head = new QWidget;
+
     QHBoxLayout *headLayout = new QHBoxLayout;
     headLayout->setMargin(0);
-
-    QPushButton *btn = new QPushButton(tr("Projects"));
-    btn->setMenu(m_projectMenu);
-
-    headLayout->addStretch(1);
+    QPushButton *btn = new QPushButton(tr("Import"));
+    btn->setMenu(m_importMenu);
     headLayout->addWidget(btn);
-    head->setLayout(headLayout);
+    headLayout->addStretch(0);
 
-    m_mainLayout->addWidget(head,0,Qt::AlignTop);
-    */
+    layout->addLayout(headLayout);
     layout->addWidget(m_scrollArea);
     m_widget->setLayout(layout);
     m_liteApp->dockManager()->addDock(m_widget,tr("Projects"));
@@ -229,6 +232,11 @@ QList<IEditor*> ProjectManager::editorList(IProject *project) const
         }
     }
     return editors;
+}
+
+void ProjectManager::addImportAction(QAction *act)
+{
+    m_importMenu->addAction(act);
 }
 
 void ProjectManager::saveProject(IProject *project)

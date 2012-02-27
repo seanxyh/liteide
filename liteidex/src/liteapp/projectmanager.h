@@ -58,6 +58,7 @@ public:
     virtual void setCurrentProject(IProject *project);
     virtual IProject *currentProject() const;
     virtual QList<IEditor*> editorList(IProject *project) const;
+    virtual void addImportAction(QAction *act);
     QWidget *widget();
 public slots:    
     virtual void saveProject(IProject *project = 0);
@@ -74,6 +75,7 @@ protected:
     QScrollArea             *m_scrollArea;
     QMenu                   *m_projectMenu;
     QActionGroup            *m_projectActGroup;
+    QMenu                   *m_importMenu;
 };
 
 #endif // PROJECTMANAGER_H

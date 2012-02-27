@@ -14,7 +14,7 @@ public:
     virtual LiteApi::IProject *open(const QString &fileName, const QString &mimeType);
     virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const;    
 public slots:
-    void projectAboutToClose(LiteApi::IProject*);
+    void importGopath();
 protected:
     LiteApi::IApplication *m_liteApp;
     GopathBrowser *m_browser;

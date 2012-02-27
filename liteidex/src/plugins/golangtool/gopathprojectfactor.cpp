@@ -1,6 +1,9 @@
 #include "gopathprojectfactor.h"
 #include "gopathproject.h"
 #include "gopathbrowser.h"
+#include "importgopathdialog.h"
+#include <QAction>
+#include <QFileDialog>
 #include <QDebug>
 
 GopathProjectFactor::GopathProjectFactor(LiteApi::IApplication *app, QObject *parent) :
@@ -10,7 +13,9 @@ GopathProjectFactor::GopathProjectFactor(LiteApi::IApplication *app, QObject *pa
     m_mimeTypes << "text/x-gopath";
     m_browser = new GopathBrowser(app,this);
 
-    connect(m_liteApp->projectManager(),SIGNAL(projectAboutToClose(LiteApi::IProject*)),this,SLOT(projectAboutToClose(LiteApi::IProject*)));
+    QAction *act = new QAction(tr("<GOPATH> Project"),this);
+    connect(act,SIGNAL(triggered()),this,SLOT(importGopath()));
+    m_liteApp->projectManager()->addImportAction(act);
 }
 
 GopathProjectFactor::~GopathProjectFactor()
@@ -18,6 +23,19 @@ GopathProjectFactor::~GopathProjectFactor()
     if (m_browser) {
         delete m_browser;
     }
+}
+
+void GopathProjectFactor::importGopath()
+{
+    ImportGopathDialog *dlg = new ImportGopathDialog(m_liteApp->mainWindow());
+    dlg->setSysPathList(m_browser->systemGopathList());
+    dlg->setPathList(m_browser->pathList());
+    if (dlg->exec() == QDialog::Accepted) {
+        m_browser->setPathList(dlg->pathList());
+        GopathProject *project =  new GopathProject(m_browser);
+        m_liteApp->projectManager()->setCurrentProject(project);
+    }
+    delete dlg;
 }
 
 QStringList GopathProjectFactor::mimeTypes() const
@@ -28,7 +46,9 @@ QStringList GopathProjectFactor::mimeTypes() const
 LiteApi::IProject *GopathProjectFactor::open(const QString &fileName, const QString &mimeType)
 {
     if (m_mimeTypes.contains(mimeType)) {        
-        return new GopathProject(m_browser);
+        GopathProject *project =  new GopathProject(m_browser);
+        project->browser()->setPathList(QStringList() << fileName);
+        return project;
     }
     return 0;
 }
@@ -36,8 +56,4 @@ LiteApi::IProject *GopathProjectFactor::open(const QString &fileName, const QStr
 bool GopathProjectFactor::targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const
 {
     return false;
-}
-
-void GopathProjectFactor::projectAboutToClose(LiteApi::IProject* project)
-{
 }
