@@ -183,7 +183,7 @@ GopathModel::~GopathModel()
 
 void GopathModel::directoryChanged(const QString &path)
 {
-    foreach(QModelIndex index,this->findPath(path)) {
+    foreach(QModelIndex index,this->findPaths(path)) {
         PathNode *node = nodeFromIndex(index);
         if (this->rowCount(index) > 0) {
             this->beginRemoveRows(index,0,this->rowCount(index)-1);
@@ -205,12 +205,12 @@ PathNode *GopathModel::nodeFromIndex(const QModelIndex &index) const
 
 void GopathModel::setStartIndex(const QModelIndex &index)
 {
-    m_startIndex = index;
+    m_startPath = filePath(index);
 }
 
 QModelIndex GopathModel::startIndex() const
 {
-    return m_startIndex;
+    return findPath(m_startPath);
 }
 
 QString GopathModel::filePath(const QModelIndex &index) const
@@ -223,7 +223,6 @@ void GopathModel::setPathList(const QStringList &pathList)
     this->beginResetModel();
     m_rootNode->clear();
     m_pathList.clear();
-    m_startIndex = QModelIndex();
     foreach(QString path, pathList) {
         QString spath = QDir::fromNativeSeparators(QDir::cleanPath(path));
         m_pathList.append(spath);
@@ -239,7 +238,7 @@ QModelIndex GopathModel::findPathHelper(const QString &path, const QModelIndex &
         return QModelIndex();
     }
     if (path == node->path()) {
-        return QModelIndex();
+        return parentIndex;
     }
     QStringList nameList = path.right(path.length()-node->path().length()).split("/",QString::SkipEmptyParts);
     QModelIndex parent = parentIndex;
@@ -250,7 +249,7 @@ QModelIndex GopathModel::findPathHelper(const QString &path, const QModelIndex &
         for (int j = 0; j < this->rowCount(parent); j++) {
             QModelIndex index = this->index(j,0,parent);
             PathNode *node = nodeFromIndex(index);
-            if ( ((i == count-1) || node->isDir()) && node->text() == nameList.at(i)) {
+            if ( ( (i == count-1) || node->isDir()) && node->text() == nameList.at(i)) {
                 parent = index;
                 find = true;
                 break;
@@ -263,38 +262,7 @@ QModelIndex GopathModel::findPathHelper(const QString &path, const QModelIndex &
     return parent;
 }
 
-QModelIndex GopathModel::findFileHelper(const QString &path, const QModelIndex &parentIndex) const
-{
-    PathNode *node = nodeFromIndex(parentIndex);
-    if (!path.startsWith(node->path())) {
-        return QModelIndex();
-    }
-    if (path == node->path()) {
-        return QModelIndex();
-    }
-    QStringList nameList = path.right(path.length()-node->path().length()).split("/",QString::SkipEmptyParts);
-    QModelIndex parent = parentIndex;
-    bool find = false;
-    int count = nameList.count();
-    for (int i = 0; i < count; i++) {
-        find = false;
-        for (int j = 0; j < this->rowCount(parent); j++) {
-            QModelIndex index = this->index(j,0,parent);
-            PathNode *node = nodeFromIndex(index);
-            if ( ((i == count-1) || node->isDir()) && node->text() == nameList.at(0)) {
-                parent = index;
-                find = true;
-                break;
-            }
-        }
-        if (!find) {
-            return QModelIndex();
-        }
-    }
-   return parent;
-}
-
-QList<QModelIndex> GopathModel::findPath(const QString &path) const
+QList<QModelIndex> GopathModel::findPaths(const QString &path) const
 {
     QList<QModelIndex> list;
     QString cpath = QDir::fromNativeSeparators(QDir::cleanPath(path));
@@ -304,22 +272,16 @@ QList<QModelIndex> GopathModel::findPath(const QString &path) const
             list.append(find);
         }
      }
-
     return list;
 }
 
-QList<QModelIndex> GopathModel::findFile(const QString &path) const
+QModelIndex GopathModel::findPath(const QString &path) const
 {
-    QList<QModelIndex> list;
-    QString cpath = QDir::fromNativeSeparators(QDir::cleanPath(path));
-    for (int i = 0; i < this->rowCount(); i++) {
-        QModelIndex find = findPathHelper(cpath,this->index(i,0));
-        if (find.isValid()) {
-            list.append(find);
-        }
-     }
-
-    return list;
+    QList<QModelIndex> list = this->findPaths(path);
+    if (!list.isEmpty()) {
+        return list.last();
+    }
+    return QModelIndex();
 }
 
 int GopathModel::rowCount(const QModelIndex &parent) const
@@ -364,7 +326,7 @@ QVariant GopathModel::data(const QModelIndex &index, int role) const
         return m_iconProvider->icon(node->fileInfo());
     case Qt::FontRole: {
         QFont font;
-        if (index == m_startIndex) {
+        if (node->path() == m_startPath) {
             font.setBold(true);
         }
         return font;
