@@ -10,7 +10,9 @@ SOURCES += golangtoolplugin.cpp \
     gopathmodel.cpp \
     gopathproject.cpp \
     gopathprojectfactor.cpp \
-    importgopathdialog.cpp
+    importgopathdialog.cpp \
+    ../filebrowser/createfiledialog.cpp \
+    ../filebrowser/createdirdialog.cpp
 
 HEADERS += golangtoolplugin.h\
         golangtool_global.h \
@@ -18,10 +20,14 @@ HEADERS += golangtoolplugin.h\
     gopathmodel.h \
     gopathproject.h \
     gopathprojectfactor.h \
-    importgopathdialog.h
+    importgopathdialog.h \
+    ../filebrowser/createfiledialog.h \
+    ../filebrowser/createdirdialog.h
 
 FORMS += \
-    importgopathdialog.ui
+    importgopathdialog.ui \
+    ../filebrowser/createfiledialog.ui \
+    ../filebrowser/createdirdialog.ui
 
 RESOURCES += \
     golangtool.qrc

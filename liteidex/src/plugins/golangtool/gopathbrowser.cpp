@@ -1,10 +1,20 @@
 #include "gopathbrowser.h"
 #include "gopathmodel.h"
 #include "liteapi/litefindobj.h"
+#include "../filebrowser/createdirdialog.h"
+#include "../filebrowser/createfiledialog.h"
 #include <QTreeView>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QMenu>
+#include <QAction>
+#include <QMessageBox>
+#include <QDesktopServices>
+#include <QProcess>
+#include <QInputDialog>
+#include <QLineEdit>
+#include <QUrl>
 #include <QDebug>
 
 GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
@@ -16,6 +26,7 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_pathTree = new QTreeView;
     m_pathTree->setHeaderHidden(true);
     m_model = new GopathModel(this);
+    m_pathTree->setContextMenuPolicy(Qt::CustomContextMenu);
     m_pathTree->setModel(m_model);
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -25,11 +36,268 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_pathList = m_liteApp->settings()->value("golangtool/gopath").toStringList();
 
-    connect(m_pathTree->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(pathIndexChanged(QModelIndex)));
+    //connect(m_pathTree->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(pathIndexChanged(QModelIndex)));
     connect(m_pathTree,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openPathIndex(QModelIndex)));
     LiteApi::IEnvManager* envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
     connect(envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(reloadEnv()));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
+
+    m_fileMenu = new QMenu(m_widget);
+    m_folderMenu = new QMenu(m_widget);
+
+    m_openEditorAct = new QAction(tr("Open Editor"),this);
+    m_newFileAct = new QAction(tr("New File"),this);
+    m_newFileWizardAct = new QAction(tr("New File Wizard"),this);
+    m_renameFileAct = new QAction(tr("Rename File"),this);
+    m_removeFileAct = new QAction(tr("Remove File"),this);
+
+    m_newFolderAct = new QAction(tr("New Folder"),this);
+    m_renameFolderAct = new QAction(tr("Rename Folder"),this);
+    m_removeFolderAct = new QAction(tr("Remove Folder"),this);
+
+    m_openShellAct = new QAction(tr("Open Terminal Here"),this);
+    m_openExplorerAct = new QAction(tr("Open Explorer Here"),this);
+
+    m_fileMenu->addAction(m_openEditorAct);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_newFileAct);
+    m_fileMenu->addAction(m_newFileWizardAct);
+    m_fileMenu->addAction(m_renameFileAct);
+    m_fileMenu->addAction(m_removeFileAct);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_openShellAct);
+    m_fileMenu->addAction(m_openExplorerAct);
+
+    m_folderMenu->addAction(m_newFileAct);
+    m_folderMenu->addAction(m_newFileWizardAct);
+    m_folderMenu->addAction(m_newFolderAct);
+    m_folderMenu->addAction(m_renameFolderAct);
+    m_folderMenu->addAction(m_removeFolderAct);
+    m_folderMenu->addSeparator();
+    m_folderMenu->addAction(m_openShellAct);
+    m_folderMenu->addAction(m_openExplorerAct);
+
+    connect(m_openEditorAct,SIGNAL(triggered()),this,SLOT(openEditor()));
+    connect(m_newFileAct,SIGNAL(triggered()),this,SLOT(newFile()));
+    connect(m_newFileWizardAct,SIGNAL(triggered()),this,SLOT(newFileWizard()));
+    connect(m_renameFileAct,SIGNAL(triggered()),this,SLOT(renameFile()));
+    connect(m_removeFileAct,SIGNAL(triggered()),this,SLOT(removeFile()));
+    connect(m_newFolderAct,SIGNAL(triggered()),this,SLOT(newFolder()));
+    connect(m_renameFolderAct,SIGNAL(triggered()),this,SLOT(renameFolder()));
+    connect(m_removeFolderAct,SIGNAL(triggered()),this,SLOT(removeFolder()));
+    connect(m_openShellAct,SIGNAL(triggered()),this,SLOT(openShell()));
+    connect(m_openExplorerAct,SIGNAL(triggered()),this,SLOT(openExplorer()));
+
+    connect(m_pathTree,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(treeViewContextMenuRequested(QPoint)));
+}
+
+QDir GopathBrowser::contextDir() const
+{
+    if (m_contextInfo.isDir()) {
+        return m_contextInfo.filePath();
+    }
+    return m_contextInfo.dir();
+}
+
+QFileInfo GopathBrowser::contextFileInfo() const
+{
+    return m_contextInfo;
+}
+
+void GopathBrowser::openEditor()
+{
+    if (m_contextInfo.isFile()) {
+        m_liteApp->fileManager()->openEditor(m_contextInfo.filePath());
+    }
+}
+
+void GopathBrowser::newFile()
+{
+    QDir dir = contextDir();
+
+    CreateFileDialog dlg;
+    dlg.setDirectory(dir.path());
+    if (dlg.exec() == QDialog::Rejected) {
+        return;
+    }
+    QString fileName = dlg.getFileName();
+    if (!fileName.isEmpty()) {
+        QString filePath = QFileInfo(dir,fileName).filePath();
+        if (QFile::exists(filePath)) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Create File"),
+                                     tr("The filename is exists!"));
+        } else {
+            QFile file(filePath);
+            if (file.open(QIODevice::WriteOnly)) {
+                file.close();
+                if (dlg.isOpenEditor()) {
+                    m_liteApp->fileManager()->openEditor(filePath,true);
+                }
+            } else {
+                QMessageBox::information(m_liteApp->mainWindow(),tr("Create File"),
+                                         tr("Failed to create the file!"));
+            }
+        }
+    }
+}
+
+void GopathBrowser::newFileWizard()
+{
+    QString filePath;
+    QString projPath;
+    QFileInfo info = contextFileInfo();
+    QDir dir = contextDir();
+    if (!info.isFile()) {
+        filePath = dir.absolutePath();
+        projPath = dir.absolutePath();
+    } else {
+        filePath = dir.absolutePath();
+        dir.cdUp();
+        projPath = dir.absolutePath();
+    }
+    m_liteApp->fileManager()->execFileWizard(projPath,filePath);
+}
+
+void GopathBrowser::renameFile()
+{
+    QFileInfo info = contextFileInfo();
+    if (!info.isFile()) {
+        return;
+    }
+    QString fileName = QInputDialog::getText(m_liteApp->mainWindow(),
+                                             tr("Rename File"),tr("File Name"),
+                                             QLineEdit::Normal,info.fileName());
+    if (!fileName.isEmpty() && fileName != info.fileName()) {
+        QDir dir = contextDir();
+        if (!QFile::rename(info.filePath(),QFileInfo(dir,fileName).filePath())) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Rename File"),
+                                     tr("Failed to rename the file!"));
+        }
+    }
+}
+
+void GopathBrowser::removeFile()
+{
+    QFileInfo info = contextFileInfo();
+    if (!info.isFile()) {
+        return;
+    }
+
+    int ret = QMessageBox::question(m_liteApp->mainWindow(),tr("Remove File"),
+                          tr("Confirm remove the file and continue"),
+                          QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
+    if (ret == QMessageBox::Yes) {
+        if (!QFile::remove(info.filePath())) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Remove File"),
+                                     tr("Failed to remove the file!"));
+        }
+    }
+}
+
+void GopathBrowser::newFolder()
+{
+    QDir dir = contextDir();
+
+    CreateDirDialog dlg;
+    dlg.setDirectory(dir.path());
+    if (dlg.exec() == QDialog::Rejected) {
+        return;
+    }
+
+    QString folderName = dlg.getDirPath();
+    if (!folderName.isEmpty()) {
+        if (!dir.entryList(QStringList() << folderName,QDir::Dirs).isEmpty()) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Create Folder"),
+                                     tr("The folder name is exists!"));
+        } else if (!dir.mkpath(folderName)) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Create Folder"),
+                                     tr("Failed to create the folder!"));
+        }
+    }
+}
+
+void GopathBrowser::renameFolder()
+{
+    QFileInfo info = contextFileInfo();
+    if (!info.isDir()) {
+        return;
+    }
+
+    QString folderName = QInputDialog::getText(m_liteApp->mainWindow(),
+                                               tr("Rename Folder"),tr("Folder Name"),
+                                               QLineEdit::Normal,info.fileName());
+    if (!folderName.isEmpty() && folderName != info.fileName()) {
+        QDir dir = contextDir();
+        dir.cdUp();
+        if (!dir.rename(info.fileName(),folderName)) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Rename Folder"),
+                                     tr("Failed to rename the folder!"));
+        }
+    }
+}
+
+void GopathBrowser::removeFolder()
+{
+    QFileInfo info = contextFileInfo();
+    if (!info.isDir()) {
+        return;
+    }
+
+    int ret = QMessageBox::warning(m_liteApp->mainWindow(),tr("Remove Folder"),
+                          tr("Confirm remove the foler and continue"),
+                          QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
+    if (ret == QMessageBox::Yes) {
+        QDir dir = info.dir();
+        if (!dir.rmdir(info.fileName())) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Remove Folder"),
+                                     tr("Failed to remove the folder!"));
+        }
+    }
+}
+
+QString GopathBrowser::getShellCmd(LiteApi::IApplication *app)
+{
+    QString defCmd;
+#if defined(Q_OS_WIN)
+    defCmd = "cmd.exe";
+#elif defined(Q_OS_MAC)
+    defCmd = "/usr/bin/open";
+#else
+    defCmd = "/usr/bin/gnome-terminal";
+#endif
+    return app->settings()->value("filebrowser/shell_cmd",defCmd).toString();
+}
+
+QStringList GopathBrowser::getShellArgs(LiteApi::IApplication *app)
+{
+    QStringList defArgs;
+#if defined(Q_OS_MAC)
+    defArgs << "-a" << "Terminal";
+#endif
+    return app->settings()->value("filebrowser/shell_args",defArgs).toStringList();
+}
+
+void GopathBrowser::openExplorer()
+{
+    QDir dir = contextDir();
+    QDesktopServices::openUrl(QUrl::fromLocalFile(dir.path()));
+}
+
+void GopathBrowser::openShell()
+{
+    QDir dir = contextDir();
+    QString cmd = getShellCmd(m_liteApp);
+    if (cmd.isEmpty()) {
+        return;
+    }
+    QStringList args = getShellArgs(m_liteApp);
+    QString path = dir.path();
+#ifdef Q_OS_WIN
+    if (path.length() == 2 && path.right(1) == ":") {
+        path += "/";
+    }
+#endif
+    QProcess::startDetached(cmd,args,path);
 }
 
 GopathBrowser::~GopathBrowser()
@@ -41,6 +309,29 @@ GopathBrowser::~GopathBrowser()
 QWidget *GopathBrowser::widget() const
 {
     return m_widget;
+}
+
+void GopathBrowser::treeViewContextMenuRequested(const QPoint &pos)
+{
+    QModelIndex index = m_pathTree->indexAt(pos);
+    if (!index.isValid()) {
+        return;
+    }
+    PathNode *node = m_model->nodeFromIndex(index);
+    if (!node) {
+        return;
+    }
+    m_contextInfo = node->fileInfo();
+    QMenu *contextMenu = 0;
+    if (node->isDir()) {
+        contextMenu = m_folderMenu;
+    } else {
+        contextMenu = m_fileMenu;
+    }
+
+    if (contextMenu && contextMenu->actions().count() > 0) {
+        contextMenu->popup(m_pathTree->mapToGlobal(pos));
+    }
 }
 
 void GopathBrowser::addPathList(const QString &path)
@@ -130,7 +421,13 @@ void GopathBrowser::pathIndexChanged(const QModelIndex & index)
 void GopathBrowser::openPathIndex(const QModelIndex &index)
 {
     PathNode *node = m_model->nodeFromIndex(index);
-    if (node && node->isFile()) {
+    if (!node) {
+        return;
+    }
+    if (node->isDir()) {
+        this->setStartIndex(index);
+    } else if (node->isFile()) {
+        this->setStartIndex(index.parent());
         m_liteApp->fileManager()->openEditor(node->path(),true);
     }
 }
