@@ -536,7 +536,7 @@ void LiteBuild::execAction(const QString &id)
         cmd = m_build->actionCommand(ba,env,QProcessEnvironment::systemEnvironment());
     }
 
-    QString args = m_build->actionArgs(ba,env);
+    QString args = m_build->actionArgs(ba,env);        
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
     if (ba->output() && ba->readline()) {
@@ -544,6 +544,13 @@ void LiteBuild::execAction(const QString &id)
     } else {
         m_output->setReadOnly(true);
     }
+    QProcessEnvironment sysenv = m_envManager->currentEnvironment();
+#ifdef Q_OS_WIN
+    sysenv.insert("GOPATH",sysenv.value("GOPATH")+";"+sysenv.value("LITEIDE_GOPATH"));
+#else
+    sysenv.insert("GOPATH",sysenv.value("GOPATH")+":"+sysenv.value("LITEIDE_GOPATH"));
+#endif
+    m_process->setEnvironment(sysenv.toStringList());
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,workDir);
         m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")

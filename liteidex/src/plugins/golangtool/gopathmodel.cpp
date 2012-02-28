@@ -98,6 +98,11 @@ bool PathNode::isDir() const
     return QFileInfo(m_path).isDir();
 }
 
+bool PathNode::isFile() const
+{
+    return QFileInfo(m_path).isFile();
+}
+
 QFileInfo PathNode::fileInfo() const
 {
     return QFileInfo(m_path);
@@ -215,14 +220,16 @@ QString GopathModel::filePath(const QModelIndex &index) const
 
 void GopathModel::setPathList(const QStringList &pathList)
 {
+    this->beginResetModel();
     m_rootNode->clear();
     m_pathList.clear();
+    m_startIndex = QModelIndex();
     foreach(QString path, pathList) {
         QString spath = QDir::fromNativeSeparators(QDir::cleanPath(path));
         m_pathList.append(spath);
         m_rootNode->children()->append(new PathNode(this,spath,m_rootNode));
     }
-    reset();
+    this->endResetModel();
 }
 
 QModelIndex GopathModel::findPathHelper(const QString &path, const QModelIndex &parentIndex) const
@@ -237,13 +244,13 @@ QModelIndex GopathModel::findPathHelper(const QString &path, const QModelIndex &
     QStringList nameList = path.right(path.length()-node->path().length()).split("/",QString::SkipEmptyParts);
     QModelIndex parent = parentIndex;
     bool find = false;
-    foreach (QString name,nameList) {
+    int count = nameList.count();
+    for (int i = 0; i < count; i++) {
         find = false;
-
-        for (int i = 0; i < this->rowCount(parent); i++) {
-            QModelIndex index = this->index(i,0,parent);
+        for (int j = 0; j < this->rowCount(parent); j++) {
+            QModelIndex index = this->index(j,0,parent);
             PathNode *node = nodeFromIndex(index);
-            if (node->isDir() && node->text() == name) {
+            if ( ((i == count-1) || node->isDir()) && node->text() == nameList.at(i)) {
                 parent = index;
                 find = true;
                 break;
@@ -252,11 +259,56 @@ QModelIndex GopathModel::findPathHelper(const QString &path, const QModelIndex &
         if (!find) {
             return QModelIndex();
         }
-   }
+    }
+    return parent;
+}
+
+QModelIndex GopathModel::findFileHelper(const QString &path, const QModelIndex &parentIndex) const
+{
+    PathNode *node = nodeFromIndex(parentIndex);
+    if (!path.startsWith(node->path())) {
+        return QModelIndex();
+    }
+    if (path == node->path()) {
+        return QModelIndex();
+    }
+    QStringList nameList = path.right(path.length()-node->path().length()).split("/",QString::SkipEmptyParts);
+    QModelIndex parent = parentIndex;
+    bool find = false;
+    int count = nameList.count();
+    for (int i = 0; i < count; i++) {
+        find = false;
+        for (int j = 0; j < this->rowCount(parent); j++) {
+            QModelIndex index = this->index(j,0,parent);
+            PathNode *node = nodeFromIndex(index);
+            if ( ((i == count-1) || node->isDir()) && node->text() == nameList.at(0)) {
+                parent = index;
+                find = true;
+                break;
+            }
+        }
+        if (!find) {
+            return QModelIndex();
+        }
+    }
    return parent;
 }
 
 QList<QModelIndex> GopathModel::findPath(const QString &path) const
+{
+    QList<QModelIndex> list;
+    QString cpath = QDir::fromNativeSeparators(QDir::cleanPath(path));
+    for (int i = 0; i < this->rowCount(); i++) {
+        QModelIndex find = findPathHelper(cpath,this->index(i,0));
+        if (find.isValid()) {
+            list.append(find);
+        }
+     }
+
+    return list;
+}
+
+QList<QModelIndex> GopathModel::findFile(const QString &path) const
 {
     QList<QModelIndex> list;
     QString cpath = QDir::fromNativeSeparators(QDir::cleanPath(path));

@@ -15,6 +15,7 @@ public:
     virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const;    
 public slots:
     void importGopath();
+    void loadApp();
 protected:
     LiteApi::IApplication *m_liteApp;
     GopathBrowser *m_browser;

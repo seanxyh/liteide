@@ -28,10 +28,12 @@
 
 #include <QStackedWidget>
 #include <QToolBar>
+#include <QStatusBar>
 #include <QActionGroup>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QToolButton>
+#include <QLabel>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -60,20 +62,24 @@ bool OutputManager::initWithApp(IApplication *app)
     }
     m_stackedWidget = new QStackedWidget(m_liteApp->mainWindow());
 
-    m_outputToolBar = new QToolBar("Output Panes",m_liteApp->mainWindow());
-    m_outputToolBar->setObjectName("OutputPanes");
+    m_statusBar = new QStatusBar(m_liteApp->mainWindow());
+    m_statusBar->setObjectName("OutputPanes");
     m_outputActGroup = new QActionGroup(this);
 
     connect(m_outputActGroup,SIGNAL(triggered(QAction*)),this,SLOT(selectedOutputAct(QAction*)));
 
-    m_buttonsWidget = new QWidget(m_outputToolBar);
+    m_buttonsWidget = new QWidget(m_statusBar);
     m_buttonsLayout = new QHBoxLayout;
     m_buttonsLayout->setMargin(0);
     m_buttonsLayout->setSpacing(0);
     m_buttonsWidget->setLayout(m_buttonsLayout);
 
     m_stackedWidget->hide();
-    m_outputToolBar->addWidget(m_buttonsWidget);
+
+    m_projectInfoLabel = new QLabel;
+
+    m_statusBar->addWidget(m_buttonsWidget);
+    m_statusBar->addPermanentWidget(m_projectInfoLabel);
     return true;
 }
 
@@ -82,9 +88,9 @@ QWidget *OutputManager::widget()
     return m_stackedWidget;
 }
 
-QToolBar *OutputManager::toolBar()
+QStatusBar *OutputManager::statusBar()
 {
-    return m_outputToolBar;
+    return m_statusBar;
 }
 
 void OutputManager::addOutuput(QWidget *w, const QString &label)
@@ -100,7 +106,7 @@ void OutputManager::addOutuput(QWidget *w, const QIcon &icon, const QString &lab
     //act->setToolTip(QString("%1 Alt+%2").arg(label).arg(count+1));
     m_widgetActionMap.insert(w,act);
     m_stackedWidget->addWidget(w);
-    QToolButton *btn = new QToolButton(m_outputToolBar);
+    QToolButton *btn = new QToolButton(m_statusBar);
     btn->setDefaultAction(act);
     m_buttonsLayout->addWidget(btn);
     m_widgetButtonMap.insert(w,btn);
@@ -185,4 +191,9 @@ void OutputManager::selectedOutputAct(QAction *act)
         QWidget *w = m_widgetActionMap.key(act);
         setCurrentOutput(w);
     }
+}
+
+void OutputManager::setProjectInfo(const QString &text)
+{
+    m_projectInfoLabel->setText(QString("Project: %1 ").arg(text));
 }

@@ -39,6 +39,7 @@ class QAction;
 class QPushButton;
 class QToolButton;
 class QHBoxLayout;
+class QLabel;
 
 class OutputManager : public IOutputManager
 {
@@ -47,20 +48,22 @@ public:
     ~OutputManager();
     virtual bool initWithApp(IApplication *app);
     virtual QWidget *widget();
-    virtual QToolBar *toolBar();
+    virtual QStatusBar *statusBar();
     virtual void addOutuput(QWidget *w, const QString &label);
     virtual void addOutuput(QWidget *w, const QIcon &icon, const QString &label);
     virtual void removeOutput(QWidget *w);
     virtual void showOutput(QWidget *w);
     virtual void hideOutput(QWidget *w);
     virtual QWidget *currentOutput();
+    virtual void setProjectInfo(const QString &text);
 public slots:
     virtual void setCurrentOutput(QWidget *w = 0);
 protected slots:
     void selectedOutputAct(QAction*);
 protected:
     QStackedWidget    *m_stackedWidget;
-    QToolBar          *m_outputToolBar;
+    QStatusBar        *m_statusBar;
+    QLabel            *m_projectInfoLabel;
     QActionGroup      *m_outputActGroup;
     QPointer<QAction>  m_lastOutputAct;
     QMap<QWidget*,QAction*>   m_widgetActionMap;

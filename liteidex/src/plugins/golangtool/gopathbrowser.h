@@ -17,11 +17,16 @@ public:
     ~GopathBrowser();
     QWidget *widget() const;
     void setPathList(const QStringList &pathList);
+    void addPathList(const QString &path);
     QStringList pathList() const;
     QStringList systemGopathList() const;
+    void setStartIndex(const QModelIndex &index);
+    QString startPath() const;
 public slots:
     void pathIndexChanged(const QModelIndex & index);
+    void openPathIndex(const QModelIndex &index);
     void reloadEnv();
+    void currentEditorChanged(LiteApi::IEditor*);
 signals:
     void startPathChanged(const QString& path);
 private:

@@ -38,7 +38,7 @@ public:
     Env(QObject *parent = 0);
 public:
     virtual QString id() const;
-    virtual QProcessEnvironment env() const;
+    virtual QProcessEnvironment& environment();
     virtual void reload();
 public:
     static QProcessEnvironment loadEnv(QIODevice *dev);

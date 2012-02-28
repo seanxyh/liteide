@@ -13,10 +13,12 @@
 GopathProject::GopathProject(GopathBrowser *browser) : m_browser(browser)
 {
     connect(m_browser,SIGNAL(startPathChanged(QString)),this,SLOT(startPathChanged(QString)));
+    m_path = m_browser->startPath();
 }
 
 GopathProject::~GopathProject()
 {
+    disconnect(m_browser);
     m_browser->widget()->hide();
 }
 
