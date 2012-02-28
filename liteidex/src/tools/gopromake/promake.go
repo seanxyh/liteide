@@ -5,14 +5,14 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"io/ioutil"
 	"bytes"
-	"regexp"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"os/exec"
 	"path"
-	"exec"
 	"path/filepath"
+	"regexp"
 )
 
 type GoProject struct {
@@ -21,7 +21,7 @@ type GoProject struct {
 	array  *PackageArray
 }
 
-func NewGoProjectWithFiles(files [][]byte) (*GoProject, os.Error) {
+func NewGoProjectWithFiles(files [][]byte) (*GoProject, error) {
 	pro := new(GoProject)
 	pro.Values = make(map[string][]string)
 
@@ -31,7 +31,7 @@ func NewGoProjectWithFiles(files [][]byte) (*GoProject, os.Error) {
 	return pro, nil
 }
 
-func NewGoProject(name string) (pro *GoProject, err os.Error) {
+func NewGoProject(name string) (pro *GoProject, err error) {
 	buf, e := ioutil.ReadFile(name)
 	if e != nil {
 		err = e
@@ -134,8 +134,8 @@ func (file *GoProject) ProjectDir() (dir string) {
 	return
 }
 
-func build(gcfile string, opts []string, proFileName string, files []string, envv []string, dir string) os.Error {
-	args := []string{gcfile, "-o", proFileName}
+func build(gocmd string, gcfile string, opts []string, proFileName string, files []string, envv []string, dir string) error {
+	args := []string{gocmd,"tool",gcfile,"-o", proFileName}
 	for _, v := range opts {
 		args = append(args, v)
 	}
@@ -143,7 +143,7 @@ func build(gcfile string, opts []string, proFileName string, files []string, env
 		args = append(args, string(v))
 	}
 	fmt.Println("\t", args)
-	cmd := exec.Command(gcfile, args[1:]...)
+	cmd := exec.Command(gocmd, args[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -155,14 +155,14 @@ func build(gcfile string, opts []string, proFileName string, files []string, env
 	return err
 }
 
-func link(glfile string, opts []string, target string, ofile string, envv []string, dir string) os.Error {
-	args := []string{glfile, "-o", target}
+func link(gocmd string,glfile string, opts []string, target string, ofile string, envv []string, dir string) error {
+	args := []string{gocmd,"tool",glfile, "-o", target}
 	for _, v := range opts {
 		args = append(args, v)
 	}
 	args = append(args, ofile)
 	fmt.Println("\t", args)
-	cmd := exec.Command(glfile, args[1:]...)
+	cmd := exec.Command(gocmd, args[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -174,10 +174,10 @@ func link(glfile string, opts []string, target string, ofile string, envv []stri
 	return err
 }
 
-func pack(pkfile string, target string, ofile string, envv []string, dir string) os.Error {
-	args := []string{pkfile, "grc", target, ofile}
+func pack(gocmd string,pkfile string, target string, ofile string, envv []string, dir string) error {
+	args := []string{gocmd,"tool",pkfile, "grc", target, ofile}
 	fmt.Println("\t", args)
-	cmd := exec.Command(pkfile, args[1:]...)
+	cmd := exec.Command(gocmd, args[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -193,7 +193,7 @@ func (file *GoProject) IsEmpty() bool {
 	return len(file.Values) == 0
 }
 
-func (file *GoProject) Clean(clean string) os.Error {
+func (file *GoProject) Clean(clean string) error {
 	dir := file.ProjectDir()
 	if dir == "" {
 		dir = "./"
@@ -204,11 +204,11 @@ func (file *GoProject) Clean(clean string) os.Error {
 		return err
 	}
 	for _, file := range files {
-		ext := filepath.Ext(file.Name)
+		ext := filepath.Ext(file.Name())
 		if ext == ".8" || ext == ".5" || ext == ".6" {
-			err := os.Remove(file.Name)
+			err := os.Remove(file.Name())
 			if err == nil {
-				rfiles = append(rfiles, file.Name)
+				rfiles = append(rfiles, file.Name())
 			}
 		}
 	}
@@ -236,7 +236,7 @@ func (file *GoProject) Clean(clean string) os.Error {
 	return nil
 }
 
-func (file *GoProject) MakeTarget(gobin *GoBin) os.Error {
+func (file *GoProject) MakeTarget(gobin *GoBin) error {
 	all := file.AllPackage()
 	for _, v := range all {
 		if v == "documentation" {
@@ -249,7 +249,7 @@ func (file *GoProject) MakeTarget(gobin *GoBin) os.Error {
 			target = file.TargetName()
 			ofile = target + "_go_" + gobin.objext
 		}
-		err := build(gobin.compiler, file.Values["GCOPT"], ofile, file.PackageFiles(v), os.Environ(), file.ProjectDir())
+		err := build(gobin.gocmd,gobin.compiler, file.Values["GCOPT"], ofile, file.PackageFiles(v), os.Environ(), file.ProjectDir())
 		if err != nil {
 			return err
 		}
@@ -262,14 +262,14 @@ func (file *GoProject) MakeTarget(gobin *GoBin) os.Error {
 		}
 		if string(v) == "main" {
 			target = target + gobin.exeext
-			err := link(gobin.link, file.Values["GLOPT"], target, ofile, os.Environ(), file.ProjectDir())
+			err := link(gobin.gocmd,gobin.link, file.Values["GLOPT"], target, ofile, os.Environ(), file.ProjectDir())
 			if err != nil {
 				return err
 			}
 			fmt.Printf("link target : %s\n", target)
 		} else if *buildLib {
 			target = target + gobin.pakext
-			err := pack(gobin.pack, target, ofile, os.Environ(), file.ProjectDir())
+			err := pack(gobin.gocmd,gobin.pack, target, ofile, os.Environ(), file.ProjectDir())
 			if err != nil {
 				return err
 			}

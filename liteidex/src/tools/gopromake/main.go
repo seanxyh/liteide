@@ -5,11 +5,11 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
 	"flag"
+	"fmt"
 	"os"
 	"path"
-	"bytes"
 )
 
 var (
@@ -30,7 +30,7 @@ var Usage = func() {
 	flag.PrintDefaults()
 }
 
-func exitln(err os.Error) {
+func exitln(err error) {
 	fmt.Println(err)
 	os.Exit(1)
 }

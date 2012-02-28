@@ -2,15 +2,15 @@
 package main
 
 import (
-	"fmt"
 	"bytes"
-	"template"
-	"log"
+	"fmt"
 	"io"
-	"time"
+	"log"
+	"path/filepath"
 	"strconv"
 	"strings"
-	"path/filepath"
+	"text/template"
+	"time"
 )
 
 var (
@@ -64,11 +64,11 @@ func paddingFmt(w io.Writer, format string, x ...interface{}) {
 
 // Template formatter for "time" format.
 func timeFmt(w io.Writer, format string, x ...interface{}) {
-	template.HTMLEscape(w, []byte(time.SecondsToLocalTime(x[0].(int64)/1e9).String()))
+	template.HTMLEscape(w, []byte(time.Unix(x[0].(int64)/1e9, 0).String()))
 }
 
 var fmap = template.FuncMap{
-	"repeat":   strings.Repeat,
+	"repeat": strings.Repeat,
 }
 
 func readTemplateData(name, data string) *template.Template {
@@ -76,7 +76,7 @@ func readTemplateData(name, data string) *template.Template {
 }
 
 func readTemplateFile(name, path string) *template.Template {
-	return template.Must(template.New(name).Funcs(fmap).ParseFile(path))
+	return template.Must(template.New(name).Funcs(fmap).ParseFiles(path))
 }
 
 func applyTemplate(t *template.Template, name string, data interface{}) []byte {
@@ -117,8 +117,8 @@ func (dir *GodocDir) FindInfo(name string) *Info {
 	if best1 != nil {
 		best = best1
 		if best2 != nil {
-			list2 = append(list2,*best2)
-		}	
+			list2 = append(list2, *best2)
+		}
 	} else {
 		best = best2
 	}
@@ -160,7 +160,7 @@ func NewListInfo(root string) *Info {
 		return nil
 	}
 	return &Info{"", nil, dir.listing(true)}
-}	
+}
 
 func FindPkgInfo(root string, pkgname string) *Info {
 	dir := newDirectory(root, nil, -1)

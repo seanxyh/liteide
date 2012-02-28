@@ -11,7 +11,7 @@ import (
 	"io"
 	"regexp"
 	"strings"
-	"template" // for htmlEscape
+	"text/template" // for htmlEscape
 )
 
 

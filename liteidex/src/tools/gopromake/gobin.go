@@ -5,12 +5,14 @@
 package main
 
 import (
-	"runtime"
+	"errors"
 	"os"
 	"path"
+	"runtime"
 )
 
 type GoBin struct {
+	gocmd    string
 	compiler string
 	link     string
 	pack     string
@@ -24,22 +26,22 @@ type GoBin struct {
 func defGoroot() string {
 	var curos = runtime.GOOS
 	if curos == "windows" {
-		return "c:/go" 
+		return "c:/go"
 	}
-	return os.Getenv("HOME")+"/go"
+	return os.Getenv("HOME") + "/go"
 }
 
-func NewGoBin(defgoroot string) (p *GoBin, err os.Error) {
+func NewGoBin(defgoroot string) (p *GoBin, err error) {
 	goroot := os.Getenv("GOROOT")
 	if goroot == "" {
 		goroot = defgoroot
-		os.Setenv("GOROOT",goroot)
+		os.Setenv("GOROOT", goroot)
 	}
-	
+
 	gobin := os.Getenv("GOBIN")
-	if gobin == "" {		
-		gobin = goroot+"/bin"
-		os.Setenv("GOBIN",gobin)
+	if gobin == "" {
+		gobin = goroot + "/bin"
+		os.Setenv("GOBIN", gobin)
 	}
 
 	goos := os.Getenv("GOOS")
@@ -72,24 +74,20 @@ func NewGoBin(defgoroot string) (p *GoBin, err os.Error) {
 	case "arm":
 		o = "5"
 	default:
-		err = os.NewError("Unsupported arch: " + goarch)
+		err = errors.New("Unsupported arch: " + goarch)
 		return
 	}
 
 	p = new(GoBin)
+	p.gocmd = path.Join(gobin, "go")
 	p.compiler = o + "g"
 	p.link = o + "l"
-	p.pack = "gopack"
+	p.pack = "pack"
 	p.cgo = "cgo"
 	p.objext = "." + o
 	p.exeext = exeext
 	p.pakext = ".a"
 	p.rm = rm
-
-	p.compiler = path.Join(gobin,p.compiler)
-	p.link = path.Join(gobin,p.link)
-	p.pack = path.Join(gobin,p.pack)
-	p.cgo  = path.Join(gobin,p.cgo)
 
 	return
 }

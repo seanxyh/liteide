@@ -5,14 +5,14 @@
 package main
 
 import (
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"os"
 	"io"
 	"io/ioutil"
-	"fmt"
-	"./doc"
+	"os"
+	"tools/goastview/doc"
 )
 
 const (
@@ -58,7 +58,7 @@ func (p *PackageView) posText(pos token.Position) (s string) {
 	return fmt.Sprintf("%d,%d,%d", index, pos.Line, pos.Column)
 }
 
-func NewFilePackage(filename string) (*PackageView, os.Error) {
+func NewFilePackage(filename string) (*PackageView, error) {
 	p := new(PackageView)
 	p.fset = token.NewFileSet()
 	file, err := parser.ParseFile(p.fset, filename, nil, 0)
@@ -69,7 +69,7 @@ func NewFilePackage(filename string) (*PackageView, os.Error) {
 	return p, nil
 }
 
-func NewPackage(pkg *ast.Package, fset *token.FileSet) (*PackageView, os.Error) {
+func NewPackage(pkg *ast.Package, fset *token.FileSet) (*PackageView, error) {
 	p := new(PackageView)
 	p.fset = fset
 	var importpath string = ""
@@ -77,7 +77,7 @@ func NewPackage(pkg *ast.Package, fset *token.FileSet) (*PackageView, os.Error) 
 	return p, nil
 }
 
-func ParseFiles(fset *token.FileSet, filenames []string, mode uint) (pkgs map[string]*ast.Package, pkgsfiles []string, first os.Error) {
+func ParseFiles(fset *token.FileSet, filenames []string, mode parser.Mode) (pkgs map[string]*ast.Package, pkgsfiles []string, first error) {
 	pkgs = make(map[string]*ast.Package)
 	for _, filename := range filenames {
 		if src, err := parser.ParseFile(fset, filename, nil, mode); err == nil {
@@ -98,7 +98,7 @@ func ParseFiles(fset *token.FileSet, filenames []string, mode uint) (pkgs map[st
 	return
 }
 
-func PrintFilesTree(filenames []string, w io.Writer) os.Error {
+func PrintFilesTree(filenames []string, w io.Writer) error {
 	fset := token.NewFileSet()
 	pkgs, pkgsfiles, err := ParseFiles(fset, filenames, 0)
 	if err != nil {
@@ -118,7 +118,7 @@ func PrintFilesTree(filenames []string, w io.Writer) os.Error {
 	return nil
 }
 
-func NewFilePackageSource(filename string, f *os.File) (*PackageView, os.Error) {
+func NewFilePackageSource(filename string, f *os.File) (*PackageView, error) {
 	src, err := ioutil.ReadAll(f)
 	if err != nil {
 		return nil, err
@@ -132,7 +132,6 @@ func NewFilePackageSource(filename string, f *os.File) (*PackageView, os.Error) 
 	p.pdoc = doc.NewFileDoc(file, true)
 	return p, nil
 }
-
 
 func (p *PackageView) PrintFuncs(w io.Writer, funcs []*doc.FuncDoc, level int, tag string, tag_folder string) {
 	if len(tag_folder) > 0 && len(funcs) > 0 {
@@ -229,6 +228,7 @@ func (p *PackageView) PrintPackage(w io.Writer, level int) {
 	p.PrintFuncs(w, p.pdoc.Funcs, level, tag_func, tag_func_folder)
 	p.PrintTypes(w, p.pdoc.Types, level)
 }
+
 // level:tag:name:x:y
 func (p *PackageView) PrintTree(w io.Writer) {
 	p.PrintPackage(w, 0)
