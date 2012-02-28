@@ -102,7 +102,7 @@ void GolangAst::setEnable(bool b)
 {
     if (b) {
         m_stackedWidget->setVisible(true);
-        projectChanged(m_liteApp->projectManager()->currentProject());
+        loadProject(m_liteApp->projectManager()->currentProject());
         editorChanged(m_liteApp->editorManager()->currentEditor());
         updateAst();
     } else {
@@ -111,6 +111,18 @@ void GolangAst::setEnable(bool b)
 }
 
 void GolangAst::projectChanged(LiteApi::IProject *project)
+{
+    loadProject(project);
+    connect(project,SIGNAL(reloaded()),this,SLOT(projectReloaded()));
+}
+
+void GolangAst::projectReloaded()
+{
+    LiteApi::IProject *project = (LiteApi::IProject*)sender();
+    loadProject(project);
+}
+
+void GolangAst::loadProject(LiteApi::IProject *project)
 {
     m_updateFileNames.clear();
     m_updateFilePaths.clear();

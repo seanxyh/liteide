@@ -43,9 +43,9 @@ public:
     void setEnable(bool b);
     void updateModel(const QByteArray &data);
     QWidget *widget();
-signals:
-
+    void loadProject(LiteApi::IProject *project);
 public slots:
+    void projectReloaded();
     void projectChanged(LiteApi::IProject*);
     void editorCreated(LiteApi::IEditor*);
     void editorAboutToClose(LiteApi::IEditor *editor);
