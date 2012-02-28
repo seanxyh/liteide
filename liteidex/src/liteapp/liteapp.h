@@ -89,6 +89,7 @@ public:
     void setPluginPath(const QString &path); 
     void setResourcePath(const QString &path);
 protected slots:
+    void projectReloaded();
     void currentProjectChanged(LiteApi::IProject *project);
     void currentEditorChanged(LiteApi::IEditor *editor);
     void editorModifyChanged(bool);

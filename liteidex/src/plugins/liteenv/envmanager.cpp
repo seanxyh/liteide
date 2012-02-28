@@ -53,7 +53,7 @@ QString Env::id() const
     return m_id;
 }
 
-QProcessEnvironment Env::env() const
+QProcessEnvironment& Env::environment()
 {
     return m_env;
 }
@@ -183,7 +183,7 @@ LiteApi::IEnv *EnvManager::currentEnv() const
 QProcessEnvironment EnvManager::currentEnvironment() const
 {
     if (m_curEnv) {
-        return m_curEnv->env();
+        return m_curEnv->environment();
     }
     return QProcessEnvironment::systemEnvironment();
 }

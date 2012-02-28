@@ -22,6 +22,7 @@ public:
     QString text() const;
     QFileInfo fileInfo() const;
     bool isDir() const;
+    bool isFile() const;
     void clear();
     void reload();
     PathNode *findPath(const QString &path);
@@ -44,6 +45,7 @@ public:
     ~GopathModel();
     void setPathList(const QStringList &pathList);
     QList<QModelIndex> findPath(const QString &path) const;
+    QList<QModelIndex> findFile(const QString &path) const;
     QString filePath(const QModelIndex &index) const;
     PathNode *nodeFromIndex(const QModelIndex &index) const;    
     void setStartIndex(const QModelIndex &index);
@@ -60,6 +62,7 @@ public slots:
     void directoryChanged(const QString&);
 protected:
     QModelIndex findPathHelper(const QString &path, const QModelIndex &parentIndex) const;
+    QModelIndex findFileHelper(const QString &path, const QModelIndex &parentIndex) const;
     QStringList m_pathList;
     PathNode *m_rootNode;
     QModelIndex m_startIndex;

@@ -82,7 +82,7 @@ LiteApp::LiteApp()
     m_mainwindow->splitter()->addWidget(m_editorManager->widget());
     m_mainwindow->splitter()->addWidget(m_outputManager->widget());
     m_mainwindow->splitter()->setStretchFactor(0,50);
-    m_mainwindow->addToolBar(Qt::BottomToolBarArea,m_outputManager->toolBar());
+    m_mainwindow->setStatusBar(m_outputManager->statusBar());
 
     m_extension->addObject("LiteApi.IMimeTypeManager",m_mimeTypeManager);
     m_extension->addObject("LiteApi.IPluginManager",m_pluginManager);
@@ -395,11 +395,25 @@ void LiteApp::createToolBars()
     m_navToolBar = m_actionManager->loadToolBar("toolbar/nav");
 }
 
+void LiteApp::projectReloaded()
+{
+    LiteApi::IProject *project = (LiteApi::IProject*)sender();
+    if (project) {
+        m_outputManager->setProjectInfo(project->filePath());
+    }
+}
+
 void LiteApp::currentProjectChanged(IProject *project)
 {
     bool b = (project != 0);
     m_saveProjectAct->setEnabled(b);
     m_closeProjectAct->setEnabled(b);
+    if (project) {
+        m_outputManager->setProjectInfo(project->filePath());
+        connect(project,SIGNAL(reloaded()),this,SLOT(projectReloaded()));
+    } else {
+        m_outputManager->setProjectInfo("");
+    }
 }
 
 void LiteApp::currentEditorChanged(IEditor *editor)

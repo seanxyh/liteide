@@ -326,7 +326,7 @@ class IOutputManager : public IManager
 public:
     IOutputManager(QObject *parent = 0) : IManager(parent) {}
     virtual QWidget *widget() = 0;
-    virtual QToolBar *toolBar() = 0;
+    virtual QStatusBar *statusBar() = 0;
     virtual void addOutuput(QWidget *w, const QString &label) = 0;
     virtual void addOutuput(QWidget *w, const QIcon &icon, const QString &label) = 0;
     virtual void showOutput(QWidget *w) = 0;

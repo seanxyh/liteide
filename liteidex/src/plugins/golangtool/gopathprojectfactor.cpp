@@ -16,6 +16,8 @@ GopathProjectFactor::GopathProjectFactor(LiteApi::IApplication *app, QObject *pa
     QAction *act = new QAction(tr("<GOPATH> Project"),this);
     connect(act,SIGNAL(triggered()),this,SLOT(importGopath()));
     m_liteApp->projectManager()->addImportAction(act);
+
+    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(loadApp()));
 }
 
 GopathProjectFactor::~GopathProjectFactor()
@@ -25,15 +27,22 @@ GopathProjectFactor::~GopathProjectFactor()
     }
 }
 
+void GopathProjectFactor::loadApp()
+{
+    m_browser->reloadEnv();
+    GopathProject *project = new GopathProject(m_browser);
+    m_liteApp->projectManager()->setCurrentProject(project);
+}
+
 void GopathProjectFactor::importGopath()
 {
     ImportGopathDialog *dlg = new ImportGopathDialog(m_liteApp->mainWindow());
     dlg->setSysPathList(m_browser->systemGopathList());
     dlg->setPathList(m_browser->pathList());
     if (dlg->exec() == QDialog::Accepted) {
-        m_browser->setPathList(dlg->pathList());
-        GopathProject *project =  new GopathProject(m_browser);
-        m_liteApp->projectManager()->setCurrentProject(project);
+         m_browser->setPathList(dlg->pathList());
+         GopathProject *project =  new GopathProject(m_browser);
+         m_liteApp->projectManager()->setCurrentProject(project);
     }
     delete dlg;
 }
@@ -47,7 +56,7 @@ LiteApi::IProject *GopathProjectFactor::open(const QString &fileName, const QStr
 {
     if (m_mimeTypes.contains(mimeType)) {        
         GopathProject *project =  new GopathProject(m_browser);
-        project->browser()->setPathList(QStringList() << fileName);
+        project->browser()->addPathList(fileName);
         return project;
     }
     return 0;

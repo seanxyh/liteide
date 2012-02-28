@@ -23,19 +23,31 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     layout->addWidget(m_pathTree);
     m_widget->setLayout(layout);
 
+    m_pathList = m_liteApp->settings()->value("golangtool/gopath").toStringList();
+
     connect(m_pathTree->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(pathIndexChanged(QModelIndex)));
+    connect(m_pathTree,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openPathIndex(QModelIndex)));
     LiteApi::IEnvManager* envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
     connect(envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(reloadEnv()));
+    connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
 }
 
 GopathBrowser::~GopathBrowser()
-{
+{    
+    m_liteApp->settings()->setValue("golangtool/gopath",m_pathList);
     delete m_widget;
 }
 
 QWidget *GopathBrowser::widget() const
 {
     return m_widget;
+}
+
+void GopathBrowser::addPathList(const QString &path)
+{
+    QStringList pathList = m_pathList;
+    pathList.append(path);
+    this->setPathList(pathList);
 }
 
 void GopathBrowser::setPathList(const QStringList &pathList)
@@ -48,13 +60,17 @@ void GopathBrowser::setPathList(const QStringList &pathList)
         row = m_model->rowCount()-1;
     }
     m_pathTree->expand(m_model->index(row,0));
-    m_model->setStartIndex(m_model->index(row,0));
+    setStartIndex(m_model->index(row,0));
     LiteApi::IEnvManager* envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
+    LiteApi::IEnv *env = envManager->currentEnv();
+    if (env) {
 #ifdef Q_OS_WIN
-    envManager->currentEnvironment().insert("GOPATH",allPathList.join(";"));
+    env->environment().insert("LITEIDE_GOPATH",allPathList.join(";"));
 #else
-    envManager->currentEnvironment().insert("GOPATH",allPathList.join(":"));
+    env->environment().insert("LITEIDE_GOPATH",allPathList.join(":"));
 #endif
+    }
+    currentEditorChanged(m_liteApp->editorManager()->currentEditor());
 }
 
 QStringList GopathBrowser::pathList() const
@@ -83,23 +99,56 @@ void GopathBrowser::reloadEnv()
     this->setPathList(m_pathList);
 }
 
+void GopathBrowser::setStartIndex(const QModelIndex &index)
+{
+    qDebug() << "setStartIndex" << index;
+    QModelIndex oldIndex = m_model->startIndex();
+    if (oldIndex != index) {
+        m_model->setStartIndex(index);
+        if (oldIndex.isValid())
+            m_pathTree->update(oldIndex);
+        if (index.isValid())
+            m_pathTree->update(index);
+        emit startPathChanged(m_model->filePath(index));
+    }
+}
+
+QString GopathBrowser::startPath() const
+{
+    QModelIndex index = m_model->startIndex();
+    return m_model->filePath(index);
+}
+
 void GopathBrowser::pathIndexChanged(const QModelIndex & index)
 {
     PathNode *node = m_model->nodeFromIndex(index);
     if (node) {
         QFileInfo info = node->fileInfo();
-        QModelIndex oldIndex = m_model->startIndex();
         QModelIndex newIndex = index;
         if (info.isDir()) {
             newIndex = index;
         } else {
             newIndex = index.parent();
         }
-        if (newIndex != oldIndex) {
-            m_model->setStartIndex(newIndex);
-            m_pathTree->update(oldIndex);
-            m_pathTree->update(newIndex);
-            emit startPathChanged(m_model->filePath(newIndex));
+        this->setStartIndex(newIndex);
+    }
+}
+
+void GopathBrowser::openPathIndex(const QModelIndex &index)
+{
+    PathNode *node = m_model->nodeFromIndex(index);
+    if (node && node->isFile()) {
+        m_liteApp->fileManager()->openEditor(node->path(),true);
+    }
+}
+
+void GopathBrowser::currentEditorChanged(LiteApi::IEditor* editor)
+{
+    if (editor && !editor->filePath().isEmpty()) {
+        QList<QModelIndex> indexList = m_model->findPath(editor->filePath());
+        if (!indexList.isEmpty()) {
+            m_pathTree->setCurrentIndex(indexList.last());
+            setStartIndex(indexList.last().parent());
         }
     }
 }
