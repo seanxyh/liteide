@@ -6,14 +6,13 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"sort"
+	"go/ast"
 	"go/parser"
 	"go/token"
-	"go/ast"
+	"sort"
 )
 
-func GetPackage(filename string) (pakname string, err os.Error) {
+func GetPackage(filename string) (pakname string, err error) {
 	var file *ast.File
 	file, err = parser.ParseFile(token.NewFileSet(), filename, nil, parser.ImportsOnly)
 	if err != nil {
@@ -25,7 +24,7 @@ func GetPackage(filename string) (pakname string, err os.Error) {
 	return
 }
 
-func GetPackageImport(filename string) (pakname string, imports []string, err os.Error) {
+func GetPackageImport(filename string) (pakname string, imports []string, err error) {
 	var file *ast.File
 	file, err = parser.ParseFile(token.NewFileSet(), filename, nil, parser.ImportsOnly)
 	if err != nil {
@@ -48,7 +47,7 @@ func GetPackageImport(filename string) (pakname string, imports []string, err os
 	return
 }
 
-func GetPackageImportLocal(filename string) (pakname string, imports []string, err os.Error) {
+func GetPackageImportLocal(filename string) (pakname string, imports []string, err error) {
 	var file *ast.File
 	file, err = parser.ParseFile(token.NewFileSet(), filename, nil, parser.ImportsOnly)
 	if err != nil {

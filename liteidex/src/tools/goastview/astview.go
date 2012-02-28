@@ -38,7 +38,7 @@ func main() {
 		if *flagStdin {
 			f = os.Stdin
 		} else {
-			var err os.Error
+			var err error
 			f, err = os.OpenFile(*flagInputSrc, os.O_RDONLY, 0)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error:%s", err)
