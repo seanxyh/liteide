@@ -44,8 +44,8 @@ public:
     explicit GopathModel(QObject *parent = 0);
     ~GopathModel();
     void setPathList(const QStringList &pathList);
-    QList<QModelIndex> findPath(const QString &path) const;
-    QList<QModelIndex> findFile(const QString &path) const;
+    QList<QModelIndex> findPaths(const QString &path) const;
+    QModelIndex findPath(const QString &path) const;
     QString filePath(const QModelIndex &index) const;
     PathNode *nodeFromIndex(const QModelIndex &index) const;    
     void setStartIndex(const QModelIndex &index);
@@ -62,10 +62,9 @@ public slots:
     void directoryChanged(const QString&);
 protected:
     QModelIndex findPathHelper(const QString &path, const QModelIndex &parentIndex) const;
-    QModelIndex findFileHelper(const QString &path, const QModelIndex &parentIndex) const;
     QStringList m_pathList;
     PathNode *m_rootNode;
-    QModelIndex m_startIndex;
+    QString   m_startPath;
     QFileIconProvider *m_iconProvider;
     QFileSystemWatcher *m_fileWatcher;
     QTreeView *m_treeView;

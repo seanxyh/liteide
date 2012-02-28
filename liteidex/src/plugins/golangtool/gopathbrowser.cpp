@@ -55,12 +55,8 @@ void GopathBrowser::setPathList(const QStringList &pathList)
     m_pathList = pathList;
     QStringList allPathList = systemGopathList()+m_pathList;
     m_model->setPathList(allPathList);
-    int row = 0;
-    if (m_model->rowCount() > 0) {
-        row = m_model->rowCount()-1;
-    }
-    m_pathTree->expand(m_model->index(row,0));
-    setStartIndex(m_model->index(row,0));
+    m_pathTree->setCurrentIndex(m_model->startIndex());
+    m_pathTree->expand(m_model->startIndex());
     LiteApi::IEnvManager* envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
     LiteApi::IEnv *env = envManager->currentEnv();
     if (env) {
@@ -101,14 +97,11 @@ void GopathBrowser::reloadEnv()
 
 void GopathBrowser::setStartIndex(const QModelIndex &index)
 {
-    qDebug() << "setStartIndex" << index;
     QModelIndex oldIndex = m_model->startIndex();
     if (oldIndex != index) {
         m_model->setStartIndex(index);
-        if (oldIndex.isValid())
-            m_pathTree->update(oldIndex);
-        if (index.isValid())
-            m_pathTree->update(index);
+        m_pathTree->update(oldIndex);
+        m_pathTree->update(index);
         emit startPathChanged(m_model->filePath(index));
     }
 }
@@ -145,10 +138,10 @@ void GopathBrowser::openPathIndex(const QModelIndex &index)
 void GopathBrowser::currentEditorChanged(LiteApi::IEditor* editor)
 {
     if (editor && !editor->filePath().isEmpty()) {
-        QList<QModelIndex> indexList = m_model->findPath(editor->filePath());
-        if (!indexList.isEmpty()) {
-            m_pathTree->setCurrentIndex(indexList.last());
-            setStartIndex(indexList.last().parent());
+        QModelIndex index = m_model->findPath(editor->filePath());
+        if (index.isValid()) {
+            m_pathTree->setCurrentIndex(index);
+            setStartIndex(index.parent());
         }
     }
 }
