@@ -101,7 +101,11 @@ QStringList GopathProject::fileNameList() const
 QStringList GopathProject::filePathList() const
 {
     QDir dir(m_path);
-    return dir.entryList(QDir::Files);
+    QStringList list;
+    foreach(QFileInfo info, dir.entryInfoList(QStringList() <<"*.go",QDir::Files)) {
+        list.append(info.filePath());
+    }
+    return list;
 }
 
 QString GopathProject::fileNameToFullPath(const QString &filePath)
