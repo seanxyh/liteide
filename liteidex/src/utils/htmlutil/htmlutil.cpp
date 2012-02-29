@@ -26,6 +26,7 @@
 #include "htmlutil.h"
 #include <QStringList>
 #include <QDomDocument>
+#include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -39,6 +40,27 @@
 HtmlUtil::HtmlUtil()
 {
 }
+/*
+<!--{
+    "Title": "Getting Started",
+    "Path":  "/install/"
+}-->
+*/
+
+QString HtmlUtil::findTitle(const QString &data)
+{
+    QRegExp reg("<!--([\\w\\s\\n{}\":/,]*)-->");
+    int n = reg.indexIn(data);
+    if (n < 0) {
+        return QString();
+    }
+    QRegExp reg1("Title[\"\\s:]*([\\w\\s]*)[\\s\"]*");
+    n = reg1.indexIn(reg.cap(1));
+    if (n < 0) {
+        return QString();
+    }
+    return reg1.cap(1);
+}
 
 QString HtmlUtil::docToNavdoc(const QString &data, QString &header, QString &nav)
 {
@@ -49,16 +71,14 @@ QString HtmlUtil::docToNavdoc(const QString &data, QString &header, QString &nav
     navLines.append("<table class=\"unruled\"><tbody><tr><td class=\"first\"><dl>");
     int index = 0;
     if (srcLines.length() >= 1) {
-        //<!-- How to Write Go Code -->
-        QString line = srcLines.at(0);
-        int p1 = line.indexOf("<!--");
-        int p2 = line.lastIndexOf("-->");
-        if (p1 != -1 && p2 != -2) {
-            QString title = line.mid(p1+4,p2-p1-4).trimmed();
-            if (title.indexOf("title ") == 0) {
-                header = QString("<h1>%1</h1>").arg(title.right(title.length()-6));
-            } else {
-                header = QString("<h1>%1</h1>").arg(title);
+        header = findTitle(data);
+        if (header.isEmpty()) {
+            //<!-- How to Write Go Code -->
+            QString line = srcLines.at(0);
+            QRegExp reg("<!--([\\w\\s]*)-->");
+            if (reg.indexIn(line) >= 0) {
+                header = reg.cap(1);
+                header.trimmed();
             }
         }
     }

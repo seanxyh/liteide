@@ -33,6 +33,7 @@ class HtmlUtil
 public:
     HtmlUtil();
     static QString docToNavdoc(const QString &data, QString &header, QString &nav);
+    static QString findTitle(const QString &data);
 };
 
 #endif // HTMLUTIL_H

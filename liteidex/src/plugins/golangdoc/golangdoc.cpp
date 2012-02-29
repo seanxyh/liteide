@@ -317,7 +317,7 @@ void GolangDoc::godocFinish(bool error,int code,QString /*msg*/)
             nav = false;
             header = "Find Package "+m_openUrl.path();
         } else if (m_openUrl.scheme() == "pdoc") {
-            nav = true;
+            nav = false;
             header = "Package "+m_openUrl.path();
         }
         updateHtmlDoc(m_openUrl,m_godocData,header,nav);
@@ -343,10 +343,11 @@ void GolangDoc::updateHtmlDoc(const QUrl &url, const QByteArray &ba, const QStri
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString genHeader;
     QString nav;
+
     QString content = HtmlUtil::docToNavdoc(codec->toUnicode(ba),genHeader,nav);
     QString data = m_templateData;
 
-    if (!header.isEmpty()) {
+    if (genHeader.isEmpty()) {
         data.replace("{header}",header);
     } else {
         data.replace("{header}",genHeader);
@@ -434,9 +435,9 @@ void GolangDoc::openUrlFile(const QUrl &url)
             QByteArray ba = file.readAll();
             file.close();
             if (info.fileName().compare("docs.html",Qt::CaseInsensitive) == 0) {
-                updateHtmlDoc(url,ba,QString(),false);
+                updateHtmlDoc(url,ba,info.fileName(),false);
             } else {
-                updateHtmlDoc(url,ba);
+                updateHtmlDoc(url,ba,info.fileName(),true);
             }
         }
     } else if (ext == "go") {
@@ -495,10 +496,10 @@ QUrl GolangDoc::parserUrl(const QUrl &_url)
     }
 #endif
     if (url.isRelative() && !url.path().isEmpty()) {
-        if (url.path().compare("/src/pkg/") == 0 ) {
+        if (url.path().compare("/src/pkg/") == 0 || url.path().compare("/pkg/") == 0) {
             url.setScheme("list");
             url.setPath("pkg");
-        } else if (url.path().compare("/src/cmd/") == 0 ){
+        } else if (url.path().compare("/src/cmd/") == 0  || url.path().compare("/cmd/") == 0){
             url.setScheme("list");
             url.setPath("cmd");
         } else if (url.path().indexOf("/pkg/") == 0) {
