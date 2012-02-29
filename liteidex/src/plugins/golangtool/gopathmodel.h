@@ -76,6 +76,7 @@ public:
     void setStartIndex(const QModelIndex &index);
     void setStartPath(const QString &path);
     QModelIndex startIndex() const;
+    QString startPath() const;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex &child) const;

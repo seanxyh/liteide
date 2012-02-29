@@ -248,6 +248,11 @@ QModelIndex GopathModel::startIndex() const
     return findPath(m_startPath);
 }
 
+QString GopathModel::startPath() const
+{
+    return m_startPath;
+}
+
 QString GopathModel::filePath(const QModelIndex &index) const
 {
     return nodeFromIndex(index)->path();
@@ -262,6 +267,9 @@ void GopathModel::setPathList(const QStringList &pathList)
         QString spath = QDir::fromNativeSeparators(QDir::cleanPath(path));
         m_pathList.append(spath);
         m_rootNode->children()->append(new PathNode(this,spath,m_rootNode));
+    }
+    if (m_startPath.isEmpty() && !pathList.isEmpty()) {
+        m_startPath = pathList.last();
     }
     this->endResetModel();
 }
