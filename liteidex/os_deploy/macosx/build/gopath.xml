@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+	<mime-type type="text/x-gopath" id="gopath">
+		<config id="Go" name="${GO}" value="${GOROOT}/bin/go"/>
+		<config id="GoExec" name="${GOEXEC}" value="${LITEAPPDIR}/goexec"/>
+		<config id="Term" name="${TERM}" value="/usr/X11R6/bin/xterm"/>
+		<custom id="TargetArgs" name="${TARGETARGS}" value=""/>
+		<action id="Build" img="go/build.png" key="CTRL+B" cmd="${GO}" args="build" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
+		<action id="Install" img="go/install.png" cmd="${GO}" args="install" save="project" output="true"/>
+		<action id="Clean" img="go/clean.png" cmd="${GO}" args="clean" save="project" output="true"/>
+		<action id="Nuke" img="go/nuke.png" cmd="${GO}" args="clean -i" save="project" output="true"/>
+		<action id="Test" img="go/test.png" key = "CTRL+T" cmd="${GO}" args="test" save="project" output="true" codec="utf-8"/>
+		<action id="Exec" img="go/exec.png" key="CTRL+SHIFT+F5" cmd="${TERM}" args="-e ${GOEXEC} ${TARGETNAME} ${TARGETARGS}" output="false" readline="true"/>
+		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="${TARGETARGS}" output="true" codec="utf-8" readline="true"/>
+		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
+		<action id="GoFmt" img="go/fmt.png" cmd="${GO}" args="fmt" save="project" output="true"/>
+		<action id="GoVet" img="go/vet.png" cmd="${GO}" args="vet" save="project" output="true"/>
+		<action id="GoFix" img="go/fix.png" cmd="${GO}" args="fix" save="project" output="true"/>
+	</mime-type>
+</mime-info>

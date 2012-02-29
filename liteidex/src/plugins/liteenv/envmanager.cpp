@@ -212,8 +212,11 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
     m_envCmb = new QComboBox;
     m_envCmb->setToolTip(tr("Environment"));
 
-    m_toolBar->addWidget(new QLabel(tr("Env:")));
+   // m_toolBar->addWidget(new QLabel(tr("Env:")));
+    //QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/std");
     m_toolBar->addWidget(m_envCmb);
+    //toolBar->addSeparator();
+    //toolBar->addWidget(m_envCmb);
 
     foreach (LiteApi::IEnv *env, m_envList) {
         m_envCmb->addItem(env->id());
