@@ -55,6 +55,7 @@ public slots:
     void reloadEnv();
     void currentEditorChanged(LiteApi::IEditor*);
     void treeViewContextMenuRequested(const QPoint &pos);
+    void setActivate();
     void openEditor();
     void newFile();
     void newFileWizard();
@@ -79,8 +80,10 @@ private:
     GopathModel *m_model;
     QStringList m_pathList;
     QFileInfo m_contextInfo;
+    QModelIndex m_contextIndex;
     QMenu   *m_fileMenu;
     QMenu   *m_folderMenu;
+    QAction *m_setStartAct;
     QAction *m_openEditorAct;
     QAction *m_newFileAct;
     QAction *m_newFileWizardAct;
