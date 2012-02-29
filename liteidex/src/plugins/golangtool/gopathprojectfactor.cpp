@@ -29,6 +29,7 @@
 #include "importgopathdialog.h"
 #include <QAction>
 #include <QFileDialog>
+#include <QToolBar>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -47,9 +48,14 @@ GopathProjectFactor::GopathProjectFactor(LiteApi::IApplication *app, QObject *pa
     m_mimeTypes << "text/x-gopath";
     m_browser = new GopathBrowser(app,this);
 
-    QAction *act = new QAction(tr("<GOPATH> Project"),this);
+    QAction *act = new QAction(QIcon(":/images/gopher.png"),tr("<GOPATH> Project"),this);
     connect(act,SIGNAL(triggered()),this,SLOT(importGopath()));
     m_liteApp->projectManager()->addImportAction(act);
+
+    QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/nav");
+    if (toolBar) {
+        toolBar->addAction(act);
+    }
 
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(loadApp()));
 }
