@@ -3,6 +3,5 @@
   <mime-type type="text/x-gopath">
     <sub-class-of type="text/plain"/>
     <comment>GOPATH Project</comment>
-	<glob pattern=".gopath"/>
   </mime-type>
 </mime-info>
