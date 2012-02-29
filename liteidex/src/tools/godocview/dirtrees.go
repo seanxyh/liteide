@@ -336,7 +336,7 @@ func (root *Directory) listing(skipRoot bool) *DirList {
 		if len(path) > 0 && path[0] == filepath.Separator {
 			path = path[1:]
 		}
-		p.Path = path
+		p.Path = filepath.ToSlash(path)
 		p.Name = d.Name
 		p.Synopsis = d.Text
 		i++
