@@ -1,3 +1,9 @@
+==== 2012.3.1 Ver X11 1.71875 ====
+ * GolangTool : new golang plugin for GO1, import GOPATH project
+ * GolangDoc : update to GO1
+ * LiteBuild : update to GO1
+ * tools : udpate all tools for GO1
+
 ==== 2011.9.26 Ver X10 1.5625 ====
  * LiteEditor : add line mark api
  * LiteDebug : new debug toolbar
