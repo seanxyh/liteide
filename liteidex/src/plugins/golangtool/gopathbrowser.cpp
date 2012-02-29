@@ -79,6 +79,7 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileMenu = new QMenu(m_widget);
     m_folderMenu = new QMenu(m_widget);
 
+    m_setStartAct = new QAction(tr("Set Activate Project"),this);
     m_openEditorAct = new QAction(tr("Open Editor"),this);
     m_newFileAct = new QAction(tr("New File"),this);
     m_newFileWizardAct = new QAction(tr("New File Wizard"),this);
@@ -102,6 +103,8 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileMenu->addAction(m_openShellAct);
     m_fileMenu->addAction(m_openExplorerAct);
 
+    m_folderMenu->addAction(m_setStartAct);
+    m_folderMenu->addSeparator();
     m_folderMenu->addAction(m_newFileAct);
     m_folderMenu->addAction(m_newFileWizardAct);
     m_folderMenu->addAction(m_newFolderAct);
@@ -111,6 +114,7 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_folderMenu->addAction(m_openShellAct);
     m_folderMenu->addAction(m_openExplorerAct);
 
+    connect(m_setStartAct,SIGNAL(triggered()),this,SLOT(setActivate()));
     connect(m_openEditorAct,SIGNAL(triggered()),this,SLOT(openEditor()));
     connect(m_newFileAct,SIGNAL(triggered()),this,SLOT(newFile()));
     connect(m_newFileWizardAct,SIGNAL(triggered()),this,SLOT(newFileWizard()));
@@ -136,6 +140,11 @@ QDir GopathBrowser::contextDir() const
 QFileInfo GopathBrowser::contextFileInfo() const
 {
     return m_contextInfo;
+}
+
+void GopathBrowser::setActivate()
+{
+    setStartIndex(m_contextIndex);
 }
 
 void GopathBrowser::openEditor()
@@ -356,6 +365,7 @@ void GopathBrowser::treeViewContextMenuRequested(const QPoint &pos)
         return;
     }
     m_contextInfo = node->fileInfo();
+    m_contextIndex = index;
     QMenu *contextMenu = 0;
     if (node->isDir()) {
         contextMenu = m_folderMenu;

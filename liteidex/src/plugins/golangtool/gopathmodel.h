@@ -74,6 +74,7 @@ public:
     QString filePath(const QModelIndex &index) const;
     PathNode *nodeFromIndex(const QModelIndex &index) const;    
     void setStartIndex(const QModelIndex &index);
+    void setStartPath(const QString &path);
     QModelIndex startIndex() const;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -81,8 +82,6 @@ public:
     virtual QModelIndex index(int row, int column,const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex &index, int role) const;    
     QFileSystemWatcher* fileWatcher() const;
-signals:
-    
 public slots:
     void directoryChanged(const QString&);
 protected:

@@ -219,13 +219,9 @@ void GopathModel::directoryChanged(const QString &path)
 {
     foreach(QModelIndex index,this->findPaths(path)) {
         PathNode *node = nodeFromIndex(index);
-        if (this->rowCount(index) > 0) {
-            this->beginRemoveRows(index,0,this->rowCount(index)-1);
-            node->reload();
-            this->endRemoveRows();
-        } else {
-            node->reload();
-        }
+        this->beginRemoveRows(index,0,this->rowCount(index)-1);
+        node->reload();
+        this->endRemoveRows();
     }
 }
 
@@ -240,6 +236,11 @@ PathNode *GopathModel::nodeFromIndex(const QModelIndex &index) const
 void GopathModel::setStartIndex(const QModelIndex &index)
 {
     m_startPath = filePath(index);
+}
+
+void GopathModel::setStartPath(const QString &path)
+{
+    m_startPath = path;
 }
 
 QModelIndex GopathModel::startIndex() const

@@ -113,7 +113,8 @@ void GolangAst::setEnable(bool b)
 void GolangAst::projectChanged(LiteApi::IProject *project)
 {
     loadProject(project);
-    connect(project,SIGNAL(reloaded()),this,SLOT(projectReloaded()));
+    if (project)
+        connect(project,SIGNAL(reloaded()),this,SLOT(projectReloaded()));
 }
 
 void GolangAst::projectReloaded()
