@@ -133,16 +133,20 @@ QMap<QString,QStringList> FileUtil::readFileContext(QIODevice *dev)
 #ifdef Q_OS_WIN
 QString FileUtil::canExec(QString fileName, QStringList exts)
 {
-    foreach(QString ext, exts) {
-        QFileInfo info(fileName);
-        if (info.suffix().toLower() == ext && info.exists()) {
-            return info.canonicalFilePath();
+    QFileInfo info(fileName);
+    QString suffix = info.suffix();
+    if (!suffix.isEmpty()) {
+        suffix = "."+suffix;
+        foreach(QString ext, exts) {
+            if (suffix == ext && info.exists()) {
+                return info.canonicalFilePath();
+            }
         }
     }
     foreach(QString ext, exts) {
         QFileInfo info(fileName+ext);
         if (info.exists()) {
-            return info.canonicalFilePath();
+            return info.filePath();
         }
     }
     return QString();
