@@ -87,19 +87,17 @@ QProcessEnvironment Env::loadEnv(QIODevice *dev)
         }
         QString key = line.left(pos).trimmed();
         QString value = line.right(line.length()-pos-1).trimmed();
+        QStringList cap0;
+        QStringList cap1;
         pos = 0;
-        int rep = 0;
-        while (rep++ < 10) {
-            pos = rx.indexIn(value,pos);
-            if (pos == -1) {
-                break;
-            }
-            QString v = env.value(rx.cap(1));
-            if (!v.isEmpty()) {
-                value.replace(pos,rx.cap(0).length(),v);
-                pos = 0;
-            } else {
-                pos += rx.matchedLength();
+        while ((pos = rx.indexIn(value, pos)) != -1) {
+             cap0 << rx.cap(0);
+             cap1 << rx.cap(1);
+             pos += rx.matchedLength();
+        }
+        for (int i = 0; i < cap0.size(); i++) {
+            if (env.contains(cap1.at(i))) {
+                value.replace(cap0.at(i),env.value(cap1.at(i)));
             }
         }
         env.insert(key,value);
