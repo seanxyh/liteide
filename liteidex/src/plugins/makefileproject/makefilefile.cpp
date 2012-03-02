@@ -54,7 +54,7 @@ bool MakefileFile::loadFile(const QString &fileName)
     QMap<QString,QStringList> context = FileUtil::readFileContext(&file);
     file.close();
     if (context.isEmpty()) {
-        return false;
+        //return false;
     }
     m_context = context;
     if (m_context.contains("GOFILES") ||

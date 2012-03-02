@@ -58,7 +58,7 @@ bool ModelFileImpl::open(const QString &fileName, const QString &mimeType)
     }
     m_fileName = fileName;
     m_rootPath = QFileInfo(m_fileName).absolutePath();
-    return !m_context.isEmpty();
+    return true;
 }
 
 bool ModelFileImpl::reload()

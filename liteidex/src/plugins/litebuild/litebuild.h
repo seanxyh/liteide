@@ -52,8 +52,8 @@ public:
     virtual LiteApi::IBuildManager *buildManager() const;
 public:
     void setCurrentBuild(LiteApi::IBuild *build);
-    void leadProjectEnv(LiteApi::IProject *project);
-    void leadEditorEnv(LiteApi::IEditor *project);
+    void loadProjectEnv(LiteApi::IProject *project);
+    void loadEditorEnv(LiteApi::IEditor *project);
 public slots:
     void appLoaded();
     void currentEnvChanged(LiteApi::IEnv*);

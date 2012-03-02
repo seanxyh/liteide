@@ -26,6 +26,7 @@
 #include "makefilefilefactory.h"
 #include "makefileproject.h"
 #include "makefilefile.h"
+#include <QDebug>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -42,6 +43,7 @@ MakefileFileFactory::MakefileFileFactory(LiteApi::IApplication *app, QObject *pa
       m_liteApp(app)
 {
     m_mimeTypes.append("text/x-makefile");
+    m_mimeTypes.append("text/x-gomake");
 }
 
 QStringList MakefileFileFactory::mimeTypes() const
@@ -69,10 +71,11 @@ bool MakefileFileFactory::findProjectInfo(const QString &fileName, const QString
         return false;
     }
     MakefileFile *file = new MakefileFile(m_liteApp,0);
-    if (file->open(fileName,mimeType)) {
+    bool b = file->open(fileName,mimeType);
+    if (b) {
         projectInfo = file->projectInfo();
         targetInfo = file->targetInfo();
     }
     delete file;
-    return true;
+    return b;
 }
