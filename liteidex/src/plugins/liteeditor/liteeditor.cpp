@@ -395,6 +395,39 @@ LiteApi::IFile *LiteEditor::file()
     return m_file;
 }
 
+QMap<QString,QString> LiteEditor::editorInfo() const
+{
+    QMap<QString,QString> m;
+    QString path = this->filePath();
+    if (path.isEmpty()) {
+        return m;
+    }
+    QFileInfo info(path);
+    m.insert("$(EDITORNAME)",info.fileName());
+    m.insert("$(EDITORPATH)",info.filePath());
+    m.insert("$(EDITORDIR)",info.path());
+    return m;
+}
+
+QMap<QString,QString> LiteEditor::targetInfo() const
+{
+    QMap<QString,QString> m;
+    QString path = this->filePath();
+    if (path.isEmpty()) {
+        return m;
+    }
+    QFileInfo info(path);
+    QString target = info.baseName();
+#ifdef Q_OS_WIN
+    target += ".exe";
+#endif
+    m.insert("$(TARGETNAME)",target);
+    m.insert("$(TARGETPATH)",info.path()+"/"+target);
+    m.insert("$(TARGETDIR)",info.path());
+    m.insert("$(WORKDIR)",info.path());
+    return m;
+}
+
 int LiteEditor::line() const
 {
     return m_editorWidget->textCursor().blockNumber()+1;

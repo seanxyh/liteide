@@ -113,6 +113,39 @@ QString MakefileFile::target() const
     return target;
 }
 
+QMap<QString,QString> MakefileFile::projectInfo() const
+{
+    QMap<QString,QString> m;
+    if (m_fileName.isEmpty()) {
+        return m;
+    }
+    QFileInfo info(m_fileName);
+    m.insert("PROJECTNAME",info.fileName());
+    m.insert("PROJECTPATH",info.filePath());
+    m.insert("PROJECTDIR",info.path());
+    return m;
+}
+
+QMap<QString,QString> MakefileFile::targetInfo() const
+{
+    QMap<QString,QString> m;
+    if (m_fileName.isEmpty()) {
+        return m;
+    }
+    QFileInfo info(m_fileName);
+    QString target = info.fileName();
+    QString val = this->value("TARG");
+    if (!val.isEmpty()) {
+        target = val;
+    }
+    m.insert("TARGETNAME",target);
+    m.insert("TARGETPATH",QFileInfo(QDir(info.path()),target).filePath());
+    m.insert("TARGETDIR",info.path());
+    m.insert("WORKDIR",info.path());
+    return m;
+}
+
+
 QString MakefileFile::targetPath() const
 {
     QString target = QFileInfo(m_fileName).fileName();

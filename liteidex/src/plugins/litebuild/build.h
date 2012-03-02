@@ -43,7 +43,7 @@ public:
     virtual QList<BuildCustom*> customList() const;
     virtual BuildAction *findAction(const QString &id);
     virtual QString actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env);
-    virtual QString actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv);
+    virtual QString actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env);
 public:
     void setType(const QString &mimeType);
     void setId(const QString &id);

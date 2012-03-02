@@ -41,6 +41,45 @@ class IManager;
 class IFile;
 class IProject;
 class IEditor;
+/*
+valueForKey
+
+EDITORPATH
+EDITORNAME
+EDITORDIR
+
+PROJECTPATH
+PROJECTNAME
+PROJECTDIR
+
+WORKDIR
+
+TARGETPATH
+TARGETNAME
+TARGETDIR
+*/
+
+struct TargetInfo
+{
+    QString workDir;
+    QString targetPath;
+    QString targetName;
+    QString targetDir;
+};
+
+struct ProjectInfo
+{
+    QString projectPath;
+    QString projectName;
+    QString projectDir;
+};
+
+struct EditorInfo
+{
+    QString editorPath;
+    QString editorName;
+    QString editorDir;
+};
 
 class IManager : public QObject
 {
@@ -113,7 +152,7 @@ public:
     IProjectFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QStringList mimeTypes() const = 0;
     virtual IProject *open(const QString &fileName, const QString &mimeType) = 0;
-    virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const = 0;
+    virtual bool findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const = 0;
 };
 
 class IFileManager : public IManager
@@ -134,7 +173,7 @@ public:
     virtual QStringList recentFiles() const = 0;
     virtual QStringList recentProjects() const = 0;
 
-    virtual bool targetInfo(const QString &fileName, QString &target, QString &targetPath, QString &workPath) const = 0;
+    virtual bool findProjectInfo(const QString &fileName, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const = 0;
 signals:
     void fileListChanged();
     void recentProjectsChanged();
@@ -170,6 +209,8 @@ public:
     virtual bool isModified() const = 0;
     virtual QString filePath() const = 0;
     virtual QString mimeType() const = 0;
+    virtual QMap<QString,QString> editorInfo() const = 0;
+    virtual QMap<QString,QString> targetInfo() const = 0;
 signals:
     void modificationChanged(bool);
     void contentsChanged();
@@ -229,6 +270,8 @@ public:
     virtual bool isReadOnly() const { return true; }
     virtual bool isModified() const { return false; }
     virtual QString filePath() const { return QString(); }
+    virtual QMap<QString,QString> editorInfo() const { return QMap<QString,QString>(); }
+    virtual QMap<QString,QString> targetInfo() const { return QMap<QString,QString>(); }
 };
 
 class IProject : public IView
@@ -243,6 +286,8 @@ public:
     virtual QString target() const = 0;
     virtual QString targetPath() const = 0;
     virtual QString workPath() const = 0;
+    virtual QMap<QString,QString> projectInfo() const = 0;
+    virtual QMap<QString,QString> targetInfo() const = 0;
     virtual void load() = 0;
 signals:
     void reloaded();

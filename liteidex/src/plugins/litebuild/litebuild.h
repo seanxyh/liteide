@@ -48,10 +48,12 @@ public:
     virtual QString buildFilePath() const;
     virtual QString targetFilePath() const;
     virtual QMap<QString,QString> buildEnvMap() const;
+    virtual QMap<QString,QString> liteideEnvMap() const;
     virtual LiteApi::IBuildManager *buildManager() const;
 public:
     void setCurrentBuild(LiteApi::IBuild *build);
-    void resetLiteEnv(LiteApi::IProject *project);
+    void leadProjectEnv(LiteApi::IProject *project);
+    void leadEditorEnv(LiteApi::IEditor *project);
 public slots:
     void appLoaded();
     void currentEnvChanged(LiteApi::IEnv*);
@@ -77,13 +79,17 @@ protected:
     QStandardItemModel *m_configModel;
     QStandardItemModel *m_customModel;
     QList<QAction*> m_actions;
-    QMap<QString,QString> m_liteideMap;
+    QMap<QString,QString> m_liteAppInfo;
     QMap<QString,QString> m_configMap;
     QMap<QString,QString> m_customMap;
+    QString m_workDir;
     ProcessEx *m_process;
     LiteOutput *m_output;
     QString     m_outputRegex;
     QString     m_buildFilePath;
+    QMap<QString,QString> m_editorInfo;
+    QMap<QString,QString> m_projectInfo;
+    QMap<QString,QString> m_targetInfo;
 };
 
 #endif // LITEBUILD_H

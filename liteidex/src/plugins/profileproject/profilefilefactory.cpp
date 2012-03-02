@@ -64,16 +64,15 @@ LiteApi::IProject *ProfileFileFactory::open(const QString &fileName, const QStri
     return project;
 }
 
-bool ProfileFileFactory::targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const
+bool ProfileFileFactory::findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& targetInfo) const
 {
     if (!m_mimeTypes.contains(mimetype)) {
         return false;
     }
     ProfileFile *file = new ProfileFile(m_liteApp,0);
     if (file->open(fileName,mimetype)) {
-        target = file->target();
-        targetPath = file->targetPath();
-        workPath = file->workPath();
+        projectInfo = file->projectInfo();
+        targetInfo = file->targetInfo();
     }
     delete file;
     return true;

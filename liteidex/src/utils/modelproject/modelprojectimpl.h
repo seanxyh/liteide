@@ -53,6 +53,8 @@ public:
     virtual QString target() const;
     virtual QString targetPath() const;
     virtual QString workPath() const;
+    virtual QMap<QString,QString> projectInfo() const;
+    virtual QMap<QString,QString> targetInfo() const;
     virtual void load();
 public:
     virtual bool open(const QString &filePath, const QString &mimeType);

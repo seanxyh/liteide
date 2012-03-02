@@ -102,7 +102,7 @@ LiteApi::IProject *GopathProjectFactor::open(const QString &fileName, const QStr
     return 0;
 }
 
-bool GopathProjectFactor::targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const
+bool GopathProjectFactor::findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const
 {
     return false;
 }

@@ -122,6 +122,8 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     connect(m_output,SIGNAL(enterText(QString)),this,SLOT(enterTextBuildOutput(QString)));
     connect(m_configAct,SIGNAL(triggered()),this,SLOT(config()));
 
+    m_liteAppInfo.insert("LITEAPPDIR",m_liteApp->applicationPath());
+
     m_liteApp->extension()->addObject("LiteApi.ILiteBuild",this);
 }
 
@@ -138,7 +140,7 @@ QString LiteBuild::buildFilePath() const
 
 QString LiteBuild::targetFilePath() const
 {
-    QString path = m_liteideMap.value("${TARGETPATH}");
+    QString path = m_targetInfo.value("TARGETPATH");
     if (path.isEmpty()) {
         return path;
     }
@@ -189,9 +191,15 @@ void LiteBuild::currentEnvChanged(LiteApi::IEnv*)
     m_process->setEnvironment(m_envManager->currentEnvironment().toStringList());
 }
 
-void LiteBuild::resetLiteEnv(LiteApi::IProject *project)
+void LiteBuild::leadProjectEnv(LiteApi::IProject *project)
 {
-    m_liteideMap.clear();
+    m_projectInfo.clear();
+    m_targetInfo.clear();
+    if (project) {
+        m_projectInfo = project->projectInfo();
+        m_targetInfo = project->targetInfo();
+    }
+    /*
     QString projectPath,projectDir,projectName;
     QString workDir,targetPath,targetDir,targetName;
     if (project) {
@@ -211,19 +219,20 @@ void LiteBuild::resetLiteEnv(LiteApi::IProject *project)
     m_liteideMap.insert("${TARGETPATH}",targetPath);
     m_liteideMap.insert("${TARGETDIR}",targetDir);
     m_liteideMap.insert("${TARGETNAME}",targetName);
+    */
 }
 
 void LiteBuild::reloadProject()
 {
     LiteApi::IProject *project = (LiteApi::IProject*)sender();
-    resetLiteEnv(project);
+    leadProjectEnv(project);
 }
 
 void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
 {
     LiteApi::IBuild *build = 0;
     m_buildFilePath.clear();
-    resetLiteEnv(project);
+    leadProjectEnv(project);
     if (project) {
         connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
         build =  m_manager->findBuild(project->mimeType());
@@ -236,9 +245,30 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
     }
 }
 
+QMap<QString,QString> LiteBuild::liteideEnvMap() const
+{
+    QMap<QString,QString> env = m_liteAppInfo;
+    QMapIterator<QString,QString> p(m_projectInfo);
+    while(p.hasNext()) {
+        p.next();
+        env.insert(p.key(),p.value());
+    }
+    QMapIterator<QString,QString> e(m_editorInfo);
+    while(e.hasNext()) {
+        e.next();
+        env.insert(e.key(),e.value());
+    }
+    QMapIterator<QString,QString> t(m_targetInfo);
+    while(t.hasNext()) {
+        t.next();
+        env.insert(t.key(),t.value());
+    }
+    return env;
+}
+
 QMap<QString,QString> LiteBuild::buildEnvMap() const
 {
-    QMap<QString,QString> env = m_liteideMap;
+    QMap<QString,QString> env = liteideEnvMap();
     QMapIterator<QString,QString> i(m_configMap);
     while(i.hasNext()) {
         i.next();
@@ -247,7 +277,7 @@ QMap<QString,QString> LiteBuild::buildEnvMap() const
         QMapIterator<QString,QString> m(env);
         while(m.hasNext()) {
             m.next();
-            v.replace(m.key(),m.value());
+            v.replace("$("+m.key()+")",m.value());
         }
         env.insert(k,v);
     }
@@ -259,9 +289,24 @@ QMap<QString,QString> LiteBuild::buildEnvMap() const
         QMapIterator<QString,QString> m(env);
         while(m.hasNext()) {
             m.next();
-            v.replace(m.key(),m.value());
+            v.replace("$("+m.key()+")",m.value());
         }
         env.insert(k,v);
+    }
+    QMapIterator<QString,QString> p(m_projectInfo);
+    while(p.hasNext()) {
+        p.next();
+        env.insert(p.key(),p.value());
+    }
+    QMapIterator<QString,QString> e(m_editorInfo);
+    while(e.hasNext()) {
+        e.next();
+        env.insert(e.key(),e.value());
+    }
+    QMapIterator<QString,QString> t(m_targetInfo);
+    while(t.hasNext()) {
+        t.next();
+        env.insert(t.key(),t.value());
     }
     return env;
 }
@@ -326,14 +371,13 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
     }
 
     m_liteideModel->removeRows(0,m_liteideModel->rowCount());
-    QMapIterator<QString,QString> i(m_liteideMap);
+    QMapIterator<QString,QString> i(this->liteideEnvMap());
     while (i.hasNext()) {
         i.next();
         m_liteideModel->appendRow(QList<QStandardItem*>()
                                  << new QStandardItem(i.key())
                                  << new QStandardItem(i.value()));
     }
-
     foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
         QAction *act = m_toolBar->addAction(ba->id());
         if (!ba->key().isEmpty()) {
@@ -351,13 +395,63 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
     }
 }
 
-void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
+void LiteBuild::leadEditorEnv(LiteApi::IEditor *editor)
 {
+    m_editorInfo.clear();
+    if (!editor) {
+        return;
+    }
+    QString filePath = editor->filePath();
+    if (filePath.isEmpty()) {
+        return;
+    }
+    m_editorInfo = editor->editorInfo();
+
     if (m_liteApp->projectManager()->currentProject()) {
         return;
     }
     m_buildFilePath.clear();
-    m_liteideMap.clear();
+    m_targetInfo.clear();
+
+    QString workDir = QFileInfo(filePath).path();
+
+    LiteApi::IBuild *build = m_manager->findBuild(editor->mimeType());
+    LiteApi::IBuild *projectBuild = 0;
+    QString projectPath;
+    if (build != 0) {
+        foreach (LiteApi::BuildLookup *lookup,build->lookupList()) {
+            QDir dir(workDir);
+            for (int i = 0; i <= lookup->top(); i++) {
+                QFileInfoList infos = dir.entryInfoList(QStringList() << lookup->file(),QDir::Files);
+                if (infos.size() >= 1) {
+                    projectBuild = m_manager->findBuild(lookup->mimeType());
+                    if (projectBuild != 0) {
+                        projectPath = infos.at(0).filePath();
+                        m_buildFilePath = projectPath;
+                        break;
+                    }
+                }
+                dir.cdUp();
+            }
+        }
+    }
+    if (projectBuild) {
+        build = projectBuild;
+        QMap<QString,QString> projectInfo,targetInfo;
+        if (m_liteApp->fileManager()->findProjectInfo(projectPath,projectInfo,targetInfo)) {
+            m_projectInfo = projectInfo;
+            m_targetInfo = targetInfo;
+        }
+    } else {
+        m_targetInfo = editor->targetInfo();
+    }
+    setCurrentBuild(build);
+}
+
+void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
+{
+    leadEditorEnv(editor);
+/*
     QString editorPath,editorDir,editorName;
     QString workDir,targetPath,targetDir,targetName;
 
@@ -400,7 +494,7 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
         QString projectDir = QFileInfo(projectPath).absolutePath();
         QString projectName = QFileInfo(projectPath).fileName();
         workDir = projectDir;
-        m_liteApp->fileManager()->targetInfo(projectPath,targetName,targetPath,workDir);
+        m_liteApp->fileManager()->findProjectInfo(projectPath,targetName,targetPath,workDir);
         m_liteideMap.insert("${LITEAPPDIR}",m_liteApp->applicationPath());
         m_liteideMap.insert("${PROJECTPATH}",projectPath);
         m_liteideMap.insert("${PROJECTDIR}",projectDir);
@@ -420,6 +514,7 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
         m_liteideMap.insert("${TARGETNAME}",targetName);
     }
     setCurrentBuild(build);
+*/
 }
 
 void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)
@@ -525,18 +620,19 @@ void LiteBuild::execAction(const QString &id)
         }
     }
 
-    QString workDir = m_liteideMap.value("${WORKDIR}");
-
     QMap<QString,QString> env = buildEnvMap();
 
+    m_workDir = env.value("WORKDIR");
+
     QString cmd;
+    QString args;
     if (m_envManager) {
         cmd = m_build->actionCommand(ba,env,m_envManager->currentEnvironment());
+        args = m_build->actionArgs(ba,env,m_envManager->currentEnvironment());
     } else {
         cmd = m_build->actionCommand(ba,env,QProcessEnvironment::systemEnvironment());
+        args = m_build->actionArgs(ba,env,QProcessEnvironment::systemEnvironment());
     }
-
-    QString args = m_build->actionArgs(ba,env);        
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
     if (ba->output() && ba->readline()) {
@@ -552,22 +648,22 @@ void LiteBuild::execAction(const QString &id)
 #endif
     m_process->setEnvironment(sysenv.toStringList());
     if (!ba->output()) {
-        bool b = QProcess::startDetached(cmd,arguments,workDir);
+        bool b = QProcess::startDetached(cmd,arguments,m_workDir);
         m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")
                              .arg(id).arg(ba->cmd()).arg(ba->args()));
         m_output->appendTag1(QString("<run=\"%1 %2\" workdir=\"%3\"/>\n").
-                             arg(cmd).arg(args).arg(workDir));
+                             arg(cmd).arg(args).arg(m_workDir));
         m_output->append(QString("Start process %1\n").arg(b?"success":"false"));
         m_output->appendTag0(QString("</action>\n"));
     } else {
         m_process->setUserData(0,cmd);
         m_process->setUserData(1,args);
         m_process->setUserData(2,codec);
-        m_process->setWorkingDirectory(workDir);
+        m_process->setWorkingDirectory(m_workDir);
         m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")
                              .arg(id).arg(ba->cmd()).arg(ba->args()));
         m_output->appendTag1(QString("<start=\"%1 %2\" workdir=\"%3\"/>\n").
-                             arg(cmd).arg(args).arg(workDir));
+                             arg(cmd).arg(args).arg(m_workDir));
         m_process->start(cmd,arguments);
     }
 }
@@ -612,8 +708,7 @@ void LiteBuild::dbclickBuildOutput(const QTextCursor &cur)
     if (project) {
         fileName = project->fileNameToFullPath(fileName);
     } else {
-        QString workDir = m_liteideMap.value("${WORKDIR}");
-        QDir dir(workDir);
+        QDir dir(m_workDir);
         QString filePath = dir.filePath(fileName);
         if (QFile::exists(filePath)) {
             fileName = filePath;

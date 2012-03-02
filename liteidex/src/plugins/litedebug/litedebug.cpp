@@ -251,9 +251,9 @@ void LiteDebug::startDebug()
         return;
     }
 
-    QString workDir = m_liteBuild->buildEnvMap().value("${WORKDIR}");
-    QString target = m_liteBuild->buildEnvMap().value("${TARGETNAME}");
-    QString args = m_liteBuild->buildEnvMap().value("${TARGETARGS}");
+    QString workDir = m_liteBuild->buildEnvMap().value("WORKDIR");
+    QString target = m_liteBuild->buildEnvMap().value("TARGETNAME");
+    QString args = m_liteBuild->buildEnvMap().value("TARGETARGS");
     int index = targetFilepath.lastIndexOf(target);
     if (index != -1) {
         target = targetFilepath.right(targetFilepath.length()-index);
