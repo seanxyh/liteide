@@ -128,6 +128,38 @@ QString GopathProject::workPath() const
     return m_path;
 }
 
+QMap<QString,QString> GopathProject::projectInfo() const
+{
+    QMap<QString,QString> m;
+    if (m_path.isEmpty()) {
+        return m;
+    }
+    QFileInfo info(m_path);
+    m.insert("PROJECTNAME",info.fileName());
+    m.insert("PROJECTPATH",info.filePath());
+    m.insert("PROJECTDIR",info.filePath());
+    return m;
+}
+
+QMap<QString,QString> GopathProject::targetInfo() const
+{
+    QMap<QString,QString> m;
+    if (m_path.isEmpty()) {
+        return m;
+    }
+    QFileInfo info(m_path);
+    QString target = info.fileName();
+#ifdef Q_OS_WIN
+    target += ".exe";
+#endif
+    m.insert("TARGETNAME",target);
+    m.insert("TARGETPATH",QFileInfo(QDir(m_path),target).filePath());
+    m.insert("TARGETDIR",info.filePath());
+    m.insert("WORKDIR",info.filePath());
+    return m;
+}
+
+
 void GopathProject::load()
 {
     m_browser->widget()->show();

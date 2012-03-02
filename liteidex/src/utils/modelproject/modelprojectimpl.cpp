@@ -160,6 +160,15 @@ QString ModelProjectImpl::workPath() const
     return QFileInfo(m_file->filePath()).absolutePath();
 }
 
+QMap<QString,QString> ModelProjectImpl::projectInfo() const
+{
+    return m_file->projectInfo();
+}
+
+QMap<QString,QString> ModelProjectImpl::targetInfo() const
+{
+    return m_file->targetInfo();
+}
 
 void ModelProjectImpl::editorSaved(LiteApi::IEditor *editor)
 {

@@ -37,7 +37,7 @@ public:
     ~GopathProjectFactor();
     virtual QStringList mimeTypes() const;
     virtual LiteApi::IProject *open(const QString &fileName, const QString &mimeType);
-    virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const;    
+    virtual bool findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const;
 public slots:
     void importGopath();
     void loadApp();

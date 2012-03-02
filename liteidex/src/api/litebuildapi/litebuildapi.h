@@ -169,7 +169,7 @@ public:
     virtual QList<BuildCustom*> customList() const = 0;
     virtual BuildAction *findAction(const QString &name) = 0;
     virtual QString actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env) = 0;
-    virtual QString actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv) = 0;
+    virtual QString actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env) = 0;
 };
 
 class IBuildManager : public IManager
