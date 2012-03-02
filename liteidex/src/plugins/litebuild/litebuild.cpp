@@ -389,7 +389,7 @@ void LiteBuild::loadEditorEnv(LiteApi::IEditor *editor)
     if (m_liteApp->projectManager()->currentProject()) {
         return;
     }
-    m_buildFilePath.clear();
+    m_buildFilePath = filePath;
     m_targetInfo.clear();
 
     QString workDir = QFileInfo(filePath).path();

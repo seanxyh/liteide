@@ -15,7 +15,7 @@ SUBDIRS = \
     filebrowser \
     golangast \
     golangtool \
-#   golangfmt \
+    golangfmt \
     golangcode \
     golangdoc \
     gdbdebugger \
