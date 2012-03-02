@@ -81,6 +81,9 @@ QProcessEnvironment Env::loadEnv(QIODevice *dev)
 #endif
     while (!dev->atEnd()) {
         QString line = dev->readLine().trimmed();
+        if (line.indexOf("#") == 0) {
+            continue;
+        }
         int pos = line.indexOf("=");
         if (pos == -1) {
             continue;

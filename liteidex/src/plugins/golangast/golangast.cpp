@@ -139,7 +139,7 @@ void GolangAst::loadProject(LiteApi::IProject *project)
                 m_updateFilePaths.append(info.filePath());
             }
         }
-        m_workPath = project->workPath();
+        m_workPath = project->projectInfo().value("PROJECTDIR");
         m_process->setWorkingDirectory(m_workPath);
         m_projectAstWidget->setWorkPath(m_workPath);
         m_stackedWidget->setCurrentWidget(m_projectAstWidget);

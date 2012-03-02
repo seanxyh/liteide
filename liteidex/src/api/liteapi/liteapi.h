@@ -142,7 +142,6 @@ public:
     IEditorFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QStringList mimeTypes() const = 0;
     virtual IEditor *open(const QString &fileName, const QString &mimeType) = 0;
-    virtual bool targetInfo(const QString &/*fileName*/, const QString &/*mimetype*/, QString &/*target*/, QString &/*targetPath*/, QString &/*workPath*/) const  { return false; }
 };
 
 class IProjectFactory : public QObject
@@ -283,9 +282,6 @@ public:
     virtual QStringList fileNameList() const = 0;
     virtual QStringList filePathList() const = 0;
     virtual QString fileNameToFullPath(const QString &filePath) = 0;
-    virtual QString target() const = 0;
-    virtual QString targetPath() const = 0;
-    virtual QString workPath() const = 0;
     virtual QMap<QString,QString> projectInfo() const = 0;
     virtual QMap<QString,QString> targetInfo() const = 0;
     virtual void load() = 0;

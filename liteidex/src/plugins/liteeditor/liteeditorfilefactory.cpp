@@ -128,15 +128,3 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
     }
     return editor;
 }
-
-bool LiteEditorFileFactory::targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const
-{
-    if (!m_mimeTypes.contains(mimetype)) {
-        return false;
-    }
-    QFileInfo info(fileName);
-    target = info.absolutePath()+"/"+info.baseName();
-    targetPath = info.absolutePath();
-    workPath = info.absolutePath();
-    return true;
-}
