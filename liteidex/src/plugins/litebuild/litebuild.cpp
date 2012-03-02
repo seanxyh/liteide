@@ -191,7 +191,7 @@ void LiteBuild::currentEnvChanged(LiteApi::IEnv*)
     m_process->setEnvironment(m_envManager->currentEnvironment().toStringList());
 }
 
-void LiteBuild::leadProjectEnv(LiteApi::IProject *project)
+void LiteBuild::loadProjectEnv(LiteApi::IProject *project)
 {
     m_projectInfo.clear();
     m_targetInfo.clear();
@@ -199,40 +199,19 @@ void LiteBuild::leadProjectEnv(LiteApi::IProject *project)
         m_projectInfo = project->projectInfo();
         m_targetInfo = project->targetInfo();
     }
-    /*
-    QString projectPath,projectDir,projectName;
-    QString workDir,targetPath,targetDir,targetName;
-    if (project) {
-        projectPath = project->filePath();
-        projectDir = QFileInfo(projectPath).absolutePath();
-        projectName = QFileInfo(projectPath).fileName();
-        workDir = project->workPath();
-        targetPath = project->targetPath();
-        targetName = project->target();
-        targetDir = QFileInfo(targetPath).absolutePath();
-    }
-    m_liteideMap.insert("${LITEAPPDIR}",m_liteApp->applicationPath());
-    m_liteideMap.insert("${PROJECTPATH}",projectPath);
-    m_liteideMap.insert("${PROJECTDIR}",projectDir);
-    m_liteideMap.insert("${PROJECTNAME}",projectName);
-    m_liteideMap.insert("${WORKDIR}",workDir);
-    m_liteideMap.insert("${TARGETPATH}",targetPath);
-    m_liteideMap.insert("${TARGETDIR}",targetDir);
-    m_liteideMap.insert("${TARGETNAME}",targetName);
-    */
 }
 
 void LiteBuild::reloadProject()
 {
     LiteApi::IProject *project = (LiteApi::IProject*)sender();
-    leadProjectEnv(project);
+    loadProjectEnv(project);
 }
 
 void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
 {
     LiteApi::IBuild *build = 0;
     m_buildFilePath.clear();
-    leadProjectEnv(project);
+    loadProjectEnv(project);
     if (project) {
         connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
         build =  m_manager->findBuild(project->mimeType());
@@ -395,7 +374,7 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
     }
 }
 
-void LiteBuild::leadEditorEnv(LiteApi::IEditor *editor)
+void LiteBuild::loadEditorEnv(LiteApi::IEditor *editor)
 {
     m_editorInfo.clear();
     if (!editor) {
@@ -450,71 +429,7 @@ void LiteBuild::leadEditorEnv(LiteApi::IEditor *editor)
 
 void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
 {
-    leadEditorEnv(editor);
-/*
-    QString editorPath,editorDir,editorName;
-    QString workDir,targetPath,targetDir,targetName;
-
-    LiteApi::IBuild *build = 0;
-    if (editor) {
-        QString fileName = editor->filePath();
-        if (!fileName.isEmpty()) {
-            editorPath = fileName;
-            editorDir = QFileInfo(editorPath).absolutePath();
-            editorName = QFileInfo(editorPath).fileName();
-            build = m_manager->findBuild(editor->mimeType());
-            m_buildFilePath = editor->filePath();
-            workDir = editorDir;
-            targetDir = editorDir;
-            targetName = QFileInfo(editorPath).baseName();
-            targetPath = targetDir+"/"+targetName;
-        }
-    }
-    LiteApi::IBuild *projectBuild = 0;
-    QString projectPath;
-    if (build != 0) {
-        foreach (LiteApi::BuildLookup *lookup,build->lookupList()) {
-            QDir dir(workDir);
-            for (int i = 0; i <= lookup->top(); i++) {
-                QFileInfoList infos = dir.entryInfoList(QStringList() << lookup->file(),QDir::Files);
-                if (infos.size() >= 1) {
-                    projectBuild = m_manager->findBuild(lookup->mimeType());
-                    if (projectBuild != 0) {
-                        projectPath = infos.at(0).filePath();
-                        m_buildFilePath = projectPath;
-                        break;
-                    }
-                }
-                dir.cdUp();
-            }
-        }
-    }
-    if (projectBuild != 0) {
-        build = projectBuild;
-        QString projectDir = QFileInfo(projectPath).absolutePath();
-        QString projectName = QFileInfo(projectPath).fileName();
-        workDir = projectDir;
-        m_liteApp->fileManager()->findProjectInfo(projectPath,targetName,targetPath,workDir);
-        m_liteideMap.insert("${LITEAPPDIR}",m_liteApp->applicationPath());
-        m_liteideMap.insert("${PROJECTPATH}",projectPath);
-        m_liteideMap.insert("${PROJECTDIR}",projectDir);
-        m_liteideMap.insert("${PROJECTNAME}",projectName);
-        m_liteideMap.insert("${WORKDIR}",workDir);
-        m_liteideMap.insert("${TARGETPATH}",targetPath);
-        m_liteideMap.insert("${TARGETDIR}",targetDir);
-        m_liteideMap.insert("${TARGETNAME}",targetName);
-    } else {
-        m_liteideMap.insert("${LITEAPPDIR}",m_liteApp->applicationPath());
-        m_liteideMap.insert("${EDITORPATH}",editorPath);
-        m_liteideMap.insert("${EDITORDIR}",editorDir);
-        m_liteideMap.insert("${EDITORNAME}",editorName);
-        m_liteideMap.insert("${WORKDIR}",workDir);
-        m_liteideMap.insert("${TARGETPATH}",targetPath);
-        m_liteideMap.insert("${TARGETDIR}",targetDir);
-        m_liteideMap.insert("${TARGETNAME}",targetName);
-    }
-    setCurrentBuild(build);
-*/
+    loadEditorEnv(editor);
 }
 
 void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)

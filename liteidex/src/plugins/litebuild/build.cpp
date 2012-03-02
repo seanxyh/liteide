@@ -252,14 +252,11 @@ QString Build::actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, co
 QString Build::actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env)
 {
     QString args = act->args();
-    qDebug() << args;
-    qDebug() << liteEnv;
     QMapIterator<QString,QString> i(liteEnv);
     while(i.hasNext()) {
         i.next();
         args.replace("$("+i.key()+")",i.value());
     }
-    qDebug() << args;
     QRegExp rx("\\$\\((\\w+)\\)");
     int pos = 0;
     QStringList list;
