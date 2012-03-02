@@ -261,7 +261,9 @@ func (file *GoProject) MakeTarget(gobin *GoBin) error {
 			target = path.Join(dest, target)
 		}
 		if string(v) == "main" {
-			target = target + gobin.exeext
+			if filepath.Ext(target) != gobin.exeext {
+				target = target + gobin.exeext				
+			}
 			err := link(gobin.gocmd,gobin.link, file.Values["GLOPT"], target, ofile, os.Environ(), file.ProjectDir())
 			if err != nil {
 				return err
