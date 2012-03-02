@@ -39,7 +39,6 @@ public:
     LiteEditorFileFactory(LiteApi::IApplication *app, QObject *parent);
     virtual QStringList mimeTypes() const;
     virtual LiteApi::IEditor *open(const QString &fileName, const QString &mimeType);
-    virtual bool targetInfo(const QString &fileName, const QString &mimetype, QString &target, QString &targetPath, QString &workPath) const;
 public slots:
     void colorStyleChanged();
 protected:

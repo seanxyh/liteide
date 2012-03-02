@@ -113,21 +113,6 @@ QString GopathProject::fileNameToFullPath(const QString &filePath)
     return QFileInfo(m_path,filePath).filePath();
 }
 
-QString GopathProject::target() const
-{
-    return QFileInfo(m_path).fileName();
-}
-
-QString GopathProject::targetPath() const
-{
-    return QFileInfo(m_path,this->target()).filePath();
-}
-
-QString GopathProject::workPath() const
-{
-    return m_path;
-}
-
 QMap<QString,QString> GopathProject::projectInfo() const
 {
     QMap<QString,QString> m;

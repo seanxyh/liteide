@@ -46,9 +46,6 @@ public:
     virtual QStringList fileNameList() const;
     virtual QStringList filePathList() const;
     virtual QString fileNameToFullPath(const QString &filePath);
-    virtual QString target() const;
-    virtual QString targetPath() const;
-    virtual QString workPath() const;
     virtual QMap<QString,QString> projectInfo() const;
     virtual QMap<QString,QString> targetInfo() const;
     virtual void load();

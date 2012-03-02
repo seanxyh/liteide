@@ -222,7 +222,7 @@ void FileManager::newFile()
     QString filePath;
     IProject *project = m_liteApp->projectManager()->currentProject();
     if (project) {
-        QDir dir(project->workPath());
+        QDir dir(project->projectInfo().value("PROJECTDIR"));
         filePath = dir.absolutePath();
     } else {
         IEditor *editor = m_liteApp->editorManager()->currentEditor();
