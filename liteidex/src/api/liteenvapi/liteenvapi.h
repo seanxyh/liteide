@@ -27,6 +27,7 @@
 #define __LITEENVAPI_H__
 
 #include "liteapi/liteapi.h"
+#include "liteapi/litefindobj.h"
 #include <QProcessEnvironment>
 
 namespace LiteApi {
@@ -55,6 +56,20 @@ public:
 signals:
     void currentEnvChanged(LiteApi::IEnv*);
 };
+
+inline IEnvManager *getEnvManager(LiteApi::IApplication* app)
+{
+    return LiteApi::findExtensionObject<IEnvManager*>(app,"LiteApi.IEnvManager");
+}
+
+inline QProcessEnvironment getCurrentEnvironment(LiteApi::IApplication *app)
+{
+    IEnvManager *env = getEnvManager(app);
+    if (env) {
+        return env->currentEnvironment();
+    }
+    return QProcessEnvironment::systemEnvironment();
+}
 
 } //namespace LiteApi
 

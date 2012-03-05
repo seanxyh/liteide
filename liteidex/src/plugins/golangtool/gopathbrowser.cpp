@@ -329,11 +329,9 @@ void GopathBrowser::openExplorer()
 void GopathBrowser::openShell()
 {
     QDir dir = contextDir();
-    QString cmd = getShellCmd(m_liteApp);
-    if (cmd.isEmpty()) {
-        return;
-    }
-    QStringList args = getShellArgs(m_liteApp);
+    QProcessEnvironment env = LiteApi::getCurrentEnvironment(m_liteApp);
+    QString cmd = env.value("LITEIDE_TERM");
+    QStringList args = env.value("LITEIDE_TERMARGS").split(" ");
     QString path = dir.path();
 #ifdef Q_OS_WIN
     if (path.length() == 2 && path.right(1) == ":") {

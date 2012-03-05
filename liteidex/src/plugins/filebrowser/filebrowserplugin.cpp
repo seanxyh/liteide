@@ -50,7 +50,7 @@ bool FileBrowserPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
     m_browser = new FileBrowser(app,this);
-    app->optionManager()->addFactory(new FileBrowserOptionFactory(app,this));
+    //app->optionManager()->addFactory(new FileBrowserOptionFactory(app,this));
     return true;
 }
 
