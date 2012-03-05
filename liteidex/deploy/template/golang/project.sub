@@ -1,6 +1,7 @@
 gopro
-goprowithdoc
-gopak
-gomakefile
-gomakepak
-cgomakepak
+gopkg
+e64pro
+e64pkg
+r60pro
+r60pkg
+r60cgo
