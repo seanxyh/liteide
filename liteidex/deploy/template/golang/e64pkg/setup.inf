@@ -1,5 +1,5 @@
 [SETUP]
-NAME = "Go Package"
+NAME = "Go Package (e64)"
 AUTHOR = visualfc
 INFO = new golang package project (*.e64)
 TYPE = project

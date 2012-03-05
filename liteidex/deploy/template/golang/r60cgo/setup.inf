@@ -1,5 +1,5 @@
 [SETUP]
-NAME = "CGO Package Project"
+NAME = "CGO Package Project (r60)"
 AUTHOR = visualfc
 INFO = new cgo package project
 TYPE = project

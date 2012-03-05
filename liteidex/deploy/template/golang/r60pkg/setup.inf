@@ -1,5 +1,5 @@
 [SETUP]
-NAME = "Go Makefile Package"
+NAME = "Go Makefile Package (r60)"
 AUTHOR = visualfc
 INFO = new golang makefile package
 TYPE = project
