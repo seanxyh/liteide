@@ -9,7 +9,7 @@
           author="The Go Authors"
           license="BSD">
   <highlighting>
-    <list name="keywords">
+     <list name="keywords">
       <item> break </item>
       <item> case </item>
       <item> chan </item>
@@ -47,6 +47,7 @@
       <item> byte </item>
       <item> complex64 </item>
       <item> complex128 </item>
+      <item> error </item>
       <item> float32 </item>
       <item> float64 </item>
       <item> int </item>
@@ -54,6 +55,7 @@
       <item> int16 </item>
       <item> int32 </item>
       <item> int64 </item>
+      <item> rune </item>
       <item> string </item>
       <item> uint </item>
       <item> uintptr </item>
@@ -61,8 +63,6 @@
       <item> uint16 </item>
       <item> uint32 </item>
       <item> uint64 </item>
-      <item> rune </item>
-      <item> error </item>	
     </list>
     <list name="functions">
       <item> append </item>
