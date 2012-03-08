@@ -142,6 +142,7 @@ public:
     IEditorFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QStringList mimeTypes() const = 0;
     virtual IEditor *open(const QString &fileName, const QString &mimeType) = 0;
+    virtual IEditor *create(const QString &contents, const QString &mimeType) = 0;
 };
 
 class IProjectFactory : public QObject
@@ -163,6 +164,8 @@ public:
     virtual void execFileWizard(const QString &projPath, const QString &filePath) = 0;
     virtual bool openFile(const QString &fileName) = 0;
     virtual IEditor *openEditor(const QString &fileName, bool bActive = true) = 0;
+    virtual IEditor *createEditor(const QString &contents, const QString &_mimeType) = 0;
+    virtual IEditor *createEditor(const QString &fileName) = 0;
     virtual IProject *openProject(const QString &fileName) = 0;
     // recent files
     virtual void addRecentFile(const QString &fileName) = 0;

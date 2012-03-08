@@ -199,6 +199,14 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
     return true;
 }
 
+bool LiteEditorFile::create(const QString &contents, const QString &mimeType)
+{
+    m_mimeType = mimeType;
+    m_lineTerminatorMode = LFLineTerminator;
+    m_document->setPlainText(contents);
+    return true;
+}
+
 bool LiteEditorFile::open(const QString &fileName, const QString &mimeType)
 {    
     return open(fileName,mimeType,true);

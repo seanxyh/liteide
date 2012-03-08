@@ -48,7 +48,7 @@ GopathProjectFactor::GopathProjectFactor(LiteApi::IApplication *app, QObject *pa
     m_mimeTypes << "text/x-gopath";
     m_browser = new GopathBrowser(app,this);
 
-    QAction *act = new QAction(QIcon(":/images/gopher.png"),tr("<GOPATH> Project"),this);
+    QAction *act = new QAction(QIcon(":/images/gopath.png"),tr("<GOPATH> Project"),this);
     connect(act,SIGNAL(triggered()),this,SLOT(importGopath()));
     m_liteApp->projectManager()->addImportAction(act);
 

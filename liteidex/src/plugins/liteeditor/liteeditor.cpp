@@ -304,9 +304,22 @@ QIcon LiteEditor::icon() const
     return QIcon();
 }
 
-bool LiteEditor::createNew(const QString &/*contents*/)
+bool LiteEditor::createNew(const QString &contents, const QString &mimeType)
 {
-    return false;
+    bool success = m_file->create(contents,mimeType);
+    if (success) {
+        m_editorWidget->initLoadDocument();
+        QString codecName = m_file->textCodec();
+        for (int i = 0; i < m_codecComboBox->count(); i++) {
+            QString text = m_codecComboBox->itemText(i);
+            if (codecName == text) {
+                m_codecComboBox->setCurrentIndex(i);
+                break;
+            }
+        }
+        setReadOnly(m_file->isReadOnly());
+    }
+    return success;
 }
 
 bool LiteEditor::open(const QString &fileName,const QString &mimeType)

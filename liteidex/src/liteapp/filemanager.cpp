@@ -318,6 +318,37 @@ bool FileManager::openFile(const QString &fileName)
     return false;
 }
 
+IEditor *FileManager::createEditor(const QString &contents, const QString &mimeType)
+{
+    foreach(LiteApi::IEditorFactory *factory, m_liteApp->editorManager()->factoryList()) {
+        if (factory->mimeTypes().contains(mimeType)) {
+            LiteApi::IEditor *editor = factory->create(contents,mimeType);
+            if (editor) {
+                return editor;
+            }
+        }
+    }
+    return NULL;
+}
+
+IEditor *FileManager::createEditor(const QString &_fileName)
+{
+    QString fileName = QDir::fromNativeSeparators(_fileName);
+
+    QString mimeType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
+
+    foreach(LiteApi::IEditorFactory *factory, m_liteApp->editorManager()->factoryList()) {
+        if (factory->mimeTypes().contains(mimeType)) {
+            LiteApi::IEditor *editor = factory->open(fileName,mimeType);
+            if (editor) {
+                return editor;
+            }
+        }
+    }
+    return NULL;
+}
+
+
 IEditor *FileManager::openEditor(const QString &_fileName, bool bActive)
 {
     QString fileName = QDir::fromNativeSeparators(_fileName);
