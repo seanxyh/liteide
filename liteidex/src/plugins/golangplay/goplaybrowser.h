@@ -48,6 +48,7 @@ public slots:
     void newPlay();
     void loadPlay();
     void savePlay();
+    void shell();
     void runOutput(const QByteArray &data,bool);
     void runFinish(bool,int,const QString &msg);
     void runStarted();

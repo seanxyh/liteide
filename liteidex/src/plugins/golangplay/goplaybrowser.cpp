@@ -44,6 +44,7 @@
 #include <QFile>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QUrl>
 
 class PlayOutput : public TextOutput
 {
@@ -87,6 +88,7 @@ GoplayBrowser::GoplayBrowser(LiteApi::IApplication *app, QObject *parent)
     QPushButton *_new = new QPushButton("New");
     QPushButton *load = new QPushButton("Load");
     QPushButton *save = new QPushButton("Save");
+    QPushButton *shell = new QPushButton("Explorer");
     m_editLabel  = new QLabel;
 
     head->addWidget(label);
@@ -95,6 +97,7 @@ GoplayBrowser::GoplayBrowser(LiteApi::IApplication *app, QObject *parent)
     head->addWidget(_new);
     head->addWidget(load);
     head->addWidget(save);
+    head->addWidget(shell);
     head->addWidget(m_editLabel);
     head->addStretch();
 
@@ -118,6 +121,7 @@ GoplayBrowser::GoplayBrowser(LiteApi::IApplication *app, QObject *parent)
     connect(_new,SIGNAL(clicked()),this,SLOT(newPlay()));
     connect(load,SIGNAL(clicked()),this,SLOT(loadPlay()));
     connect(save,SIGNAL(clicked()),this,SLOT(savePlay()));
+    connect(shell,SIGNAL(clicked()),this,SLOT(shell()));
     connect(m_process,SIGNAL(started()),this,SLOT(runStarted()));
     connect(m_process,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(runOutput(QByteArray,bool)));
     connect(m_process,SIGNAL(extFinish(bool,int,QString)),this,SLOT(runFinish(bool,int,QString)));
@@ -265,4 +269,9 @@ void GoplayBrowser::savePlay()
         m_editFile = QFileInfo(QDir(m_dataPath),name).filePath();
     }
     m_editor->saveAs(m_editFile);
+}
+
+void GoplayBrowser::shell()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_dataPath));
 }
