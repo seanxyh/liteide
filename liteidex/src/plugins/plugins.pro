@@ -18,4 +18,5 @@ SUBDIRS = \
     golangfmt \
     golangcode \
     golangdoc \
+    golangplay \
     gdbdebugger \

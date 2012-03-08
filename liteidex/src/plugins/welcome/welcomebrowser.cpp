@@ -115,6 +115,11 @@ void WelcomeBrowser::openUrl(const QUrl &url)
             doc->openUrl(url.path());
             doc->activeBrowser();
         }
+    } else if (url.scheme() == "goplay") {
+        LiteApi::IEditor *browser = LiteApi::findExtensionObject<LiteApi::IEditor*>(m_liteApp,"LiteApi.GoplayBrowser");
+        if (browser) {
+            m_liteApp->editorManager()->activeBrowser(browser);
+        }
     }
 }
 

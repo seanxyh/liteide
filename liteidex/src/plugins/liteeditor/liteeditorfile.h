@@ -34,7 +34,7 @@ class LiteEditorFile : public LiteApi::IFile
     Q_OBJECT
 public:
     LiteEditorFile(LiteApi::IApplication *app, QObject *parent = 0);
-
+    virtual bool create(const QString &contents,const QString &mimeType);
     virtual bool open(const QString &filePath, const QString &mimeType);
     virtual bool reload();
     virtual bool save(const QString &filePath);

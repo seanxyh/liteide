@@ -128,3 +128,32 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
     }
     return editor;
 }
+
+LiteApi::IEditor *LiteEditorFileFactory::create(const QString &contents, const QString &mimeType)
+{
+    LiteEditor *editor = new LiteEditor(m_liteApp);
+    editor->setEditorMark(new LiteEditorMark(m_markTypeManager,editor));
+    if (!editor->createNew(contents,mimeType)) {
+        delete editor;
+        return 0;
+    }
+
+    QTextDocument *doc = editor->m_editorWidget->document();
+    TextEditor::SyntaxHighlighter *h = m_kate->create(doc,mimeType);
+    if (h) {
+        editor->extension()->addObject("TextEditor::SyntaxHighlighter",h);
+        connect(editor,SIGNAL(colorStyleChanged()),this,SLOT(colorStyleChanged()));
+    }
+    editor->applyOption("option/liteeditor");
+
+    LiteWordCompleter *wordCompleter = new LiteWordCompleter(editor);
+    editor->setCompleter(wordCompleter);
+    if (wordCompleter) {
+        LiteApi::IWordApi *wordApi = m_wordApiManager->findWordApi(mimeType);
+        if (wordApi && wordApi->loadApi()) {
+            wordCompleter->appendItems(wordApi->wordList(),false);
+            wordCompleter->completer()->model()->sort(0);
+        }
+    }
+    return editor;
+}

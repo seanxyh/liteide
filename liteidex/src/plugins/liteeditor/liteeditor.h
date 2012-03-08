@@ -60,7 +60,7 @@ public:
     virtual QString name() const;
     virtual QIcon icon() const;
 
-    virtual bool createNew(const QString &contents);
+    virtual bool createNew(const QString &contents, const QString &mimeType);
     virtual bool open(const QString &filePath, const QString &mimeType);
     virtual bool reload();
     virtual bool save();

@@ -45,6 +45,8 @@ public:
     virtual void execFileWizard(const QString &projPath, const QString &filePath);
     virtual bool openFile(const QString &fileName);
     virtual IEditor *openEditor(const QString &fileName, bool bActive = true);
+    virtual IEditor *createEditor(const QString &contents, const QString &mimeType);
+    virtual IEditor *createEditor(const QString &fileName);
     virtual IProject *openProject(const QString &fileName);
 
     virtual void addRecentFile(const QString &fileName);
