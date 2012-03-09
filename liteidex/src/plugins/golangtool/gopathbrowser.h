@@ -32,6 +32,7 @@
 #include <QModelIndex>
 #include <QFileInfo>
 #include <QDir>
+#include <QLabel>
 
 class QTreeView;
 class GopathModel;
@@ -66,13 +67,13 @@ public slots:
     void removeFolder();
     void openShell();
     void openExplorer();
+    void syncEditor(bool);
+    void syncProject(bool);
 signals:
     void startPathChanged(const QString& path);
 protected:
     QFileInfo contextFileInfo() const;
     QDir contextDir() const;
-    static QString getShellCmd(LiteApi::IApplication *app);
-    static QStringList getShellArgs(LiteApi::IApplication *app);
 private:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
@@ -94,6 +95,10 @@ private:
     QAction *m_renameFolderAct;
     QAction *m_openShellAct;
     QAction *m_openExplorerAct;
+    QToolBar *m_toolBar;
+    QAction *m_syncEditor;
+    QAction *m_syncProject;
+    QLabel  *m_startPathLabel;
 };
 
 #endif // GOPATHBROWSER_H
