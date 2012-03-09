@@ -578,25 +578,25 @@ Do you want to load?</source>
         <translation>Открыть проект</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="359"/>
-        <location filename="src/liteapp/filemanager.cpp" line="375"/>
+        <location filename="src/liteapp/filemanager.cpp" line="390"/>
+        <location filename="src/liteapp/filemanager.cpp" line="406"/>
         <source>&amp;%1 %2</source>
         <translation>&amp;%1 %2</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="528"/>
+        <location filename="src/liteapp/filemanager.cpp" line="559"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
         <translation>%1
 Этот файл удалён. Вы хотите сохранить файл или закрыть редактор?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="529"/>
+        <location filename="src/liteapp/filemanager.cpp" line="560"/>
         <source>LiteIDE X</source>
         <translation>LiteIDE X</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="547"/>
+        <location filename="src/liteapp/filemanager.cpp" line="578"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation type="unfinished">%1
@@ -728,137 +728,148 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GopathBrowser</name>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="82"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="64"/>
+        <source>Sync Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="66"/>
+        <source>Sync Project</source>
+        <oldsource>Sync Project With File</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="99"/>
         <source>Set Activate Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="83"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="100"/>
         <source>Open Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="84"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="101"/>
         <source>New File</source>
         <translation type="unfinished">Новый файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="85"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="102"/>
         <source>New File Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="86"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="211"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="216"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="103"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="249"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="254"/>
         <source>Rename File</source>
         <translation type="unfinished">Переименовать файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="87"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="229"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="234"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="104"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="267"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="272"/>
         <source>Remove File</source>
         <translation type="unfinished">Удалить файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="89"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="106"/>
         <source>New Folder</source>
         <translation type="unfinished">Новая папка</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="90"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="270"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="276"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="107"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="308"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="314"/>
         <source>Rename Folder</source>
         <translation type="unfinished">Переименовать папку</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="91"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="289"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="295"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="108"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="327"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="333"/>
         <source>Remove Folder</source>
         <translation type="unfinished">Удалить папку</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="93"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="110"/>
         <source>Open Terminal Here</source>
         <translation type="unfinished">Открыть терминал в этой папке</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="94"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="111"/>
         <source>Open Explorer Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="170"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="180"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="208"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="218"/>
         <source>Create File</source>
         <translation type="unfinished">Создание файла</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="171"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="209"/>
         <source>The filename is exists!</source>
         <translation type="unfinished">Файл уже существует!</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="181"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="219"/>
         <source>Failed to create the file!</source>
         <translation type="unfinished">Ошибка при создании файла!</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="211"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="249"/>
         <source>File Name</source>
         <translation type="unfinished">Имя файла</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="217"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="255"/>
         <source>Failed to rename the file!</source>
         <translation type="unfinished">Ошибка при переименовании файла!</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="230"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="268"/>
         <source>Confirm remove the file and continue</source>
         <translation type="unfinished">Подтвердите удаление файла для продолжения</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="235"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="273"/>
         <source>Failed to remove the file!</source>
         <translation type="unfinished">Ошибка при удалении файла!</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="253"/>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="256"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="291"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="294"/>
         <source>Create Folder</source>
         <translation type="unfinished">Создание папки</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="254"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="292"/>
         <source>The folder name is exists!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="257"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="295"/>
         <source>Failed to create the folder!</source>
         <translation type="unfinished">Ошибка при создании папки!</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="270"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="308"/>
         <source>Folder Name</source>
         <translation type="unfinished">Имя папки</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="277"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="315"/>
         <source>Failed to rename the folder!</source>
         <translation type="unfinished">Ошибка при переименовании папки!</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="290"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="328"/>
         <source>Confirm remove the foler and continue</source>
         <translation type="unfinished">Подтвердите удаление папки для продолжения</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="296"/>
+        <location filename="src/plugins/golangtool/gopathbrowser.cpp" line="334"/>
         <source>Failed to remove the folder!</source>
         <translation type="unfinished">Ошибка при удалении папки!</translation>
     </message>
@@ -868,6 +879,34 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <message>
         <location filename="src/plugins/golangtool/gopathprojectfactor.cpp" line="51"/>
         <source>&lt;GOPATH&gt; Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GoplayBrowser</name>
+    <message>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="144"/>
+        <source>Go Playground</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="242"/>
+        <source>Load File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="242"/>
+        <source>Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="258"/>
+        <source>Save File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="258"/>
+        <source>New FileName:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1231,19 +1270,19 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="168"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="548"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="561"/>
         <source>Export HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="170"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="575"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="588"/>
         <source>Export PDF</source>
         <translation>Экспортировать в PDF</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="171"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="599"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="612"/>
         <source>Print Document</source>
         <translation>Печать документа</translation>
     </message>
@@ -1258,27 +1297,27 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>редактор</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="357"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="370"/>
         <source>File Is ReadOnly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="360"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="373"/>
         <source>File Is Writable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="556"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="569"/>
         <source>Can not write file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="557"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="570"/>
         <source>LiteIDE</source>
         <translation type="unfinished">LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="616"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="629"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation type="unfinished">Отменить изменения в %1 и перезагрузить файл?</translation>
     </message>
@@ -1749,7 +1788,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>WelcomeBrowser</name>
     <message>
-        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="170"/>
+        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="175"/>
         <source>Welcome</source>
         <oldsource>Welcome Page</oldsource>
         <translation type="unfinished">Добро пожаловать</translation>

@@ -131,6 +131,7 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_folderMenu->addAction(m_openShellAct);
     m_folderMenu->addAction(m_openExplorerAct);
 
+    connect(m_startPathLabel,SIGNAL(linkActivated(QString)),this,SLOT(expandStartPath(QString)));
     connect(m_syncEditor,SIGNAL(triggered(bool)),this,SLOT(syncEditor(bool)));
     connect(m_syncProject,SIGNAL(triggered(bool)),this,SLOT(syncProject(bool)));
     connect(m_setStartAct,SIGNAL(triggered()),this,SLOT(setActivate()));
@@ -447,7 +448,8 @@ void GopathBrowser::setStartIndex(const QModelIndex &index)
         emit startPathChanged(m_model->filePath(index));
         PathNode *node = m_model->nodeFromIndex(index);
         if (node) {
-            m_startPathLabel->setText(node->text());
+            m_startPathLabel->setText(QString("<a href %1>%2").arg(node->path()).arg(node->text()));
+            m_startPathLabel->setToolTip(node->path());
         }
     }
 }
@@ -520,3 +522,7 @@ void GopathBrowser::syncProject(bool b)
     }
 }
 
+void GopathBrowser::expandStartPath(QString)
+{
+    m_pathTree->scrollTo(m_model->startIndex(),QAbstractItemView::EnsureVisible);
+}
