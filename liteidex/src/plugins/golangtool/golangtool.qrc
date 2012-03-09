@@ -3,5 +3,7 @@
         <file>images/dir.png</file>
         <file>images/diropen.png</file>
         <file>images/gopath.png</file>
+        <file>images/synceditor.png</file>
+        <file>images/syncproject.png</file>
     </qresource>
 </RCC>

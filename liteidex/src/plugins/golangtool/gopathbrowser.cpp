@@ -40,6 +40,7 @@
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QUrl>
+#include <QToolBar>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -57,6 +58,21 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
 {
     m_widget = new QWidget;
 
+    m_toolBar = new QToolBar;
+    m_toolBar->setIconSize(QSize(16,16));
+
+    m_syncEditor = new QAction(QIcon(":/images/synceditor.png"),tr("Sync Editor"),this);
+    m_syncEditor->setCheckable(true);
+    m_syncProject = new QAction(QIcon(":/images/syncproject.png"),tr("Sync Project"),this);
+    m_syncProject->setCheckable(true);
+
+    m_startPathLabel = new QLabel;
+
+    m_toolBar->addAction(m_syncEditor);
+    m_toolBar->addAction(m_syncProject);
+    m_toolBar->addSeparator();
+    m_toolBar->addWidget(m_startPathLabel);
+
     m_pathTree = new QTreeView;
     m_pathTree->setHeaderHidden(true);
     m_model = new GopathModel(this);
@@ -65,6 +81,7 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
+    layout->addWidget(m_toolBar);
     layout->addWidget(m_pathTree);
     m_widget->setLayout(layout);
 
@@ -114,6 +131,8 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_folderMenu->addAction(m_openShellAct);
     m_folderMenu->addAction(m_openExplorerAct);
 
+    connect(m_syncEditor,SIGNAL(triggered(bool)),this,SLOT(syncEditor(bool)));
+    connect(m_syncProject,SIGNAL(triggered(bool)),this,SLOT(syncProject(bool)));
     connect(m_setStartAct,SIGNAL(triggered()),this,SLOT(setActivate()));
     connect(m_openEditorAct,SIGNAL(triggered()),this,SLOT(openEditor()));
     connect(m_newFileAct,SIGNAL(triggered()),this,SLOT(newFile()));
@@ -127,6 +146,24 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_openExplorerAct,SIGNAL(triggered()),this,SLOT(openExplorer()));
 
     connect(m_pathTree,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(treeViewContextMenuRequested(QPoint)));
+
+    bool b = m_liteApp->settings()->value("GolangTool/synceditor",true).toBool();
+    if (b) {
+        m_syncEditor->toggle();
+    }
+    b = m_liteApp->settings()->value("GolangTool/syncproject",false).toBool();
+    if (b) {
+        m_syncProject->toggle();
+    }
+    m_startPathLabel->setText(m_model->startPath());
+}
+
+GopathBrowser::~GopathBrowser()
+{
+    m_liteApp->settings()->setValue("GolangTool/synceditor",m_syncEditor->isChecked());
+    m_liteApp->settings()->setValue("GolangTool/syncproject",m_syncProject->isChecked());
+    m_liteApp->settings()->setValue("golangtool/gopath",m_pathList);
+    delete m_widget;
 }
 
 QDir GopathBrowser::contextDir() const
@@ -298,28 +335,6 @@ void GopathBrowser::removeFolder()
     }
 }
 
-QString GopathBrowser::getShellCmd(LiteApi::IApplication *app)
-{
-    QString defCmd;
-#if defined(Q_OS_WIN)
-    defCmd = "cmd.exe";
-#elif defined(Q_OS_MAC)
-    defCmd = "/usr/bin/open";
-#else
-    defCmd = "/usr/bin/gnome-terminal";
-#endif
-    return app->settings()->value("filebrowser/shell_cmd",defCmd).toString();
-}
-
-QStringList GopathBrowser::getShellArgs(LiteApi::IApplication *app)
-{
-    QStringList defArgs;
-#if defined(Q_OS_MAC)
-    defArgs << "-a" << "Terminal";
-#endif
-    return app->settings()->value("filebrowser/shell_args",defArgs).toStringList();
-}
-
 void GopathBrowser::openExplorer()
 {
     QDir dir = contextDir();
@@ -339,12 +354,6 @@ void GopathBrowser::openShell()
     }
 #endif
     QProcess::startDetached(cmd,args,path);
-}
-
-GopathBrowser::~GopathBrowser()
-{    
-    m_liteApp->settings()->setValue("golangtool/gopath",m_pathList);
-    delete m_widget;
 }
 
 QWidget *GopathBrowser::widget() const
@@ -436,6 +445,7 @@ void GopathBrowser::setStartIndex(const QModelIndex &index)
         m_pathTree->update(oldIndex);
         m_pathTree->update(index);
         emit startPathChanged(m_model->filePath(index));
+        m_startPathLabel->setText(m_model->startPath());
     }
 }
 
@@ -476,11 +486,32 @@ void GopathBrowser::openPathIndex(const QModelIndex &index)
 
 void GopathBrowser::currentEditorChanged(LiteApi::IEditor* editor)
 {
+    if (!m_syncEditor->isChecked()) {
+        return;
+    }
     if (editor && !editor->filePath().isEmpty()) {
         QModelIndex index = m_model->findPath(editor->filePath());
         if (index.isValid()) {
             m_pathTree->setCurrentIndex(index);
-            setStartIndex(index.parent());
+            m_pathTree->scrollTo(index,QAbstractItemView::EnsureVisible);
+            if (m_syncProject->isChecked()) {
+                setStartIndex(index.parent());
+            }
         }
     }
 }
+
+void GopathBrowser::syncEditor(bool b)
+{
+    if (!b) {
+        m_syncProject->setChecked(false);
+    }
+}
+
+void GopathBrowser::syncProject(bool b)
+{
+    if (b) {
+        m_syncEditor->setChecked(true);
+    }
+}
+
