@@ -5,10 +5,11 @@ cp -v README.TXT liteide/bin
 cp -r -v deploy/* liteide/bin/LiteIDE.app/Contents/Resources
 cp -r -v os_deploy/macosx/* liteide/bin/LiteIDE.app/Contents/Resources
 
-cp -v liteide/bin/goastview liteide/bin/LiteIDE.app/Contents/MacOS
-cp -v liteide/bin/goexec liteide/bin/LiteIDE.app/Contents/MacOS
-cp -v liteide/bin/gopromake liteide/bin/LiteIDE.app/Contents/MacOS
-cp -v liteide/bin/godocview liteide/bin/LiteIDE.app/Contents/MacOS
+#cp -v liteide/bin/goastview liteide/bin/LiteIDE.app/Contents/MacOS
+#cp -v liteide/bin/goexec liteide/bin/LiteIDE.app/Contents/MacOS
+#cp -v liteide/bin/gopromake liteide/bin/LiteIDE.app/Contents/MacOS
+#cp -v liteide/bin/godocview liteide/bin/LiteIDE.app/Contents/MacOS
+cp -v bin/* liteide/bin/LiteIDE.app/Contents/MacOS
 cp -v src/liteapp/Info.plist liteide/bin/LiteIDE.app/Contents
 
 function process_file()
