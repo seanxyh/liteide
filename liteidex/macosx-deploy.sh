@@ -12,34 +12,37 @@ cp -r -v os_deploy/macosx/* liteide/bin/LiteIDE.app/Contents/Resources
 cp -v bin/* liteide/bin/LiteIDE.app/Contents/MacOS
 cp -v src/liteapp/Info.plist liteide/bin/LiteIDE.app/Contents
 
+export QTLIBPATH=/Users/win32/QtSDK/Desktop/Qt/474/gcc/lib
+
 function process_file()
 {
  echo "install_name_tool" $deploy_file
 install_name_tool -change \
- QtCore.framework/Versions/4/QtCore \
+ $QTLIBPATH/QtCore.framework/Versions/4/QtCore \
  @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore \
  liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file  
 
 install_name_tool -change \
- QtGui.framework/Versions/4/QtGui \
+ $QTLIBPATH/QtGui.framework/Versions/4/QtGui \
  @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui \
   liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file   
 }
 
 function process_file2()
 {
+  echo "install_name_tool" $deploy_file
 install_name_tool -change \
- QtCore.framework/Versions/4/QtCore \
+ $QTLIBPATH/QtCore.framework/Versions/4/QtCore \
  @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore \
  liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file  
 
 install_name_tool -change \
- QtGui.framework/Versions/4/QtGui \
+ $QTLIBPATH/QtGui.framework/Versions/4/QtGui \
  @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui \
   liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file   
   
 install_name_tool -change \
- QtXml.framework/Versions/4/QtXml \
+ $QTLIBPATH/QtXml.framework/Versions/4/QtXml \
  @executable_path/../Frameworks/QtXml.framework/Versions/4/QtXml \
   liteide/bin/LiteIDE.app/Contents/PlugIns/$deploy_file   
 }
@@ -81,6 +84,12 @@ export deploy_file=libliteenv.dylib
 process_file
 
 export deploy_file=liblitedebug.dylib
+process_file
+
+export deploy_file=libgdbdebugger.dylib
+process_file
+
+export deploy_file=libgolangplay.dylib
 process_file
 
 export deploy_file=libgolangpackage.dylib
