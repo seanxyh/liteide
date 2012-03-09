@@ -83,5 +83,7 @@ process_file
 export deploy_file=liblitedebug.dylib
 process_file
 
-export deploy_file=libgdbdebugger.dylib
+export deploy_file=golangpackage.dylib
+process_file
+export deploy_file=golangpackage.dylib
 process_file
