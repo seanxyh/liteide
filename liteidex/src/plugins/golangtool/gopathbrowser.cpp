@@ -445,7 +445,10 @@ void GopathBrowser::setStartIndex(const QModelIndex &index)
         m_pathTree->update(oldIndex);
         m_pathTree->update(index);
         emit startPathChanged(m_model->filePath(index));
-        m_startPathLabel->setText(m_model->startPath());
+        PathNode *node = m_model->nodeFromIndex(index);
+        if (node) {
+            m_startPathLabel->setText(node->text());
+        }
     }
 }
 
@@ -479,7 +482,9 @@ void GopathBrowser::openPathIndex(const QModelIndex &index)
     if (node->isDir()) {
         this->setStartIndex(index);
     } else if (node->isFile()) {
-        this->setStartIndex(index.parent());
+        if (m_syncProject->isChecked()) {
+            this->setStartIndex(index.parent());
+        }
         m_liteApp->fileManager()->openEditor(node->path(),true);
     }
 }
