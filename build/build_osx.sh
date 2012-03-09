@@ -20,7 +20,7 @@ fi
 
 echo qmake liteide ...
 echo .
-qmake $LITEIDE_ROOT
+qmake $LITEIDE_ROOT -spec macx-g++ "CONFIG+=release"
 
 if [ $? -ge 1 ]; then
 	echo 'error, qmake fail'
@@ -62,15 +62,12 @@ cp -v $LITEIDE_ROOT/LICENSE.LGPL liteide
 cp -v $LITEIDE_ROOT/LGPL_EXCEPTION.TXT liteide
 cp -v $LITEIDE_ROOT/README.TXT liteide
 
-cp $LITEIDE_ROOT/bin/* liteide/LiteIDE.app/Contents/MacOSX
+cp $LITEIDE_ROOT/bin/* liteide/LiteIDE.app/Contents/MacOS
 cp -r -v $LITEIDE_ROOT/deploy/* liteide/LiteIDE.app/Contents/Resources
 cp -r -v $LITEIDE_ROOT/os_deploy/macosx/* liteide/LiteIDE.app/Contents/Resources
 
 
-cp $QTDIR/lib/libQtCore.dylib.* liteide/lib/liteide
-cp $QTDIR/lib/libQtGui.so.* liteide/lib/liteide
-cp $QTDIR/lib/libQtXml.so.* liteide/lib/liteide
-
+./macdeployqt liteide/LiteIDE.app -no-plugins
 
 export QTLIBPATH=$QTDIR/lib
 
@@ -107,6 +104,23 @@ install_name_tool -change \
   liteide/LiteIDE.app/Contents/PlugIns/$deploy_file   
 }
 
+echo "install_name_tool" $deploy_file
+install_name_tool -change \
+ $QTLIBPATH/QtCore.framework/Versions/4/QtCore \
+ @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore \
+ liteide/LiteIDE.app/Contents/MacOS/LiteIDE
+
+install_name_tool -change \
+ $QTLIBPATH/QtGui.framework/Versions/4/QtGui \
+ @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui \
+  liteide/LiteIDE.app/Contents/MacOS/LiteIDE
+
+install_name_tool -change \
+ $QTLIBPATH/QtXml.framework/Versions/4/QtXml \
+ @executable_path/../Frameworks/QtXml.framework/Versions/4/QtXml \
+  liteide/LiteIDE.app/Contents/MacOS/LiteIDE
+
+
 export deploy_file=libgolangast.dylib
 process_file
 
@@ -127,6 +141,7 @@ process_file
 
 export deploy_file=libwelcome.dylib
 process_file2
+
 
 export deploy_file=libgolangcode.dylib
 process_file

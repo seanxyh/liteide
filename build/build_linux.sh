@@ -20,7 +20,7 @@ fi
 
 echo qmake liteide ...
 echo .
-qmake $LITEIDE_ROOT
+qmake $LITEIDE_ROOT -spec linux-g++ "CONFIG+=release"
 
 if [ $? -ge 1 ]; then
 	echo 'error, qmake fail'

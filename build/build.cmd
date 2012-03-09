@@ -15,7 +15,7 @@ if x%QTDIR%==x goto qtdir_fail
 
 echo qmake liteide ...
 echo .
-call qmake %LITEIDE_ROOT%
+call qmake %LITEIDE_ROOT% -spec win32-g++ "CONFIG+=release"
 
 if ERRORLEVEL 1 goto qmake_fail
 
