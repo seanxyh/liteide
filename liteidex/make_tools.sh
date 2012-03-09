@@ -1,4 +1,5 @@
 #!/bin/sh
+
 export GOPATH=$PWD
 go install -v tools/goastview
 go install -v tools/godocview

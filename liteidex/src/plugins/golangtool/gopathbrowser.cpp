@@ -156,7 +156,7 @@ GopathBrowser::GopathBrowser(LiteApi::IApplication *app, QObject *parent) :
     if (b) {
         m_syncProject->toggle();
     }
-    m_startPathLabel->setText(m_model->startPath());
+    m_startPathLabel->setText("null project");
 }
 
 GopathBrowser::~GopathBrowser()
@@ -448,7 +448,7 @@ void GopathBrowser::setStartIndex(const QModelIndex &index)
         emit startPathChanged(m_model->filePath(index));
         PathNode *node = m_model->nodeFromIndex(index);
         if (node) {
-            m_startPathLabel->setText(QString("<a href %1>%2").arg(node->path()).arg(node->text()));
+            m_startPathLabel->setText(QString("<p><a href file://%1>%2</p>").arg(node->path()).arg(node->text()));
             m_startPathLabel->setToolTip(node->path());
         }
     }
