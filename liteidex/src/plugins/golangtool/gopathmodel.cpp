@@ -268,9 +268,11 @@ void GopathModel::setPathList(const QStringList &pathList)
         m_pathList.append(spath);
         m_rootNode->children()->append(new PathNode(this,spath,m_rootNode));
     }
+    /*
     if (m_startPath.isEmpty() && !pathList.isEmpty()) {
         m_startPath = pathList.last();
     }
+    */
     this->endResetModel();
 }
 

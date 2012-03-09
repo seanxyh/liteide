@@ -69,6 +69,7 @@ public slots:
     void openExplorer();
     void syncEditor(bool);
     void syncProject(bool);
+    void expandStartPath(QString);
 signals:
     void startPathChanged(const QString& path);
 protected:

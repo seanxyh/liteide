@@ -1,4 +1,8 @@
-==== 2012.3.1 Ver X11 1.71875 ====
+==== 2012.3.9 Ver X11 1.71875 beta2 ====
+ * GolangPlay : new go playground plugin
+ * GolangTool : sync editor, sync project
+
+==== 2012.3.1 Ver X11 1.71875 beta1 ====
  * GolangTool : new golang plugin for GO1, import GOPATH project
  * GolangDoc : update to GO1
  * LiteBuild : update to GO1
