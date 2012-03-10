@@ -54,9 +54,11 @@ echo deploy ...
 
 cd $BUILD_ROOT
 
+rm -r liteide
 mkdir -p liteide
 
 cp -r -v $LITEIDE_ROOT/liteide/bin/LiteIDE.app liteide
+rm liteide/LiteIDE.app/Contents/PlugIns/*.a
 
 cp -v $LITEIDE_ROOT/LICENSE.LGPL liteide
 cp -v $LITEIDE_ROOT/LGPL_EXCEPTION.TXT liteide
@@ -66,7 +68,8 @@ cp $LITEIDE_ROOT/bin/* liteide/LiteIDE.app/Contents/MacOS
 cp -r -v $LITEIDE_ROOT/deploy/* liteide/LiteIDE.app/Contents/Resources
 cp -r -v $LITEIDE_ROOT/os_deploy/macosx/* liteide/LiteIDE.app/Contents/Resources
 
-
+echo .
+echo ./macdeployqt liteide/LiteIDE.app -no-plugins
 ./macdeployqt liteide/LiteIDE.app -no-plugins
 
 export QTLIBPATH=$QTDIR/lib
