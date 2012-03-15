@@ -135,12 +135,19 @@ bool EditorManager::eventFilter(QObject *target, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent *e = static_cast<QKeyEvent*>(event);
-        if (e->modifiers() == Qt::CTRL &&
-                e->key() == Qt::Key_Tab) {
+        if ( (e->modifiers() & Qt::CTRL) &&
+             ( e->key() == Qt::Key_Tab || e->key() == Qt::Key_Backtab) ) {
             int index = m_editorTabWidget->tabBar()->currentIndex();
-            index++;
-            if (index >= m_editorTabWidget->tabBar()->count()) {
-                index = 0;
+            if (e->key() == Qt::Key_Tab) {
+                index++;
+                if (index >= m_editorTabWidget->tabBar()->count()) {
+                    index = 0;
+                }
+            } else {
+                index--;
+                if (index < 0) {
+                    index = m_editorTabWidget->tabBar()->count()-1;
+                }
             }
             m_editorTabWidget->setCurrentIndex(index);
             return true;
