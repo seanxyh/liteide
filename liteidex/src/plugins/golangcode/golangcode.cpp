@@ -101,7 +101,7 @@ void GolangCode::setCompleter(LiteApi::ICompleter *completer)
     m_completer = completer;
     if (m_completer) {
         connect(m_completer,SIGNAL(prefixChanged(QTextCursor,QString)),this,SLOT(prefixChanged(QTextCursor,QString)));
-        connect(m_completer,SIGNAL(wordCompleted(QString,QStringList)),this,SLOT(wordCompleted(QString,QStringList)));
+        connect(m_completer,SIGNAL(wordCompleted(QString,QString)),this,SLOT(wordCompleted(QString,QString)));
     }
 }
 
@@ -128,7 +128,7 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     m_process->start(m_gocodeCmd,args);
 }
 
-void GolangCode::wordCompleted(QString,QStringList)
+void GolangCode::wordCompleted(QString,QString)
 {
     m_prefix.clear();
 }

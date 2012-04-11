@@ -41,7 +41,7 @@ public:
 public slots:
     void currentEnvChanged(LiteApi::IEnv*);
     void prefixChanged(QTextCursor,QString);
-    void wordCompleted(QString,QStringList);
+    void wordCompleted(QString,QString);
     void started();
     void finished(int,QProcess::ExitStatus);
 protected:

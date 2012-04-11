@@ -86,7 +86,7 @@ public slots:
 #ifdef LITEEDITOR_FIND
     void findNextText();
 #endif
-    void updateTip(QString,QStringList);
+    void updateTip(QString,QString);
     void exportPdf();
     void exportHtml();
     void filePrint();
