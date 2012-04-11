@@ -106,6 +106,54 @@ void LiteCompleter::appendItems(QStringList items,bool temp)
     }
 }
 
+static QString getItemFunc(const QString &text)
+{
+    int pos = text.indexOf("(");
+    if (pos == -1) {
+        return text.trimmed();
+    }
+    return text.left(pos).trimmed();
+}
+
+class WordItem : public QStandardItem
+{
+public:
+    WordItem(const QString &text) : QStandardItem(text)
+    {
+        this->setWord(text);
+    }
+    enum {
+        WordRole = Qt::UserRole+2,
+        ArgsRole= Qt::UserRole+3
+    };
+    virtual QVariant data(int role = Qt::UserRole + 1) const
+    {
+        if (role == Qt::DisplayRole) {
+            if (this->args().isEmpty()) {
+                return this->word();
+            }
+            return QString("%1\t%2").arg(this->word()).arg(this->args());
+        }
+        return QStandardItem::data(role);
+    }
+    void setWord(const QString &word)
+    {
+        this->setData(word,WordRole);
+    }
+    QString word() const
+    {
+        return QStandardItem::data(WordRole).toString();
+    }
+    void setArgs(const QString &args)
+    {
+        this->setData(args,ArgsRole);
+    }
+    QString args() const
+    {
+        return QStandardItem::data(ArgsRole).toString();
+    }
+};
+
 bool LiteCompleter::appendItem(QString text, bool temp)
 {
     QString func,arg;
@@ -117,22 +165,22 @@ bool LiteCompleter::appendItem(QString text, bool temp)
         arg = text.right(text.length()-pos).trimmed();
     }
     QStringList words = func.split(m_completer->separator(),QString::SkipEmptyParts);
-    QStandardItem *root = 0;
-    QStandardItem *item = 0;
-    bool bnew = false;
+    WordItem *root = 0;
+    WordItem *item = 0;
+    bool bnew = false;    
     foreach (QString word, words) {
         item = 0;
         QModelIndex parent = m_model->indexFromItem(root);
         for (int i = 0; i < m_model->rowCount(parent); i++) {
             QModelIndex index = m_model->index(i,0,parent);
-            if (index.data().toString() == word) {
-                item = m_model->itemFromIndex(index);
+            WordItem *tmp = static_cast<WordItem*>(m_model->itemFromIndex(index));
+            if (tmp && tmp->word() == word) {
+                item = tmp;
                 break;
             }
         }
         if (item == 0) {
-            item = new QStandardItem(word);
-            item->setData(temp,Qt::UserRole+2);
+            item = new WordItem(word);
             if (root == 0) {
                 m_model->appendRow(item);
             } else {
@@ -143,11 +191,16 @@ bool LiteCompleter::appendItem(QString text, bool temp)
         root = item;
     }
     if (item && !arg.isEmpty()) {
+        item->setArgs(arg);
+    }
+    /*
+    if (item && !arg.isEmpty()) {
         QStringList args = item->data().toStringList();
         args.append(arg);
         args.removeDuplicates();
         item->setData(args);
     }
+    */
     return bnew;
 }
 
@@ -172,7 +225,7 @@ void LiteCompleter::insertCompletion(QModelIndex index)
     if (!index.isValid()) {
         return;
     }
-    QString text = index.data().toString();
+    QString text = index.data(WordItem::WordRole).toString();
     QString prefix = m_completer->completionPrefix();
     //IsAbs r.URL.
     int pos = prefix.lastIndexOf(m_completer->separator());
@@ -184,6 +237,5 @@ void LiteCompleter::insertCompletion(QModelIndex index)
     QTextCursor tc = m_editor->textCursor();
     tc.insertText(extra);
     m_editor->setTextCursor(tc);
-    QStringList args = index.data(Qt::UserRole+1).toStringList();
-    emit wordCompleted(prefix+extra,args);
+    emit wordCompleted(prefix+extra,index.data(WordItem::ArgsRole).toString());
 }

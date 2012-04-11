@@ -40,6 +40,7 @@
 
 #include "treemodelcompleter.h"
 #include <QStringList>
+#include <QDebug>
 
 //! [0]
 TreeModelCompleter::TreeModelCompleter(QObject *parent)
@@ -90,7 +91,6 @@ QString TreeModelCompleter::pathFromIndex(const QModelIndex &index) const
     for (QModelIndex i = index; i.isValid(); i = i.parent()) {
         dataList.prepend(model()->data(i, completionRole()).toString());
     }
-
     return dataList.join(sep);
 }
 //! [4]

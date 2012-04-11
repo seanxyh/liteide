@@ -66,7 +66,7 @@ public:
     virtual void show() = 0;
 signals:
     void prefixChanged(QTextCursor,QString);
-    void wordCompleted(const QString &func, const QStringList &args);
+    void wordCompleted(const QString &func, const QString &args);
 };
 
 // priopity by type value

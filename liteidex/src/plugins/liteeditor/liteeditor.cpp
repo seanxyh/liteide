@@ -143,7 +143,7 @@ void LiteEditor::setCompleter(LiteCompleter *complter)
     m_extension->addObject("LiteApi.ICompleter",complter);
 
     connect(m_editorWidget,SIGNAL(completionPrefixChanged(QString)),m_completer,SLOT(completionPrefixChanged(QString)));
-    connect(m_completer,SIGNAL(wordCompleted(QString,QStringList)),this,SLOT(updateTip(QString,QStringList)));
+    connect(m_completer,SIGNAL(wordCompleted(QString,QString)),this,SLOT(updateTip(QString,QString)));
 }
 
 void LiteEditor::clipbordDataChanged()
@@ -521,13 +521,13 @@ void LiteEditor::applyOption(QString id)
     }
 }
 
-void LiteEditor::updateTip(QString func,QStringList args)
+void LiteEditor::updateTip(QString func,QString args)
 {
     if (args.isEmpty()) {
         return;
     }
-    m_tip->setToolTip(func+args.join(";"));
-    QToolTip::showText(m_toolBar->mapToGlobal(m_tip->pos()),func+args.join(";"),m_tip);
+    m_tip->setToolTip(func+args);
+    QToolTip::showText(m_toolBar->mapToGlobal(m_tip->pos()),func+args,m_tip);
 }
 
 void LiteEditor::filePrintPreview()
