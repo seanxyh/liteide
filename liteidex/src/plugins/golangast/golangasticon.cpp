@@ -106,6 +106,37 @@ QIcon GolangAstIconPublic::iconFromTag(const QString &tag) const
     return QIcon();
 }
 
+QIcon GolangAstIconPublic::iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub) const
+{
+    if (tag == LiteApi::TagPackage)
+        return iconPackage;
+    else if (tag == LiteApi::TagType)
+        return iconType;
+    else if (tag == LiteApi::TagInterface)
+        return iconInterface;
+    else if (tag == LiteApi::TagStruct)
+        return iconStruct;
+    else if (tag == LiteApi::TagValue)
+        return iconVar;
+    else if (tag == LiteApi::TagConst)
+        return iconConst;
+    else if (tag == LiteApi::TagFunc)
+        return iconFunc;
+    else if (tag == LiteApi::TagValueFolder)
+        return iconVars;
+    else if (tag == LiteApi::TagConstFolder)
+        return iconConsts;
+    else if (tag == LiteApi::TagFuncFolder)
+        return iconFuncs;
+    else if (tag == LiteApi::TagTypeMethod)
+        return iconTypeMethod;
+    else if (tag == LiteApi::TagTypeFactor)
+        return iconTypeFactor;
+    else if (tag == LiteApi::TagTypeValue)
+        return iconTypeVar;
+    return QIcon();
+}
+
 GolangAstIconPrivate::GolangAstIconPrivate() :
     iconPackage(QIcon(":/images/package.png")),
     iconType(QIcon(":/images/type_p.png")),
@@ -155,6 +186,37 @@ QIcon GolangAstIconPrivate::iconFromTag(const QString &tag) const
     return QIcon();
 }
 
+QIcon GolangAstIconPrivate::iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub) const
+{
+    if (tag == LiteApi::TagPackage)
+        return iconPackage;
+    else if (tag == LiteApi::TagType)
+        return iconType;
+    else if (tag == LiteApi::TagInterface)
+        return iconInterface;
+    else if (tag == LiteApi::TagStruct)
+        return iconStruct;
+    else if (tag == LiteApi::TagValue)
+        return iconVar;
+    else if (tag == LiteApi::TagConst)
+        return iconConst;
+    else if (tag == LiteApi::TagFunc)
+        return iconFunc;
+    else if (tag == LiteApi::TagValueFolder)
+        return iconVars;
+    else if (tag == LiteApi::TagConstFolder)
+        return iconConsts;
+    else if (tag == LiteApi::TagFuncFolder)
+        return iconFuncs;
+    else if (tag == LiteApi::TagTypeMethod)
+        return iconTypeMethod;
+    else if (tag == LiteApi::TagTypeFactor)
+        return iconTypeFactor;
+    else if (tag == LiteApi::TagTypeValue)
+        return iconTypeVar;
+    return QIcon();
+}
+
 GolangAstIcon::GolangAstIcon()
 {
 }
@@ -171,4 +233,12 @@ QIcon GolangAstIcon::iconFromTag(const QString &tag, bool pub) const
         return icons.iconFromTag(tag);
     }
     return icons_p.iconFromTag(tag);
+}
+
+QIcon GolangAstIcon::iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub) const
+{
+    if (pub) {
+        return icons.iconFromTagEnum(tag);
+    }
+    return icons_p.iconFromTagEnum(tag);
 }

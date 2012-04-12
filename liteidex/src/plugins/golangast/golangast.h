@@ -27,6 +27,7 @@
 #define GOLANGAST_H
 
 #include "liteapi/liteapi.h"
+#include "golangastapi/golangastapi.h"
 #include "symboltreeview/symboltreeview.h"
 #include <QProcess>
 #include <QStandardItemModel>
@@ -34,12 +35,15 @@
 
 class QStackedWidget;
 class AstWidget;
-class GolangAst : public QObject
+class GolangAst : public LiteApi::IGolangAst
 {
     Q_OBJECT
 public:
     explicit GolangAst(LiteApi::IApplication *app, QObject *parent = 0);
     ~GolangAst();
+    virtual QIcon iconFromTag(const QString &tag, bool pub) const;
+    virtual QIcon iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub) const;
+public:
     void setEnable(bool b);
     void updateModel(const QByteArray &data);
     QWidget *widget();

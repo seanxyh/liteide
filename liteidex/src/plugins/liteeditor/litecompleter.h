@@ -41,8 +41,9 @@ public:
     explicit LiteCompleter(QObject *parent = 0);
     void setEditor(QPlainTextEdit *editor);
     virtual QCompleter *completer() const;
-    virtual bool appendItem(QString item,bool temp);
-    virtual void appendItems(QStringList items,bool temp);
+    virtual bool appendItem(const QString &name,const QIcon &icon, bool temp);
+    virtual bool appendItemEx(const QString &name,const QString &kind, const QString &info,const QIcon &icon, bool temp);
+    virtual void appendItems(QStringList nameList,const QString &kind, const QString &info,const QIcon &icon, bool temp);
     virtual void clear();
     virtual void clearTemp();
     virtual void show();

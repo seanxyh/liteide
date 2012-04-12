@@ -59,8 +59,9 @@ class ICompleter : public QObject
 public:
     ICompleter(QObject *parent): QObject(parent) {}
     virtual QCompleter *completer() const = 0;
-    virtual bool appendItem(QString item,bool temp) = 0;
-    virtual void appendItems(QStringList items, bool temp) = 0;
+    virtual bool appendItem(const QString &name,const QIcon &icon, bool temp) = 0;
+    virtual bool appendItemEx(const QString &name,const QString &kind, const QString &info,const QIcon &icon, bool temp) = 0;
+    virtual void appendItems(QStringList items, const QString &kind, const QString &info,const QIcon &icon, bool temp) = 0;
     virtual void clearTemp() = 0;
     virtual void clear() = 0;
     virtual void show() = 0;

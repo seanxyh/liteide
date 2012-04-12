@@ -2,6 +2,7 @@ TARGET = golangast
 TEMPLATE = lib
 
 include (../../liteideplugin.pri)
+include (../../api/golangastapi/golangastapi.pri)
 include (../../utils/symboltreeview/symboltreeview.pri)
 
 DEFINES += GOLANGAST_LIBRARY

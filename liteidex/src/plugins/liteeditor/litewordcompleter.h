@@ -43,6 +43,7 @@ public slots:
 protected:
     virtual QString textUnderCursor(QTextCursor tc) const;
     QSet<QString>   m_wordSet;
+    QIcon           m_icon;
 };
 
 #endif // LITEWORDCOMPLETER_H

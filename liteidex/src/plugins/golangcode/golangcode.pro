@@ -2,6 +2,7 @@ TARGET = golangcode
 TEMPLATE = lib
 
 include(../../liteideplugin.pri)
+include(../../api/golangastapi/golangastapi.pri)
 include(../../utils/fileutil/fileutil.pri)
 include(../../utils/processex/processex.pri)
 

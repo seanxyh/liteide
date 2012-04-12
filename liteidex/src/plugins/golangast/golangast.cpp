@@ -51,7 +51,7 @@
 //lite_memory_check_end
 
 GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
-    QObject(parent),
+    LiteApi::IGolangAst(parent),
     m_liteApp(app)
 {
     m_widget = new QWidget;
@@ -81,6 +81,7 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
 
     m_stackedWidget->setVisible(false);
     m_liteApp->extension()->addObject("GoAstView.Widget",m_widget);
+    m_liteApp->extension()->addObject("LiteApi.IGolangAst",this);
 }
 
 GolangAst::~GolangAst()
@@ -91,6 +92,16 @@ GolangAst::~GolangAst()
     delete m_process;
     m_liteApp->dockManager()->removeDock(m_widget);
     delete m_widget;
+}
+
+QIcon GolangAst::iconFromTag(const QString &tag, bool pub) const
+{
+    return GolangAstIcon::instance()->iconFromTag(tag,pub);
+}
+
+QIcon GolangAst::iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub) const
+{
+    return GolangAstIcon::instance()->iconFromTagEnum(tag,pub);
 }
 
 QWidget *GolangAst::widget()

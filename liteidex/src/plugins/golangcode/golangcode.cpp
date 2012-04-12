@@ -56,6 +56,7 @@ GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
         currentEnvChanged(m_envManager->currentEnv());
     }
+    m_golangAst = LiteApi::findExtensionObject<LiteApi::IGolangAst*>(m_liteApp,"LiteApi.IGolangAst");
 }
 
 GolangCode::~GolangCode()
@@ -159,28 +160,41 @@ void GolangCode::finished(int,QProcess::ExitStatus)
     QStringList all = read.split('\n');
     //func,,Fprint,,func(w io.Writer, a ...interface{}) (n int, error os.Error)
     //type,,Formatter,,interface
+    //const,,ModeExclusive,,
+    //var,,Args,,[]string
     int n = 0;
+    QIcon icon;
     foreach (QString s, all) {
         QStringList word = s.split(",,");
-        QString item,param;
-        //classes, names, types
-        if (word.count() == 3) {
-            if (word.at(0) == "type" || word.at(0) == "func") {
-                item = word.at(1);
-            }
-            if (word.at(0) == "func") {
-                int pos = word.at(2).indexOf("(");
-                if (pos != -1) {
-                    param = word.at(2).right(word.at(2).length()-pos);
-                }
+        if (word.count() != 3) {
+            continue;
+        }
+        LiteApi::ASTTAG_ENUM tag = LiteApi::TagNone;
+        QString kind = word.at(0);
+        QString info = word.at(2);
+        if (kind == "func") {
+            tag = LiteApi::TagFunc;
+        } else if (kind == "var") {
+            tag = LiteApi::TagValue;
+        } else if (kind == "const") {
+            tag = LiteApi::TagConst;
+        } else if (kind == "type") {
+            if (info == "interface") {
+                tag = LiteApi::TagInterface;
+            } else if (info == "struct") {
+                tag = LiteApi::TagStruct;
+            } else {
+                tag = LiteApi::TagType;
             }
         }
-        if (!item.isEmpty()) {
-            if (m_completer->appendItem(m_prefix+item+param,true)) {
-                n++;
-            }
+        if (m_golangAst) {
+            icon = m_golangAst->iconFromTagEnum(tag,true);
+        }
+        if (m_completer->appendItemEx(m_prefix+word.at(1),kind,info,icon,true)) {
+            n++;
         }
     }
+
     m_prefix.clear();
     if (n >= 1) {
         m_completer->completer()->model()->sort(0);

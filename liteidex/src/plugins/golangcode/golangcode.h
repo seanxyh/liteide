@@ -29,8 +29,10 @@
 #include "liteapi/liteapi.h"
 #include "liteeditorapi/liteeditorapi.h"
 #include "liteenvapi/liteenvapi.h"
+#include "golangastapi/golangastapi.h"
 
 class QProcess;
+
 class GolangCode : public QObject
 {
     Q_OBJECT
@@ -52,6 +54,7 @@ protected:
     QProcess   *m_process;
     QByteArray  m_writeData;
     LiteApi::IEnvManager *m_envManager;
+    LiteApi::IGolangAst *m_golangAst;
     QString     m_gocodeCmd;
     bool        m_bLoad;
 };

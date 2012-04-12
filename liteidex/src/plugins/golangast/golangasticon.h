@@ -27,12 +27,14 @@
 #define GOLANGASTICON_H
 
 #include <QIcon>
+#include "golangastapi/golangastapi.h"
 
 class GolangAstIconPublic
 {
 public:
     GolangAstIconPublic();
     QIcon iconFromTag(const QString &tag) const;
+    QIcon iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub = true) const;
 protected:
     QIcon   iconPackage;
     QIcon   iconType;
@@ -58,6 +60,7 @@ class GolangAstIconPrivate
 public:
     GolangAstIconPrivate();
     QIcon iconFromTag(const QString &tag) const;
+    QIcon iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub = true) const;
 protected:
     QIcon   iconPackage;
     QIcon   iconType;
@@ -79,6 +82,7 @@ class GolangAstIcon
 public:
     static GolangAstIcon *instance();
     QIcon iconFromTag(const QString &tag, bool pub = true) const;
+    QIcon iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub = true) const;
 protected:
     GolangAstIcon();
     GolangAstIconPrivate icons_p;
