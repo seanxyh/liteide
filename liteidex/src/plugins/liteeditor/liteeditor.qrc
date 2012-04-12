@@ -11,5 +11,7 @@
         <file>images/lock.png</file>
         <file>images/unlock.png</file>
         <file>images/exporthtml.png</file>
+        <file>images/findword.png</file>
+        <file>images/keyword.png</file>
     </qresource>
 </RCC>

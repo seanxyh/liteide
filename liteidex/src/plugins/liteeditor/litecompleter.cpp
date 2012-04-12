@@ -45,6 +45,63 @@
 #endif
 //lite_memory_check_end
 
+class WordItem : public QStandardItem
+{
+public:
+    WordItem(const QString &text) : QStandardItem(text)
+    {
+        this->setName(text);
+    }
+    enum {
+        NameRole = Qt::UserRole+2,
+        KindRole,
+        InfoRole,
+        TempRole
+    };
+    virtual QVariant data(int role = Qt::UserRole + 1) const
+    {
+        if (role == Qt::DisplayRole) {
+            if (this->info().isEmpty()) {
+                return this->name();
+            }
+            return QString("%1\t%2").arg(this->name()).arg(this->info());
+        }
+        return QStandardItem::data(role);
+    }
+    void setName(const QString &word)
+    {
+        this->setData(word,NameRole);
+    }
+    QString name() const
+    {
+        return QStandardItem::data(NameRole).toString();
+    }
+    void setKind(const QString &kind)
+    {
+        this->setData(kind,KindRole);
+    }
+    QString kind() const
+    {
+        return QStandardItem::data(KindRole).toString();
+    }
+    void setInfo(const QString &info)
+    {
+        this->setData(info,InfoRole);
+    }
+    QString info() const
+    {
+        return QStandardItem::data(InfoRole).toString();
+    }
+    void setTemp(bool temp)
+    {
+        this->setData(temp,TempRole);
+    }
+    bool isTemp() const
+    {
+        return QStandardItem::data(TempRole).toBool();
+    }
+};
+
 LiteCompleter::LiteCompleter(QObject *parent) :
     LiteApi::ICompleter(parent),
     m_completer( new TreeModelCompleter(this)),
@@ -80,7 +137,7 @@ void LiteCompleter::clearTemp()
     int i = m_model->rowCount();
     while (i--) {
         QModelIndex index = m_model->index(i,0);
-        if (index.data(Qt::UserRole+2).toBool() == true) {
+        if (index.data(WordItem::TempRole).toBool() == true) {
             m_model->removeRow(i);
         }
     }
@@ -99,72 +156,30 @@ void LiteCompleter::show()
 
 }
 
-void LiteCompleter::appendItems(QStringList items,bool temp)
+void LiteCompleter::appendItems(QStringList items,const QString &kind, const QString &info,const QIcon &icon, bool temp)
 {
     foreach(QString item,items) {
-        appendItem(item,temp);
+        appendItemEx(item,kind,info,icon,temp);
     }
 }
 
-static QString getItemFunc(const QString &text)
-{
-    int pos = text.indexOf("(");
-    if (pos == -1) {
-        return text.trimmed();
-    }
-    return text.left(pos).trimmed();
-}
 
-class WordItem : public QStandardItem
+bool LiteCompleter::appendItem(const QString &name, const QIcon &icon, bool temp)
 {
-public:
-    WordItem(const QString &text) : QStandardItem(text)
-    {
-        this->setWord(text);
-    }
-    enum {
-        WordRole = Qt::UserRole+2,
-        ArgsRole= Qt::UserRole+3
-    };
-    virtual QVariant data(int role = Qt::UserRole + 1) const
-    {
-        if (role == Qt::DisplayRole) {
-            if (this->args().isEmpty()) {
-                return this->word();
-            }
-            return QString("%1\t%2").arg(this->word()).arg(this->args());
-        }
-        return QStandardItem::data(role);
-    }
-    void setWord(const QString &word)
-    {
-        this->setData(word,WordRole);
-    }
-    QString word() const
-    {
-        return QStandardItem::data(WordRole).toString();
-    }
-    void setArgs(const QString &args)
-    {
-        this->setData(args,ArgsRole);
-    }
-    QString args() const
-    {
-        return QStandardItem::data(ArgsRole).toString();
-    }
-};
-
-bool LiteCompleter::appendItem(QString text, bool temp)
-{
-    QString func,arg;
-    int pos = text.indexOf(m_stop);
+    QString func;
+    int pos = name.indexOf(m_stop);
     if (pos == -1) {
-        func = text.trimmed();
+        func = name.trimmed();
     } else {
-        func = text.left(pos).trimmed();
-        arg = text.right(text.length()-pos).trimmed();
+        func = name.left(pos).trimmed();
+        //arg = text.right(text.length()-pos).trimmed();
     }
-    QStringList words = func.split(m_completer->separator(),QString::SkipEmptyParts);
+    return this->appendItemEx(func,"","",icon,temp);
+}
+
+bool LiteCompleter::appendItemEx(const QString &name,const QString &kind, const QString &info, const QIcon &icon, bool temp)
+{
+    QStringList words = name.split(m_completer->separator(),QString::SkipEmptyParts);
     WordItem *root = 0;
     WordItem *item = 0;
     bool bnew = false;    
@@ -173,9 +188,8 @@ bool LiteCompleter::appendItem(QString text, bool temp)
         QModelIndex parent = m_model->indexFromItem(root);
         for (int i = 0; i < m_model->rowCount(parent); i++) {
             QModelIndex index = m_model->index(i,0,parent);
-            WordItem *tmp = static_cast<WordItem*>(m_model->itemFromIndex(index));
-            if (tmp && tmp->word() == word) {
-                item = tmp;
+            if (index.data(WordItem::NameRole).toString() == word) {
+                item = static_cast<WordItem*>(m_model->itemFromIndex(index));
                 break;
             }
         }
@@ -190,17 +204,12 @@ bool LiteCompleter::appendItem(QString text, bool temp)
         }
         root = item;
     }
-    if (item && !arg.isEmpty()) {
-        item->setArgs(arg);
+    if (item && item->kind().isEmpty()) {
+        item->setKind(kind);
+        item->setInfo(info);
+        item->setTemp(temp);
+        item->setIcon(icon);
     }
-    /*
-    if (item && !arg.isEmpty()) {
-        QStringList args = item->data().toStringList();
-        args.append(arg);
-        args.removeDuplicates();
-        item->setData(args);
-    }
-    */
     return bnew;
 }
 
@@ -225,7 +234,7 @@ void LiteCompleter::insertCompletion(QModelIndex index)
     if (!index.isValid()) {
         return;
     }
-    QString text = index.data(WordItem::WordRole).toString();
+    QString text = index.data(WordItem::NameRole).toString();
     QString prefix = m_completer->completionPrefix();
     //IsAbs r.URL.
     int pos = prefix.lastIndexOf(m_completer->separator());
@@ -237,5 +246,5 @@ void LiteCompleter::insertCompletion(QModelIndex index)
     QTextCursor tc = m_editor->textCursor();
     tc.insertText(extra);
     m_editor->setTextCursor(tc);
-    emit wordCompleted(prefix+extra,index.data(WordItem::ArgsRole).toString());
+    emit wordCompleted(prefix+extra,index.data(WordItem::InfoRole).toString());
 }

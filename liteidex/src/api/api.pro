@@ -12,3 +12,4 @@ SUBDIRS = \
     litedebugapi \
     docbrowserapi \
     golangdocapi \
+    golangastapi \

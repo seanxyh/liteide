@@ -44,7 +44,7 @@
 //lite_memory_check_end
 
 LiteWordCompleter::LiteWordCompleter(QObject *parent) :
-    LiteCompleter(parent)
+    LiteCompleter(parent),m_icon(QIcon(":/images/findword.png"))
 {
     m_completer->setSeparator(".");
 }
@@ -87,7 +87,7 @@ void LiteWordCompleter::completionPrefixChanged(QString prefix)
                 && !m_wordSet.contains(found)
                 && tc.anchor() != startPosition) {
             m_wordSet.insert(found);
-            appendItem(found,true);
+            appendItem(found,m_icon,true);
         }
         tc.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor);
     }

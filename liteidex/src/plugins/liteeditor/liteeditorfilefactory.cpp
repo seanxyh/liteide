@@ -116,13 +116,13 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
         connect(editor,SIGNAL(colorStyleChanged()),this,SLOT(colorStyleChanged()));
     }
     editor->applyOption("option/liteeditor");
-
     LiteWordCompleter *wordCompleter = new LiteWordCompleter(editor);
     editor->setCompleter(wordCompleter);
     if (wordCompleter) {
         LiteApi::IWordApi *wordApi = m_wordApiManager->findWordApi(mimeType);
         if (wordApi && wordApi->loadApi()) {
-            wordCompleter->appendItems(wordApi->wordList(),false);
+            QIcon icon(":/images/keyword.png");
+            wordCompleter->appendItems(wordApi->wordList(),"keyword","",icon,false);
             wordCompleter->completer()->model()->sort(0);
         }        
     }
@@ -151,7 +151,8 @@ LiteApi::IEditor *LiteEditorFileFactory::create(const QString &contents, const Q
     if (wordCompleter) {
         LiteApi::IWordApi *wordApi = m_wordApiManager->findWordApi(mimeType);
         if (wordApi && wordApi->loadApi()) {
-            wordCompleter->appendItems(wordApi->wordList(),false);
+            QIcon icon(":/images/keyword.png");
+            wordCompleter->appendItems(wordApi->wordList(),"keyword","",icon,false);
             wordCompleter->completer()->model()->sort(0);
         }
     }
