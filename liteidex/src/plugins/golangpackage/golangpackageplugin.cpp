@@ -18,14 +18,13 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: golangplayplugin.cpp
+// Module: golangpackageplugin.cpp
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2012-3-8
-// $Id: golangplayplugin.cpp,v 1.0 2012-3-8 visualfc Exp $
+// date: 2012-4-19
+// $Id: golangpackageplugin.cpp,v 1.0 2012-4-19 visualfc Exp $
 
-#include "golangplayplugin.h"
-#include "goplaybrowser.h"
-#include "liteapi/liteobj.h"
+#include "golangpackageplugin.h"
+#include "packagebrowser.h"
 #include <QAction>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -37,30 +36,24 @@
 #endif
 //lite_memory_check_end
 
-GolangPlayPlugin::GolangPlayPlugin()
+GolangPackagePlugin::GolangPackagePlugin()
 {
-    m_info->setId("plugin/GolangPlay");
-    m_info->setName("GolangPlay");
+    m_info->setId("plugin/GolangPackage");
+    m_info->setName("GolangPackage");
     m_info->setAnchor("visualfc");
-    m_info->setInfo("GolangPlay Plugin");
+    m_info->setInfo("GolangPackage Plugin");
 }
 
-bool GolangPlayPlugin::initWithApp(LiteApi::IApplication *app)
+bool GolangPackagePlugin::initWithApp(LiteApi::IApplication *app)
 {
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
 
-    GoplayBrowser *gopaly = new GoplayBrowser(app,this);
-    QAction *act = m_liteApp->editorManager()->registerBrowser(gopaly);
-    act->setIcon(QIcon(":/images/gopher.png"));
-    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuPagePos,act);
+    new PackageBrowser(m_liteApp,this);
+
     return true;
 }
 
-QStringList GolangPlayPlugin::dependPluginList() const
-{
-    return QStringList() << "plugin/liteeditor";
-}
 
-Q_EXPORT_PLUGIN(GolangPlayPlugin)
+Q_EXPORT_PLUGIN(GolangPackagePlugin)

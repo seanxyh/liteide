@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
-	<mime-type type="text/x-gopath" id="gopath">
+	<mime-type type="text/x-gopackage" id="gopackage">
 		<config id="Go" name="GO" value="$(GOROOT)/bin/go"/>
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
 		<custom id="TargetArgs" name="TARGETARGS" value=""/>
-		<action id="Build" img="go/build.png" key="CTRL+B" cmd="$(GO)" args="build" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
+		<custom id="BuildArgs" name="BUILDARGS" value=""/>
+		<action id="Build" img="go/build.png" key="CTRL+B" cmd="$(GO)" args="build $(BUILDARGS)" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
 		<action id="Install" img="go/install.png" cmd="$(GO)" args="install" save="project" output="true"/>
 		<action id="Clean" img="go/clean.png" cmd="$(GO)" args="clean" save="project" output="true"/>
 		<action id="ClaeanAll" img="go/nuke.png" cmd="$(GO)" args="clean -i" save="project" output="true"/>
