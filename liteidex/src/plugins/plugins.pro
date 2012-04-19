@@ -14,7 +14,7 @@ SUBDIRS = \
     profileproject  \
     filebrowser \
     golangast \
-    golangtool \
+#    golangtool \
     golangfmt \
     golangcode \
     golangdoc \
