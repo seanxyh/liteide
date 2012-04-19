@@ -556,10 +556,11 @@ void LiteBuild::execAction(const QString &id)
         m_output->setReadOnly(true);
     }
     QProcessEnvironment sysenv = m_envManager->currentEnvironment();
+    QStringList liteGopath = m_liteApp->settings()->value("liteide/gopath").toStringList();
 #ifdef Q_OS_WIN
-    sysenv.insert("GOPATH",sysenv.value("GOPATH")+";"+sysenv.value("LITEIDE_GOPATH"));
+    sysenv.insert("GOPATH",sysenv.value("GOPATH")+";"+liteGopath.join(";"));
 #else
-    sysenv.insert("GOPATH",sysenv.value("GOPATH")+":"+sysenv.value("LITEIDE_GOPATH"));
+    sysenv.insert("GOPATH",sysenv.value("GOPATH")+":"+liteGopath.join(":"));
 #endif
     m_process->setEnvironment(sysenv.toStringList());
     if (!ba->output()) {

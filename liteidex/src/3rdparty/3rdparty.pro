@@ -6,4 +6,6 @@ CONFIG   += ordered
 SUBDIRS = \
     treemodelcompleter \
     qtc_texteditor  \
-    qtc_gdbmi
+    qtc_gdbmi \
+    qjson
+
