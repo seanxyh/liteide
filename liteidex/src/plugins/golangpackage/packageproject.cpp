@@ -26,7 +26,10 @@
 #include "packageproject.h"
 #include "filepathmodel.h"
 #include <QDir>
+#include <QFileInfo>
 #include <QTreeView>
+#include <QStandardItemModel>
+#include <QStandardItem>
 #include <QVBoxLayout>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -45,10 +48,14 @@ PackageProject::PackageProject(LiteApi::IApplication *app) :
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
     m_treeView = new QTreeView;
-    m_model = new FilePathModel(this);
+    m_treeView->setEditTriggers(QTreeView::NoEditTriggers);
+    m_treeView->setHeaderHidden(true);
+    m_model = new QStandardItemModel(this);
     m_treeView->setModel(m_model);
     layout->addWidget(m_treeView);
     m_widget->setLayout(layout);
+
+    connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClicked(QModelIndex)));
 }
 
 void PackageProject::setJson(const QMap<QString,QVariant> &json)
@@ -75,16 +82,16 @@ QString PackageProject::mimeType() const
 }
 QStringList PackageProject::fileNameList() const
 {
-    return QStringList();
+    return m_nameList;
 }
 QStringList PackageProject::filePathList() const
 {
-    //QDir dir(filePath());
-    return QStringList();
+    return m_fileList;
 }
 QString PackageProject::fileNameToFullPath(const QString &filePath)
 {
-    return filePath;
+    QDir dir(m_json.value("Dir").toString());
+    return QFileInfo(dir,filePath).filePath();
 }
 
 /*
@@ -129,5 +136,40 @@ QMap<QString,QString> PackageProject::targetInfo() const
 
 void PackageProject::load()
 {
-    m_model->setRootPath(m_json.value("Dir").toString());
+    //m_model->setRootPath(m_json.value("Dir").toString());
+    m_model->clear();
+    m_fileList.clear();
+    m_dir = m_json.value("Dir").toString();
+    QStandardItem *root = new QStandardItem(m_json.value("ImportPath").toString());
+    m_model->appendRow(root);
+    QStandardItem *src = new QStandardItem(tr("src"));
+    QDir dir(m_json.value("Dir").toString());
+    QStringList nameFilter;
+    nameFilter << "*.go" << "*.h" << "*.c" << "*.cpp" << "*.s";
+    foreach(QFileInfo info, dir.entryInfoList(nameFilter,QDir::Files,QDir::Type|QDir::Name)) {
+        m_fileList.append(info.filePath());
+        m_nameList.append(info.fileName());
+        QStandardItem *item = new QStandardItem(info.fileName());
+        item->setData(ITEM_SOURCE,RoleItem);
+        item->setData(info.filePath(),RolePath);
+        src->appendRow(item);
+    }
+    root->appendRow(src);
+    m_treeView->expand(m_model->indexFromItem(src));
+    m_treeView->expand(m_model->indexFromItem(root));
+}
+
+void PackageProject::doubleClicked(QModelIndex index)
+{
+    if (!index.isValid()) {
+        return;
+    }
+    QStandardItem *item = m_model->itemFromIndex(index);
+    if (!item) {
+        return;
+    }
+    if (item->data(RoleItem).toInt() == ITEM_SOURCE) {
+        QString path = item->data(RolePath).toString();
+        m_liteApp->fileManager()->openEditor(path,true);
+    }
 }

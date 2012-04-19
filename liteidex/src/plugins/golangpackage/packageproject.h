@@ -27,11 +27,24 @@
 #define PACKAGEPROJECT_H
 
 #include "liteapi/liteapi.h"
+#include <QModelIndex>
 
 class QTreeView;
 class FilePathModel;
+class QStandardItemModel;
+class QDir;
 class PackageProject : public LiteApi::IProject
 {
+    Q_OBJECT
+public:
+    enum {
+        ITEM_NONE = 0,
+        ITEM_SOURCE = 1
+    };
+    enum {
+        RoleItem = Qt::UserRole+1,
+        RolePath
+    };
 public:
     PackageProject(LiteApi::IApplication *app);
     void setJson(const QMap<QString,QVariant> &json);
@@ -45,11 +58,16 @@ public:
     virtual QMap<QString,QString> projectInfo() const;
     virtual QMap<QString,QString> targetInfo() const;
     virtual void load();
+protected slots:
+    void doubleClicked(QModelIndex);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
     QTreeView *m_treeView;
-    FilePathModel *m_model;
+    QStandardItemModel *m_model;
+    QStringList m_fileList;
+    QStringList m_nameList;
+    QString     m_dir;
     QMap<QString,QVariant> m_json;
 };
 
