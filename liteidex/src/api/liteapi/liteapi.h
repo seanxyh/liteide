@@ -152,7 +152,7 @@ public:
     IProjectFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QStringList mimeTypes() const = 0;
     virtual IProject *open(const QString &fileName, const QString &mimeType) = 0;
-    virtual bool findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const = 0;
+    virtual bool findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& targetInfo) const = 0;
 };
 
 class IFileManager : public IManager
@@ -338,6 +338,7 @@ public:
     virtual IProject *currentProject() const = 0;
     virtual QList<IEditor*> editorList(IProject *project) const = 0;
     virtual void addImportAction(QAction *act) = 0;
+    virtual QWidget *widget() = 0;
 public slots:
     virtual void saveProject(IProject *project = 0) = 0;
     virtual void closeProject(IProject *project = 0) = 0;
@@ -449,17 +450,21 @@ public:
     virtual QString id() const { return m_id; }
     virtual QString name() const { return m_name; }
     virtual QString ver() const { return m_ver; }
+    virtual QStringList dependList() const { return m_dependList; }
     void setAnchor(QString anchor) { m_anchor = anchor; }
     void setInfo(QString info) { m_info = info; }
     void setId(QString id) { m_id = id.toLower(); }
     void setName(QString name) { m_name = name; }
     void setVer(QString ver) { m_ver = ver; }
+    void setDependList(const QStringList &dependList) { m_dependList = dependList; }
+    void appendDepend(const QString &depend) { m_dependList.append(depend); }
 protected:
     QString m_anchor;
     QString m_info;
     QString m_id;
     QString m_name;
     QString m_ver;
+    QStringList m_dependList;
 };
 
 class IPlugin : public IObject
@@ -486,7 +491,7 @@ public:
         return m_info->name();
     }
     virtual QStringList dependPluginList() const{
-        return QStringList();
+        return m_info->dependList();
     }
     virtual const PluginInfo *info() const {
         return m_info;

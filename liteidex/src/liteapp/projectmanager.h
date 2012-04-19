@@ -59,7 +59,7 @@ public:
     virtual IProject *currentProject() const;
     virtual QList<IEditor*> editorList(IProject *project) const;
     virtual void addImportAction(QAction *act);
-    QWidget *widget();
+    virtual QWidget *widget();
 public slots:    
     virtual void saveProject(IProject *project = 0);
     virtual void closeProject(IProject *project = 0);
