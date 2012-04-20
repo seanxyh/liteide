@@ -80,10 +80,12 @@ void PackageTree::loadJson(const QMap<QString, QVariant> &json)
     }
     foreach(QVariant import , json.value("Imports").toList()) {
         QStandardItem *item = new QStandardItem(import.toString());
+        item->setData(ITEM_IMPORT,RoleItem);
         imports->appendRow(item);
     }
     foreach(QVariant dep , json.value("Deps").toList()) {
         QStandardItem *item = new QStandardItem(dep.toString());
+        item->setData(ITEM_DEP,RoleItem);
         deps->appendRow(item);
     }
 }

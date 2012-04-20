@@ -28,6 +28,7 @@
 #include "gotool.h"
 #include "qjson/include/QJson/Parser"
 #include "fileutil/fileutil.h"
+#include "golangdocapi/golangdocapi.h"
 #include <QDir>
 #include <QFileInfo>
 #include <QTreeView>
@@ -35,6 +36,7 @@
 #include <QStandardItem>
 #include <QVBoxLayout>
 #include <QTimer>
+#include <QUrl>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -187,10 +189,24 @@ void PackageProject::doubleClicked(QModelIndex index)
     if (!item) {
         return;
     }
-    if (item->data(PackageTree::RoleItem).toInt() == PackageTree::ITEM_SOURCE) {
-        QString path = item->data(RolePath).toString();
-        m_liteApp->fileManager()->openEditor(path,true);
+    switch (item->data(PackageTree::RoleItem).toInt()) {
+        case PackageTree::ITEM_SOURCE: {
+            QString path = item->data(RolePath).toString();
+            m_liteApp->fileManager()->openEditor(path,true);
+        }
+        break;
+    case PackageTree::ITEM_DEP:
+    case PackageTree::ITEM_IMPORT: {
+        QString pkg = item->data(Qt::DisplayRole).toString();
+        LiteApi::IGolangDoc *doc = LiteApi::getGolangDoc(m_liteApp);
+        if (doc) {
+            doc->openUrl(QUrl(QString("pdoc:%1").arg(pkg)));
+            doc->activeBrowser();
+        }
+        }
+        break;
     }
+
 }
 
 void PackageProject::finished(int code, QProcess::ExitStatus)
