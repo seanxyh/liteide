@@ -36,7 +36,9 @@ class PackageTree : public SymbolTreeView
 public:
     enum {
         ITEM_NONE = 0,
-        ITEM_SOURCE = 1
+        ITEM_SOURCE,
+        ITEM_IMPORT,
+        ITEM_DEP
     };
     enum {
         RoleItem = Qt::UserRole+1,

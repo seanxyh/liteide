@@ -27,6 +27,7 @@
 #define __GOLANGDOCAPI_H__
 
 #include "liteapi/liteapi.h"
+#include "liteapi/litefindobj.h"
 
 /*
 openUrl(const QUrl &url);
@@ -48,6 +49,11 @@ public slots:
     virtual void openUrl(const QUrl &url) = 0;
     virtual void activeBrowser() = 0;
 };
+
+inline IGolangDoc *getGolangDoc(LiteApi::IApplication *app)
+{
+    return LiteApi::findExtensionObject<IGolangDoc*>(app,"LiteApi.IGolangDoc");
+}
 
 }
 
