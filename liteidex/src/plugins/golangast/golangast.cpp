@@ -79,7 +79,7 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     connect(m_timer,SIGNAL(timeout()),this,SLOT(updateAstNow()));
     connect(m_projectAstWidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedTree(QModelIndex)));
 
-    m_stackedWidget->setVisible(false);
+    m_stackedWidget->setVisible(true);
     m_liteApp->extension()->addObject("GoAstView.Widget",m_widget);
     m_liteApp->extension()->addObject("LiteApi.IGolangAst",this);
 }
