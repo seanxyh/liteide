@@ -74,7 +74,7 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_contextMenu->addAction(m_editPackageAct);
 
 
-    m_liteApp->dockManager()->addDock(m_widget,tr("PackgeBrowser"));
+    m_liteApp->dockManager()->addDock(m_widget,tr("Packge Browser"));
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
     connect(m_setupGopathAct,SIGNAL(triggered()),this,SLOT(setupGopath()));
