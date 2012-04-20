@@ -27,12 +27,17 @@
 #define PACKAGEPROJECT_H
 
 #include "liteapi/liteapi.h"
+#include "packagetree.h"
+
 #include <QModelIndex>
+#include <QProcess>
 
 class QTreeView;
 class FilePathModel;
 class QStandardItemModel;
+class QStandardItem;
 class QDir;
+class GoTool;
 class PackageProject : public LiteApi::IProject
 {
     Q_OBJECT
@@ -47,6 +52,8 @@ public:
     };
 public:
     PackageProject(LiteApi::IApplication *app);
+    ~PackageProject();
+    void setPath(const QString &path);
     void setJson(const QMap<QString,QVariant> &json);
     virtual QWidget *widget();
     virtual QString name() const;
@@ -59,16 +66,17 @@ public:
     virtual QMap<QString,QString> targetInfo() const;
     virtual void load();
 protected slots:
+    void reload();
+    void finished(int,QProcess::ExitStatus);
     void doubleClicked(QModelIndex);
+    void editorSaved(LiteApi::IEditor*);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
-    QTreeView *m_treeView;
-    QStandardItemModel *m_model;
-    QStringList m_fileList;
-    QStringList m_nameList;
-    QString     m_dir;
+    PackageTree *m_treeView;
     QMap<QString,QVariant> m_json;
+    GoTool      *m_goTool;
+    QTimer      *m_reloadTimer;
 };
 
 #endif // PACKAGEPROJECT_H
