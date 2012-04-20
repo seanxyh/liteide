@@ -78,6 +78,9 @@ QString PackageProject::filePath() const
 }
 QString PackageProject::mimeType() const
 {
+    if (m_json.value("Name") == "main") {
+        return "text/x-gocommand";
+    }
     return "text/x-gopackage";
 }
 QStringList PackageProject::fileNameList() const
