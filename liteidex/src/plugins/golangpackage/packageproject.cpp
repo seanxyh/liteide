@@ -25,12 +25,17 @@
 
 #include "packageproject.h"
 #include "filepathmodel.h"
+#include "gotool.h"
+#include "qjson/include/QJson/Parser"
+#include "fileutil/fileutil.h"
 #include <QDir>
 #include <QFileInfo>
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QVBoxLayout>
+#include <QTimer>
+#include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -44,23 +49,53 @@
 PackageProject::PackageProject(LiteApi::IApplication *app) :
     m_liteApp(app)
 {
-    m_widget = new QWidget;
+    m_goTool = new GoTool(m_liteApp,this);
+
+    m_widget = new QWidget;   
+    m_reloadTimer = new QTimer(this);
+    m_reloadTimer->setSingleShot(true);
+
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
-    m_treeView = new QTreeView;
+    m_treeView = new PackageTree(m_widget);
     m_treeView->setEditTriggers(QTreeView::NoEditTriggers);
     m_treeView->setHeaderHidden(true);
-    m_model = new QStandardItemModel(this);
-    m_treeView->setModel(m_model);
     layout->addWidget(m_treeView);
     m_widget->setLayout(layout);
 
     connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClicked(QModelIndex)));
+    connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
+    connect(m_liteApp->editorManager(),SIGNAL(editorSaved(LiteApi::IEditor*)),this,SLOT(editorSaved(LiteApi::IEditor*)));
+    connect(m_reloadTimer,SIGNAL(timeout()),this,SLOT(reload()));
+}
+
+PackageProject::~PackageProject()
+{
+    if (m_reloadTimer) {
+        m_reloadTimer->stop();
+        delete m_reloadTimer;
+    }
+    if (m_goTool) {
+        m_goTool->kill();
+        delete m_goTool;
+    }
+}
+
+void PackageProject::setPath(const QString &path)
+{
+    m_goTool->setWorkDir(path);
+}
+
+void PackageProject::reload()
+{
+    m_goTool->reloadEnv();
+    m_goTool->start(QStringList() << "list" << "-e" << "-json" << ".");
 }
 
 void PackageProject::setJson(const QMap<QString,QVariant> &json)
 {
     m_json = json;
+    m_goTool->setWorkDir(m_json.value("Dir").toString());
 }
 
 QWidget *PackageProject::widget()
@@ -85,11 +120,11 @@ QString PackageProject::mimeType() const
 }
 QStringList PackageProject::fileNameList() const
 {
-    return m_nameList;
+    return m_treeView->nameList;
 }
 QStringList PackageProject::filePathList() const
 {
-    return m_fileList;
+    return m_treeView->fileList;
 }
 QString PackageProject::fileNameToFullPath(const QString &filePath)
 {
@@ -140,26 +175,7 @@ QMap<QString,QString> PackageProject::targetInfo() const
 void PackageProject::load()
 {
     //m_model->setRootPath(m_json.value("Dir").toString());
-    m_model->clear();
-    m_fileList.clear();
-    m_dir = m_json.value("Dir").toString();
-    QStandardItem *root = new QStandardItem(m_json.value("ImportPath").toString());
-    m_model->appendRow(root);
-    QStandardItem *src = new QStandardItem(tr("src"));
-    QDir dir(m_json.value("Dir").toString());
-    QStringList nameFilter;
-    nameFilter << "*.go" << "*.h" << "*.c" << "*.cpp" << "*.s";
-    foreach(QFileInfo info, dir.entryInfoList(nameFilter,QDir::Files,QDir::Type|QDir::Name)) {
-        m_fileList.append(info.filePath());
-        m_nameList.append(info.fileName());
-        QStandardItem *item = new QStandardItem(info.fileName());
-        item->setData(ITEM_SOURCE,RoleItem);
-        item->setData(info.filePath(),RolePath);
-        src->appendRow(item);
-    }
-    root->appendRow(src);
-    m_treeView->expand(m_model->indexFromItem(src));
-    m_treeView->expand(m_model->indexFromItem(root));
+    m_treeView->loadJson(m_json);
 }
 
 void PackageProject::doubleClicked(QModelIndex index)
@@ -167,12 +183,44 @@ void PackageProject::doubleClicked(QModelIndex index)
     if (!index.isValid()) {
         return;
     }
-    QStandardItem *item = m_model->itemFromIndex(index);
+    QStandardItem *item = m_treeView->model->itemFromIndex(index);
     if (!item) {
         return;
     }
-    if (item->data(RoleItem).toInt() == ITEM_SOURCE) {
+    if (item->data(PackageTree::RoleItem).toInt() == PackageTree::ITEM_SOURCE) {
         QString path = item->data(RolePath).toString();
         m_liteApp->fileManager()->openEditor(path,true);
+    }
+}
+
+void PackageProject::finished(int code, QProcess::ExitStatus)
+{
+    if (code != 0) {
+        return;
+    }
+    QJson::Parser parser;
+    bool ok = false;
+    QVariant json = parser.parse(m_goTool->stdOutputData(), &ok).toMap();
+    if (ok) {
+        m_json = json.toMap();
+        load();
+    }
+}
+
+void PackageProject::editorSaved(LiteApi::IEditor *editor)
+{
+    if (!editor) {
+        return;
+    }
+    QString filePath = editor->filePath();
+    bool find = false;
+    foreach(QString path, m_treeView->fileList) {
+        if (FileUtil::compareFile(filePath,path)) {
+            find = true;
+            break;
+        }
+    }
+    if (find) {
+        m_reloadTimer->start(1000);
     }
 }
