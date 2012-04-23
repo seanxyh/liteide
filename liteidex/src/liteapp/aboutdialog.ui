@@ -413,45 +413,59 @@ LiteIDE is a simple, open source, cross-platform IDE.</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_34">
             <property name="text">
              <string>Japanese</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QLabel" name="label_35">
             <property name="text">
              <string notr="true">mattn &lt;mattn.jp@gmail.com&gt;</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_36">
             <property name="text">
              <string>Russian</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="QLabel" name="label_37">
             <property name="text">
              <string notr="true">Lockals &lt;lockalsash@gmail.com&gt;</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>French</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="4" column="1">
            <widget class="QLabel" name="label_20">
             <property name="text">
              <string notr="true">TomBoss &lt;tomboss@gmx.com&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_23">
+            <property name="text">
+             <string>Traditional Chinese</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label_26">
+            <property name="text">
+             <string>Timothy Lin &lt;zh9102@gmail.com&gt;</string>
             </property>
            </widget>
           </item>
