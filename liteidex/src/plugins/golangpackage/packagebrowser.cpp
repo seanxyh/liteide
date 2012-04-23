@@ -26,6 +26,7 @@
 #include "packagebrowser.h"
 #include "setupgopathdialog.h"
 #include "liteenvapi/liteenvapi.h"
+#include "golangdocapi/golangdocapi.h"
 #include "qjson/include/QJson/Parser"
 #include "packageproject.h"
 #include <QTreeView>
@@ -36,6 +37,7 @@
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QAction>
+#include <QUrl>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -69,8 +71,10 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_contextMenu = new QMenu(m_widget);
     m_setupGopathAct = new QAction(tr("Setup GOPATH"),this);
+    m_godocAct = new QAction(tr("View Godoc"),this);
     m_editPackageAct = new QAction(tr("Edit Package"),this);
     m_contextMenu->addAction(m_setupGopathAct);
+    m_contextMenu->addAction(m_godocAct);
     m_contextMenu->addAction(m_editPackageAct);
 
 
@@ -78,6 +82,7 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
     connect(m_setupGopathAct,SIGNAL(triggered()),this,SLOT(setupGopath()));
+    connect(m_godocAct,SIGNAL(triggered()),this,SLOT(viewGodoc()));
     connect(m_editPackageAct,SIGNAL(triggered()),this,SLOT(editPackage()));
 
     LiteApi::IEnvManager *env = LiteApi::getEnvManager(m_liteApp);
@@ -105,6 +110,26 @@ void PackageBrowser::setupGopath()
     if (dlg->exec() == QDialog::Accepted) {
         m_goTool->setLiteGopath(dlg->litePathList());
         reload();
+    }
+}
+
+void PackageBrowser::viewGodoc()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+    QVariant json = m_model->data(index,Qt::UserRole+1);
+    if (json.isNull()) {
+        return;
+    }
+    QString pkg = json.toMap().value("ImportPath").toString();
+    if (!pkg.isEmpty()) {
+        LiteApi::IGolangDoc *doc = LiteApi::getGolangDoc(m_liteApp);
+        if (doc) {
+            doc->openUrl(QUrl(QString("pdoc:%1").arg(pkg)));
+            doc->activeBrowser();
+        }
     }
 }
 

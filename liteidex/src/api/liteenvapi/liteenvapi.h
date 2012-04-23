@@ -29,6 +29,7 @@
 #include "liteapi/liteapi.h"
 #include "liteapi/litefindobj.h"
 #include <QProcessEnvironment>
+#include <QDir>
 
 namespace LiteApi {
 
@@ -69,6 +70,26 @@ inline QProcessEnvironment getCurrentEnvironment(LiteApi::IApplication *app)
         return env->currentEnvironment();
     }
     return QProcessEnvironment::systemEnvironment();
+}
+
+inline QProcessEnvironment getGoEnvironment(LiteApi::IApplication *app)
+{
+    QProcessEnvironment env = getCurrentEnvironment(app);
+#ifdef Q_OS_WIN
+    QString sep = ";";
+#else
+    QString sep = ":";
+#endif
+    QStringList pathList;
+    foreach (QString path, env.value("GOPATH").split(sep,QString::SkipEmptyParts)) {
+        pathList.append(QDir::toNativeSeparators(path));
+    }
+    foreach (QString path, app->settings()->value("liteide/gopath").toStringList()) {
+        pathList.append(QDir::toNativeSeparators(path));
+    }
+    pathList.removeDuplicates();
+    env.insert("GOPATH",pathList.join(sep));
+    return env;
 }
 
 } //namespace LiteApi

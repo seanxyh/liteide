@@ -419,6 +419,7 @@ void GolangDoc::openUrlPdoc(const QUrl &url)
         m_godocProcess->setWorkingDirectory(m_goroot);
         args << "-html=true" << url.path();
     }
+    m_godocProcess->setEnvironment(LiteApi::getGoEnvironment(m_liteApp).toStringList());
     m_godocProcess->start(m_godocCmd,args);
 }
 
