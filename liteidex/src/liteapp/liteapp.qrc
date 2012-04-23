@@ -34,5 +34,6 @@
         <file>images/forward.png</file>
         <file>images/reload.png</file>
         <file>images/gopher.png</file>
+        <file>images/gopath.png</file>
     </qresource>
 </RCC>

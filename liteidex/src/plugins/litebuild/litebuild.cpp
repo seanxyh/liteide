@@ -204,7 +204,8 @@ void LiteBuild::loadProjectEnv(LiteApi::IProject *project)
 void LiteBuild::reloadProject()
 {
     LiteApi::IProject *project = (LiteApi::IProject*)sender();
-    loadProjectEnv(project);
+    this->currentProjectChanged(project);
+    //loadProjectEnv(project);
 }
 
 void LiteBuild::currentProjectChanged(LiteApi::IProject *project)

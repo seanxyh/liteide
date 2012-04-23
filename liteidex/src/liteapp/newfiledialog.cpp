@@ -28,6 +28,7 @@
 
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QStringListModel>
 #include <QDir>
 #include <QFileInfo>
 #include <QSettings>
@@ -53,9 +54,15 @@ NewFileDialog::NewFileDialog(QWidget *parent) :
     ui->setupUi(this);
     m_categoryModel = new QStandardItemModel(this);
     m_templateModel = new QStandardItemModel(this);
+    m_pathModel = new QStringListModel(this);
 
     ui->categoryTreeView->setModel(m_categoryModel);
     ui->templateTreeView->setModel(m_templateModel);
+    ui->pathTreeView->setModel(m_pathModel);
+
+    ui->pathTreeView->setEditTriggers(0);
+    ui->pathTreeView->setRootIsDecorated(false);
+    ui->pathTreeView->setHeaderHidden(true);
 
     ui->categoryTreeView->setEditTriggers(0);
     ui->categoryTreeView->setRootIsDecorated(false);
@@ -69,11 +76,25 @@ NewFileDialog::NewFileDialog(QWidget *parent) :
     connect(ui->templateTreeView,SIGNAL(clicked(QModelIndex)),this,SLOT(activeTemplate(QModelIndex)));
     connect(ui->nameLineEdit,SIGNAL(textChanged(QString)),this,SLOT(nameLineChanged(QString)));
     connect(ui->locationLineEdit,SIGNAL(textChanged(QString)),this,SLOT(locationLineChanged(QString)));
+    connect(ui->pathTreeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(activePath(QModelIndex)));
 }
 
 NewFileDialog::~NewFileDialog()
 {
     delete ui;
+}
+
+void NewFileDialog::setPathList(const QStringList &pathList)
+{
+    m_pathModel->setStringList(pathList);
+    if (m_gopath.isEmpty()) {
+        m_gopath = pathList.first();
+    }
+}
+
+void NewFileDialog::setGopath(const QString &path)
+{
+    m_gopath = path;
 }
 
 void NewFileDialog::setProjectLocation(const QString &path)
@@ -132,7 +153,7 @@ void NewFileDialog::accept()
             return;
         }
     } else {
-        if (m_cur.type == "project" && !dir.entryList(QDir::Files).isEmpty()) {
+        if (m_cur.type != "file" && !dir.entryList(QDir::Files).isEmpty()) {
             int ret = QMessageBox::warning(this,"Warning",QString(tr("Location %1 is not empty, continue?")).arg(location),
                                  QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel,QMessageBox::Cancel);
             if (ret != QMessageBox::Yes) {
@@ -143,19 +164,22 @@ void NewFileDialog::accept()
 
 
     m_stringMap.clear();
-    m_stringMap.insert("$ROOT$",name);
+    m_stringMap.insert("$ROOT$",QFileInfo(name).fileName());
     m_openFiles.clear();
+
+    m_openPath = location;
 
     QStringList ofiles;
     foreach (QString file, m_cur.files) {
         QString infile = QFileInfo(m_cur.dir,file).absoluteFilePath();
         QString ofile = file;
         QFileInfo oi(name);
+        QString base = oi.fileName();
         if (!oi.suffix().isEmpty() &&
             (oi.suffix() == QFileInfo(infile).suffix())) {
-            ofile.replace("root",name.left(name.length()-oi.suffix().length()-1));
+            ofile.replace("root",base.left(base.length()-oi.suffix().length()-1));
         } else {
-            ofile.replace("root",name);
+            ofile.replace("root",base);
         }
 
         QString outfile = QFileInfo(location,ofile).absoluteFilePath();
@@ -180,6 +204,18 @@ void NewFileDialog::accept()
         return;
     }
     QDialog::accept();
+}
+
+void NewFileDialog::activePath(QModelIndex index)
+{
+    if (!index.isValid()) {
+        return;
+    }
+    m_gopath = index.data(Qt::DisplayRole).toString();
+    QModelIndex i = ui->templateTreeView->currentIndex();
+    if (i.isValid()) {
+        activeTemplate(i);
+    }
 }
 
 void  NewFileDialog::activeCategory(QModelIndex index)
@@ -248,6 +284,7 @@ void  NewFileDialog::activeTemplate(QModelIndex index)
         m_cur.type = set.value("SETUP/TYPE").toString().toLower();
         m_cur.files = set.value("SETUP/FILES").toString().trimmed().split(" ",QString::SkipEmptyParts);
         m_cur.open = set.value("SETUP/OPEN").toString().trimmed().split(" ",QString::SkipEmptyParts);
+        m_cur.openType = set.value("SETUP/OPENTYPE").toString().toLower();
         if (m_cur.open.isEmpty() && m_cur.files.count() > 0) {
             m_cur.open.append(m_cur.files.at(0));
         }
@@ -273,11 +310,17 @@ void  NewFileDialog::activeTemplate(QModelIndex index)
     }
     ui->infoLabel->setText(infos.join("\n"));
     QString location;
-    if (m_cur.type == "project") {
+    bool b = true;
+    if (m_cur.type == "gopath") {
+        location = QFileInfo(m_gopath,"src").filePath();
+        b = false;
+    } else if (m_cur.type == "project") {
         location = m_projectLocation;
     } else {
         location = m_fileLocation;
     }
+    ui->locationLineEdit->setEnabled(b);
+    ui->locationBrowseButton->setEnabled(b);
     ui->locationLineEdit->setText(QDir::toNativeSeparators(location));
     ui->nameLineEdit->clear();
 }
@@ -313,6 +356,16 @@ QStringList NewFileDialog::openFiles() const
     return m_openFiles;
 }
 
+QString NewFileDialog::openType() const
+{
+    return m_cur.openType;
+}
+
+QString NewFileDialog::openPath() const
+{
+    return m_openPath;
+}
+
 void NewFileDialog::on_locationBrowseButton_clicked()
 {
     QString location = ui->locationLineEdit->text();
@@ -338,19 +391,21 @@ void NewFileDialog::locationLineChanged(QString)
     }
     if (m_cur.type == "project") {
         m_projectLocation = location;
-    } else {
+    } else if (m_cur.type == "file"){
         m_fileLocation = location;
     }
 }
 
 void NewFileDialog::nameLineChanged(QString)
 {
-    if (m_cur.type != "project") {
+    if (m_cur.type == "file") {
         return;
     }
     QString name = ui->nameLineEdit->text();
     QString location;
-    if (m_cur.type == "project") {
+    if (m_cur.type == "gopath") {
+        location = QFileInfo(m_gopath,"src").filePath();
+    } else if (m_cur.type == "project") {
         location = m_projectLocation;
     } else {
         location = m_fileLocation;

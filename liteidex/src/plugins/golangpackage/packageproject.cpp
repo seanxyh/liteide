@@ -83,6 +83,18 @@ PackageProject::~PackageProject()
     }
 }
 
+void PackageProject::loadProject(LiteApi::IApplication *app, const QString &path)
+{
+    PackageProject *project = new PackageProject(app);
+    project->setPath(path);
+    project->reload();
+    app->projectManager()->setCurrentProject(project);
+    QDockWidget *dock = app->dockManager()->dockWidget(app->projectManager()->widget());
+    if (dock) {
+        dock->raise();
+    }
+}
+
 void PackageProject::setPath(const QString &path)
 {
     m_goTool->setWorkDir(path);
@@ -168,6 +180,7 @@ QMap<QString,QString> PackageProject::targetInfo() const
     QDir dir(m_json.value("Dir").toString());
     m.insert("WORKDIR",dir.path());
     QString name = m_json.value("ImportPath").toString();
+    name = QFileInfo(name).fileName();
     m.insert("TARGETPATH",QFileInfo(dir,name).filePath());
     m.insert("TARGETNAME",name);
     m.insert("TARGETDIR",dir.path());
@@ -220,6 +233,7 @@ void PackageProject::finished(int code, QProcess::ExitStatus)
     if (ok) {
         m_json = json.toMap();
         load();
+        emit reloaded();
     }
 }
 

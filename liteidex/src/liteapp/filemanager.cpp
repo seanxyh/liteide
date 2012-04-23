@@ -26,6 +26,7 @@
 #include "filemanager.h"
 #include "newfiledialog.h"
 #include "fileutil/fileutil.h"
+#include "liteenvapi/liteenvapi.h"
 
 #include <QMenu>
 #include <QAction>
@@ -280,13 +281,22 @@ void FileManager::openProjects()
     }
 }
 
-void FileManager::execFileWizard(const QString &projPath, const QString &filePath)
+void FileManager::regWizardOpen(const QString &type, WizardOpenFunc func)
+{
+    m_wizardOpenFuncMap.insert(type,func);
+}
+
+void FileManager::execFileWizard(const QString &projPath, const QString &filePath, const QString &gopath)
 {
     if (!m_newFileDialog) {
         m_newFileDialog = new NewFileDialog(m_liteApp->mainWindow());
         m_newFileDialog->setTemplatePath(m_liteApp->resourcePath()+"/template");
     }
 
+    m_newFileDialog->setPathList(LiteApi::getGopathList(m_liteApp,true));
+    if (!gopath.isEmpty()) {
+        m_newFileDialog->setGopath(gopath);
+    }
     m_newFileDialog->setFileLocation(filePath);
     m_newFileDialog->setProjectLocation(projPath);
     m_newFileDialog->updateLocation();
@@ -300,6 +310,14 @@ void FileManager::execFileWizard(const QString &projPath, const QString &filePat
                                     QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
                                     QMessageBox::Yes);
         if (ret == QMessageBox::Yes) {
+            QString openType = m_newFileDialog->openType();
+            if (!openType.isEmpty()) {
+                LiteApi::WizardOpenFunc func = m_wizardOpenFuncMap.value(openType);
+                qDebug() << openType << func << m_wizardOpenFuncMap.keys();
+                if (func) {
+                    func(m_liteApp,m_newFileDialog->openPath());
+                }
+            }
             foreach(QString file, m_newFileDialog->openFiles()) {
                 this->openFile(file);
             }

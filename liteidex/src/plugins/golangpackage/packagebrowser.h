@@ -66,6 +66,7 @@ protected:
     bool         m_groupByPath;
     bool         m_hideStandard;
     QMenu       *m_contextMenu;
+    QAction     *m_reloadAct;
     QAction     *m_setupGopathAct;
     QAction     *m_godocAct;
     QAction     *m_editPackageAct;

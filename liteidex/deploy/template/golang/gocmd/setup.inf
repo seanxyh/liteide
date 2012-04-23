@@ -1,0 +1,8 @@
+[SETUP]
+NAME = "Go1 Command"
+AUTHOR = visualfc
+INFO = new golang command project
+TYPE = gopath
+FILES = main.go doc.go
+OPEN = main.go
+OPENTYPE=gopath

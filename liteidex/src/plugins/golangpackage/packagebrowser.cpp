@@ -36,6 +36,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QMenu>
+#include <QToolBar>
 #include <QAction>
 #include <QUrl>
 #include <QDebug>
@@ -70,9 +71,11 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_widget->setLayout(layout);
 
     m_contextMenu = new QMenu(m_widget);
+    m_reloadAct = new QAction(tr("Reload"),this);
     m_setupGopathAct = new QAction(tr("Setup GOPATH"),this);
     m_godocAct = new QAction(tr("View Godoc"),this);
     m_editPackageAct = new QAction(tr("Edit Package"),this);
+    m_contextMenu->addAction(m_reloadAct);
     m_contextMenu->addAction(m_setupGopathAct);
     m_contextMenu->addAction(m_godocAct);
     m_contextMenu->addAction(m_editPackageAct);
@@ -81,9 +84,18 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->dockManager()->addDock(m_widget,tr("Packge Browser"));
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
+    connect(m_reloadAct,SIGNAL(triggered()),this,SLOT(reload()));
     connect(m_setupGopathAct,SIGNAL(triggered()),this,SLOT(setupGopath()));
     connect(m_godocAct,SIGNAL(triggered()),this,SLOT(viewGodoc()));
     connect(m_editPackageAct,SIGNAL(triggered()),this,SLOT(editPackage()));
+
+    QAction *act = new QAction(QIcon(":/images/gopath.png"),tr("GOPATH Setup"),this);
+    connect(act,SIGNAL(triggered()),this,SLOT(setupGopath()));
+
+    QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/nav");
+    if (toolBar) {
+        toolBar->addAction(act);
+    }
 
     LiteApi::IEnvManager *env = LiteApi::getEnvManager(m_liteApp);
     if (env) {
@@ -186,6 +198,7 @@ void PackageBrowser::finished(int code,QProcess::ExitStatus)
         m_model->appendRow(item);
         cmdMap.insert(QDir(path).path(),cmd);
         pkgMap.insert(QDir(path).path(),pkg);
+        m_treeView->expand(m_model->indexFromItem(item));
     }
 
     foreach(QByteArray line, m_goTool->stdOutputData().split('\n')) {

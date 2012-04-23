@@ -34,6 +34,7 @@ namespace Ui {
 }
 
 class QStandardItemModel;
+class QStringListModel;
 
 class TemplateInfo
 {
@@ -46,6 +47,7 @@ public:
         info.clear();
         files.clear();
         open.clear();
+        openType.clear();
     }
     bool isValid()
     {
@@ -58,6 +60,7 @@ public:
     QString info;
     QStringList files;
     QStringList open;
+    QString openType;
     QString dir;
 };
 
@@ -68,6 +71,8 @@ class NewFileDialog : public QDialog
 public:
     explicit NewFileDialog(QWidget *parent = 0);
     ~NewFileDialog();
+    void setPathList(const QStringList &pathList);
+    void setGopath(const QString &path);
     void setProjectLocation(const QString &path);
     void setFileLocation(const QString &path);
     void setTemplatePath(const QString &path);
@@ -75,7 +80,10 @@ public:
     virtual void accept();
     bool processFile(const QString &infile, const QString &outfile);
     QStringList openFiles() const;
+    QString openType() const;
+    QString openPath() const;
 public slots:
+    void activePath(QModelIndex);
     void activeCategory(QModelIndex);
     void activeTemplate(QModelIndex);
     void nameLineChanged(QString);
@@ -86,8 +94,11 @@ private:
     Ui::NewFileDialog *ui;
     QStandardItemModel  *m_categoryModel;
     QStandardItemModel  *m_templateModel;
+    QStringListModel    *m_pathModel;
     QString m_projectLocation;
     QString m_fileLocation;
+    QString m_gopath;
+    QString m_openPath;
     QStringList m_openFiles;
     QMap<QString,QString> m_stringMap;
     TemplateInfo    m_cur;
