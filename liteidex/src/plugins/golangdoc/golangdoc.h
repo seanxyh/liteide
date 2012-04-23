@@ -73,6 +73,7 @@ protected:
     LiteApi::IApplication   *m_liteApp;
     QUrl    m_openUrl;
     QUrl    m_lastUrl;
+    QString m_lastPath;
     QWidget *m_widget;
     DocumentBrowser *m_docBrowser;
     QComboBox *m_godocFindComboBox;

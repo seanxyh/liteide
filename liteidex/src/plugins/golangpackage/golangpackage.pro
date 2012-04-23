@@ -16,7 +16,8 @@ SOURCES += golangpackageplugin.cpp \
     gotool.cpp \
     setupgopathdialog.cpp \
     packageproject.cpp \
-    packagetree.cpp
+    packagetree.cpp \
+    newpackagedialog.cpp
 
 HEADERS += golangpackageplugin.h\
         golangpackage_global.h \
@@ -25,7 +26,9 @@ HEADERS += golangpackageplugin.h\
     gotool.h \
     setupgopathdialog.h \
     packageproject.h \
-    packagetree.h
+    packagetree.h \
+    newpackagedialog.h
 
 FORMS += \
-    setupgopathdialog.ui
+    setupgopathdialog.ui \
+    newpackagedialog.ui

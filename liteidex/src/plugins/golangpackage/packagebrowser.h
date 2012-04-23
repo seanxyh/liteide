@@ -52,6 +52,7 @@ signals:
 public slots:
     void reload();
     void setupGopath();
+    void viewGodoc();
     void editPackage();
     void finished(int,QProcess::ExitStatus);
     void customContextMenuRequested(QPoint);
@@ -66,6 +67,7 @@ protected:
     bool         m_hideStandard;
     QMenu       *m_contextMenu;
     QAction     *m_setupGopathAct;
+    QAction     *m_godocAct;
     QAction     *m_editPackageAct;
 };
 
