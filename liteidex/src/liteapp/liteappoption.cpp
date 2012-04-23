@@ -28,6 +28,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QLocale>
+#include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -46,22 +47,26 @@ LiteAppOption::LiteAppOption(LiteApi::IApplication *app,QObject *parent) :
 {
     ui->setupUi(m_widget);
     const QString &liteideTrPath = m_liteApp->resourcePath()+"/translations";
-    ui->langComboBox->addItem(QLocale::languageToString(QLocale::English),QLocale::English);
+    QLocale eng(QLocale::English);
+    ui->langComboBox->addItem(QLocale::languageToString(QLocale::English),eng.name());
     QDir dir(liteideTrPath);
     if (dir.exists()) {
         foreach (QFileInfo info,dir.entryInfoList(QStringList() << "liteide_*.qm")) {
             QString base = info.baseName();
-            QString lc = base.right(base.length()-8);
-            QLocale::Language lang = QLocale(lc).language();
-            ui->langComboBox->addItem(QLocale::languageToString(lang),lang);
+            QLocale lc(base.right(base.length()-8));
+            if (lc.name().isEmpty()) {
+                continue;
+            }
+            QLocale::Language lang = lc.language();
+            QString text = QString("%1 (%2)").arg(QLocale::languageToString(lang)).arg(lc.name());
+            ui->langComboBox->addItem(text,lc.name());
         }
     }
     QString locale = QLocale::system().name();
     locale = m_liteApp->settings()->value("General/Language",locale).toString();
     if (!locale.isEmpty()) {
-        QLocale::Language lang = QLocale(locale).language();
         for (int i = 0; i < ui->langComboBox->count(); i++) {
-            if (lang == ui->langComboBox->itemData(i).toInt()) {
+            if (locale == ui->langComboBox->itemData(i).toString()) {
                 ui->langComboBox->setCurrentIndex(i);
                 break;
             }
@@ -95,7 +100,7 @@ void LiteAppOption::apply()
     if (index < 0) {
         return;
     }
-    QLocale::Language lc = (QLocale::Language)ui->langComboBox->itemData(index).toInt();
-    m_liteApp->settings()->setValue("General/Language",QLocale(lc).name());
+    QString lc = ui->langComboBox->itemData(index).toString();
+    m_liteApp->settings()->setValue("General/Language",lc);
 
 }
