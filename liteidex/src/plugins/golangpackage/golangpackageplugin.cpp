@@ -25,6 +25,7 @@
 
 #include "golangpackageplugin.h"
 #include "packagebrowser.h"
+#include "packageproject.h"
 #include <QAction>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -44,13 +45,32 @@ GolangPackagePlugin::GolangPackagePlugin()
     m_info->setInfo("GolangPackage Plugin");
 }
 
+static PackageBrowser *browser = 0;
+
+static void loadProject(LiteApi::IApplication *app, const QString &path)
+{
+    PackageProject *project = new PackageProject(app);
+    project->setPath(path);
+    project->reload();
+    app->projectManager()->setCurrentProject(project);
+    QDockWidget *dock = app->dockManager()->dockWidget(app->projectManager()->widget());
+    if (dock) {
+        dock->raise();
+    }
+    if (browser) {
+        browser->reload();
+    }
+}
+
 bool GolangPackagePlugin::initWithApp(LiteApi::IApplication *app)
 {
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
 
-    new PackageBrowser(m_liteApp,this);
+    browser = new PackageBrowser(m_liteApp,this);
+
+    m_liteApp->fileManager()->regWizardOpen("gopath",&loadProject);
 
     return true;
 }

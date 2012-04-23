@@ -53,6 +53,7 @@ public:
 public:
     PackageProject(LiteApi::IApplication *app);
     ~PackageProject();
+    static void loadProject(LiteApi::IApplication *app, const QString &path);
     void setPath(const QString &path);
     void setJson(const QMap<QString,QVariant> &json);
     virtual QWidget *widget();
@@ -65,7 +66,7 @@ public:
     virtual QMap<QString,QString> projectInfo() const;
     virtual QMap<QString,QString> targetInfo() const;
     virtual void load();
-protected slots:
+public slots:
     void reload();
     void finished(int,QProcess::ExitStatus);
     void doubleClicked(QModelIndex);

@@ -60,6 +60,7 @@ void PackageTree::loadJson(const QMap<QString, QVariant> &json)
         root->appendRow(imports);
         root->appendRow(deps);
     }
+    root->setText(json.value("ImportPath").toString());
     src->removeRows(0,src->rowCount());
     imports->removeRows(0,imports->rowCount());
     deps->removeRows(0,deps->rowCount());

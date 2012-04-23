@@ -42,7 +42,8 @@ public:
     virtual bool initWithApp(IApplication *app);
     virtual ~FileManager();
 public:
-    virtual void execFileWizard(const QString &projPath, const QString &filePath);
+    virtual void execFileWizard(const QString &projPath, const QString &filePath, const QString &gopath = QString());
+    virtual void regWizardOpen(const QString &type, WizardOpenFunc func);
     virtual bool openFile(const QString &fileName);
     virtual IEditor *openEditor(const QString &fileName, bool bActive = true);
     virtual IEditor *createEditor(const QString &contents, const QString &mimeType);
@@ -98,6 +99,7 @@ protected:
     QMenu       *m_recentFileMenu;
     QMenu       *m_recentProjectMenu;
     QString      m_initPath;
+    QMap<QString,LiteApi::WizardOpenFunc> m_wizardOpenFuncMap;
 };
 
 #endif // FILEMANAGER_H

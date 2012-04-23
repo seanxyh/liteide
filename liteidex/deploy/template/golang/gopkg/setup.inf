@@ -2,6 +2,7 @@
 NAME = "Go1 Package"
 AUTHOR = visualfc
 INFO = new golang package project
-TYPE = project
+TYPE = gopath
 FILES = root.go doc.go
 OPEN = root.go
+OPENTYPE=gopath

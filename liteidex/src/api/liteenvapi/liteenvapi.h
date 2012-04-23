@@ -92,6 +92,36 @@ inline QProcessEnvironment getGoEnvironment(LiteApi::IApplication *app)
     return env;
 }
 
+inline QStringList getGopathList(LiteApi::IApplication *app, bool includeGoroot)
+{
+    QProcessEnvironment env = getCurrentEnvironment(app);
+#ifdef Q_OS_WIN
+    QString sep = ";";
+#else
+    QString sep = ":";
+#endif
+    QStringList pathList;
+    QString goroot = QDir::toNativeSeparators(env.value("GOROOT"));
+    foreach (QString path, env.value("GOPATH").split(sep,QString::SkipEmptyParts)) {
+        pathList.append(QDir::toNativeSeparators(path));
+    }
+    foreach (QString path, app->settings()->value("liteide/gopath").toStringList()) {
+        pathList.append(QDir::toNativeSeparators(path));
+    }
+    if (includeGoroot) {
+        pathList.append(goroot);
+    } else {
+        pathList.removeAll(goroot);
+    }
+    pathList.removeDuplicates();
+    return pathList;
+}
+
+inline QString getGoroot(LiteApi::IApplication *app)
+{
+    return getCurrentEnvironment(app).value("GOPATH");
+}
+
 } //namespace LiteApi
 
 
