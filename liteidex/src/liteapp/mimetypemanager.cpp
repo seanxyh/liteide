@@ -76,9 +76,8 @@ IMimeType *MimeTypeManager::findMimeType(const QString &type) const
     return 0;
 }
 
-QString MimeTypeManager::findFileMimeType(const QString &fileName) const
+QString MimeTypeManager::findMimeTypeByFile(const QString &fileName) const
 {
-    QString type;
     QString find = QFileInfo(fileName).suffix();
     if (find.isEmpty()) {
         find = QFileInfo(fileName).fileName();
@@ -88,12 +87,25 @@ QString MimeTypeManager::findFileMimeType(const QString &fileName) const
     foreach (IMimeType *mimeType, m_mimeTypeList) {
         foreach (QString pattern, mimeType->globPatterns()) {
             if (find.compare(pattern,Qt::CaseInsensitive) == 0) {
-                type = mimeType->type();
-                break;
+               return mimeType->type();
             }
         }
     }
-    return  type;
+    return  QString();
+}
+
+QString MimeTypeManager::findMimeTypeByScheme(const QString &scheme) const
+{
+    foreach (IMimeType *mimeType, m_mimeTypeList) {
+        QString type = mimeType->scheme();
+        if (type.isEmpty()) {
+            type = "file";
+        }
+        if (scheme == type) {
+            return mimeType->type();
+        }
+    }
+    return QString();
 }
 
 void MimeTypeManager::loadMimeTypes(const QString &path)

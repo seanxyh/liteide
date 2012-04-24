@@ -33,6 +33,7 @@
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QFlags>
+#include <QUrl>
 
 namespace LiteApi {
 
@@ -118,7 +119,8 @@ public:
     virtual void removeMimeType(IMimeType *mimeType) = 0;
     virtual QList<IMimeType*> mimeTypeList() const= 0;
     virtual IMimeType *findMimeType(const QString &type) const = 0;
-    virtual QString findFileMimeType(const QString &fileName) const = 0;
+    virtual QString findMimeTypeByFile(const QString &fileName) const = 0;
+    virtual QString findMimeTypeByScheme(const QString &scheme) const = 0;
     virtual QStringList findAllFilesByMimeType(const QString &dir, const QString &type, int deep = 0) const = 0;
 };
 
@@ -171,19 +173,17 @@ public:
     virtual IEditor *createEditor(const QString &contents, const QString &_mimeType) = 0;
     virtual IEditor *createEditor(const QString &fileName) = 0;
     virtual IProject *openProject(const QString &fileName) = 0;
-    // recent files
-    virtual void addRecentFile(const QString &fileName) = 0;
-    virtual void addRecentProject(const QString &fileName) = 0;
-    virtual void removeRecentFile(const QString &fileName) = 0;
-    virtual void removeRecentProject(const QString &fileName) = 0;
-    virtual QStringList recentFiles() const = 0;
-    virtual QStringList recentProjects() const = 0;
+    virtual IProject *openProjectScheme(const QString &fileName, const QString &scheme) = 0;
+    // recent
+    virtual QStringList schemeList() const = 0;
+    virtual void addRecentFile(const QString &fileName, const QString &scheme) = 0;
+    virtual void removeRecentFile(const QString &fileName, const QString &scheme) = 0;
+    virtual QStringList recentFiles(const QString &scheme) const = 0;
 
     virtual bool findProjectInfo(const QString &fileName, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const = 0;
 signals:
     void fileListChanged();
-    void recentProjectsChanged();
-    void recentFilesChanged();
+    void recentFilesChanged(QString);
 public slots:
     virtual void newFile() = 0;
     virtual void openFiles() = 0;
