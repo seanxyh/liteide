@@ -157,7 +157,10 @@ void PackageBrowser::editPackage()
     }
     QDir dir(json.toMap().value("Dir").toString());
     if (dir.exists()) {
-        m_liteApp->fileManager()->openProjectScheme(dir.path(),"gopkg");
+        PackageProject *proj = new PackageProject(m_liteApp);
+        proj->setJson(json.toMap());
+        m_liteApp->projectManager()->setCurrentProject(proj);;
+        m_liteApp->fileManager()->addRecentFile(dir.path(),"gopkg");
     }
 }
 

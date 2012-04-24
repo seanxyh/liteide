@@ -1,4 +1,4 @@
-// $ROOT$.go
+// $ROOT$
 package main
 
 import (

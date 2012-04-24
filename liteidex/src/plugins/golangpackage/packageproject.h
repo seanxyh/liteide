@@ -71,9 +71,12 @@ public slots:
     void finished(int,QProcess::ExitStatus);
     void doubleClicked(QModelIndex);
     void editorSaved(LiteApi::IEditor*);
+    void addSource();
+    void customContextMenuRequested(QPoint);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
+    QMenu   *m_contextMenu;
     PackageTree *m_treeView;
     QMap<QString,QVariant> m_json;
     GoTool      *m_goTool;
