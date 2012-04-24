@@ -62,8 +62,7 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
     connect(ui->openEditorButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openEditors()));
     connect(ui->optionsButton,SIGNAL(clicked()),m_liteApp->optionManager(),SLOT(exec()));
     connect(ui->textBrowser,SIGNAL(anchorClicked(QUrl)),this,SLOT(openUrl(QUrl)));
-    connect(m_liteApp->fileManager(),SIGNAL(recentProjectsChanged()),this,SLOT(loadData()));
-    connect(m_liteApp->fileManager(),SIGNAL(recentFilesChanged()),this,SLOT(loadData()));
+    connect(m_liteApp->fileManager(),SIGNAL(recentFilesChanged(QString)),this,SLOT(loadData()));
 
     ui->textBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/doc");
     ui->textBrowser->setOpenLinks(false);
@@ -135,7 +134,7 @@ void WelcomeBrowser::loadData()
 
     QStringList projectList;
     projectList.append("<ul>");
-    QStringList recentProjects = m_liteApp->fileManager()->recentProjects();
+    QStringList recentProjects = m_liteApp->fileManager()->recentFiles("proj");
     foreach (QString file, recentProjects) {
         QFileInfo info(file);
         projectList.append(QString("<li><a href=\"proj:%1\">%2</a> <span class=\"recent\">%3</span></li>")
@@ -147,7 +146,7 @@ void WelcomeBrowser::loadData()
 
     QStringList fileList;
     fileList.append("<ul>");
-    QStringList recentFiles = m_liteApp->fileManager()->recentFiles();
+    QStringList recentFiles = m_liteApp->fileManager()->recentFiles("file");
     foreach (QString file, recentFiles) {
         QFileInfo info(file);
         fileList.append(QString("<li><a href=\"file:%1\">%2</a> <span class=\"recent\">%3</span></li>")

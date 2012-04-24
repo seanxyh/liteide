@@ -354,7 +354,7 @@ void LiteApp::createActions()
 void LiteApp::createMenus()
 {
     m_fileMenu = m_actionManager->loadMenu("file");
-    m_viewMenu = m_actionManager->loadMenu("view");
+    m_viewMenu = m_actionManager->loadMenu("view");    
     m_helpMenu = m_actionManager->loadMenu("help");
 
     m_fileMenu->addAction(m_newAct);
@@ -369,9 +369,6 @@ void LiteApp::createMenus()
     m_fileMenu->addAction(m_saveAct);
     m_fileMenu->addAction(m_saveAsAct);
     m_fileMenu->addAction(m_saveAllAct);
-    m_fileMenu->addSeparator();
-    m_fileMenu->addMenu(m_fileManager->recentFileMenu());
-    m_fileMenu->addMenu(m_fileManager->recentProjectMenu());
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_exitAct);
 

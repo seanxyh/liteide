@@ -49,41 +49,34 @@ public:
     virtual IEditor *createEditor(const QString &contents, const QString &mimeType);
     virtual IEditor *createEditor(const QString &fileName);
     virtual IProject *openProject(const QString &fileName);
+    virtual IProject *openProjectScheme(const QString &fileName, const QString &scheme);
 
-    virtual void addRecentFile(const QString &fileName);
-    virtual void addRecentProject(const QString &fileName);
-    virtual void removeRecentFile(const QString &fileName);
-    virtual void removeRecentProject(const QString &fileName);
-    virtual QStringList recentFiles() const;
-    virtual QStringList recentProjects() const;
+    virtual QStringList schemeList() const;
+    virtual void addRecentFile(const QString &fileName, const QString &scheme);
+    virtual void removeRecentFile(const QString &fileName, const QString &scheme);
+    virtual QStringList recentFiles(const QString &scheme) const;
 
     virtual bool findProjectInfo(const QString &fileName, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const;
 public:
-    QMenu *recentFileMenu() const;
-    QMenu *recentProjectMenu() const;
     QString openAllTypeFilter() const;
     QString openProjectTypeFilter() const;
     QString openEditorTypeFilter() const;
 protected:
-    void updateRecentFileActions();
-    void updateRecentProjectActions();
+    QString schemeKey(const QString &scheme) const;
     void updateFileState(const QString &fileName);
 public slots:
+    void updateRecentFileActions(const QString &scheme);
+    void openRecentFile();
     void newFile();
     void openFiles();
     void openEditors();
     void openProjects();
-    void openRecentFile();
-    void openRecentProject();
-    void clearRecentFiles();
-    void clearRecentProjects();
     void fileChanged(QString);
     void editorSaved(LiteApi::IEditor*);
     void editorCreated(LiteApi::IEditor*);
     void editorAboutToClose(LiteApi::IEditor*);
     void checkForReload();
 protected:
-    QStringList          m_recentFiles;
     NewFileDialog        *m_newFileDialog;
     QFileSystemWatcher   *m_fileWatcher;
     QMap<QString,QDateTime> m_fileStateMap;
@@ -92,12 +85,7 @@ protected:
 protected:    
     enum { MaxRecentFiles = 32 };
     enum { MaxRecentProjects = 8 };
-    QAction     *m_clearRecentFilesAct;
-    QAction     *m_clearRecentProjectsAct;
-    QAction     *m_recentFileActs[MaxRecentFiles];
-    QAction     *m_recentProjectActs[MaxRecentProjects];
-    QMenu       *m_recentFileMenu;
-    QMenu       *m_recentProjectMenu;
+    QMenu       *m_recentMenu;
     QString      m_initPath;
     QMap<QString,LiteApi::WizardOpenFunc> m_wizardOpenFuncMap;
 };

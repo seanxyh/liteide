@@ -132,7 +132,7 @@ bool DocumentBrowser::open(const QString &fileName,const QString &mimeType)
     }    
     m_mimeType = mimeType;
     QFileInfo info(fileName);
-    QString htmlType = m_liteApp->mimeTypeManager()->findFileMimeType(fileName);
+    QString htmlType = m_liteApp->mimeTypeManager()->findMimeTypeByFile(fileName);
     m_name = info.fileName();
     m_fileName = QDir::toNativeSeparators(fileName);
 
