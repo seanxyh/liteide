@@ -349,7 +349,7 @@ IProject *FileManager::openProject(const QString &_fileName)
 
 IProject *FileManager::openProjectScheme(const QString &_fileName, const QString &scheme)
 {
-    QString fileName = QDir::fromNativeSeparators(fileName);
+    QString fileName = QDir::fromNativeSeparators(_fileName);
     QString mimeType =m_liteApp->mimeTypeManager()->findMimeTypeByScheme(scheme);
     IProject *proj = m_liteApp->projectManager()->openProject(QDir::fromNativeSeparators(fileName),mimeType);
     if (proj) {
