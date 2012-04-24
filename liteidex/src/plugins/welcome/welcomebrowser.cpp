@@ -132,33 +132,24 @@ void WelcomeBrowser::loadData()
     sessionList.append("</ul>");
 
 
-    QStringList projectList;
-    projectList.append("<ul>");
-    QStringList recentProjects = m_liteApp->fileManager()->recentFiles("proj");
-    foreach (QString file, recentProjects) {
-        QFileInfo info(file);
-        projectList.append(QString("<li><a href=\"proj:%1\">%2</a> <span class=\"recent\">%3</span></li>")
-                           .arg(info.filePath())
-                           .arg(info.fileName())
-                           .arg(QDir::toNativeSeparators(info.filePath())));
+    QStringList list;
+    foreach (QString scheme, m_liteApp->fileManager()->schemeList()) {
+        list.append(QString("<h3><i>recent %1</i></h3>").arg(scheme));
+        list.append("<ul>");
+        QStringList recentProjects = m_liteApp->fileManager()->recentFiles(scheme);
+        foreach (QString file, recentProjects) {
+            QFileInfo info(file);
+            list.append(QString("<li><a href=\"%1:%2\">%3</a> <span class=\"recent\">%4</span></li>")
+                               .arg(scheme)
+                               .arg(info.filePath())
+                               .arg(info.fileName())
+                               .arg(QDir::toNativeSeparators(info.filePath())));
+        }
+        list.append("</ul>");
     }
-    projectList.append("</ul>");
-
-    QStringList fileList;
-    fileList.append("<ul>");
-    QStringList recentFiles = m_liteApp->fileManager()->recentFiles("file");
-    foreach (QString file, recentFiles) {
-        QFileInfo info(file);
-        fileList.append(QString("<li><a href=\"file:%1\">%2</a> <span class=\"recent\">%3</span></li>")
-                        .arg(info.filePath())
-                        .arg(info.fileName())
-                        .arg(QDir::toNativeSeparators(info.filePath())));
-    }
-    fileList.append("</ul>");
 
     data.replace("{recent_sessions}",sessionList.join("\n"));
-    data.replace("{recent_projects}",projectList.join("\n"));
-    data.replace("{recent_files}",fileList.join("\n"));
+    data.replace("{recent_files}",list.join("\n"));
 
     ui->textBrowser->setHtml(data);
 
