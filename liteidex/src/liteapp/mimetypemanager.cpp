@@ -111,11 +111,11 @@ QString MimeTypeManager::findMimeTypeByScheme(const QString &scheme) const
 void MimeTypeManager::loadMimeTypes(const QString &path)
 {
     QDir dir = path;
-    m_liteApp->appendConsole("LiteApp","LoadMimeTypes",path);
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     dir.setNameFilters(QStringList("*.xml"));
     foreach (QString fileName, dir.entryList()) {
-        MimeType::loadMimeTypes(this,QFileInfo(dir,fileName).absoluteFilePath());
+        bool b = MimeType::loadMimeTypes(this,QFileInfo(dir,fileName).absoluteFilePath());
+        m_liteApp->appendConsole("LiteApp","LoadMimeTypes",QString("%1 %2").arg(fileName).arg(b?"true":"fallse"));
     }
 }
 

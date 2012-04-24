@@ -60,6 +60,10 @@ void PackageTree::loadJson(const QMap<QString, QVariant> &json)
         root->appendRow(imports);
         root->appendRow(deps);
     }
+
+    SymbolTreeState state;
+    this->saveState(&state);
+
     root->setText(json.value("ImportPath").toString());
     src->removeRows(0,src->rowCount());
     imports->removeRows(0,imports->rowCount());
@@ -89,4 +93,6 @@ void PackageTree::loadJson(const QMap<QString, QVariant> &json)
         item->setData(ITEM_DEP,RoleItem);
         deps->appendRow(item);
     }
+
+    this->loadState(this->model,&state);
 }

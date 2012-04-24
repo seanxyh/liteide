@@ -26,6 +26,7 @@
 #include "symboltreeview.h"
 #include <QHeaderView>
 #include <QFocusEvent>
+#include <QAbstractItemModel>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -36,6 +37,39 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
+static QStringList stringListFromIndex(const QModelIndex &index)
+{
+    QStringList list;
+    if (!index.isValid())
+        return list;
+    list.append(stringListFromIndex(index.parent()));
+    list.append(index.data().toString());
+    return list;
+}
+
+static QModelIndex indexFromStringList(QAbstractItemModel *model, QStringList &list, const QModelIndex & parent = QModelIndex())
+{
+    if (list.isEmpty())
+        return QModelIndex();
+    QString text = list.front();
+    for (int i = 0; i < model->rowCount(parent); i++) {
+        QModelIndex child = model->index(i,0,parent);
+        if (child.data().toString() == text) {
+            list.pop_front();
+            if (list.isEmpty()) {
+                return child;
+            } else {
+                QModelIndex next = indexFromStringList(model,list,child);
+                if (next.isValid())
+                    return next;
+                else
+                    return child;
+            }
+        }
+    }
+    return QModelIndex();
+}
 
 SymbolTreeView::SymbolTreeView(QWidget *parent)
     : QTreeView(parent)
@@ -122,4 +156,43 @@ void SymbolTreeView::currentChanged(const QModelIndex &current, const QModelInde
 {
     QTreeView::currentChanged(current,previous);
     emit currentIndexChanged(current, previous);
+}
+
+void SymbolTreeView::saveState(SymbolTreeState *state)
+{
+    if (!state) {
+        return;
+    }
+    state->expands.clear();
+    QSetIterator<QModelIndex> i(this->expandIndexs());
+    while (i.hasNext()) {
+        state->expands.append(stringListFromIndex(i.next()));
+    }
+    state->top = stringListFromIndex(this->topViewIndex());
+    state->cur = stringListFromIndex(this->currentIndex());
+}
+
+void SymbolTreeView::loadState(QAbstractItemModel *model,SymbolTreeState *state)
+{
+    //load state
+    this->expandToDepth(0);
+
+    QListIterator<QStringList> ie(state->expands);
+    while (ie.hasNext()) {
+        QStringList expandPath = ie.next();
+        QModelIndex expandIndex = indexFromStringList(model,expandPath);
+        if (expandIndex.isValid()) {
+            this->setExpanded(expandIndex,true);
+        }
+    }
+
+    QModelIndex curIndex = indexFromStringList(model,state->cur);
+    if (curIndex.isValid()) {
+        this->setCurrentIndex(curIndex);
+    }
+
+    QModelIndex topIndex = indexFromStringList(model,state->top);
+    if (topIndex.isValid()) {
+        this->scrollTo(topIndex, QTreeView::PositionAtTop);
+    }
 }

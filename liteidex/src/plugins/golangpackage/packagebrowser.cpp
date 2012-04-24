@@ -61,7 +61,7 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
-    m_treeView = new QTreeView;
+    m_treeView = new SymbolTreeView;
     m_model = new QStandardItemModel(this);
     m_treeView->setHeaderHidden(true);
     m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -102,13 +102,13 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
         connect(env,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(reload()));
     }
 
+    m_model->appendRow(new QStandardItem(tr("Loading go package ...")));
+
     reload();
 }
 
 void PackageBrowser::reload()
 {
-    m_model->clear();
-    m_model->appendRow(new QStandardItem(tr("Loading go package ...")));
     m_goTool->reloadEnv();
     m_gopathList = m_goTool->gopath();
     m_goTool->start(QStringList() << "list" << "-json" << "...");
@@ -157,13 +157,7 @@ void PackageBrowser::editPackage()
     }
     QDir dir(json.toMap().value("Dir").toString());
     if (dir.exists()) {
-        PackageProject *project = new PackageProject(m_liteApp);
-        project->setJson(json.toMap());
-        m_liteApp->projectManager()->setCurrentProject(project);
-        QDockWidget *dock = m_liteApp->dockManager()->dockWidget(m_liteApp->projectManager()->widget());
-        if (dock) {
-            dock->raise();
-        }
+        m_liteApp->fileManager()->openProjectScheme(dir.path(),"gopkg");
     }
 }
 
@@ -185,6 +179,11 @@ void PackageBrowser::customContextMenuRequested(QPoint pos)
 void PackageBrowser::finished(int code,QProcess::ExitStatus)
 {
     QByteArray jsonData;
+
+    //save state
+    SymbolTreeState state;
+    m_treeView->saveState(&state);
+
     m_model->clear();
 
     QMap<QString,QStandardItem*> cmdMap;
@@ -225,4 +224,6 @@ void PackageBrowser::finished(int code,QProcess::ExitStatus)
         }
     }
 
+    //load state
+    m_treeView->loadState(m_model,&state);
 }

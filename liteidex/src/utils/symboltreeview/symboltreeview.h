@@ -28,6 +28,13 @@
 
 #include <QTreeView>
 
+struct SymbolTreeState
+{
+    QList<QStringList> expands;
+    QStringList top;
+    QStringList cur;
+};
+
 class SymbolTreeView : public QTreeView
 {
     Q_OBJECT
@@ -37,6 +44,8 @@ public:
     const QSet<QModelIndex> & expandIndexs() const;
     QSet<QModelIndex> & expandIndexs();
     virtual void reset();
+    void saveState(SymbolTreeState *state);
+    void loadState(QAbstractItemModel *model,SymbolTreeState *state);
 signals:
     void currentIndexChanged(const QModelIndex &current, const QModelIndex &previous);
 protected slots:

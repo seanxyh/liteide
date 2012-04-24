@@ -28,6 +28,7 @@
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QCoreApplication>
+#include <QDebug>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -134,7 +135,7 @@ void MimeType::appendSubClassesOf(const QString &subClassOf)
 
 bool MimeType::isEmpty() const
 {
-    return m_type.isEmpty() || m_comment.isEmpty() || m_globPatterns.isEmpty();
+    return m_type.isEmpty();
 }
 
 bool MimeType::loadMimeTypes(LiteApi::IMimeTypeManager *manager, const QString &fileName)
@@ -143,6 +144,7 @@ bool MimeType::loadMimeTypes(LiteApi::IMimeTypeManager *manager, const QString &
     if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
         return false;
     }
+
     return MimeType::loadMimeTypes(manager,&file,fileName);
 }
 

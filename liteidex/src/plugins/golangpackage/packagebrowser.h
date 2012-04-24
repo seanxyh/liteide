@@ -27,6 +27,7 @@
 #define PACKAGEBROWSER_H
 
 #include "liteapi/liteapi.h"
+#include "symboltreeview/symboltreeview.h"
 #include "gotool.h"
 
 class QTreeView;
@@ -59,7 +60,7 @@ public slots:
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget      *m_widget;
-    QTreeView    *m_treeView;
+    SymbolTreeView    *m_treeView;
     QStandardItemModel *m_model;
     GoTool       *m_goTool;
     QStringList   m_gopathList;
