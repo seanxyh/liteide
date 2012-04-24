@@ -465,7 +465,7 @@ LiteIDE is a simple, open source, cross-platform IDE.</string>
           <item row="1" column="1">
            <widget class="QLabel" name="label_26">
             <property name="text">
-             <string>Timothy Lin &lt;zh9102@gmail.com&gt;</string>
+             <string notr="true">Timothy Lin &lt;zh9102@gmail.com&gt;</string>
             </property>
            </widget>
           </item>

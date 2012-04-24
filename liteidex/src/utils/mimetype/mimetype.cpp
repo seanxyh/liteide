@@ -43,6 +43,12 @@ QString MimeType::type() const
 {
     return m_type;
 }
+
+QString MimeType::scheme() const
+{
+    return m_scheme;
+}
+
 QString MimeType::comment() const
 {
     return m_comment.join("/");
@@ -74,6 +80,9 @@ void MimeType::merge(const IMimeType *mimeType)
     if (!mimeType->codec().isEmpty()) {
         m_codec = mimeType->codec();
     }
+    if (!mimeType->scheme().isEmpty()) {
+        m_scheme = mimeType->scheme();
+    }
 
     m_subClassesOf.removeDuplicates();
     m_globPatterns.removeDuplicates();
@@ -83,6 +92,11 @@ void MimeType::merge(const IMimeType *mimeType)
 void MimeType::setType(const QString &type)
 {
     m_type = type;
+}
+
+void MimeType::setScheme(const QString &scheme)
+{
+    m_scheme = scheme;
 }
 
 void MimeType::setCodec(const QString &codec)
@@ -145,6 +159,7 @@ bool MimeType::loadMimeTypes(LiteApi::IMimeTypeManager *manager, QIODevice *dev,
                 mimeType = new MimeType;
                 mimeType->setType(attrs.value("type").toString());
                 mimeType->setCodec(attrs.value("codec").toString());
+                mimeType->setScheme(attrs.value("scheme").toString());
             } else if (reader.name() == "sub-class-of" && mimeType) {
                 mimeType->appendSubClassesOf(attrs.value("type").toString());
             } else if (reader.name() == "comment" && mimeType) {
@@ -155,8 +170,7 @@ bool MimeType::loadMimeTypes(LiteApi::IMimeTypeManager *manager, QIODevice *dev,
                 } else {
                     mimeType->appendLocalComment(locale,comment);
                 }
-            }
-            else if (reader.name() == "glob" && mimeType) {
+            } else if (reader.name() == "glob" && mimeType) {
                 mimeType->appendGlobPatterns(attrs.value("pattern").toString());
             }
             break;

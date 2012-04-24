@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
-  <mime-type type="text/x-gopath">
+  <mime-type type="text/x-gopackage" scheme="gopkg">
     <sub-class-of type="text/plain"/>
-    <comment>GOPATH Project</comment>
+    <comment>Golang Package Project</comment>
   </mime-type>
 </mime-info>

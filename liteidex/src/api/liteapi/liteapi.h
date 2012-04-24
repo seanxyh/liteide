@@ -101,6 +101,7 @@ public:
     virtual ~IMimeType() {}
 
     virtual QString type() const = 0;
+    virtual QString scheme() const = 0;
     virtual QString comment() const = 0;
     virtual QString codec() const = 0;
     virtual QStringList globPatterns() const = 0;

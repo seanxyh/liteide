@@ -32,6 +32,7 @@ class MimeType : public LiteApi::IMimeType
 {
 public:
     virtual QString type() const;
+    virtual QString scheme() const;
     virtual QString comment() const;
     virtual QString codec() const;
     virtual QStringList globPatterns() const;
@@ -39,6 +40,7 @@ public:
     virtual void merge(const IMimeType *mimeType);
 
     void setType(const QString &type);
+    void setScheme(const QString &scheme);
     void setCodec(const QString &codec);
     void setComment(const QString &comment);
     void appendGlobPatterns(const QString &globPattern);
@@ -50,6 +52,7 @@ public:
     static bool loadMimeTypes(LiteApi::IMimeTypeManager *manager, QIODevice *dev, const QString &fileName);
 protected:
     QString m_type;
+    QString m_scheme;
     QString m_codec;
     QStringList m_comment;
     QStringList m_globPatterns;
