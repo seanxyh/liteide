@@ -52,7 +52,6 @@ bool GolangPackagePlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
 
-    new PackageBrowser(m_liteApp,this);
     PackageProjectFactory *factory = new PackageProjectFactory(app,this);
     m_liteApp->projectManager()->addFactory(factory);
 

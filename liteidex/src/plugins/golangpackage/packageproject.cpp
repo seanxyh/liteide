@@ -37,6 +37,12 @@
 #include <QVBoxLayout>
 #include <QTimer>
 #include <QUrl>
+#include <QMenu>
+#include <QAction>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QFile>
+
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -62,13 +68,21 @@ PackageProject::PackageProject(LiteApi::IApplication *app) :
     m_treeView = new PackageTree(m_widget);
     m_treeView->setEditTriggers(QTreeView::NoEditTriggers);
     m_treeView->setHeaderHidden(true);
+    m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     layout->addWidget(m_treeView);
     m_widget->setLayout(layout);
+
+    m_contextMenu = new QMenu;
+
+    QAction *addSource = new QAction(tr("Add Source File"),this);
+    m_contextMenu->addAction(addSource);
 
     connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClicked(QModelIndex)));
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
     connect(m_liteApp->editorManager(),SIGNAL(editorSaved(LiteApi::IEditor*)),this,SLOT(editorSaved(LiteApi::IEditor*)));
     connect(m_reloadTimer,SIGNAL(timeout()),this,SLOT(reload()));
+    connect(addSource,SIGNAL(triggered()),this,SLOT(addSource()));
+    connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
 }
 
 PackageProject::~PackageProject()
@@ -80,6 +94,24 @@ PackageProject::~PackageProject()
     if (m_goTool) {
         m_goTool->kill();
         delete m_goTool;
+    }
+    if (m_contextMenu) {
+        delete m_contextMenu;
+    }
+}
+
+void PackageProject::customContextMenuRequested(QPoint pos)
+{
+    QMenu *contextMenu = m_contextMenu;
+/*
+    if (node->isDir()) {
+        contextMenu = m_folderMenu;
+    } else {
+        contextMenu = m_fileMenu;
+    }
+*/
+    if (contextMenu && contextMenu->actions().count() > 0) {
+        contextMenu->popup(m_treeView->mapToGlobal(pos));
     }
 }
 
@@ -253,4 +285,30 @@ void PackageProject::editorSaved(LiteApi::IEditor *editor)
     if (find) {
         m_reloadTimer->start(1000);
     }
+}
+
+void PackageProject::addSource()
+{
+    QString source = QInputDialog::getText(m_widget,tr("Add Source File"),tr("FileName:"));
+    if (source.isEmpty()) {
+        return;
+    }
+    QDir dir(m_json.value("Dir").toString());
+    QFileInfo info(dir,source);
+    QString fileName = info.filePath();
+    if (info.suffix().isEmpty()) {
+        fileName += ".go";
+    }
+    if (QFile::exists(fileName)) {
+        QMessageBox::information(m_widget,tr("LiteApp"),QString(tr("File %1 exists")).arg(fileName));
+        return;
+    }
+    QFile file(fileName);
+    if (!file.open(QFile::WriteOnly)) {
+        QMessageBox::information(m_widget,tr("LiteApp"),QString(tr("Open File %1 false")).arg(fileName));
+        return;
+    }
+    file.write(QString("package %1\n").arg(m_json.value("Name").toString()).toLatin1());
+    file.close();
+    this->reload();
 }
