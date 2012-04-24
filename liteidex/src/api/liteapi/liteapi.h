@@ -158,8 +158,6 @@ public:
     virtual bool findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& targetInfo) const = 0;
 };
 
-typedef void (*WizardOpenFunc)(LiteApi::IApplication *app, const QString &path);
-
 class IFileManager : public IManager
 {
     Q_OBJECT
@@ -167,7 +165,6 @@ public:
     IFileManager(QObject *parent = 0) : IManager(parent) {}
 
     virtual void execFileWizard(const QString &projPath, const QString &filePath, const QString &gopath = QString()) = 0;
-    virtual void regWizardOpen(const QString &type, WizardOpenFunc func) = 0;
     virtual bool openFile(const QString &fileName) = 0;
     virtual IEditor *openEditor(const QString &fileName, bool bActive = true) = 0;
     virtual IEditor *createEditor(const QString &contents, const QString &_mimeType) = 0;

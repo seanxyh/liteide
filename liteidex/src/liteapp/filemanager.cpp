@@ -230,11 +230,6 @@ void FileManager::openProjects()
     }
 }
 
-void FileManager::regWizardOpen(const QString &type, WizardOpenFunc func)
-{
-    m_wizardOpenFuncMap.insert(type,func);
-}
-
 void FileManager::execFileWizard(const QString &projPath, const QString &filePath, const QString &gopath)
 {
     if (!m_newFileDialog) {
@@ -259,13 +254,9 @@ void FileManager::execFileWizard(const QString &projPath, const QString &filePat
                                     QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
                                     QMessageBox::Yes);
         if (ret == QMessageBox::Yes) {
-            QString openType = m_newFileDialog->openType();
-            if (!openType.isEmpty()) {
-                LiteApi::WizardOpenFunc func = m_wizardOpenFuncMap.value(openType);
-                qDebug() << openType << func << m_wizardOpenFuncMap.keys();
-                if (func) {
-                    func(m_liteApp,m_newFileDialog->openPath());
-                }
+            QString scheme = m_newFileDialog->scheme();
+            if (!scheme.isEmpty()) {
+                m_liteApp->fileManager()->openProjectScheme(m_newFileDialog->openPath(),scheme);
             }
             foreach(QString file, m_newFileDialog->openFiles()) {
                 this->openFile(file);
@@ -350,7 +341,10 @@ IProject *FileManager::openProject(const QString &_fileName)
 IProject *FileManager::openProjectScheme(const QString &_fileName, const QString &scheme)
 {
     QString fileName = QDir::fromNativeSeparators(_fileName);
-    QString mimeType =m_liteApp->mimeTypeManager()->findMimeTypeByScheme(scheme);
+    QString mimeType = m_liteApp->mimeTypeManager()->findMimeTypeByScheme(scheme);
+    if (mimeType.isEmpty()) {
+        return 0;
+    }
     IProject *proj = m_liteApp->projectManager()->openProject(QDir::fromNativeSeparators(fileName),mimeType);
     if (proj) {
        addRecentFile(fileName,scheme);

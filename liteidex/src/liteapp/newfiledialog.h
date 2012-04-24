@@ -47,7 +47,7 @@ public:
         info.clear();
         files.clear();
         open.clear();
-        openType.clear();
+        scheme.clear();
     }
     bool isValid()
     {
@@ -60,7 +60,7 @@ public:
     QString info;
     QStringList files;
     QStringList open;
-    QString openType;
+    QString scheme;
     QString dir;
 };
 
@@ -80,7 +80,7 @@ public:
     virtual void accept();
     bool processFile(const QString &infile, const QString &outfile);
     QStringList openFiles() const;
-    QString openType() const;
+    QString scheme() const;
     QString openPath() const;
 public slots:
     void activePath(QModelIndex);

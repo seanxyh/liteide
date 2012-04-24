@@ -119,6 +119,8 @@ void WelcomeBrowser::openUrl(const QUrl &url)
         if (browser) {
             m_liteApp->editorManager()->activeBrowser(browser);
         }
+    } else {
+        m_liteApp->fileManager()->openProjectScheme(url.path(),url.scheme());
     }
 }
 

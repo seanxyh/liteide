@@ -43,7 +43,6 @@ public:
     virtual ~FileManager();
 public:
     virtual void execFileWizard(const QString &projPath, const QString &filePath, const QString &gopath = QString());
-    virtual void regWizardOpen(const QString &type, WizardOpenFunc func);
     virtual bool openFile(const QString &fileName);
     virtual IEditor *openEditor(const QString &fileName, bool bActive = true);
     virtual IEditor *createEditor(const QString &contents, const QString &mimeType);
@@ -87,7 +86,6 @@ protected:
     enum { MaxRecentProjects = 8 };
     QMenu       *m_recentMenu;
     QString      m_initPath;
-    QMap<QString,LiteApi::WizardOpenFunc> m_wizardOpenFuncMap;
 };
 
 #endif // FILEMANAGER_H

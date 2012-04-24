@@ -284,7 +284,7 @@ void  NewFileDialog::activeTemplate(QModelIndex index)
         m_cur.type = set.value("SETUP/TYPE").toString().toLower();
         m_cur.files = set.value("SETUP/FILES").toString().trimmed().split(" ",QString::SkipEmptyParts);
         m_cur.open = set.value("SETUP/OPEN").toString().trimmed().split(" ",QString::SkipEmptyParts);
-        m_cur.openType = set.value("SETUP/OPENTYPE").toString().toLower();
+        m_cur.scheme = set.value("SETUP/SCHEME").toString().toLower();
         if (m_cur.open.isEmpty() && m_cur.files.count() > 0) {
             m_cur.open.append(m_cur.files.at(0));
         }
@@ -356,9 +356,9 @@ QStringList NewFileDialog::openFiles() const
     return m_openFiles;
 }
 
-QString NewFileDialog::openType() const
+QString NewFileDialog::scheme() const
 {
-    return m_cur.openType;
+    return m_cur.scheme;
 }
 
 QString NewFileDialog::openPath() const

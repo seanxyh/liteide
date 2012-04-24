@@ -60,38 +60,6 @@ void AstWidget::clear()
     m_model->clear();
 }
 
-static QStringList stringListFromIndex(const QModelIndex &index)
-{
-    QStringList list;
-    if (!index.isValid())
-        return list;
-    list.append(stringListFromIndex(index.parent()));
-    list.append(index.data().toString());
-    return list;
-}
-
-static QModelIndex indexFromStringList(QSortFilterProxyModel *model, QStringList &list, const QModelIndex & parent = QModelIndex())
-{
-    if (list.isEmpty())
-        return QModelIndex();
-    QString text = list.front();
-    for (int i = 0; i < model->rowCount(parent); i++) {
-        QModelIndex child = model->index(i,0,parent);
-        if (child.data().toString() == text) {
-            list.pop_front();
-            if (list.isEmpty()) {
-                return child;
-            } else {
-                QModelIndex next = indexFromStringList(model,list,child);
-                if (next.isValid())
-                    return next;
-                else
-                    return child;
-            }
-        }
-    }
-    return QModelIndex();
-}
 
 GolangAstItem *AstWidget::astItemFromIndex(QModelIndex index)
 {
@@ -156,14 +124,8 @@ static QString tagName(const QString &tag)
 void AstWidget::updateModel(const QByteArray &data)
 {
     //save state
-    QList<QStringList> expands;
-    QSetIterator<QModelIndex> i(this->expandIndexs());
-    while (i.hasNext()) {
-        QStringList path = stringListFromIndex(i.next());
-        expands.append(path);
-    }
-    QStringList topState = stringListFromIndex(this->topViewIndex());
-    QStringList curState = stringListFromIndex(this->currentIndex());
+    SymbolTreeState state;
+    this->saveState(&state);
 
     m_model->clear();
 
@@ -247,24 +209,5 @@ void AstWidget::updateModel(const QByteArray &data)
     }
 
     //load state
-    this->expandToDepth(0);
-
-    QListIterator<QStringList> ie(expands);
-    while (ie.hasNext()) {
-        QStringList expandPath = ie.next();
-        QModelIndex expandIndex = indexFromStringList(proxyModel,expandPath);
-        if (expandIndex.isValid()) {
-            this->setExpanded(expandIndex,true);
-        }
-    }
-
-    QModelIndex curIndex = indexFromStringList(proxyModel,curState);
-    if (curIndex.isValid()) {
-        this->setCurrentIndex(curIndex);
-    }
-
-    QModelIndex topIndex = indexFromStringList(proxyModel,topState);
-    if (topIndex.isValid()) {
-        this->scrollTo(topIndex, QTreeView::PositionAtTop);
-    }
+    this->loadState(proxyModel,&state);
 }
