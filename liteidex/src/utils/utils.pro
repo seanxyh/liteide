@@ -15,6 +15,7 @@ SUBDIRS = \
     processex \
     colorstyle \
     documentbrowser \
-    htmlutil
+    htmlutil \
+    golangapi
 
 

@@ -82,8 +82,7 @@ protected:
     QStringList          m_changedFiles;
     bool                 m_checkActivated;
 protected:    
-    enum { MaxRecentFiles = 32 };
-    enum { MaxRecentProjects = 8 };
+    enum { MaxRecentFiles = 8 };
     QMenu       *m_recentMenu;
     QString      m_initPath;
 };
