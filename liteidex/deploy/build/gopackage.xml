@@ -23,6 +23,7 @@
 		<action id="Install" img="go/install.png" cmd="$(GO)" args="install" save="project" output="true"/>
 		<action id="Clean" img="go/clean.png" cmd="$(GO)" args="clean" save="project" output="true"/>
 		<action id="ClaeanAll" img="go/nuke.png" cmd="$(GO)" args="clean -i" save="project" output="true"/>
+		<action id="Test" img="go/test.png" key = "CTRL+T" cmd="$(GO)" args="test" save="project" output="true" codec="utf-8"/>
 		<action id="Exec" img="go/exec.png" key="CTRL+SHIFT+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
 		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="$(TARGETPATH)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
 		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>

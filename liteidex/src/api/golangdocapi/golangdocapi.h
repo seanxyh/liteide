@@ -40,6 +40,27 @@ pdoc : show pkg doc
 
 namespace LiteApi {
 
+enum FindApiFlag {
+    ConstApi = 0x001,
+    VarApi = 0x002,
+    TypeApi = 0x004,
+    FuncApi = 0x008,
+    MethodApi = 0x012,
+    AllGolangApi = ConstApi | VarApi | TypeApi | FuncApi | MethodApi
+};
+
+class IGolangApi : public QObject
+{
+    Q_OBJECT
+public:
+    IGolangApi(QObject *parent) : QObject(parent) {}
+public:
+    virtual QStringList all(FindApiFlag flag = AllGolangApi) const = 0;
+    virtual QStringList filter(const QString &str, FindApiFlag flag = AllGolangApi) const = 0;
+    virtual QStringList filter(const QRegExp &rx, FindApiFlag flag = AllGolangApi) const = 0;
+    virtual QStringList info(const QString &api) const = 0;
+};
+
 class IGolangDoc : public IObject
 {
     Q_OBJECT
