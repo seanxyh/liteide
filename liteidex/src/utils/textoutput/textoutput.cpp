@@ -110,7 +110,8 @@ void TextOutput::appendTag0(const QString &text)
 void TextOutput::appendTag1(const QString &text)
 {
     QTextCharFormat f = m_fmt;
-    f.setForeground(Qt::darkBlue);
+    f.setFontWeight(QFont::Bold);
+    f.setForeground(Qt::black);
     m_editor->append(text,&f);
 }
 
