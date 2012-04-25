@@ -35,5 +35,6 @@
         <file>images/reload.png</file>
         <file>images/gopher.png</file>
         <file>images/gopath.png</file>
+        <file>images/editclear.png</file>
     </qresource>
 </RCC>

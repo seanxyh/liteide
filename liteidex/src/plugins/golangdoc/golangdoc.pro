@@ -9,6 +9,7 @@ include(../../utils/fileutil/fileutil.pri)
 include(../../utils/processex/processex.pri)
 include(../../utils/htmlutil/htmlutil.pri)
 include(../../utils/golangapi/golangapi.pri)
+include(../../3rdparty/qtc_editutil/qtc_editutil.pri)
 
 DEFINES += GOLANGDOC_LIBRARY
 

@@ -85,7 +85,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_findResultListView->setEditTriggers(0);
     m_findResultListView->setModel(m_findFilterModel);
 
-    m_findEdit = new QLineEdit;
+    m_findEdit = new Utils::FilterLineEdit;
+    m_golangApi = new GolangApi(this);
     //m_findEdit->setEditable(true);
     //m_findEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
     //m_findEdit->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
@@ -138,7 +139,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));    
     connect(m_godocFindComboBox,SIGNAL(activated(QString)),this,SLOT(godocFindPackage(QString)));
-    connect(m_findEdit,SIGNAL(textChanged(QString)),m_findFilterModel,SLOT(setFilterFixedString(QString)));
+    connect(m_findEdit,SIGNAL(filterChanged(QString)),m_findFilterModel,SLOT(setFilterFixedString(QString)));
     //connect(m_findEdit,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
     connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
@@ -156,6 +157,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     }
 
     m_liteApp->extension()->addObject("LiteApi.IGolangDoc",this);
+    m_liteApp->extension()->addObject("LiteApi.IGolangApi",m_golangApi);
 
     QString path = m_liteApp->resourcePath()+"/golangdoc/godoc.html";
     QFile file(path);
@@ -192,10 +194,8 @@ void GolangDoc::loadApi()
     if (!info.exists()) {
         return;
     }
-    GolangApi *api = new GolangApi(this);
-    if (api->load(info.filePath())) {
-        m_golangApi = api;
-        m_findResultModel->setStringList(api->all(LiteApi::AllGolangApi));
+    if (m_golangApi->load(info.filePath())) {
+        m_findResultModel->setStringList(m_golangApi->all(LiteApi::AllGolangApi));
     }
 }
 
@@ -634,12 +634,14 @@ void GolangDoc::doubleClickListView(QModelIndex index)
     if (!index.isValid()) {
         return;
     }
-    QString text = m_findResultModel->data(index,Qt::DisplayRole).toString();
-    if (!text.isEmpty() && text.at(0) != '<') {
+    QModelIndex src =  m_findFilterModel->mapToSource(index);
+    if (!src.isValid()) {
+        return;
+    }
+    QString text = m_findResultModel->data(src,Qt::DisplayRole).toString();
+    if (!text.isEmpty()){
         activeBrowser();
-        QUrl url;
-        url.setScheme("pdoc");
-        url.setPath(text);
+        QUrl url(QString("pdoc:%1").arg(text));
         openUrl(url);
     }
 }

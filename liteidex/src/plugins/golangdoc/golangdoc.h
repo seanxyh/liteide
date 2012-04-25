@@ -30,6 +30,7 @@
 #include "litebuildapi/litebuildapi.h"
 #include "liteenvapi/liteenvapi.h"
 #include "golangdocapi/golangdocapi.h"
+#include "qtc_editutil/filterlineedit.h"
 
 #include <QUrl>
 #include <QModelIndex>
@@ -42,6 +43,8 @@ class QPushButton;
 class ProcessEx;
 class DocumentBrowser;
 class QSortFilterProxyModel;
+class GolangApi;
+
 class GolangDoc : public LiteApi::IGolangDoc
 {
     Q_OBJECT
@@ -83,7 +86,7 @@ protected:
     QStringListModel *m_findResultModel;
     QSortFilterProxyModel *m_findFilterModel;
     QListView *m_findResultListView;
-    QLineEdit *m_findEdit;
+    Utils::FilterLineEdit *m_findEdit;
     ProcessEx  *m_findProcess;
     ProcessEx  *m_godocProcess;
     QAction *m_browserAct;
@@ -96,7 +99,7 @@ protected:
     //QAction *m_findAct;
     //QMenu *m_findMenu;
     LiteApi::IEnvManager *m_envManager;
-    LiteApi::IGolangApi  *m_golangApi;
+    GolangApi  *m_golangApi;
     QString m_godocCmd;
     QString m_findCmd;
 };
