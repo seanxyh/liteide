@@ -63,13 +63,18 @@ bool FileManager::initWithApp(IApplication *app)
     m_fileWatcher = new QFileSystemWatcher(this);
     connect(m_fileWatcher,SIGNAL(fileChanged(QString)),this,SLOT(fileChanged(QString)));
 
+    m_maxRecentFiles = m_liteApp->settings()->value("LiteApp/MaxRecentFiles",16).toInt();
     m_newFileDialog = 0;
     m_recentMenu = m_liteApp->actionManager()->loadMenu("recent");
+    QAction *cleanAct = new QAction(tr("Clean All"),this);
+    m_recentSeparator = m_recentMenu->addSeparator();
+    m_recentMenu->addAction(cleanAct);
     foreach (QString key, this->schemeList()) {
         this->updateRecentFileActions(key);
     }
     m_initPath = m_liteApp->settings()->value("FileManager/initpath",QDir::homePath()).toString();
     connect(this,SIGNAL(recentFilesChanged(QString)),this,SLOT(updateRecentFileActions(QString)));
+    connect(cleanAct,SIGNAL(triggered()),this,SLOT(cleanRecent()));
     return true;
 }
 
@@ -364,9 +369,37 @@ QStringList FileManager::recentFiles(const QString &scheme) const
     return m_liteApp->settings()->value(schemeKey(scheme)).toStringList();;
 }
 
+void FileManager::cleanRecent()
+{
+    QStringList keyList = this->schemeList();
+    foreach(QString key, keyList) {
+        m_liteApp->settings()->remove(schemeKey(key));
+    }
+    foreach(QString key, keyList) {
+        emit recentFilesChanged(key);
+    }
+}
+
+void FileManager::applyOption(QString id)
+{
+    if (id != "option/liteapp") {
+        return;
+    }
+    m_maxRecentFiles = m_liteApp->settings()->value("LiteApp/MaxRecentFiles",16).toInt();
+
+    foreach (QString scheme, this->schemeList()) {
+        QString key = schemeKey(scheme);
+        QStringList files = m_liteApp->settings()->value(key).toStringList();
+        while (files.size() > m_maxRecentFiles) {
+            files.removeLast();
+        }
+        m_liteApp->settings()->setValue(key, files);
+        emit recentFilesChanged(scheme);
+    }
+}
+
 void FileManager::updateRecentFileActions(const QString &scheme)
 {
-
     QMenu *menu = 0;
     foreach (QAction *act, m_recentMenu->actions()) {
         QMenu *m = act->menu();
@@ -376,11 +409,15 @@ void FileManager::updateRecentFileActions(const QString &scheme)
         }
     }
     if (!menu) {
-        menu = m_recentMenu->addMenu(scheme);
+        menu = new QMenu(scheme);
+        m_recentMenu->insertMenu(m_recentSeparator,menu);
     }
     menu->clear();
-
+    int count = 0;
     foreach (QString file, this->recentFiles(scheme)) {
+        if (count++ > m_maxRecentFiles) {
+            return;
+        }
         QAction *act = menu->addAction(file);
         act->setData(scheme);
         connect(act,SIGNAL(triggered()),this,SLOT(openRecentFile()));
@@ -419,7 +456,7 @@ void FileManager::addRecentFile(const QString &_fileName, const QString &scheme)
     QStringList files = m_liteApp->settings()->value(key).toStringList();
     files.removeAll(fileName);
     files.prepend(fileName);
-    while (files.size() > MaxRecentFiles) {
+    while (files.size() > m_maxRecentFiles) {
         files.removeLast();
     }
 

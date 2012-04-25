@@ -46,6 +46,7 @@ LiteAppOption::LiteAppOption(LiteApi::IApplication *app,QObject *parent) :
     ui(new Ui::LiteAppOption)
 {
     ui->setupUi(m_widget);
+
     const QString &liteideTrPath = m_liteApp->resourcePath()+"/translations";
     QLocale eng(QLocale::English);
     ui->langComboBox->addItem(QLocale::languageToString(QLocale::English),eng.name());
@@ -72,6 +73,8 @@ LiteAppOption::LiteAppOption(LiteApi::IApplication *app,QObject *parent) :
             }
         }
     }
+    int max = m_liteApp->settings()->value("LiteApp/MaxRecentFiles",16).toInt();
+    ui->maxRecentLineEdit->setText(QString("%1").arg(max));
 }
 
 LiteAppOption::~LiteAppOption()
@@ -102,5 +105,6 @@ void LiteAppOption::apply()
     }
     QString lc = ui->langComboBox->itemData(index).toString();
     m_liteApp->settings()->setValue("General/Language",lc);
-
+    QString max = ui->maxRecentLineEdit->text();
+    m_liteApp->settings()->setValue("LiteApp/MaxRecentFiles",max);
 }

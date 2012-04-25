@@ -75,14 +75,17 @@ public slots:
     void editorCreated(LiteApi::IEditor*);
     void editorAboutToClose(LiteApi::IEditor*);
     void checkForReload();
+    void cleanRecent();
+    void applyOption(QString);
 protected:
     NewFileDialog        *m_newFileDialog;
     QFileSystemWatcher   *m_fileWatcher;
     QMap<QString,QDateTime> m_fileStateMap;
     QStringList          m_changedFiles;
     bool                 m_checkActivated;
+    QAction              *m_recentSeparator;
 protected:    
-    enum { MaxRecentFiles = 8 };
+    int         m_maxRecentFiles;
     QMenu       *m_recentMenu;
     QString      m_initPath;
 };
