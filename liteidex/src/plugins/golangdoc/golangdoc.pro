@@ -8,6 +8,7 @@ include(../../utils/documentbrowser/documentbrowser.pri)
 include(../../utils/fileutil/fileutil.pri)
 include(../../utils/processex/processex.pri)
 include(../../utils/htmlutil/htmlutil.pri)
+include(../../utils/golangapi/golangapi.pri)
 
 DEFINES += GOLANGDOC_LIBRARY
 

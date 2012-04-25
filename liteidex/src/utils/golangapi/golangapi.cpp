@@ -107,6 +107,9 @@ bool GolangApi::loadStream(QTextStream *stream)
 QStringList GolangApi::all(LiteApi::FindApiFlag flag) const
 {
     QStringList finds;
+    if (flag & LiteApi::PkgApi) {
+        finds.append(pkgList);
+    }
     if (flag & LiteApi::TypeApi) {
         finds.append(typeList);
     }
@@ -128,6 +131,9 @@ QStringList GolangApi::all(LiteApi::FindApiFlag flag) const
 QStringList GolangApi::filter(const QString &str, LiteApi::FindApiFlag flag) const
 {
     QStringList finds;
+    if (flag & LiteApi::PkgApi) {
+        finds.append(pkgList.filter(str));
+    }
     if (flag & LiteApi::TypeApi) {
         finds.append(typeList.filter(str));
     }
@@ -149,6 +155,9 @@ QStringList GolangApi::filter(const QString &str, LiteApi::FindApiFlag flag) con
 QStringList GolangApi::filter(const QRegExp &rx, LiteApi::FindApiFlag flag) const
 {
     QStringList finds;
+    if (flag & LiteApi::PkgApi) {
+        finds.append(pkgList.filter(rx));
+    }
     if (flag & LiteApi::TypeApi) {
         finds.append(typeList.filter(rx));
     }

@@ -35,11 +35,13 @@
 #include <QModelIndex>
 
 class QListView;
+class QLineEdit;
 class QStringListModel;
 class QComboBox;
 class QPushButton;
 class ProcessEx;
 class DocumentBrowser;
+class QSortFilterProxyModel;
 class GolangDoc : public LiteApi::IGolangDoc
 {
     Q_OBJECT
@@ -50,6 +52,7 @@ public slots:
     virtual void openUrl(const QUrl &url);
     virtual void activeBrowser();
 public slots:
+    void loadApi();
     void currentEnvChanged(LiteApi::IEnv*);
     void listCmd();
     void listPkg();
@@ -78,8 +81,9 @@ protected:
     DocumentBrowser *m_docBrowser;
     QComboBox *m_godocFindComboBox;
     QStringListModel *m_findResultModel;
+    QSortFilterProxyModel *m_findFilterModel;
     QListView *m_findResultListView;
-    QComboBox *m_findComboBox;
+    QLineEdit *m_findEdit;
     ProcessEx  *m_findProcess;
     ProcessEx  *m_godocProcess;
     QAction *m_browserAct;
@@ -87,11 +91,12 @@ protected:
     QByteArray  m_godocData;
     QByteArray  m_findData;
     QString  m_templateData;
-    QAction *m_listPkgAct;
-    QAction *m_listCmdAct;
-    QAction *m_findAct;
-    QMenu *m_findMenu;
+    //QAction *m_listPkgAct;
+    //QAction *m_listCmdAct;
+    //QAction *m_findAct;
+    //QMenu *m_findMenu;
     LiteApi::IEnvManager *m_envManager;
+    LiteApi::IGolangApi  *m_golangApi;
     QString m_godocCmd;
     QString m_findCmd;
 };
