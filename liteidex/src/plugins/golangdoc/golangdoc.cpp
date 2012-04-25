@@ -29,13 +29,16 @@
 #include "processex/processex.h"
 #include "fileutil/fileutil.h"
 #include "htmlutil/htmlutil.h"
+#include "golangapi/golangapi.h"
 #include "documentbrowser/documentbrowser.h"
 
 #include <QListView>
 #include <QStringListModel>
+#include <QSortFilterProxyModel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QComboBox>
 #include <QToolBar>
 #include <QStatusBar>
@@ -74,38 +77,43 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     m_widget = new QWidget;
     m_findResultModel = new QStringListModel(this);
+    m_findFilterModel = new QSortFilterProxyModel(this);
+    m_findFilterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    m_findFilterModel->setSourceModel(m_findResultModel);
 
     m_findResultListView = new QListView;
     m_findResultListView->setEditTriggers(0);
-    m_findResultListView->setModel(m_findResultModel);
+    m_findResultListView->setModel(m_findFilterModel);
 
-    m_findComboBox = new QComboBox;
-    m_findComboBox->setEditable(true);
-    m_findComboBox->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-    m_findComboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+    m_findEdit = new QLineEdit;
+    //m_findEdit->setEditable(true);
+    //m_findEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+    //m_findEdit->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
-    m_findAct = new QAction(tr("Find"),this);
-    m_listPkgAct = new QAction(tr("List \"src/pkg\""),this);
-    m_listCmdAct = new QAction(tr("List \"src/cmd\""),this);
+    //m_findAct = new QAction(tr("Find"),this);
+    //m_listPkgAct = new QAction(tr("List \"src/pkg\""),this);
+    //m_listCmdAct = new QAction(tr("List \"src/cmd\""),this);
 
-    m_findMenu = new QMenu(tr("Find"));
-    m_findMenu->addAction(m_findAct);
-    m_findMenu->addSeparator();
-    m_findMenu->addAction(m_listPkgAct);
-    m_findMenu->addAction(m_listCmdAct);
+    //m_findMenu = new QMenu(tr("Find"));
+    //m_findMenu->addAction(m_findAct);
+    //m_findMenu->addSeparator();
+    //m_findMenu->addAction(m_listPkgAct);
+    //m_findMenu->addAction(m_listCmdAct);
 
-    QToolButton *findBtn = new QToolButton;
-    findBtn->setPopupMode(QToolButton::MenuButtonPopup);
-    findBtn->setDefaultAction(m_findAct);
-    findBtn->setMenu(m_findMenu);
+    //QToolButton *findBtn = new QToolButton;
+    //findBtn->setPopupMode(QToolButton::MenuButtonPopup);
+    //findBtn->setDefaultAction(m_findAct);
+    //findBtn->setMenu(m_findMenu);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setMargin(0);
+    mainLayout->setMargin(1);
+    mainLayout->setSpacing(1);
 
     QHBoxLayout *findLayout = new QHBoxLayout;
-    findLayout->setMargin(0);
-    findLayout->addWidget(m_findComboBox);
-    findLayout->addWidget(findBtn);
+    findLayout->setMargin(2);
+    findLayout->addWidget(new QLabel("Find"));
+    findLayout->addWidget(m_findEdit);
+    //findLayout->addWidget(findBtn);
 
     mainLayout->addLayout(findLayout);
     mainLayout->addWidget(m_findResultListView);
@@ -128,17 +136,18 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuPagePos,m_browserAct);
 
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
-    connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));
+    connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));    
     connect(m_godocFindComboBox,SIGNAL(activated(QString)),this,SLOT(godocFindPackage(QString)));
-    connect(m_findComboBox,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
+    connect(m_findEdit,SIGNAL(textChanged(QString)),m_findFilterModel,SLOT(setFilterFixedString(QString)));
+    //connect(m_findEdit,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
     connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
     connect(m_findProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
     connect(m_findProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(findFinish(bool,int,QString)));
     connect(m_findResultListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickListView(QModelIndex)));
-    connect(m_findAct,SIGNAL(triggered()),this,SLOT(findPackage()));
-    connect(m_listPkgAct,SIGNAL(triggered()),this,SLOT(listPkg()));
-    connect(m_listCmdAct,SIGNAL(triggered()),this,SLOT(listCmd()));
+    //connect(m_findAct,SIGNAL(triggered()),this,SLOT(findPackage()));
+    //connect(m_listPkgAct,SIGNAL(triggered()),this,SLOT(listPkg()));
+    //connect(m_listCmdAct,SIGNAL(triggered()),this,SLOT(listCmd()));
 
     m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
     if (m_envManager) {
@@ -172,8 +181,22 @@ GolangDoc::~GolangDoc()
     if (m_docBrowser) {
         delete m_docBrowser;
     }
-    delete m_findMenu;
+    //delete m_findMenu;
     delete m_widget;
+}
+
+void GolangDoc::loadApi()
+{
+    QString goroot = LiteApi::getGoroot(m_liteApp);
+    QFileInfo info(goroot,"api/go1.txt");
+    if (!info.exists()) {
+        return;
+    }
+    GolangApi *api = new GolangApi(this);
+    if (api->load(info.filePath())) {
+        m_golangApi = api;
+        m_findResultModel->setStringList(api->all(LiteApi::AllGolangApi));
+    }
 }
 
 void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
@@ -199,6 +222,7 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
 
     m_findProcess->setEnvironment(env.toStringList());
     m_godocProcess->setEnvironment(env.toStringList());
+    this->loadApi();
 }
 
 void GolangDoc::activeBrowser()
@@ -245,7 +269,7 @@ void GolangDoc::godocFindPackage(QString pkgname)
 void GolangDoc::findPackage(QString pkgname)
 {
     if (pkgname.isEmpty()) {
-        pkgname = m_findComboBox->currentText();
+        pkgname = m_findEdit->text();
     }
     if (pkgname.isEmpty()) {
         return;

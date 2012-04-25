@@ -119,7 +119,7 @@ inline QStringList getGopathList(LiteApi::IApplication *app, bool includeGoroot)
 
 inline QString getGoroot(LiteApi::IApplication *app)
 {
-    return getCurrentEnvironment(app).value("GOPATH");
+    return getCurrentEnvironment(app).value("GOROOT");
 }
 
 } //namespace LiteApi

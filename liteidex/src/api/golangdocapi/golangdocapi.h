@@ -41,12 +41,13 @@ pdoc : show pkg doc
 namespace LiteApi {
 
 enum FindApiFlag {
-    ConstApi = 0x001,
-    VarApi = 0x002,
-    TypeApi = 0x004,
-    FuncApi = 0x008,
-    MethodApi = 0x012,
-    AllGolangApi = ConstApi | VarApi | TypeApi | FuncApi | MethodApi
+    PkgApi = 0x0001,
+    ConstApi = 0x0002,
+    VarApi = 0x0004,
+    TypeApi = 0x008,
+    FuncApi = 0x0010,
+    MethodApi = 0x020,
+    AllGolangApi = PkgApi | ConstApi | VarApi | TypeApi | FuncApi | MethodApi
 };
 
 class IGolangApi : public QObject
