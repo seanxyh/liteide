@@ -13,5 +13,4 @@ SOURCES += \
     filterlineedit.cpp \
     fancylineedit.cpp
 
-RESOURCES += \
-    qtc_editutil.qrc
+RESOURCES +=

@@ -38,6 +38,7 @@ FilterLineEdit::FilterLineEdit(QWidget *parent) :
     // KDE has custom icons for this. Notice that icon namings are counter intuitive
     // If these icons are not avaiable we use the freedesktop standard name before
     // falling back to a bundled resource
+
     QIcon icon = QIcon::fromTheme(layoutDirection() == Qt::LeftToRight ?
                      QLatin1String("edit-clear-locationbar-rtl") :
                      QLatin1String("edit-clear-locationbar-ltr"),

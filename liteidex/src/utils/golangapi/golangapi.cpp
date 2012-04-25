@@ -55,6 +55,14 @@ bool GolangApi::load(const QString &fileName)
 
 bool GolangApi::loadStream(QTextStream *stream)
 {
+    this->allMap.clear();
+    this->pkgList.clear();
+    this->typeList.clear();
+    this->funcList.clear();
+    this->methodList.clear();
+    this->constList.clear();
+    this->varList.clear();
+
     QRegExp reg("^pkg\\s([\\w\\/]+)(\\s\\(([\\w-]+)\\))?,\\s(\\w+)(\\s\\(\\*?([\\w\\-]+)\\))?\\s(\\w+)");
     QSet<QString> pkgSet;
     while (!stream->atEnd()) {
