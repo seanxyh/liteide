@@ -139,6 +139,7 @@ void WelcomeBrowser::loadData()
         list.append(QString("<h3><i>recent %1</i></h3>").arg(scheme));
         list.append("<ul>");
         QStringList recentProjects = m_liteApp->fileManager()->recentFiles(scheme);
+        int count = 0;
         foreach (QString file, recentProjects) {
             QFileInfo info(file);
             list.append(QString("<li><a href=\"%1:%2\">%3</a> <span class=\"recent\">%4</span></li>")
@@ -146,6 +147,9 @@ void WelcomeBrowser::loadData()
                                .arg(info.filePath())
                                .arg(info.fileName())
                                .arg(QDir::toNativeSeparators(info.filePath())));
+            if (count++ > 8) {
+                break;
+            }
         }
         list.append("</ul>");
     }
