@@ -65,6 +65,8 @@ public slots:
     virtual void closeProject(IProject *project = 0);
     void currentEditorChanged(LiteApi::IEditor*);
     void triggeredProject(QAction* act);
+    void openSchemeAct();
+    void appLoaded();
 protected:
     virtual void closeProjectHelper(IProject *project);
 protected:
