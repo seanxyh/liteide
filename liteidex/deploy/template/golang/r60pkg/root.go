@@ -1,2 +1,0 @@
-// $ROOT$ package
-package $ROOT$
