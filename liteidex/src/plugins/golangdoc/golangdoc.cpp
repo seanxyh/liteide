@@ -364,6 +364,26 @@ void GolangDoc::updateTextDoc(const QUrl &url, const QByteArray &ba, const QStri
 void GolangDoc::updateHtmlDoc(const QUrl &url, const QByteArray &ba, const QString &header, bool toNav)
 {
     m_lastUrl = url;
+    if (m_lastUrl.scheme() == "pdoc") {
+        m_targetList.clear();
+        QString pkgname = m_lastUrl.path();
+        QString goroot = LiteApi::getGoroot(m_liteApp);
+        QFileInfo i1(QFileInfo(goroot,"src/cmd").filePath(),pkgname);
+        if (i1.exists()) {
+            m_targetList.append(i1.filePath());
+        }
+        QFileInfo i2(QFileInfo(goroot,"src/pkg").filePath(),pkgname);
+        if (i2.exists()) {
+            m_targetList.append(i2.filePath());
+        }
+        foreach(QString path,LiteApi::getGopathList(m_liteApp,false)) {
+            QFileInfo info(QFileInfo(path,"src").filePath(),pkgname);
+            if (info.exists()) {
+                m_targetList.append(info.filePath());
+            }
+        }
+    }
+
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QString genHeader;
     QString nav;
@@ -548,6 +568,16 @@ QUrl GolangDoc::parserUrl(const QUrl &_url)
                 if (path != "..") {
                     url.setScheme("pdoc");
                     url.setPath(path);
+                }
+            }
+        } else if (url.path().indexOf("/target/") == 0 && m_lastUrl.scheme() == "pdoc") {
+            QString name = url.path().right(url.path().length()-8);
+            foreach (QString path, m_targetList) {
+                QFileInfo info(path,name);
+                if (info.exists()) {
+                    url.setScheme("file");
+                    url.setPath(info.filePath());
+                    break;
                 }
             }
         } else {

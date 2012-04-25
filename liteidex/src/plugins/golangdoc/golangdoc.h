@@ -102,6 +102,7 @@ protected:
     GolangApi  *m_golangApi;
     QString m_godocCmd;
     QString m_findCmd;
+    QStringList m_targetList;
 };
 
 #endif // GOLANGDOC_H

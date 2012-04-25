@@ -1,3 +1,11 @@
+==== 2012.4.25 Ver X11 1.71875 beta3 ===
+ * GolangPackage : new golang package plugin for GO1
+ * GolangPackage : PackageBrowser and PackageProject for GO1
+ * GolangTool : remove the plugin
+ * GolangDoc: add golang api for GO1
+ * LiteApp : new file wizard support GO1
+ * Welcome : new recent page
+
 ==== 2012.3.9 Ver X11 1.71875 beta2 ====
  * GolangPlay : new go playground plugin
  * GolangTool : sync editor, sync project
