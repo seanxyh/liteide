@@ -36,6 +36,7 @@
 #include <QStackedLayout>
 #include <QMenu>
 #include <QActionGroup>
+#include <QFileDialog>
 #include <QDebug>
 #include <QScrollArea>
 #include "fileutil/fileutil.h"
@@ -75,11 +76,6 @@ bool ProjectManager::initWithApp(IApplication *app)
 
     m_importMenu = new QMenu(m_widget);
 
-    QAction *openProjectAct = new QAction(QIcon(":/images/openproject.png"),tr("Project File"),this);
-    connect(openProjectAct,SIGNAL(triggered()),m_liteApp->fileManager(),SLOT(openProjects()));
-    m_importMenu->addAction(openProjectAct);
-    m_importMenu->addSeparator();
-
     QBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
     m_scrollArea = new QScrollArea(m_widget);
@@ -99,8 +95,28 @@ bool ProjectManager::initWithApp(IApplication *app)
     m_liteApp->dockManager()->addDock(m_widget,tr("Projects"));
 
     connect(m_projectMenu,SIGNAL(triggered(QAction*)),this,SLOT(triggeredProject(QAction*)));
+    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
 
     return true;
+}
+
+void ProjectManager::appLoaded()
+{
+    QAction *openProjectAct = new QAction(QIcon(":/images/openproject.png"),tr("Project File"),this);
+    connect(openProjectAct,SIGNAL(triggered()),m_liteApp->fileManager(),SLOT(openProjects()));
+    m_importMenu->addAction(openProjectAct);
+
+    foreach (IProjectFactory *factory, this->m_factoryList) {
+        foreach(QString type, factory->mimeTypes()) {
+            IMimeType *mimeType = m_liteApp->mimeTypeManager()->findMimeType(type);
+            if (mimeType && !mimeType->scheme().isEmpty()) {
+                QAction *act = new QAction(QString(tr("Project <%1>").arg(mimeType->scheme())),this);
+                act->setData(mimeType->scheme());
+                connect(act,SIGNAL(triggered()),this,SLOT(openSchemeAct()));
+                m_importMenu->addAction(act);
+            }
+        }
+    }
 }
 
 QWidget *ProjectManager::widget()
@@ -112,6 +128,27 @@ void ProjectManager::triggeredProject(QAction* act)
 {
     QString fileName = act->text();
     m_liteApp->fileManager()->openProject(fileName);
+}
+
+void ProjectManager::openSchemeAct()
+{
+    QAction *act = (QAction*)sender();
+    if (!act) {
+        return;
+    }
+    QString scheme = act->data().toString();
+    if (scheme.isEmpty()) {
+        return;
+    }
+    QString dir = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(), tr("Open Directory"),
+                                                     "/home",
+                                                     QFileDialog::ShowDirsOnly
+                                                     | QFileDialog::DontResolveSymlinks);
+    if (dir.isEmpty()) {
+        return;
+    }
+
+    m_liteApp->fileManager()->openProjectScheme(dir,scheme);
 }
 
 void ProjectManager::currentEditorChanged(LiteApi::IEditor* editor)
