@@ -1,7 +1,0 @@
-[SETUP]
-NAME = "Go Makefile Project (r60)"
-AUTHOR = visualfc
-INFO = new golang makefile project
-TYPE = project
-FILES = Makefile main.go doc.go
-OPEN = Makefile
