@@ -16,20 +16,38 @@
 <p>Double clicked *.env file to editor</p>
 <p>Example win32.env</p>
 <pre>
-PATH=c:/go/bin;%PATH%
-GOROOT=c:/go
-GOBIN=c:/go/bin
+#win32 environment
+
+GOROOT=c:\go
 GOARCH=386
 GOOS=windows
+
+PATH=%GOROOT%\bin;%PATH%
+
+LITEIDE_GDB=gdb
+LITEIDE_MAKE=mingw32-make
+LITEIDE_TERM=%COMSPEC%
+LITEIDE_TERMARGS=
+LITEIDE_EXEC=%COMSPEC%
+LITEIDE_EXECOPT=/k
 </pre>
 
 <p>Example linux32.env</p>
 <pre>
-PATH=$HOME/go/bin:$PATH
+#linux32 environment
+
 GOROOT=$HOME/go
-GOBIN=$HOME/go/bin
 GOARCH=386
 GOOS=linux
+
+PATH=$GOROOT/bin:$PATH
+
+LITEIDE_GDB=gdb
+LITEIDE_MAKE=make
+LITEIDE_TERM=/usr/bin/gnome-terminal
+LITEIDE_TERMARGS=
+LITEIDE_EXEC=/usr/bin/xterm
+LITEIDE_EXECOPT=-e
 </pre>
 
 <h2 id="litebuild">LiteBuild Plugin</h2>
@@ -80,11 +98,9 @@ GOOS=linux
 <p>Use gocode word complete, example <code>fmt.</code></p>
 <h3>Install gocode</h3>
 <pre>
-$ git clone git://github.com/nsf/gocode.git
-$ cd gocode
 $ export GOROOT=$HOME/go
 $ export PATH=$HOME/go/bin:$PATH
-$ make install
+$ go get -u github.com/nsf/gocode
 </pre>
 
 <h3 id="gocode_load">Load gocode incorrect</h3>

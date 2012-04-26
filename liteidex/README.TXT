@@ -14,17 +14,18 @@ Group : http://groups.google.com/group/liteide-dev
 Download: http://code.google.com/p/golangide/downloads/list
 
 Base Features:
-	Mime type basis system
-	System environment manage
-	Build system manage
+	System environment management
+	Project management
+	Build system management
 	Debug system simple and open
 	Kate syntax and style scheme
 	WordApi complete helper
-	
+	Project and file wizard
 Golang Support:
-	Golang ast view
-	Godoc browser
+	Golang package management
+	Golang package wizard
+	Golang package build
+	Golang std api serach
+	Golang ast browser
+	Golang doc browser
 	Gocode helper
-	Project wizard
-	Project build
-	Source build

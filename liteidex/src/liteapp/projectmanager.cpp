@@ -39,6 +39,7 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QScrollArea>
+#include <QTabWidget>
 #include "fileutil/fileutil.h"
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -78,6 +79,10 @@ bool ProjectManager::initWithApp(IApplication *app)
 
     QBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
+
+    QTabWidget *tab = new QTabWidget;
+    m_fileSystemWidget = new FileSystemWidget(m_liteApp);
+
     m_scrollArea = new QScrollArea(m_widget);
     m_scrollArea->setFrameShape(QFrame::NoFrame);
     m_scrollArea->setWidgetResizable(true);
@@ -90,7 +95,12 @@ bool ProjectManager::initWithApp(IApplication *app)
     headLayout->addStretch(0);
 
     layout->addLayout(headLayout);
-    layout->addWidget(m_scrollArea);
+
+    tab->addTab(m_fileSystemWidget->widget(),tr("FileSystem"));
+    tab->addTab(m_scrollArea,tr("Project Info"));
+
+    layout->addWidget(tab);
+
     m_widget->setLayout(layout);
     m_liteApp->dockManager()->addDock(m_widget,tr("Projects"));
 
@@ -243,6 +253,12 @@ void ProjectManager::setCurrentProject(IProject *project)
         QAction *act = m_mapNameToAction.value(project->filePath());
         if (act) {
             act->setChecked(true);
+        }
+        QFileInfo info(project->filePath());
+        if (info.isDir()) {
+            m_fileSystemWidget->setRootPath(info.filePath());
+        } else {
+            m_fileSystemWidget->setRootPath(info.dir().path());
         }
 
         m_liteApp->appendConsole("ProjectManager","loadProject",m_currentProject->name());
