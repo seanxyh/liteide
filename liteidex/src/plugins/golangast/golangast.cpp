@@ -123,9 +123,13 @@ void GolangAst::setEnable(bool b)
 
 void GolangAst::projectChanged(LiteApi::IProject *project)
 {
+    if (project) {
+        m_projectAstWidget->clear();
+    }
     loadProject(project);
-    if (project)
+    if (project) {
         connect(project,SIGNAL(reloaded()),this,SLOT(projectReloaded()));
+    }
 }
 
 void GolangAst::projectReloaded()
@@ -288,10 +292,10 @@ void GolangAst::doubleClickedTree(QModelIndex index)
         return;
     QString fileName = item->fileName();
     if (fileName.isEmpty()) {
-        if (w->isExpanded(index)) {
-            w->collapse(index);
+        if (w->tree()->isExpanded(index)) {
+            w->tree()->collapse(index);
         } else {
-            w->expand(index);
+            w->tree()->expand(index);
         }
         return;
     }
