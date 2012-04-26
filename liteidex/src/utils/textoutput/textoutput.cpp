@@ -35,7 +35,6 @@
 #include <QToolBar>
 #include <QAction>
 #include <QLabel>
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -45,6 +44,7 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
 
 TextOutput::TextOutput(bool readOnly, QWidget *parent) :
     QWidget(parent)

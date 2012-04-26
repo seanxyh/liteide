@@ -49,7 +49,7 @@ PackageTree::PackageTree(QWidget *parent) :
 
 void PackageTree::loadJson(const QMap<QString, QVariant> &json)
 {
-    if (root == 0) {
+     if (root == 0) {
         root = new QStandardItem(json.value("ImportPath").toString());
         src = new QStandardItem("Source");
         imports = new QStandardItem("Imports");
@@ -63,6 +63,7 @@ void PackageTree::loadJson(const QMap<QString, QVariant> &json)
 
     SymbolTreeState state;
     this->saveState(&state);
+
 
     root->setText(json.value("ImportPath").toString());
     src->removeRows(0,src->rowCount());

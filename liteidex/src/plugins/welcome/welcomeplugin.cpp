@@ -28,7 +28,6 @@
 #include <QAction>
 #include <QMenu>
 #include <QToolBar>
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -38,6 +37,7 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
 
 WelcomePlugin::WelcomePlugin() : m_welcome(0)
 {

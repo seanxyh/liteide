@@ -36,7 +36,6 @@
 #include <QTextCursor>
 #include <QTextBlock>
 #include <QScrollBar>
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -46,6 +45,7 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
 
 GolangFmt::GolangFmt(LiteApi::IApplication *app,QObject *parent) :
     QObject(parent),

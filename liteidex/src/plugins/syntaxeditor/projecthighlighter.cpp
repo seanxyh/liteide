@@ -24,7 +24,6 @@
 // $Id: projecthighlighter.cpp,v 1.0 2011-5-12 visualfc Exp $
 
 #include "projecthighlighter.h"
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -34,6 +33,7 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
 
 ProjectHighlighter::ProjectHighlighter(QTextDocument *document) :
     QSyntaxHighlighter(document)

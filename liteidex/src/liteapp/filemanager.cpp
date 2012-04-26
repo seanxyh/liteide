@@ -43,7 +43,6 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QDebug>
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -53,6 +52,7 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
 
 bool FileManager::initWithApp(IApplication *app)
 {
@@ -86,6 +86,7 @@ FileManager::FileManager()
 
 FileManager::~FileManager()
 {
+    m_liteApp->actionManager()->removeMenu(m_recentMenu);
     delete m_fileWatcher;
     m_liteApp->settings()->setValue("FileManager/initpath",m_initPath);
     if (m_newFileDialog) {
@@ -410,6 +411,7 @@ void FileManager::updateRecentFileActions(const QString &scheme)
     }
     if (!menu) {
         menu = new QMenu(scheme);
+        menu->setParent(m_recentMenu);
         m_recentMenu->insertMenu(m_recentSeparator,menu);
     }
     menu->clear();
