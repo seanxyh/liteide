@@ -16,6 +16,7 @@ SUBDIRS = \
     colorstyle \
     documentbrowser \
     htmlutil \
-    golangapi
+    golangapi \
+    filesystem
 
 

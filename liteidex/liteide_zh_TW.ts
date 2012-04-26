@@ -88,11 +88,6 @@ LiteIDE是一個簡單，開源，跨平臺的IDE.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/aboutdialog.ui" line="468"/>
-        <source>Timothy Lin &lt;zh9102@gmail.com&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="src/liteapp/aboutdialog.ui" line="492"/>
         <source>Thanks to...</source>
         <translation>感謝...</translation>
@@ -156,21 +151,26 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
     </message>
     <message>
         <location filename="src/liteapp/actionmanager.cpp" line="58"/>
+        <source>&amp;Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/actionmanager.cpp" line="59"/>
         <source>&amp;View</source>
         <translation>檢視(&amp;V)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/actionmanager.cpp" line="61"/>
+        <location filename="src/liteapp/actionmanager.cpp" line="62"/>
         <source>&amp;Help</source>
         <translation>說明(&amp;H)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/actionmanager.cpp" line="63"/>
+        <location filename="src/liteapp/actionmanager.cpp" line="64"/>
         <source>Standard ToolBar</source>
         <translation>標準工具列</translation>
     </message>
     <message>
-        <location filename="src/liteapp/actionmanager.cpp" line="64"/>
+        <location filename="src/liteapp/actionmanager.cpp" line="65"/>
         <source>Navigation ToolBar</source>
         <translation>導航工具列</translation>
     </message>
@@ -339,10 +339,6 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <location filename="src/plugins/liteenv/envmanager.cpp" line="214"/>
         <source>Environment</source>
         <translation>環境變數</translation>
-    </message>
-    <message>
-        <source>Env:</source>
-        <translation type="obsolete">環境:</translation>
     </message>
 </context>
 <context>
@@ -535,81 +531,64 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>FileManager</name>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="66"/>
-        <location filename="src/liteapp/filemanager.cpp" line="67"/>
-        <source>Clear All</source>
-        <translation>清除所有項目</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/filemanager.cpp" line="86"/>
-        <source>Recent Files</source>
-        <translation>最近開啟的文件</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/filemanager.cpp" line="87"/>
-        <source>Recent Projects</source>
-        <translation>最近開啟的專案</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/filemanager.cpp" line="161"/>
-        <location filename="src/liteapp/filemanager.cpp" line="182"/>
-        <location filename="src/liteapp/filemanager.cpp" line="203"/>
+        <location filename="src/liteapp/filemanager.cpp" line="126"/>
+        <location filename="src/liteapp/filemanager.cpp" line="147"/>
+        <location filename="src/liteapp/filemanager.cpp" line="168"/>
         <source>All Support File (%1)</source>
         <translation>所有支援的文件(%1)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="164"/>
-        <location filename="src/liteapp/filemanager.cpp" line="185"/>
-        <location filename="src/liteapp/filemanager.cpp" line="206"/>
+        <location filename="src/liteapp/filemanager.cpp" line="129"/>
+        <location filename="src/liteapp/filemanager.cpp" line="150"/>
+        <location filename="src/liteapp/filemanager.cpp" line="171"/>
         <source>All Files (*)</source>
         <translation>所有文件(*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="306"/>
+        <location filename="src/liteapp/filemanager.cpp" line="256"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="307"/>
+        <location filename="src/liteapp/filemanager.cpp" line="257"/>
         <source>Project &apos;%1&apos; is created.
 Do you want to load?</source>
         <translation>專案 &apos;%1&apos;已建立,是否要載入?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="248"/>
+        <location filename="src/liteapp/filemanager.cpp" line="203"/>
         <source>Open Project or File</source>
         <translation>開啟專案或文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="261"/>
+        <location filename="src/liteapp/filemanager.cpp" line="69"/>
+        <source>Clean All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/filemanager.cpp" line="216"/>
         <source>Open Files</source>
         <translation>開啟文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="274"/>
+        <location filename="src/liteapp/filemanager.cpp" line="229"/>
         <source>Open Project</source>
         <translation>開啟專案</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="408"/>
-        <location filename="src/liteapp/filemanager.cpp" line="424"/>
-        <source>&amp;%1 %2</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/filemanager.cpp" line="577"/>
+        <location filename="src/liteapp/filemanager.cpp" line="546"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
         <translation>%1
 文件已經被刪除，要儲存文件還是關閉編輯器?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="578"/>
+        <location filename="src/liteapp/filemanager.cpp" line="547"/>
         <source>LiteIDE X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="596"/>
+        <location filename="src/liteapp/filemanager.cpp" line="565"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation>%1
@@ -702,29 +681,13 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangDoc</name>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="87"/>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="91"/>
-        <source>Find</source>
-        <translation>查找</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="88"/>
-        <source>List &quot;src/pkg&quot;</source>
-        <translation>列表 &quot;src/pkg&quot;</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="89"/>
-        <source>List &quot;src/cmd&quot;</source>
-        <translation>列表 &quot;src/cmd&quot;</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="114"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="123"/>
         <source>Golang Document Find</source>
         <oldsource>Golang Doc</oldsource>
         <translation>GO文檔查找</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="117"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="126"/>
         <source>Golang Document Browser</source>
         <oldsource>Golang Document Browser Page</oldsource>
         <translation>GO文檔瀏覽</translation>
@@ -739,275 +702,105 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
-    <name>GopathBrowser</name>
-    <message>
-        <source>Sync Editor</source>
-        <translation type="obsolete">同步編輯器</translation>
-    </message>
-    <message>
-        <source>Sync Project</source>
-        <oldsource>Sync Project With File</oldsource>
-        <translation type="obsolete">同步專案</translation>
-    </message>
-    <message>
-        <source>Set Activate Project</source>
-        <translation type="obsolete">設置當前專案</translation>
-    </message>
-    <message>
-        <source>Open Editor</source>
-        <translation type="obsolete">開啟編輯器</translation>
-    </message>
-    <message>
-        <source>New File</source>
-        <translation type="obsolete">新建文件</translation>
-    </message>
-    <message>
-        <source>New File Wizard</source>
-        <translation type="obsolete">文件精靈</translation>
-    </message>
-    <message>
-        <source>Rename File</source>
-        <translation type="obsolete">文件更名</translation>
-    </message>
-    <message>
-        <source>Remove File</source>
-        <translation type="obsolete">刪除文件</translation>
-    </message>
-    <message>
-        <source>New Folder</source>
-        <translation type="obsolete">新建目錄</translation>
-    </message>
-    <message>
-        <source>Rename Folder</source>
-        <translation type="obsolete">目錄更名</translation>
-    </message>
-    <message>
-        <source>Remove Folder</source>
-        <translation type="obsolete">刪除目錄</translation>
-    </message>
-    <message>
-        <source>Open Terminal Here</source>
-        <translation type="obsolete">開啟終端機</translation>
-    </message>
-    <message>
-        <source>Open Explorer Here</source>
-        <translation type="obsolete">開啟目錄瀏覽</translation>
-    </message>
-    <message>
-        <source>Create File</source>
-        <translation type="obsolete">建立文件</translation>
-    </message>
-    <message>
-        <source>The filename is exists!</source>
-        <translation type="obsolete">文件名稱已存在!</translation>
-    </message>
-    <message>
-        <source>Failed to create the file!</source>
-        <translation type="obsolete">建立文件失敗!</translation>
-    </message>
-    <message>
-        <source>File Name</source>
-        <translation type="obsolete">文件名稱</translation>
-    </message>
-    <message>
-        <source>Failed to rename the file!</source>
-        <translation type="obsolete">重命名文件失敗!</translation>
-    </message>
-    <message>
-        <source>Confirm remove the file and continue</source>
-        <translation type="obsolete">請確認是否刪除文件</translation>
-    </message>
-    <message>
-        <source>Failed to remove the file!</source>
-        <translation type="obsolete">刪除文件失敗!</translation>
-    </message>
-    <message>
-        <source>Create Folder</source>
-        <translation type="obsolete">建立目錄</translation>
-    </message>
-    <message>
-        <source>The folder name is exists!</source>
-        <translation type="obsolete">目錄名已存在!</translation>
-    </message>
-    <message>
-        <source>Failed to create the folder!</source>
-        <translation type="obsolete">建立目錄失敗!</translation>
-    </message>
-    <message>
-        <source>Folder Name</source>
-        <translation type="obsolete">目錄名</translation>
-    </message>
-    <message>
-        <source>Failed to rename the folder!</source>
-        <translation type="obsolete">重命名目錄失敗!</translation>
-    </message>
-    <message>
-        <source>Confirm remove the foler and continue</source>
-        <translation type="obsolete">請確認是否刪除目錄</translation>
-    </message>
-    <message>
-        <source>Failed to remove the folder!</source>
-        <translation type="obsolete">刪除目錄失敗!</translation>
-    </message>
-</context>
-<context>
-    <name>GopathProjectFactor</name>
-    <message>
-        <source>&lt;GOPATH&gt; Project</source>
-        <translation type="obsolete">&lt;GOPATH&gt; 項目</translation>
-    </message>
-</context>
-<context>
     <name>GoplayBrowser</name>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="153"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="154"/>
         <source>Go Playground</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="251"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="252"/>
         <source>Load File</source>
         <translation>讀取文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="251"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="252"/>
         <source>Items</source>
         <translation>文件列表</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="267"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="268"/>
         <source>Save File</source>
         <translation>儲存文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="267"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="268"/>
         <source>New FileName:</source>
         <translation>新文件名:</translation>
     </message>
 </context>
 <context>
-    <name>ImportGopathDialog</name>
-    <message>
-        <source>Import GOPATH Project</source>
-        <translation type="obsolete">導入GOPATH項目</translation>
-    </message>
-    <message>
-        <source>System GOPATH</source>
-        <translation type="obsolete">系統 GOPATH</translation>
-    </message>
-    <message>
-        <source>Reload</source>
-        <translation type="obsolete">刷新</translation>
-    </message>
-    <message>
-        <source>Custome GOPATH</source>
-        <translation type="obsolete">自定義 GOPATH</translation>
-    </message>
-    <message>
-        <source>Browser</source>
-        <translation type="obsolete">瀏覽</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">清除</translation>
-    </message>
-    <message>
-        <source>Load GOPATH Directory</source>
-        <translation type="obsolete">載入GOPATH目錄</translation>
-    </message>
-</context>
-<context>
     <name>LiteApp</name>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="112"/>
+        <location filename="src/liteapp/liteapp.cpp" line="113"/>
         <source>Console</source>
         <translation>控制台</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="317"/>
+        <location filename="src/liteapp/liteapp.cpp" line="318"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="319"/>
+        <location filename="src/liteapp/liteapp.cpp" line="320"/>
         <source>Open</source>
         <translation>開啟</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="321"/>
+        <location filename="src/liteapp/liteapp.cpp" line="322"/>
         <source>Close</source>
         <translation>關閉</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="323"/>
+        <location filename="src/liteapp/liteapp.cpp" line="324"/>
         <source>Close All</source>
         <translation>關閉所有項目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="324"/>
+        <location filename="src/liteapp/liteapp.cpp" line="325"/>
         <source>Open Project</source>
         <translation>開啟專案</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="325"/>
+        <location filename="src/liteapp/liteapp.cpp" line="326"/>
         <source>Save Project</source>
         <translation>儲存專案</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="326"/>
+        <location filename="src/liteapp/liteapp.cpp" line="327"/>
         <source>Close Project</source>
         <translation>關閉專案</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="327"/>
+        <location filename="src/liteapp/liteapp.cpp" line="328"/>
         <source>Save</source>
         <translation>儲存</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="329"/>
+        <location filename="src/liteapp/liteapp.cpp" line="330"/>
         <source>Save As...</source>
         <translation>另存爲...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="331"/>
+        <location filename="src/liteapp/liteapp.cpp" line="332"/>
         <source>Save All</source>
         <oldsource>Save As</oldsource>
         <translation>儲存所有項目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="333"/>
+        <location filename="src/liteapp/liteapp.cpp" line="334"/>
         <source>Exit</source>
         <translation>離開</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="336"/>
+        <location filename="src/liteapp/liteapp.cpp" line="337"/>
         <source>About LiteIDE...</source>
         <translation>關於LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="337"/>
+        <location filename="src/liteapp/liteapp.cpp" line="338"/>
         <source>About Plugins...</source>
         <translation>關於插件...</translation>
-    </message>
-    <message>
-        <source>&amp;File</source>
-        <translation type="obsolete">文件(&amp;F)</translation>
-    </message>
-    <message>
-        <source>&amp;View</source>
-        <translation type="obsolete">查看(&amp;V)</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">幫助(&amp;H)</translation>
-    </message>
-    <message>
-        <source>Standard ToolBar</source>
-        <translation type="obsolete">標準工具列</translation>
-    </message>
-    <message>
-        <source>Navigation ToolBar</source>
-        <translation type="obsolete">導航工具列</translation>
     </message>
 </context>
 <context>
@@ -1028,7 +821,19 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>語言:</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteappoption.ui" line="65"/>
+        <location filename="src/liteapp/liteappoption.ui" line="52"/>
+        <source>Recent Files</source>
+        <oldsource>Recent File</oldsource>
+        <translation type="unfinished">最近開啟的文件</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteappoption.ui" line="58"/>
+        <source>Max Count:</source>
+        <oldsource>Max Recent:</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteappoption.ui" line="118"/>
         <source>The language change will take effect after a restart of LiteIDE.</source>
         <translation>必須重啓LiteIDE以套用語言變更.</translation>
     </message>
@@ -1207,85 +1012,85 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteEditor</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="162"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="168"/>
         <source>Undo</source>
         <translation>復原</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="163"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="169"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="164"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="170"/>
         <source>Cut</source>
         <translation>剪下</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="165"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="171"/>
         <source>Copy</source>
         <translation>複製</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="166"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="172"/>
         <source>Paste</source>
         <translation>貼上</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="167"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="173"/>
         <source>File is writable</source>
         <translation>文件可寫入</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="168"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="561"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="174"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="567"/>
         <source>Export HTML</source>
         <translation>匯出HTML文檔</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="170"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="588"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="176"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="594"/>
         <source>Export PDF</source>
         <translation>匯出PDF文檔</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="171"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="612"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="177"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="618"/>
         <source>Print Document</source>
         <translation>列印文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="172"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="178"/>
         <source>Print Preview Document</source>
         <translation>預覽列印</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="237"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="243"/>
         <source>editor</source>
         <translation>編輯器</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="370"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="376"/>
         <source>File Is ReadOnly</source>
         <translation>文件為唯讀</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="373"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="379"/>
         <source>File Is Writable</source>
         <translation>文件可寫入</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="569"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="575"/>
         <source>Can not write file %1</source>
         <translation>無法寫入文件 %1</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="570"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="576"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="629"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="635"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation>是否取消對文件 %1 的修改並重新載入?</translation>
     </message>
@@ -1482,10 +1287,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>資訊</translation>
     </message>
     <message>
-        <source>Wizard:</source>
-        <translation type="obsolete">精靈:</translation>
-    </message>
-    <message>
         <location filename="src/liteapp/newfiledialog.ui" line="20"/>
         <source>Name:</source>
         <translation>名稱:</translation>
@@ -1538,29 +1339,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
-    <name>NewPackageDialog</name>
-    <message>
-        <location filename="src/plugins/golangpackage/newpackagedialog.ui" line="14"/>
-        <source>New Package Wizard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/plugins/golangpackage/newpackagedialog.ui" line="22"/>
-        <source>Name:</source>
-        <translation type="unfinished">名稱:</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/golangpackage/newpackagedialog.ui" line="38"/>
-        <source>GOPATH:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/plugins/golangpackage/newpackagedialog.ui" line="52"/>
-        <source>Template:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>OptionsBrowser</name>
     <message>
         <location filename="src/liteapp/optionsbrowser.cpp" line="65"/>
@@ -1593,6 +1371,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <message>
         <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="74"/>
         <source>Reload</source>
+        <oldsource>Reload All</oldsource>
         <translation type="unfinished">刷新</translation>
     </message>
     <message>
@@ -1607,12 +1386,14 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="77"/>
-        <source>Edit Package</source>
+        <source>Open Package Poject</source>
+        <oldsource>Edit Package</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="84"/>
-        <source>Packge Browser</source>
+        <source>Package Browser</source>
+        <oldsource>Packge Browser</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1621,8 +1402,48 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="111"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="105"/>
         <source>Loading go package ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PackageProject</name>
+    <message>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="78"/>
+        <source>Reload Package</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="79"/>
+        <source>Open Explorer Here</source>
+        <translation type="unfinished">開啟目錄瀏覽</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="80"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="308"/>
+        <source>Add Source File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="308"/>
+        <source>FileName:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="319"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="324"/>
+        <source>LiteApp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="319"/>
+        <source>File %1 exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="324"/>
+        <source>Open File %1 false</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1690,24 +1511,29 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>ProjectManager</name>
     <message>
-        <source>Project</source>
-        <oldsource>Project Pane</oldsource>
-        <translation type="obsolete">項目</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="78"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="105"/>
         <source>Project File</source>
         <translation>專案文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="91"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="87"/>
         <source>Import</source>
         <translation>匯入項目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="99"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="95"/>
         <source>Projects</source>
         <translation>專案</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/projectmanager.cpp" line="113"/>
+        <source>Project &lt;%1&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/projectmanager.cpp" line="143"/>
+        <source>Open Directory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1863,9 +1689,22 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
+    <name>Utils::FilterLineEdit</name>
+    <message>
+        <location filename="src/3rdparty/qtc_editutil/filterlineedit.cpp" line="49"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/3rdparty/qtc_editutil/filterlineedit.cpp" line="50"/>
+        <source>Clear text</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>WelcomeBrowser</name>
     <message>
-        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="175"/>
+        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="171"/>
         <source>Welcome</source>
         <oldsource>Welcome Page</oldsource>
         <translation>起始頁</translation>

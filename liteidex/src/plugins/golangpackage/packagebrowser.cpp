@@ -74,14 +74,14 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_reloadAct = new QAction(tr("Reload"),this);
     m_setupGopathAct = new QAction(tr("Setup GOPATH"),this);
     m_godocAct = new QAction(tr("View Godoc"),this);
-    m_editPackageAct = new QAction(tr("Edit Package"),this);
+    m_editPackageAct = new QAction(tr("Open Package Poject"),this);
     m_contextMenu->addAction(m_reloadAct);
     m_contextMenu->addAction(m_setupGopathAct);
     m_contextMenu->addAction(m_godocAct);
     m_contextMenu->addAction(m_editPackageAct);
 
 
-    m_liteApp->dockManager()->addDock(m_widget,tr("Packge Browser"));
+    m_liteApp->dockManager()->addDock(m_widget,tr("Package Browser"));
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
     connect(m_reloadAct,SIGNAL(triggered()),this,SLOT(reload()));

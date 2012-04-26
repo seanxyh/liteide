@@ -49,13 +49,13 @@
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>GroupBox</string>
+      <string>Recent Files</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Max Recent:</string>
+         <string>Max Count:</string>
         </property>
        </widget>
       </item>

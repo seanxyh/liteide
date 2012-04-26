@@ -27,6 +27,7 @@
 #define PROJECTMANAGER_H
 
 #include "liteapi/liteapi.h"
+#include "filesystem/filesystemwidget.h"
 
 #include <QPointer>
 
@@ -74,6 +75,7 @@ protected:
     QPointer<IProject>      m_currentProject;
     QList<IProjectFactory*>    m_factoryList;
     QWidget                 *m_widget;
+    FileSystemWidget        *m_fileSystemWidget;
     QScrollArea             *m_scrollArea;
     QMenu                   *m_projectMenu;
     QActionGroup            *m_projectActGroup;

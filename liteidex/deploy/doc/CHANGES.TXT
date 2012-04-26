@@ -7,6 +7,7 @@
  * GolangAst: add filter
  * LiteApp : new file wizard support GO1
  * Welcome : new recent page
+ * gopromake : update pkg depend
 
 ==== 2012.3.9 Ver X11 1.71875 beta2 ====
  * GolangPlay : new go playground plugin

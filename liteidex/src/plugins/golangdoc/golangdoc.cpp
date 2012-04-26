@@ -192,7 +192,10 @@ void GolangDoc::loadApi()
     QString goroot = LiteApi::getGoroot(m_liteApp);
     QFileInfo info(goroot,"api/go1.txt");
     if (!info.exists()) {
-        return;
+        QString path = m_liteApp->resourcePath()+"/golangdoc";
+        info.setFile(path,"go1.txt");
+        if (!info.exists())
+            return;
     }
     if (m_golangApi->load(info.filePath())) {
         m_findResultModel->setStringList(m_golangApi->all(LiteApi::AllGolangApi));

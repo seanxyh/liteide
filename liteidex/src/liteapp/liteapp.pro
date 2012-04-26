@@ -10,6 +10,8 @@ include (../utils/fileutil/fileutil.pri)
 include (../utils/mimetype/mimetype.pri)
 include (../utils/textoutput/textoutput.pri)
 include (../utils/extension/extension.pri)
+include (../utils/filesystem/filesystem.pri)
+include (../utils/symboltreeview/symboltreeview.pri)
 
 QT += core gui
 
