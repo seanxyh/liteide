@@ -1,0 +1,11 @@
+# $ROOT$ project file
+
+TARGET = $ROOT$
+DESTDIR =
+
+GCOPT = -I .
+GLOPT = -L .
+
+GOFILES = \
+	main.go \
+	info.go
