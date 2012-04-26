@@ -5,8 +5,9 @@
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
 		<custom id="TargetArgs" name="TARGETARGS" value=""/>
 		<custom id="BuildArgs" name="BUILDARGS" value=""/>
+		<custom id="InstallArgs" name="INSTALLARGS" value=""/>
 		<action id="Build" img="go/build.png" key="CTRL+B" cmd="$(GO)" args="build $(BUILDARGS)" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
-		<action id="Install" img="go/install.png" cmd="$(GO)" args="install" save="project" output="true"/>
+		<action id="Install" img="go/install.png" cmd="$(GO)" args="install $(INSTALLARGS)" save="project" output="true"/>
 		<action id="Clean" img="go/clean.png" cmd="$(GO)" args="clean" save="project" output="true"/>
 		<action id="CleanAll" img="go/nuke.png" cmd="$(GO)" args="clean -i" save="project" output="true"/>
 		<action id="Test" img="go/test.png" key = "CTRL+T" cmd="$(GO)" args="test" save="project" output="true" codec="utf-8"/>
@@ -19,8 +20,9 @@
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
 		<custom id="TargetArgs" name="TARGETARGS" value=""/>
 		<custom id="BuildArgs" name="BUILDARGS" value=""/>
+		<custom id="InstallArgs" name="INSTALLARGS" value="gcflags -s"/>
 		<action id="Build" img="go/build.png" key="CTRL+B" cmd="$(GO)" args="build $(BUILDARGS)" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" />
-		<action id="Install" img="go/install.png" cmd="$(GO)" args="install" save="project" output="true"/>
+		<action id="Install" img="go/install.png" cmd="$(GO)" args="install $(INSTALLARGS)" save="project" output="true"/>
 		<action id="Clean" img="go/clean.png" cmd="$(GO)" args="clean" save="project" output="true"/>
 		<action id="CleanAll" img="go/nuke.png" cmd="$(GO)" args="clean -i" save="project" output="true"/>
 		<action id="Test" img="go/test.png" key = "CTRL+T" cmd="$(GO)" args="test" save="project" output="true" codec="utf-8"/>

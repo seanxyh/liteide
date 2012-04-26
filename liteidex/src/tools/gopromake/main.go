@@ -21,6 +21,7 @@ var (
 	buildLib     *bool   = flag.Bool("lib", false, "build packages as librarys outside main")
 	goroot       *string = flag.String("goroot", defGoroot(), "default go root")
 	clean        *string = flag.String("clean", "", "clean project [obj|all]")
+	install      *bool   = flag.Bool("install", false, "install package")
 )
 
 var Usage = func() {
