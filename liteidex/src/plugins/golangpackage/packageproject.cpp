@@ -42,6 +42,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QFile>
+#include <QDesktopServices>
 
 #include <QDebug>
 //lite_memory_check_begin
@@ -74,7 +75,12 @@ PackageProject::PackageProject(LiteApi::IApplication *app) :
 
     m_contextMenu = new QMenu;
 
+    QAction *reloadAct = new QAction(tr("Reload Package"),this);
+    QAction *explorerAct = new QAction(tr("Open Explorer Here"),this);
     QAction *addSource = new QAction(tr("Add Source File"),this);
+    m_contextMenu->addAction(reloadAct);
+    m_contextMenu->addSeparator();
+    m_contextMenu->addAction(explorerAct);
     m_contextMenu->addAction(addSource);
 
     connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClicked(QModelIndex)));
@@ -82,6 +88,8 @@ PackageProject::PackageProject(LiteApi::IApplication *app) :
     connect(m_liteApp->editorManager(),SIGNAL(editorSaved(LiteApi::IEditor*)),this,SLOT(editorSaved(LiteApi::IEditor*)));
     connect(m_reloadTimer,SIGNAL(timeout()),this,SLOT(reload()));
     connect(addSource,SIGNAL(triggered()),this,SLOT(addSource()));
+    connect(reloadAct,SIGNAL(triggered()),this,SLOT(reload()));
+    connect(explorerAct,SIGNAL(triggered()),this,SLOT(openExplorer()));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
 }
 
@@ -288,6 +296,11 @@ void PackageProject::editorSaved(LiteApi::IEditor *editor)
     if (find) {
         m_reloadTimer->start(1000);
     }
+}
+
+void PackageProject::openExplorer()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(this->filePath()));
 }
 
 void PackageProject::addSource()

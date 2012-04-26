@@ -128,7 +128,7 @@ func ParserFiles(files []string) (array *PackageArray) {
 	done := make(chan bool)
 	for _, file := range files {
 		go func(f string) {
-			pakname, imports, err := GetPackageImportLocal(f)
+			pakname, imports, err := GetPackageImport(f)
 			if err == nil {
 				if pakname == "main" {
 					array.HasMain = true

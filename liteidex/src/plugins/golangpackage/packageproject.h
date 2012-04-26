@@ -72,6 +72,7 @@ public slots:
     void doubleClicked(QModelIndex);
     void editorSaved(LiteApi::IEditor*);
     void addSource();
+    void openExplorer();
     void customContextMenuRequested(QPoint);
 protected:
     LiteApi::IApplication *m_liteApp;
