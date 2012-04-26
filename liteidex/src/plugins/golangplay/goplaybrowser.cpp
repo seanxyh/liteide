@@ -140,6 +140,7 @@ GoplayBrowser::GoplayBrowser(LiteApi::IApplication *app, QObject *parent)
 
 GoplayBrowser::~GoplayBrowser()
 {
+    delete m_editor;
     delete m_widget;
 }
 

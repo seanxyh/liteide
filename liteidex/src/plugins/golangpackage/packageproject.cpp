@@ -98,6 +98,9 @@ PackageProject::~PackageProject()
     if (m_contextMenu) {
         delete m_contextMenu;
     }
+    if (m_widget) {
+        delete m_widget;
+    }
 }
 
 void PackageProject::customContextMenuRequested(QPoint pos)

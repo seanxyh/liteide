@@ -54,7 +54,6 @@
 #include <QDebug>
 #include <QPalette>
 #include <QMessageBox>
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -64,6 +63,7 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
 
 LiteEditor::LiteEditor(LiteApi::IApplication *app)
     : m_liteApp(app),
@@ -112,9 +112,13 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
 
 LiteEditor::~LiteEditor()
 {
+    if (m_completer) {
+        delete m_completer;
+    }
     delete m_extension;
     delete m_editorWidget;
     delete m_widget;
+    delete m_file;
 }
 
 const ColorStyleScheme *LiteEditor::colorStyleScheme() const
@@ -132,6 +136,8 @@ void LiteEditor::setCompleter(LiteCompleter *complter)
 {
     if (m_completer) {
         QObject::disconnect(m_completer, 0, m_editorWidget, 0);
+        delete m_completer;
+        m_completer = 0;
     }
     m_completer = complter;
     if (!m_completer) {

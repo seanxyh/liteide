@@ -34,7 +34,6 @@
 #include <QAbstractItemView>
 #include <QScrollBar>
 #include <QDebug>
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -44,6 +43,7 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
 
 class WordItem : public QStandardItem
 {
@@ -114,6 +114,12 @@ LiteCompleter::LiteCompleter(QObject *parent) :
     m_stop = '(';
     QObject::connect(m_completer, SIGNAL(activated(QModelIndex)),
                      this, SLOT(insertCompletion(QModelIndex)));
+}
+
+LiteCompleter::~LiteCompleter()
+{
+    delete m_completer;
+    delete m_model;
 }
 
 void LiteCompleter::setEditor(QPlainTextEdit *editor)

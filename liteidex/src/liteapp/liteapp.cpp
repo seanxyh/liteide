@@ -44,7 +44,6 @@
 #include <QDateTime>
 #include <QSplitter>
 #include <QDebug>
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -54,6 +53,7 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
 
 LiteApp::LiteApp()
     : m_settings(new QSettings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteide",this)),

@@ -25,7 +25,6 @@
 
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -35,6 +34,7 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
 
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),

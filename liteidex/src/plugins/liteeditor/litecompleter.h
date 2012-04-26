@@ -39,6 +39,7 @@ class LiteCompleter : public LiteApi::ICompleter
     Q_OBJECT
 public:
     explicit LiteCompleter(QObject *parent = 0);
+    virtual ~LiteCompleter();
     void setEditor(QPlainTextEdit *editor);
     virtual QCompleter *completer() const;
     virtual bool appendItem(const QString &name,const QIcon &icon, bool temp);
