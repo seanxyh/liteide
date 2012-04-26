@@ -21,7 +21,7 @@
 // Module: astwidget.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-8-3
-// $Id: astwidget.cpp,v 1.0 2011-8-3 visualfc Exp $
+// $Id: astwidget.cpp,v 1.0 2012-4-26 visualfc Exp $
 
 #include "astwidget.h"
 #include "golangastitem.h"
@@ -30,6 +30,8 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QFont>
+#include <QVBoxLayout>
+#include <QDebug>
 
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -42,24 +44,115 @@
 //lite_memory_check_end
 
 AstWidget::AstWidget(LiteApi::IApplication *app, QWidget *parent) :
-    SymbolTreeView(parent),
+    QWidget(parent),
     m_liteApp(app)
 {
+    QVBoxLayout *layout = new QVBoxLayout;
+    m_tree = new SymbolTreeView;
+    m_filterEdit = new Utils::FilterLineEdit;
+
     m_model = new QStandardItemModel(this);
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     proxyModel->setDynamicSortFilter(true);
     proxyModel->setSourceModel(m_model);
 
-    this->setModel(proxyModel);
-    this->setExpandsOnDoubleClick(false);
+    layout->addWidget(m_filterEdit);
+    layout->addWidget(m_tree);
+
+    this->setLayout(layout);
+
+    m_tree->setModel(proxyModel);
+    m_tree->setExpandsOnDoubleClick(false);
+
+    connect(m_tree,SIGNAL(doubleClicked(QModelIndex)),this,SIGNAL(doubleClicked(QModelIndex)));
+    connect(m_filterEdit,SIGNAL(filterChanged(QString)),this,SLOT(filterChanged(QString)));
 }
 
 void AstWidget::clear()
 {
     m_model->clear();
+    m_filterEdit->clear();
 }
 
+static QModelIndexList filterModelList(QString filter, QAbstractItemModel *model, QModelIndex parent)
+{
+    QModelIndexList list;
+    for (int i = 0; i < model->rowCount(parent); i++) {
+        QModelIndex index = model->index(i,0,parent);
+        if (index.data().toString().indexOf(filter,0,Qt::CaseInsensitive) >= 0) {
+            list.append(index);
+        }
+        list.append(filterModelList(filter,model,index));
+    }
+    return list;
+}
+
+void  AstWidget::clearFilter(QModelIndex parent)
+{
+    for (int i = 0; i < m_model->rowCount(parent); i++) {
+        QModelIndex index = m_model->index(i,0,parent);
+        clearFilter(index);
+        GolangAstItem *item = (GolangAstItem*)m_model->itemFromIndex(index);
+        if (!item) {
+            continue;
+        }
+        if (item->tagName().indexOf("+") >= 0) {
+            continue;
+        }
+        QFont font = item->font();
+        font.setBold(false);
+        item->setFont(font);
+    }
+}
+
+bool AstWidget::filterModel(QString filter, QModelIndex parent, QModelIndex &first)
+{
+    bool b = false;
+    for (int i = 0; i < proxyModel->rowCount(parent); i++) {
+        QModelIndex index = proxyModel->index(i,0,parent);
+        GolangAstItem *item = astItemFromIndex(index);
+        if (!item) {
+            continue;
+        }
+        if (item->tagName().indexOf("+") < 0) {
+            QFont font = item->font();
+            if (index.data().toString().indexOf(filter,0,Qt::CaseInsensitive) >= 0) {
+                font.setBold(true);
+                if (!b) {
+                    b = true;
+                    if (!first.isValid()) {
+                        first = index;
+                    }
+                }
+            } else {
+                font.setBold(false);
+            }
+            item->setFont(font);
+        }
+        if (filterModel(filter,index,first)) {
+            m_tree->expand(index);
+            b = true;
+        } else {
+            m_tree->collapse(index);
+        }
+    }
+    return b;
+}
+
+void AstWidget::filterChanged(QString filter)
+{
+    if (filter.isEmpty()) {
+        clearFilter(m_tree->rootIndex());
+        m_tree->expandToDepth(0);
+    } else {
+        QModelIndex first;
+        filterModel(filter,m_tree->rootIndex(),first);
+        if (first.isValid()) {
+            m_tree->scrollTo(first);
+        }
+    }
+}
 
 GolangAstItem *AstWidget::astItemFromIndex(QModelIndex index)
 {
@@ -125,7 +218,7 @@ void AstWidget::updateModel(const QByteArray &data)
 {
     //save state
     SymbolTreeState state;
-    this->saveState(&state);
+    m_tree->saveState(&state);
 
     m_model->clear();
 
@@ -161,6 +254,9 @@ void AstWidget::updateModel(const QByteArray &data)
             } else {
                 bmain = false;
             }
+            if (name == "documentation") {
+                continue;
+            }
         }
         GolangAstItem *item = 0;
         if (level == 1) {
@@ -174,6 +270,7 @@ void AstWidget::updateModel(const QByteArray &data)
         if (level == 1) {
             level1NameItemMap.insert(name,item);
         }
+        item->setTagName(tag);
         item->setText(name);
         if (!bmain && (name.at(0).isLower() || name.at(0) == '_')) {
             item->setIcon(GolangAstIcon::instance()->iconFromTag(tag,false));
@@ -209,5 +306,10 @@ void AstWidget::updateModel(const QByteArray &data)
     }
 
     //load state
-    this->loadState(proxyModel,&state);
+    QString text = m_filterEdit->text();
+    if (!text.isEmpty()) {
+        this->filterChanged(text);
+    } else {
+        m_tree->loadState(proxyModel,&state);
+    }
 }
