@@ -84,6 +84,7 @@ protected:
     QStringList          m_changedFiles;
     bool                 m_checkActivated;
     QAction              *m_recentSeparator;
+    QMap<QString,QMenu*> m_schemeMenuMap;
 protected:    
     int         m_maxRecentFiles;
     QMenu       *m_recentMenu;
