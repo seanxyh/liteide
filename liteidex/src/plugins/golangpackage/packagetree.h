@@ -34,7 +34,7 @@ class PackageTree : public SymbolTreeView
 {
     Q_OBJECT
 public:
-    enum {
+    enum ITEM_TYPE{
         ITEM_NONE = 0,
         ITEM_SOURCE,
         ITEM_IMPORT,

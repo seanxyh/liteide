@@ -49,51 +49,46 @@ PackageTree::PackageTree(QWidget *parent) :
 
 void PackageTree::loadJson(const QMap<QString, QVariant> &json)
 {
-     if (root == 0) {
-        root = new QStandardItem(json.value("ImportPath").toString());
-        src = new QStandardItem("Source");
-        imports = new QStandardItem("Imports");
-        deps = new QStandardItem("Deps");
-        model->appendRow(root);
-        root->appendRow(src);
-        this->expandAll();
-        root->appendRow(imports);
-        root->appendRow(deps);
-    }
-
     SymbolTreeState state;
     this->saveState(&state);
+    model->clear();
+    QStandardItem *root = new QStandardItem(json.value("ImportPath").toString());
+    QDir dir(json.value("Dir").toString());
+    foreach (QString key, json.keys()) {
+        QVariant var = json.value(key);
+        if (var.type() == QVariant::List) {
+            QStandardItem *item = new QStandardItem(key);
+            ITEM_TYPE type = ITEM_NONE;
+            if (key.indexOf("Deps") >= 0) {
+                type = ITEM_DEP;
+            } else if (key.indexOf("Imports") >= 0) {
+                type = ITEM_IMPORT;
+            } else if (key.indexOf("Files") >= 0) {
+                type = ITEM_SOURCE;
+            }
 
+            foreach(QVariant v, var.toList()) {
+                QStandardItem *i = new QStandardItem(v.toString());
+                i->setData(type,RoleItem);
+                if (type == ITEM_SOURCE) {
+                    i->setData(QFileInfo(dir,v.toString()).filePath(),RolePath);
+                }
+                item->appendRow(i);
+            }
+            root->appendRow(item);
+        }
+    }
+    model->appendRow(root);
 
-    root->setText(json.value("ImportPath").toString());
-    src->removeRows(0,src->rowCount());
-    imports->removeRows(0,imports->rowCount());
-    deps->removeRows(0,deps->rowCount());
+    this->loadState(this->model,&state);
 
     fileList.clear();
     nameList.clear();
 
-    QDir dir(json.value("Dir").toString());
     QStringList nameFilter;
     nameFilter << "*.go" << "*.h" << "*.c" << "*.cpp" << "*.s";
     foreach(QFileInfo info, dir.entryInfoList(nameFilter,QDir::Files,QDir::Type|QDir::Name)) {
-        QStandardItem *item = new QStandardItem(info.fileName());
-        item->setData(ITEM_SOURCE,RoleItem);
-        item->setData(info.filePath(),RolePath);
         fileList.append(info.filePath());
         nameList.append(info.fileName());
-        src->appendRow(item);
     }
-    foreach(QVariant import , json.value("Imports").toList()) {
-        QStandardItem *item = new QStandardItem(import.toString());
-        item->setData(ITEM_IMPORT,RoleItem);
-        imports->appendRow(item);
-    }
-    foreach(QVariant dep , json.value("Deps").toList()) {
-        QStandardItem *item = new QStandardItem(dep.toString());
-        item->setData(ITEM_DEP,RoleItem);
-        deps->appendRow(item);
-    }
-
-    this->loadState(this->model,&state);
 }
