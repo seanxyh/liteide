@@ -374,13 +374,12 @@ void NewFileDialog::on_locationBrowseButton_clicked()
         return;
     }
     ui->locationLineEdit->setText(location);
-    /*
+
     if (m_cur.type == "project") {
         m_projectLocation = location;
-    } else {
+    } else if (m_cur.type == "file"){
         m_fileLocation = location;
-    }
-    */
+    }    
 }
 
 void NewFileDialog::locationLineChanged(QString)
