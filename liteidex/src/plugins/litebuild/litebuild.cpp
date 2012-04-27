@@ -568,7 +568,7 @@ void LiteBuild::execAction(const QString &id)
         bool b = QProcess::startDetached(cmd,arguments,m_workDir);
         m_output->appendTag0(QString("<action id=\"%1\" workdir=\"%2\" cmd=\"%3\" args=\"%4\">\n")
                              .arg(id).arg(m_workDir).arg(ba->cmd()).arg(ba->args()));
-        m_output->appendTag1(QString("> %1 %2 ...\n").arg(cmd).arg(args));
+        m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_output->appendTag1(QString("> Start process %1\n").arg(b?"success":"false"));
         m_output->appendTag0(QString("</action>\n"));
     } else {
@@ -578,7 +578,7 @@ void LiteBuild::execAction(const QString &id)
         m_process->setWorkingDirectory(m_workDir);
         m_output->appendTag0(QString("<action id=\"%1\" workdir=\"%2\" cmd=\"%3\" args=\"%4\">\n")
                              .arg(id).arg(m_workDir).arg(ba->cmd()).arg(ba->args()));
-        m_output->appendTag1(QString("> %1 %2 ...\n").arg(cmd).arg(args));
+        m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_process->start(cmd,arguments);
     }
 }
