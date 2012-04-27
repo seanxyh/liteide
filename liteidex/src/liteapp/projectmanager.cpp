@@ -96,7 +96,7 @@ bool ProjectManager::initWithApp(IApplication *app)
 
     layout->addLayout(headLayout);
 
-    tab->addTab(m_fileSystemWidget->widget(),tr("FileSystem"));
+    tab->addTab(m_fileSystemWidget,tr("FileSystem"));
     tab->addTab(m_scrollArea,tr("Project Info"));
 
     layout->addWidget(tab);
@@ -321,7 +321,7 @@ void ProjectManager::closeProjectHelper(IProject *project)
     if (cur == 0) {
         return;
     }
-
+    m_fileSystemWidget->clear();
     emit projectAboutToClose(cur);
 
     m_scrollArea->takeWidget();

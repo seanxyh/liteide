@@ -69,6 +69,7 @@ class FileSystemModel : public QAbstractItemModel
 public:
     explicit FileSystemModel(QObject *parent = 0);
     ~FileSystemModel();
+    void clear();
     void setFilter(QDir::Filters filters);
     void setSort(QDir::SortFlags flags);
     QDir::Filters filter() const;

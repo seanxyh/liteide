@@ -82,6 +82,7 @@ protected:
     QMap<QString,QVariant> m_json;
     GoTool      *m_goTool;
     QTimer      *m_reloadTimer;
+    QString      m_filePath;
 };
 
 #endif // PACKAGEPROJECT_H

@@ -42,7 +42,6 @@
 #endif
 //lite_memory_check_end
 
-
 static inline QString getRootPath()
 {
     QDir rootDir = QApplication::applicationDirPath();

@@ -209,7 +209,7 @@ FileSystemModel::FileSystemModel(QObject *parent) :
 {
     m_filters = QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot;
     m_sorts = QDir::DirsFirst | QDir::Name | QDir::Type;
-    connect(m_fileWatcher,SIGNAL(directoryChanged(QString)),this,SLOT(directoryChanged(QString)));
+   // connect(m_fileWatcher,SIGNAL(directoryChanged(QString)),this,SLOT(directoryChanged(QString)));
 }
 
 FileSystemModel::~FileSystemModel()
@@ -220,12 +220,26 @@ FileSystemModel::~FileSystemModel()
 
 void FileSystemModel::directoryChanged(const QString &path)
 {
+    this->beginResetModel();
+    QDir dir(path);
+    bool b = dir.exists();
+    if (!b) {
+        m_fileWatcher->removePath(path);
+    }
+    qDebug() << "change" << path << b;
     foreach(QModelIndex index,this->findPaths(path)) {
         FileNode *node = nodeFromIndex(index);
-        this->beginRemoveRows(index,0,this->rowCount(index)-1);
-        node->reload();
-        this->endRemoveRows();
+        if (b) {
+            node->reload();
+        }
+        else {
+            FileNode *parent = node->parent();
+            if (parent) {
+                parent->reload();
+            }
+        }
     }
+    this->endResetModel();
 }
 
 FileNode *FileSystemModel::nodeFromIndex(const QModelIndex &index) const
@@ -285,6 +299,15 @@ QDir::Filters FileSystemModel::filter() const
 QDir::SortFlags FileSystemModel::sort() const
 {
     return m_sorts;
+}
+
+void FileSystemModel::clear()
+{
+    this->beginResetModel();
+    m_rootNode->clear();
+    m_pathList.clear();
+    m_startPath.clear();
+    this->endResetModel();
 }
 
 void FileSystemModel::setRootPath(const QString &path)

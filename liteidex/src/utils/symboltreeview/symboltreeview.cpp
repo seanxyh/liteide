@@ -137,8 +137,8 @@ void SymbolTreeView::collapsedTree(const QModelIndex &index)
 void SymbolTreeView::reset()
 {
     QTreeView::reset();
-    setRootIndex(model()->index(0,0));
-
+    //setRootIndex(model()->index(0,0));
+    //this->setRootIndex(QModelIndex());
     m_expandIndexs.clear();
 }
 

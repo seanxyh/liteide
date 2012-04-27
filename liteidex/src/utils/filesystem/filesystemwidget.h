@@ -35,11 +35,11 @@
 #include <QDir>
 #include <QLabel>
 
-class FileSystemWidget : QWidget
+class FileSystemWidget : public QWidget
 {
     Q_OBJECT
 public:
-    FileSystemWidget(LiteApi::IApplication *app, QWidget *parent = 0);
+    explicit FileSystemWidget(LiteApi::IApplication *app, QWidget *parent = 0);
     virtual ~FileSystemWidget();
     QWidget *widget() { return this; }
     void setPathList(const QStringList &pathList);
@@ -48,7 +48,9 @@ public:
     void setStartIndex(const QModelIndex &index);
     void setRootPath(const QString &path);
     QString startPath() const;
+    void clear();
 public slots:
+    void directoryChanged(QString);
     void pathIndexChanged(const QModelIndex & index);
     void openPathIndex(const QModelIndex &index);
     void currentEditorChanged(LiteApi::IEditor*);
