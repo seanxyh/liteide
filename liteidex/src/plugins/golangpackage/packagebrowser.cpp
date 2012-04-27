@@ -159,6 +159,7 @@ void PackageBrowser::editPackage()
     if (dir.exists()) {
         PackageProject *proj = new PackageProject(m_liteApp);
         proj->setJson(json.toMap());
+        proj->setPath(dir.path());
         m_liteApp->projectManager()->setCurrentProject(proj);;
         m_liteApp->fileManager()->addRecentFile(dir.path(),"gopkg");
     }

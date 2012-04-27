@@ -41,6 +41,7 @@
 #include <QLineEdit>
 #include <QUrl>
 #include <QToolBar>
+#include <QFileSystemWatcher>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -106,6 +107,8 @@ FileSystemWidget::FileSystemWidget(LiteApi::IApplication *app, QWidget *parent) 
     m_folderMenu->addAction(m_openShellAct);
     m_folderMenu->addAction(m_openExplorerAct);
 
+
+    connect(m_model->fileWatcher(),SIGNAL(directoryChanged(QString)),this,SLOT(directoryChanged(QString)));
     connect(m_openEditorAct,SIGNAL(triggered()),this,SLOT(openEditor()));
     connect(m_newFileAct,SIGNAL(triggered()),this,SLOT(newFile()));
     connect(m_newFileWizardAct,SIGNAL(triggered()),this,SLOT(newFileWizard()));
@@ -125,6 +128,19 @@ FileSystemWidget::~FileSystemWidget()
 //    m_liteApp->settings()->setValue("GolangTool/synceditor",m_syncEditor->isChecked());
 //    m_liteApp->settings()->setValue("GolangTool/syncproject",m_syncProject->isChecked());
 //    m_liteApp->settings()->setValue("golangtool/gopath",m_pathList);
+}
+
+void FileSystemWidget::clear()
+{
+    m_model->clear();
+}
+
+void FileSystemWidget::directoryChanged(QString dir)
+{
+    SymbolTreeState state;
+    m_tree->saveState(&state);
+    m_model->directoryChanged(dir);
+    m_tree->loadState(m_model,&state);
 }
 
 QDir FileSystemWidget::contextDir() const
@@ -284,9 +300,11 @@ void FileSystemWidget::removeFolder()
                           QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::No);
     if (ret == QMessageBox::Yes) {
         QDir dir = info.dir();
+        m_model->fileWatcher()->removePath(info.filePath());
         if (!dir.rmdir(info.fileName())) {
             QMessageBox::information(m_liteApp->mainWindow(),tr("Remove Folder"),
                                      tr("Failed to remove the folder!"));
+            m_model->fileWatcher()->addPath(info.filePath());
         }
     }
 }
@@ -352,6 +370,7 @@ void FileSystemWidget::setPathList(const QStringList &pathList)
 void FileSystemWidget::setRootPath(const QString &path)
 {
     m_model->setRootPath(path);
+    m_tree->expand(m_model->startIndex());
 }
 
 QStringList FileSystemWidget::pathList() const

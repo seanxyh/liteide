@@ -140,6 +140,7 @@ void PackageProject::loadProject(LiteApi::IApplication *app, const QString &path
 
 void PackageProject::setPath(const QString &path)
 {
+    m_filePath = path;
     m_goTool->setWorkDir(path);
 }
 
@@ -152,7 +153,6 @@ void PackageProject::reload()
 void PackageProject::setJson(const QMap<QString,QVariant> &json)
 {
     m_json = json;
-    m_goTool->setWorkDir(m_json.value("Dir").toString());
 }
 
 QWidget *PackageProject::widget()
@@ -166,7 +166,7 @@ QString PackageProject::name() const
 }
 QString PackageProject::filePath() const
 {
-    return m_json.value("Dir").toString();
+    return m_filePath;
 }
 QString PackageProject::mimeType() const
 {
@@ -185,7 +185,7 @@ QStringList PackageProject::filePathList() const
 }
 QString PackageProject::fileNameToFullPath(const QString &filePath)
 {
-    QDir dir(m_json.value("Dir").toString());
+    QDir dir(m_filePath);
     return QFileInfo(dir,filePath).filePath();
 }
 
@@ -210,7 +210,7 @@ TARGETDIR
 QMap<QString,QString> PackageProject::projectInfo() const
 {
     QMap<QString,QString> m;
-    QFileInfo info(m_json.value("Dir").toString());
+    QFileInfo info(m_filePath);
     m.insert("PROJECTPATH",info.filePath());
     m.insert("PROJECTNAME",info.fileName());
     m.insert("PROJECTDIR",info.filePath());
@@ -220,7 +220,7 @@ QMap<QString,QString> PackageProject::projectInfo() const
 QMap<QString,QString> PackageProject::targetInfo() const
 {
     QMap<QString,QString> m;
-    QDir dir(m_json.value("Dir").toString());
+    QDir dir(m_filePath);
     m.insert("WORKDIR",dir.path());
     QString name = m_json.value("ImportPath").toString();
     name = QFileInfo(name).fileName();
@@ -232,7 +232,6 @@ QMap<QString,QString> PackageProject::targetInfo() const
 
 void PackageProject::load()
 {
-    //m_model->setRootPath(m_json.value("Dir").toString());
     m_treeView->loadJson(m_json);
 }
 
@@ -309,7 +308,7 @@ void PackageProject::addSource()
     if (source.isEmpty()) {
         return;
     }
-    QDir dir(m_json.value("Dir").toString());
+    QDir dir(m_filePath);
     QFileInfo info(dir,source);
     QString fileName = info.filePath();
     if (info.suffix().isEmpty()) {
