@@ -55,6 +55,7 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp(app)
 {
     m_widget = new QWidget;
+    m_bAstProject = false;
 
     m_currentEditor = 0;
 
@@ -123,6 +124,9 @@ void GolangAst::setEnable(bool b)
 
 void GolangAst::projectChanged(LiteApi::IProject *project)
 {
+    if (!m_bAstProject) {
+        return;
+    }
     if (project) {
         m_projectAstWidget->clear();
     }
@@ -134,12 +138,20 @@ void GolangAst::projectChanged(LiteApi::IProject *project)
 
 void GolangAst::projectReloaded()
 {
+    if (!m_bAstProject) {
+        return;
+    }
+
     LiteApi::IProject *project = (LiteApi::IProject*)sender();
     loadProject(project);
 }
 
 void GolangAst::loadProject(LiteApi::IProject *project)
 {
+    if (!m_bAstProject) {
+        return;
+    }
+
     m_updateFileNames.clear();
     m_updateFilePaths.clear();
     if (project) {
@@ -201,7 +213,7 @@ void GolangAst::editorAboutToClose(LiteApi::IEditor *editor)
 
 void GolangAst::editorChanged(LiteApi::IEditor *editor)
 {
-    if (!m_liteApp->projectManager()->currentProject()) {
+    if (!m_liteApp->projectManager()->currentProject() || !m_bAstProject) {
         m_updateFileNames.clear();
         m_updateFilePaths.clear();
         m_currentEditor = editor;
@@ -268,7 +280,7 @@ void GolangAst::updateAstNow()
 void GolangAst::finishedProcess(int code,QProcess::ExitStatus status)
 {
     if (code == 0 && status == QProcess::NormalExit) {
-        if (m_liteApp->projectManager()->currentProject()) {
+        if (m_liteApp->projectManager()->currentProject() && m_bAstProject) {
             m_projectAstWidget->updateModel(m_process->readAllStandardOutput());
         } else if (m_currentEditor) {
             AstWidget *w = m_editorAstWidgetMap.value(m_currentEditor);

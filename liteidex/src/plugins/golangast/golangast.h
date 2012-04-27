@@ -72,6 +72,7 @@ protected:
     AstWidget *m_projectAstWidget;
     LiteApi::IEditor *m_currentEditor;
     QMap<LiteApi::IEditor*,AstWidget*> m_editorAstWidgetMap;
+    bool m_bAstProject;
 };
 
 #endif // GOLANGAST_H
