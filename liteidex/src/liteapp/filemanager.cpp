@@ -401,26 +401,25 @@ void FileManager::applyOption(QString id)
 
 void FileManager::updateRecentFileActions(const QString &scheme)
 {
-    QMenu *menu = 0;
-    foreach (QAction *act, m_recentMenu->actions()) {
-        QMenu *m = act->menu();
-        if (m && (m->title() == scheme)) {
-            menu = m;
-            break;
-        }
+    QMenu *menu = m_schemeMenuMap.value(scheme);
+    if (!menu) {
+        QAction *act = new QAction(scheme,this);
+        m_recentMenu->insertAction(m_recentSeparator,act);
+        menu = new QMenu(scheme);
+        act->setMenu(menu);
+        m_schemeMenuMap.insert(scheme,menu);
     }
     if (!menu) {
-        menu = new QMenu(scheme);
-        menu->setParent(m_recentMenu);
-        m_recentMenu->insertMenu(m_recentSeparator,menu);
+        return;
     }
-    menu->clear();
+    menu->clear();;
     int count = 0;
     foreach (QString file, this->recentFiles(scheme)) {
         if (count++ > m_maxRecentFiles) {
             return;
         }
-        QAction *act = menu->addAction(file);
+        QAction *act = new QAction(file,menu);
+        menu->addAction(act);
         act->setData(scheme);
         connect(act,SIGNAL(triggered()),this,SLOT(openRecentFile()));
     }
