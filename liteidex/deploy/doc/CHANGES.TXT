@@ -1,10 +1,12 @@
-==== 2012.4.26 Ver X11 1.71875 beta3 ===
+==== 2012.5.2 Ver X11 1.71875 beta3 ===
  * GolangPackage : new golang package plugin for GO1
  * GolangPackage : PackageBrowser and PackageProject for GO1
  * GolangTool : remove the plugin
  * GolangDoc: add golang api for GO1
  * GolangDoc: add golang api filter
  * GolangAst: add filter
+ * GolangAst: classview and outline
+ * LiteEditor : compelter option
  * LiteApp : new file wizard support GO1
  * Welcome : new recent page
  * gopromake : update pkg depend
