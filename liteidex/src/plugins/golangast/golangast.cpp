@@ -38,6 +38,7 @@
 #include <QSortFilterProxyModel>
 #include <QTimer>
 #include <QDir>
+#include <QLabel>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -54,23 +55,26 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     LiteApi::IGolangAst(parent),
     m_liteApp(app)
 {
-    m_widget = new QWidget;
-    m_bAstProject = false;
+    m_widget = new QTabWidget;
 
     m_currentEditor = 0;
+    m_blankWidget = new QLabel(tr("No outline available"));
+    m_blankWidget->setAlignment(Qt::AlignCenter);
 
     m_stackedWidget = new QStackedWidget;
+    m_stackedWidget->addWidget(m_blankWidget);
 
     m_projectAstWidget = new AstWidget(m_liteApp);
-    m_stackedWidget->addWidget(m_projectAstWidget);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setMargin(0);
-    mainLayout->addWidget(m_stackedWidget);
-    m_widget->setLayout(mainLayout);
+    m_widget->addTab(m_projectAstWidget,tr("Project"));
+    m_widget->addTab(m_stackedWidget,tr("Outline"));
+
     m_process = new QProcess(this);
-
     m_timer = new QTimer(this);
+
+    m_processFile = new QProcess(this);
+    m_timerFile = new QTimer(this);
+
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_liteApp->editorManager(),SIGNAL(editorAboutToClose(LiteApi::IEditor*)),this,SLOT(editorAboutToClose(LiteApi::IEditor*)));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(projectChanged(LiteApi::IProject*)));
@@ -78,9 +82,10 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     connect(m_liteApp->editorManager(),SIGNAL(editorSaved(LiteApi::IEditor*)),this,SLOT(editorSaved(LiteApi::IEditor*)));
     connect(m_process,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finishedProcess(int,QProcess::ExitStatus)));
     connect(m_timer,SIGNAL(timeout()),this,SLOT(updateAstNow()));
+    connect(m_processFile,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finishedProcessFile(int,QProcess::ExitStatus)));
+    connect(m_timerFile,SIGNAL(timeout()),this,SLOT(updateAstNowFile()));
     connect(m_projectAstWidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedTree(QModelIndex)));
 
-    m_stackedWidget->setVisible(true);
     m_liteApp->extension()->addObject("GoAstView.Widget",m_widget);
     m_liteApp->extension()->addObject("LiteApi.IGolangAst",this);
 }
@@ -91,6 +96,10 @@ GolangAst::~GolangAst()
         m_timer->stop();
     }
     delete m_process;
+    if (m_timerFile->isActive()) {
+        m_timerFile->stop();
+    }
+    delete m_processFile;
     m_liteApp->dockManager()->removeDock(m_widget);
     delete m_widget;
 }
@@ -124,9 +133,6 @@ void GolangAst::setEnable(bool b)
 
 void GolangAst::projectChanged(LiteApi::IProject *project)
 {
-    if (!m_bAstProject) {
-        return;
-    }
     if (project) {
         m_projectAstWidget->clear();
     }
@@ -138,20 +144,12 @@ void GolangAst::projectChanged(LiteApi::IProject *project)
 
 void GolangAst::projectReloaded()
 {
-    if (!m_bAstProject) {
-        return;
-    }
-
     LiteApi::IProject *project = (LiteApi::IProject*)sender();
     loadProject(project);
 }
 
 void GolangAst::loadProject(LiteApi::IProject *project)
 {
-    if (!m_bAstProject) {
-        return;
-    }
-
     m_updateFileNames.clear();
     m_updateFilePaths.clear();
     if (project) {
@@ -169,14 +167,9 @@ void GolangAst::loadProject(LiteApi::IProject *project)
         m_workPath = project->projectInfo().value("PROJECTDIR");
         m_process->setWorkingDirectory(m_workPath);
         m_projectAstWidget->setWorkPath(m_workPath);
-        m_stackedWidget->setCurrentWidget(m_projectAstWidget);
         updateAst();
     } else {
         m_projectAstWidget->clear();
-        LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
-        if (editor) {
-            editorChanged(editor);
-        }
     }
 }
 
@@ -213,29 +206,27 @@ void GolangAst::editorAboutToClose(LiteApi::IEditor *editor)
 
 void GolangAst::editorChanged(LiteApi::IEditor *editor)
 {
-    if (!m_liteApp->projectManager()->currentProject() || !m_bAstProject) {
-        m_updateFileNames.clear();
-        m_updateFilePaths.clear();
-        m_currentEditor = editor;
-        AstWidget *w = m_editorAstWidgetMap.value(editor);
-        if (w) {
-            m_stackedWidget->setCurrentWidget(w);
-        }
-        if (editor) {
-            QString fileName = editor->filePath();
-            if (!fileName.isEmpty()) {
-                QFileInfo info(fileName);
-                m_workPath = info.absolutePath();
-                m_process->setWorkingDirectory(info.absolutePath());
-                if (info.suffix() == "go") {
-                    m_updateFileNames.append(info.fileName());
-                    m_updateFilePaths.append(info.filePath());
-                }
-            }
-            updateAst();
-        }
+    m_editorFileName.clear();
+    m_editorFilePath.clear();
+    m_currentEditor = editor;
+    AstWidget *w = m_editorAstWidgetMap.value(editor);
+    if (w) {
+        m_stackedWidget->setCurrentWidget(w);
     } else {
-        m_currentEditor = 0;
+        m_stackedWidget->setCurrentWidget(m_blankWidget);
+    }
+    if (editor) {
+        QString fileName = editor->filePath();
+        if (!fileName.isEmpty()) {
+            QFileInfo info(fileName);
+            m_workPath = info.absolutePath();
+            m_processFile->setWorkingDirectory(info.absolutePath());
+            if (info.suffix() == "go") {
+                m_editorFileName.append(info.fileName());
+                m_editorFilePath.append(info.filePath());
+            }
+        }
+        updateAstFile();
     }
 }
 
@@ -244,15 +235,18 @@ void GolangAst::editorSaved(LiteApi::IEditor *editor)
     if (editor) {
         QString fileName = editor->filePath();
         QFileInfo info(fileName);
-        if (!fileName.isEmpty() && info.suffix() == "go" && m_updateFilePaths.contains(info.filePath())) {
-            updateAst();
+        if (!fileName.isEmpty() && info.suffix() == "go") {
+            updateAstFile();
+            if (m_updateFilePaths.contains(info.filePath())) {
+                updateAst();
+            }
         }
     }
 }
 
 void GolangAst::updateAst()
 {
-    m_timer->start(1000);
+    m_timer->start(1500);
 }
 
 void GolangAst::updateAstNow()
@@ -277,15 +271,52 @@ void GolangAst::updateAstNow()
     m_process->start(cmd,args);
 }
 
+void GolangAst::updateAstFile()
+{
+    m_timerFile->start(1000);
+}
+
+void GolangAst::updateAstNowFile()
+{
+    if (m_timerFile->isActive()) {
+        m_timerFile->stop();
+    }
+    if (m_editorFileName.isEmpty()) {
+        return;
+    }
+#ifdef Q_OS_WIN
+    QString goastview = "goastview.exe";
+#else
+    QString goastview = "goastview";
+#endif
+    QString cmd = m_liteApp->applicationPath();
+    cmd += "/";
+    cmd += goastview;
+    QStringList args;
+    args << "-files";
+    args << m_editorFileName;
+    m_processFile->start(cmd,args);
+}
+
+
 void GolangAst::finishedProcess(int code,QProcess::ExitStatus status)
 {
     if (code == 0 && status == QProcess::NormalExit) {
-        if (m_liteApp->projectManager()->currentProject() && m_bAstProject) {
+        if (m_liteApp->projectManager()->currentProject()) {
             m_projectAstWidget->updateModel(m_process->readAllStandardOutput());
-        } else if (m_currentEditor) {
+        }
+    } else {
+        //qDebug() << m_process->readAllStandardError();
+    }
+}
+
+void GolangAst::finishedProcessFile(int code,QProcess::ExitStatus status)
+{
+    if (code == 0 && status == QProcess::NormalExit) {
+        if (m_currentEditor) {
             AstWidget *w = m_editorAstWidgetMap.value(m_currentEditor);
             if (w) {
-                w->updateModel(m_process->readAllStandardOutput());
+                w->updateModel(m_processFile->readAllStandardOutput());
             }
         }
     } else {

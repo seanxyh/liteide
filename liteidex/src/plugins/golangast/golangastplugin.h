@@ -43,6 +43,7 @@ protected slots:
     void checkEnableGolangAst();
 protected:
     GolangAst *m_golangAst;
+    GolangAst *m_outlineAst;
     bool    m_bVisible;
     bool    m_bEnable;
 };
