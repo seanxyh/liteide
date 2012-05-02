@@ -533,7 +533,7 @@ void LiteEditor::updateTip(QString func,QString args)
         return;
     }
     m_tip->setToolTip(func+args);
-    QToolTip::showText(m_toolBar->mapToGlobal(m_tip->pos()),func+args,m_tip);
+    QToolTip::showText(m_toolBar->mapToGlobal(m_tip->pos()),func+" "+args,m_tip);
 }
 
 void LiteEditor::filePrintPreview()

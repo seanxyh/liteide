@@ -32,15 +32,19 @@
 
 class QTreeView;
 
-struct Package {
-    QString dir;
-    QString importPath;
-    QString Name;
-    QString doc;
-    QString target;
-    bool    goroot;
-    bool    standard;
-};
+namespace PackageType {
+    enum ITEM_TYPE{
+        ITEM_NONE = 0,
+        ITEM_PACKAGE,
+        ITEM_SOURCE,
+        ITEM_IMPORT,
+        ITEM_DEP
+    };
+    enum Role_Type{
+        RoleItem = Qt::UserRole+1,
+        RolePath
+    };
+}
 
 class QStandardItemModel;
 class PackageBrowser : public QObject
@@ -48,15 +52,17 @@ class PackageBrowser : public QObject
     Q_OBJECT
 public:
     explicit PackageBrowser(LiteApi::IApplication *app, QObject *parent = 0);
+    ~PackageBrowser();
 signals:
     
 public slots:
-    void reload();
+    void reloadAll();
     void setupGopath();
-    void viewGodoc();
-    void editPackage();
+    void loadPackageDoc();
+    void loadPackageProject();
     void finished(int,QProcess::ExitStatus);
     void customContextMenuRequested(QPoint);
+    void openSource();
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget      *m_widget;
@@ -66,11 +72,15 @@ protected:
     QStringList   m_gopathList;
     bool         m_groupByPath;
     bool         m_hideStandard;
-    QMenu       *m_contextMenu;
+    QMenu       *m_rootMenu;
+    QMenu       *m_pkgMenu;
+    QMenu       *m_fileMenu;
     QAction     *m_reloadAct;
     QAction     *m_setupGopathAct;
     QAction     *m_godocAct;
     QAction     *m_editPackageAct;
+    QAction     *m_openSrcAct;
+    QMap<QString,QVariant> m_pkgJson;
 };
 
 #endif // PACKAGEBROWSER_H

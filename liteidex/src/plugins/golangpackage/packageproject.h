@@ -28,6 +28,7 @@
 
 #include "liteapi/liteapi.h"
 #include "packagetree.h"
+#include "packagebrowser.h"
 
 #include <QModelIndex>
 #include <QProcess>

@@ -73,7 +73,7 @@ GolangCode::~GolangCode()
 
 void GolangCode::currentEnvChanged(LiteApi::IEnv*)
 {
-    QProcessEnvironment env = m_envManager->currentEnvironment();
+    QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);
     QString goroot = env.value("GOROOT");
     QString gobin = env.value("GOBIN");
     if (!goroot.isEmpty() && gobin.isEmpty()) {

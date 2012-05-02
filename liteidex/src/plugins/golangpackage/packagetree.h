@@ -34,22 +34,8 @@ class PackageTree : public SymbolTreeView
 {
     Q_OBJECT
 public:
-    enum ITEM_TYPE{
-        ITEM_NONE = 0,
-        ITEM_SOURCE,
-        ITEM_IMPORT,
-        ITEM_DEP
-    };
-    enum {
-        RoleItem = Qt::UserRole+1,
-        RolePath
-    };
-public:
     explicit PackageTree(QWidget *parent = 0);
     void loadJson(const QMap<QString,QVariant> &json);
-signals:
-    
-public slots:
 public:
     QStandardItem *root;
     QStandardItem *src;

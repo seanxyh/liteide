@@ -29,6 +29,7 @@
 #include <QStandardItemModel>
 #include <QDir>
 #include <QFileInfo>
+#include "packagebrowser.h"
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -58,20 +59,20 @@ void PackageTree::loadJson(const QMap<QString, QVariant> &json)
         QVariant var = json.value(key);
         if (var.type() == QVariant::List) {
             QStandardItem *item = new QStandardItem(key);
-            ITEM_TYPE type = ITEM_NONE;
+            PackageType::ITEM_TYPE type = PackageType::ITEM_NONE;
             if (key.indexOf("Deps") >= 0) {
-                type = ITEM_DEP;
+                type = PackageType::ITEM_DEP;
             } else if (key.indexOf("Imports") >= 0) {
-                type = ITEM_IMPORT;
+                type = PackageType::ITEM_IMPORT;
             } else if (key.indexOf("Files") >= 0) {
-                type = ITEM_SOURCE;
+                type = PackageType::ITEM_SOURCE;
             }
 
             foreach(QVariant v, var.toList()) {
                 QStandardItem *i = new QStandardItem(v.toString());
-                i->setData(type,RoleItem);
-                if (type == ITEM_SOURCE) {
-                    i->setData(QFileInfo(dir,v.toString()).filePath(),RolePath);
+                i->setData(type,PackageType::RoleItem);
+                if (type == PackageType::ITEM_SOURCE) {
+                    i->setData(QFileInfo(dir,v.toString()).filePath(),PackageType::RolePath);
                 }
                 item->appendRow(i);
             }
