@@ -51,7 +51,8 @@
 
 LiteEditorWidget::LiteEditorWidget(QWidget *parent) :
     LiteEditorWidgetBase(parent),
-    m_completer(0)
+    m_completer(0),
+    m_completionPrefixMin(3)
 {
 }
 
@@ -133,7 +134,7 @@ void LiteEditorWidget::keyPressEvent(QKeyEvent *e)
     QString completionPrefix = textUnderCursor(textCursor());
 
     if (!isShortcut && (hasModifier || e->text().isEmpty()||
-                        ( completionPrefix.length() < 3 && completionPrefix.right(1) != ".")
+                        ( completionPrefix.length() < m_completionPrefixMin && completionPrefix.right(1) != ".")
                         || eow.contains(e->text().right(1)))) {
         m_completer->popup()->hide();
         return;

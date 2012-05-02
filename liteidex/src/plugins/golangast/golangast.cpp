@@ -66,7 +66,7 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
 
     m_projectAstWidget = new AstWidget(m_liteApp);
 
-    m_widget->addTab(m_projectAstWidget,tr("Project"));
+    m_widget->addTab(m_projectAstWidget,tr("ClassView"));
     m_widget->addTab(m_stackedWidget,tr("Outline"));
 
     m_process = new QProcess(this);

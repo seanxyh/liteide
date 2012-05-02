@@ -37,6 +37,10 @@ public:
 
     void setCompleter(QCompleter *m_completer);
     QCompleter *completer() const;
+    void setPrefixMin(int min) {m_completionPrefixMin = min; }
+    int prefixMin() const{
+        return m_completionPrefixMin;
+    }
 
 protected:
     void keyPressEvent(QKeyEvent *e);
@@ -51,6 +55,7 @@ public:
     QString textUnderCursor(QTextCursor tc) const;
 protected:
     QCompleter *m_completer;
+    int m_completionPrefixMin;
 };
 
 #endif // LITEEDITORWIDGET_H

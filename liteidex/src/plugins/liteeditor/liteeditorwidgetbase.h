@@ -65,8 +65,20 @@ public:
     void setAutoIndent(bool b){
         m_autoIndent = b;
     }
-    void setAutoBraces(bool b) {
-        m_autoBraces = b;
+    void setAutoBraces0(bool b) {
+        m_autoBraces0 = b;
+    }
+    void setAutoBraces1(bool b) {
+        m_autoBraces1 = b;
+    }
+    void setAutoBraces2(bool b) {
+        m_autoBraces2 = b;
+    }
+    void setAutoBraces3(bool b) {
+        m_autoBraces3 = b;
+    }
+    void setAutoBraces4(bool b) {
+        m_autoBraces4 = b;
     }
     void setLineNumberVisible(bool b) {
         m_lineNumbersVisible = b;
@@ -78,9 +90,6 @@ public:
     }
     bool autoIndent() {
         return m_autoIndent;
-    }
-    bool autoBraces() {
-        return m_autoBraces;
     }
     bool lineNumberVisible() {
         return m_lineNumbersVisible;
@@ -100,7 +109,11 @@ protected:
     bool m_lineNumbersVisible;
     bool m_marksVisible;
     bool m_autoIndent;
-    bool m_autoBraces;
+    bool m_autoBraces0; //{
+    bool m_autoBraces1; //(
+    bool m_autoBraces2; //[
+    bool m_autoBraces3; //'
+    bool m_autoBraces4; //"
     bool m_bLastBraces;
     QChar m_lastBraces;
     int m_lastSaveRevision;

@@ -76,12 +76,23 @@ LiteEditorOption::LiteEditorOption(LiteApi::IApplication *app,QObject *parent) :
     }
 
     bool autoIndent = m_liteApp->settings()->value("editor/autoindent",true).toBool();
-    bool autoBraces = m_liteApp->settings()->value("editor/autobraces",true).toBool();
+    bool autoBraces0 = m_liteApp->settings()->value("editor/autobraces0",true).toBool();
+    bool autoBraces1 = m_liteApp->settings()->value("editor/autobraces1",true).toBool();
+    bool autoBraces2 = m_liteApp->settings()->value("editor/autobraces2",true).toBool();
+    bool autoBraces3 = m_liteApp->settings()->value("editor/autobraces3",true).toBool();
+    bool autoBraces4 = m_liteApp->settings()->value("editor/autobraces4",true).toBool();
     bool lineNumberVisible = m_liteApp->settings()->value("editor/linenumbervisible",true).toBool();
 
+    int min = m_liteApp->settings()->value("editor/prefixlength",1).toInt();
+
     ui->autoIndentCheckBox->setChecked(autoIndent);
-    ui->autoBracesCheckBox->setChecked(autoBraces);
+    ui->autoBraces0CheckBox->setChecked(autoBraces0);
+    ui->autoBraces1CheckBox->setChecked(autoBraces1);
+    ui->autoBraces2CheckBox->setChecked(autoBraces2);
+    ui->autoBraces3CheckBox->setChecked(autoBraces3);
+    ui->autoBraces4CheckBox->setChecked(autoBraces4);
     ui->lineNumberVisibleCheckBox->setChecked(lineNumberVisible);
+    ui->preMinLineEdit->setText(QString("%1").arg(min));
 
     connect(ui->editPushButton,SIGNAL(clicked()),this,SLOT(editStyleFile()));
 }
@@ -114,18 +125,30 @@ void LiteEditorOption::apply()
     }
     QString style = ui->styleComboBox->currentText();
     bool autoIndent = ui->autoIndentCheckBox->isChecked();
-    bool autoBraces = ui->autoBracesCheckBox->isChecked();
+    bool autoBraces0 = ui->autoBraces0CheckBox->isChecked();
+    bool autoBraces1 = ui->autoBraces1CheckBox->isChecked();
+    bool autoBraces2 = ui->autoBraces2CheckBox->isChecked();
+    bool autoBraces3 = ui->autoBraces3CheckBox->isChecked();
+    bool autoBraces4 = ui->autoBraces4CheckBox->isChecked();
     bool lineNumberVisible = ui->lineNumberVisibleCheckBox->isChecked();
     bool antialias = ui->antialiasCheckBox->isChecked();
+    int min = ui->preMinLineEdit->text().toInt();
+    if (min < 0 || min > 10) {
+        min = 1;
+    }
 
     m_liteApp->settings()->setValue("editor/family",m_fontFamily);
     m_liteApp->settings()->setValue("editor/fontsize",m_fontSize);
     m_liteApp->settings()->setValue("editor/antialias",antialias);
     m_liteApp->settings()->setValue("editor/style",style);
     m_liteApp->settings()->setValue("editor/autoindent",autoIndent);
-    m_liteApp->settings()->setValue("editor/autobraces",autoBraces);
+    m_liteApp->settings()->setValue("editor/autobraces0",autoBraces0);
+    m_liteApp->settings()->setValue("editor/autobraces1",autoBraces1);
+    m_liteApp->settings()->setValue("editor/autobraces2",autoBraces2);
+    m_liteApp->settings()->setValue("editor/autobraces3",autoBraces3);
+    m_liteApp->settings()->setValue("editor/autobraces4",autoBraces4);
     m_liteApp->settings()->setValue("editor/linenumbervisible",lineNumberVisible);
-
+    m_liteApp->settings()->setValue("editor/prefixlength",min);
 }
 
 LiteEditorOption::~LiteEditorOption()
