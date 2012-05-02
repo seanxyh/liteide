@@ -35,6 +35,7 @@
 
 class QStackedWidget;
 class AstWidget;
+class QLabel;
 class GolangAst : public LiteApi::IGolangAst
 {
     Q_OBJECT
@@ -56,23 +57,29 @@ public slots:
     void editorChanged(LiteApi::IEditor*);
     void editorSaved(LiteApi::IEditor*);
     void finishedProcess(int,QProcess::ExitStatus);
+    void finishedProcessFile(int,QProcess::ExitStatus);
     void updateAst();
     void updateAstNow();
+    void updateAstFile();
+    void updateAstNowFile();
     void doubleClickedTree(QModelIndex);
 protected:
     LiteApi::IApplication *m_liteApp;
-    QWidget *m_widget;
+    QTabWidget *m_widget;
     QTimer  *m_timer;
+    QTimer  *m_timerFile;
     QProcess *m_process;
+    QProcess *m_processFile;
     QStringList m_updateFileNames;
     QStringList m_updateFilePaths;
-    QStringList m_processFiles;
+    QString m_editorFileName;
+    QString m_editorFilePath;
     QString m_workPath;
     QStackedWidget *m_stackedWidget;
+    QLabel    *m_blankWidget;
     AstWidget *m_projectAstWidget;
     LiteApi::IEditor *m_currentEditor;
     QMap<LiteApi::IEditor*,AstWidget*> m_editorAstWidgetMap;
-    bool m_bAstProject;
 };
 
 #endif // GOLANGAST_H
