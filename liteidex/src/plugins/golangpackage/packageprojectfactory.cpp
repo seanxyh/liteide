@@ -58,7 +58,7 @@ LiteApi::IProject *PackageProjectFactory::open(const QString &fileName, const QS
     project->setPath(fileName);
     project->reload();
 
-    m_browser->reload();
+    m_browser->reloadAll();
 
     return project;
 }

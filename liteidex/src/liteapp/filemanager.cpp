@@ -86,6 +86,7 @@ FileManager::FileManager()
 
 FileManager::~FileManager()
 {
+    qDeleteAll(m_schemeMenuMap);
     m_liteApp->actionManager()->removeMenu(m_recentMenu);
     delete m_fileWatcher;
     m_liteApp->settings()->setValue("FileManager/initpath",m_initPath);

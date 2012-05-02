@@ -244,14 +244,14 @@ void PackageProject::doubleClicked(QModelIndex index)
     if (!item) {
         return;
     }
-    switch (item->data(PackageTree::RoleItem).toInt()) {
-        case PackageTree::ITEM_SOURCE: {
+    switch (item->data(PackageType::RoleItem).toInt()) {
+        case PackageType::ITEM_SOURCE: {
             QString path = item->data(RolePath).toString();
             m_liteApp->fileManager()->openEditor(path,true);
         }
         break;
-    case PackageTree::ITEM_DEP:
-    case PackageTree::ITEM_IMPORT: {
+    case PackageType::ITEM_DEP:
+    case PackageType::ITEM_IMPORT: {
         QString pkg = item->data(Qt::DisplayRole).toString();
         LiteApi::IGolangDoc *doc = LiteApi::getGolangDoc(m_liteApp);
         if (doc) {
@@ -293,7 +293,7 @@ void PackageProject::editorSaved(LiteApi::IEditor *editor)
         }
     }
     if (find) {
-        m_reloadTimer->start(1000);
+        m_reloadTimer->start(3000);
     }
 }
 

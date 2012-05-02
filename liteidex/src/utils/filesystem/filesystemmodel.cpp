@@ -226,7 +226,7 @@ void FileSystemModel::directoryChanged(const QString &path)
     if (!b) {
         m_fileWatcher->removePath(path);
     }
-    qDebug() << "change" << path << b;
+
     foreach(QModelIndex index,this->findPaths(path)) {
         FileNode *node = nodeFromIndex(index);
         if (b) {
