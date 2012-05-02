@@ -522,32 +522,32 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>FileManager</name>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="126"/>
-        <location filename="src/liteapp/filemanager.cpp" line="147"/>
-        <location filename="src/liteapp/filemanager.cpp" line="168"/>
+        <location filename="src/liteapp/filemanager.cpp" line="127"/>
+        <location filename="src/liteapp/filemanager.cpp" line="148"/>
+        <location filename="src/liteapp/filemanager.cpp" line="169"/>
         <source>All Support File (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="129"/>
-        <location filename="src/liteapp/filemanager.cpp" line="150"/>
-        <location filename="src/liteapp/filemanager.cpp" line="171"/>
+        <location filename="src/liteapp/filemanager.cpp" line="130"/>
+        <location filename="src/liteapp/filemanager.cpp" line="151"/>
+        <location filename="src/liteapp/filemanager.cpp" line="172"/>
         <source>All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="256"/>
+        <location filename="src/liteapp/filemanager.cpp" line="257"/>
         <source>LiteIDE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="257"/>
+        <location filename="src/liteapp/filemanager.cpp" line="258"/>
         <source>Project &apos;%1&apos; is created.
 Do you want to load?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="203"/>
+        <location filename="src/liteapp/filemanager.cpp" line="204"/>
         <source>Open Project or File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -557,12 +557,12 @@ Do you want to load?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="216"/>
+        <location filename="src/liteapp/filemanager.cpp" line="217"/>
         <source>Open Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="229"/>
+        <location filename="src/liteapp/filemanager.cpp" line="230"/>
         <source>Open Project</source>
         <translation type="unfinished">Ouvrir un projet</translation>
     </message>
@@ -581,6 +581,139 @@ This file has been removed. Do you want save to file or close editor?</source>
         <location filename="src/liteapp/filemanager.cpp" line="565"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FileSystemWidget</name>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="78"/>
+        <source>Open Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="79"/>
+        <source>New File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="80"/>
+        <source>New File Wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="81"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="220"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="225"/>
+        <source>Rename File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="82"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="238"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="243"/>
+        <source>Remove File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="84"/>
+        <source>New Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="85"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="279"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="285"/>
+        <source>Rename Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="86"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="298"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="305"/>
+        <source>Remove Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="88"/>
+        <source>Open Terminal Here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="89"/>
+        <source>Open Explorer Here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="179"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="189"/>
+        <source>Create File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="180"/>
+        <source>The filename is exists!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="190"/>
+        <source>Failed to create the file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="220"/>
+        <source>File Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="226"/>
+        <source>Failed to rename the file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="239"/>
+        <source>Confirm remove the file and continue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="244"/>
+        <source>Failed to remove the file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="262"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="265"/>
+        <source>Create Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="263"/>
+        <source>The folder name is exists!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="266"/>
+        <source>Failed to create the folder!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="279"/>
+        <source>Folder Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="286"/>
+        <source>Failed to rename the folder!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="299"/>
+        <source>Confirm remove the foler and continue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="306"/>
+        <source>Failed to remove the folder!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -656,6 +789,24 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/plugins/litefind/findeditor.h" line="85"/>
         <source>Not find</source>
         <translation type="unfinished">Aucune occurrence</translation>
+    </message>
+</context>
+<context>
+    <name>GolangAst</name>
+    <message>
+        <location filename="src/plugins/golangast/golangast.cpp" line="61"/>
+        <source>No outline available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangast/golangast.cpp" line="69"/>
+        <source>ClassView</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangast/golangast.cpp" line="70"/>
+        <source>Outline</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1032,19 +1183,19 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="174"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="567"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="577"/>
         <source>Export HTML</source>
         <translation>Exporter en HTML</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="176"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="594"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="604"/>
         <source>Export PDF</source>
         <translation>Exporter en PDF</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="177"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="618"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="628"/>
         <source>Print Document</source>
         <translation>Imprimer le document</translation>
     </message>
@@ -1069,17 +1220,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="575"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="585"/>
         <source>Can not write file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="576"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="586"/>
         <source>LiteIDE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="635"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="645"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1133,22 +1284,47 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="135"/>
-        <source>Auto complete brackets [] () {} &quot;&quot; &apos;&apos;</source>
-        <oldsource>automatically insert brackets</oldsource>
+        <source>Auto complete brackets {}</source>
+        <oldsource>Auto complete brackets [] () {} &quot;&quot; &apos;&apos;</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="142"/>
+        <source>Auto complete brackets ()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="149"/>
+        <source>Auto complete brackets []</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="156"/>
+        <source>Auto complete brackets &apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="163"/>
+        <source>Auto complete brackets &quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="170"/>
         <source>Enable automatic indentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="152"/>
+        <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="179"/>
+        <source>Word Complete Prefix Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="214"/>
         <source>Display</source>
         <translation>Afficher</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="158"/>
+        <location filename="src/plugins/liteeditor/liteeditoroption.ui" line="220"/>
         <source>Disply line numbers</source>
         <translation>Afficher la numérotation des lignes</translation>
     </message>
@@ -1356,40 +1532,43 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>PackageBrowser</name>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="74"/>
-        <source>Reload</source>
-        <oldsource>Reload All</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="75"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="78"/>
         <source>Setup GOPATH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="76"/>
-        <source>View Godoc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="77"/>
-        <source>Open Package Poject</source>
-        <oldsource>Edit Package</oldsource>
+        <source>Reload All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="84"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="79"/>
+        <source>View Package Document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="80"/>
+        <source>Load Package Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="81"/>
+        <source>Open Source File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="98"/>
         <source>Package Browser</source>
         <oldsource>Packge Browser</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="92"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="108"/>
         <source>GOPATH Setup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="105"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="121"/>
         <source>Loading go package ...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1408,28 +1587,28 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/golangpackage/packageproject.cpp" line="80"/>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="308"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="307"/>
         <source>Add Source File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="308"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="307"/>
         <source>FileName:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="319"/>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="324"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="318"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="323"/>
         <source>LiteApp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="319"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="318"/>
         <source>File %1 exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="324"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="323"/>
         <source>Open File %1 false</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1498,27 +1677,37 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>ProjectManager</name>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="105"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="115"/>
         <source>Project File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="87"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="92"/>
         <source>Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="95"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="99"/>
+        <source>FileSystem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/projectmanager.cpp" line="100"/>
+        <source>Project Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/projectmanager.cpp" line="105"/>
         <source>Projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="113"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="123"/>
         <source>Project &lt;%1&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="143"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="153"/>
         <source>Open Directory</source>
         <translation type="unfinished"></translation>
     </message>
