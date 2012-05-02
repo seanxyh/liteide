@@ -97,7 +97,6 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     m_lastSaveRevision = 0;
     m_extraAreaSelectionNumber = -1;
     m_autoIndent = true;
-    m_autoBraces = true;
     m_bLastBraces = false;
     setTabWidth(4);
 
@@ -473,22 +472,27 @@ void LiteEditorWidgetBase::keyPressEvent(QKeyEvent *e)
     QChar mr;
     switch (e->key()) {
         case '{':
-            mr = '}';
+            if (m_autoBraces0)
+                mr = '}';
             break;
         case '(':
-            mr = ')';
+            if (m_autoBraces1)
+                mr = ')';
             break;
         case '[':
-            mr = ']';
+            if (m_autoBraces2)
+                mr = ']';
             break;
         case '\'':
-            mr = '\'';
+            if (m_autoBraces3)
+                mr = '\'';
             break;
         case '\"':
-            mr = '\"';
+            if (m_autoBraces4)
+                mr = '\"';
             break;
     }
-    if (!mr.isNull() && m_autoBraces) {
+    if (!mr.isNull()) {
         QPlainTextEdit::keyPressEvent(e);
         QTextCursor cursor = textCursor();
         int pos = cursor.positionInBlock();

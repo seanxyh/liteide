@@ -469,11 +469,21 @@ void LiteEditor::applyOption(QString id)
     }
 
     bool autoIndent = m_liteApp->settings()->value("editor/autoindent",true).toBool();
-    bool autoBraces = m_liteApp->settings()->value("editor/autobraces",true).toBool();
+    bool autoBraces0 = m_liteApp->settings()->value("editor/autobraces0",true).toBool();
+    bool autoBraces1 = m_liteApp->settings()->value("editor/autobraces1",true).toBool();
+    bool autoBraces2 = m_liteApp->settings()->value("editor/autobraces2",true).toBool();
+    bool autoBraces3 = m_liteApp->settings()->value("editor/autobraces3",true).toBool();
+    bool autoBraces4 = m_liteApp->settings()->value("editor/autobraces4",true).toBool();
     bool lineNumberVisible = m_liteApp->settings()->value("editor/linenumbervisible",true).toBool();
+    int min = m_liteApp->settings()->value("editor/prefixlength",1).toInt();
+    m_editorWidget->setPrefixMin(min);
 
     m_editorWidget->setAutoIndent(autoIndent);
-    m_editorWidget->setAutoBraces(autoBraces);
+    m_editorWidget->setAutoBraces0(autoBraces0);
+    m_editorWidget->setAutoBraces1(autoBraces1);
+    m_editorWidget->setAutoBraces2(autoBraces2);
+    m_editorWidget->setAutoBraces3(autoBraces3);
+    m_editorWidget->setAutoBraces4(autoBraces4);
     m_editorWidget->setLineNumberVisible(lineNumberVisible);
 #if defined(Q_OS_WIN)
     QString fontFamily = m_liteApp->settings()->value("editor/family","Courier").toString();
