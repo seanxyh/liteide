@@ -29,6 +29,25 @@
 #include "golangdocapi/golangdocapi.h"
 
 #include <QTextStream>
+#include <QSharedData>
+
+class PackageData : public QSharedData
+{
+public:
+    PackageData();
+    PackageData(const PackageData &other)
+    {
+
+    }
+    ~PackageData()
+    {
+    }
+    QStringList constList;
+    QStringList typeList;
+    QStringList varList;
+    QStringList funcList;
+};
+
 
 class GolangApi : public LiteApi::IGolangApi
 {
