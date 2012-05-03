@@ -48,17 +48,32 @@ PackageTree::PackageTree(QWidget *parent) :
     this->setModel(model);
 }
 
-void PackageTree::loadJson(const QMap<QString, QVariant> &json)
+void PackageTree::loadJson(const QMap<QString, QVariant> &jsonMap)
 {
     SymbolTreeState state;
     this->saveState(&state);
     model->clear();
-    QStandardItem *root = new QStandardItem(json.value("ImportPath").toString());
-    QDir dir(json.value("Dir").toString());
-    foreach (QString key, json.keys()) {
-        QVariant var = json.value(key);
-        if (var.type() == QVariant::List) {
-            QStandardItem *item = new QStandardItem(key);
+    QStandardItem *item = new QStandardItem(jsonMap.value("ImportPath").toString());
+
+    QStandardItem *base = new QStandardItem("BaseInfo");
+    item->appendRow(base);
+    QDir dir(jsonMap.value("Dir").toString());
+    foreach (QString key, jsonMap.keys()) {
+        QVariant var = jsonMap.value(key);
+        if (key.indexOf("Error") >= 0) {
+            QString text = QString("%1 : true").arg(key);
+            QStandardItem *ic = new QStandardItem(text);
+            ic->setToolTip(text);
+            base->appendRow(ic);
+            continue;
+        }
+        if (var.type() == QVariant::String ||
+            var.type() == QVariant::Bool) {
+            QString text = QString("%1 : %2").arg(key).arg(var.toString());
+            QStandardItem *ic = new QStandardItem(text);
+            ic->setToolTip(text);
+            base->appendRow(ic);
+        } else if (var.type() == QVariant::List) {
             PackageType::ITEM_TYPE type = PackageType::ITEM_NONE;
             if (key.indexOf("Deps") >= 0) {
                 type = PackageType::ITEM_DEP;
@@ -67,19 +82,23 @@ void PackageTree::loadJson(const QMap<QString, QVariant> &json)
             } else if (key.indexOf("Files") >= 0) {
                 type = PackageType::ITEM_SOURCE;
             }
+            QStandardItem *ic = new QStandardItem(key);
 
             foreach(QVariant v, var.toList()) {
-                QStandardItem *i = new QStandardItem(v.toString());
-                i->setData(type,PackageType::RoleItem);
-                if (type == PackageType::ITEM_SOURCE) {
-                    i->setData(QFileInfo(dir,v.toString()).filePath(),PackageType::RolePath);
+                if (v.type() == QVariant::String) {
+                    QStandardItem *iv = new QStandardItem(v.toString());
+                    iv->setData(type,PackageType::RoleItem);
+                    if (type == PackageType::ITEM_SOURCE) {
+                        iv->setData(QFileInfo(dir,v.toString()).filePath(),PackageType::RolePath);
+                    }
+                    ic->appendRow(iv);
                 }
-                item->appendRow(i);
             }
-            root->appendRow(item);
+            item->appendRow(ic);
         }
     }
-    model->appendRow(root);
+
+    model->appendRow(item);
 
     this->loadState(this->model,&state);
 

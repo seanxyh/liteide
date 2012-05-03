@@ -261,7 +261,7 @@ void PackageBrowser::finished(int code,QProcess::ExitStatus)
 
     foreach(QByteArray line, m_goTool->stdOutputData().split('\n')) {
         jsonData.append(line);
-        if (line.trimmed() == "}") {
+        if (line == "}") {
             QJson::Parser parser;
             bool ok = false;
             QVariant json = parser.parse(jsonData, &ok).toMap();
@@ -279,11 +279,25 @@ void PackageBrowser::finished(int code,QProcess::ExitStatus)
                 item->setData(PackageType::ITEM_PACKAGE,PackageType::RoleItem);
                 m_pkgJson.insert(pkgName,json);
                 item->setToolTip(jsonMap.value("Doc").toString());
+                QStandardItem *base = new QStandardItem("BaseInfo");
+                item->appendRow(base);
                 QDir dir(jsonMap.value("Dir").toString());
                 foreach (QString key, jsonMap.keys()) {
                     QVariant var = jsonMap.value(key);
-                    if (var.type() == QVariant::List) {
-                        QStandardItem *ic = new QStandardItem(key);
+                    if (key.indexOf("Error") >= 0) {
+                        QString text = QString("%1 : true").arg(key);
+                        QStandardItem *ic = new QStandardItem(text);
+                        ic->setToolTip(text);
+                        base->appendRow(ic);
+                        continue;
+                    }
+                    if (var.type() == QVariant::String ||
+                        var.type() == QVariant::Bool) {
+                        QString text = QString("%1 : %2").arg(key).arg(var.toString());
+                        QStandardItem *ic = new QStandardItem(text);
+                        ic->setToolTip(text);
+                        base->appendRow(ic);
+                    } else if (var.type() == QVariant::List) {
                         PackageType::ITEM_TYPE type = PackageType::ITEM_NONE;
                         if (key.indexOf("Deps") >= 0) {
                             type = PackageType::ITEM_DEP;
@@ -292,14 +306,17 @@ void PackageBrowser::finished(int code,QProcess::ExitStatus)
                         } else if (key.indexOf("Files") >= 0) {
                             type = PackageType::ITEM_SOURCE;
                         }
+                        QStandardItem *ic = new QStandardItem(key);
 
                         foreach(QVariant v, var.toList()) {
-                            QStandardItem *iv = new QStandardItem(v.toString());
-                            iv->setData(type,PackageType::RoleItem);
-                            if (type == PackageType::ITEM_SOURCE) {
-                                iv->setData(QFileInfo(dir,v.toString()).filePath(),PackageType::RolePath);
+                            if (v.type() == QVariant::String) {
+                                QStandardItem *iv = new QStandardItem(v.toString());
+                                iv->setData(type,PackageType::RoleItem);
+                                if (type == PackageType::ITEM_SOURCE) {
+                                    iv->setData(QFileInfo(dir,v.toString()).filePath(),PackageType::RolePath);
+                                }
+                                ic->appendRow(iv);
                             }
-                            ic->appendRow(iv);
                         }
                         item->appendRow(ic);
                     }
