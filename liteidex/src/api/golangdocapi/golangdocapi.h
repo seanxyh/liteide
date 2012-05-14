@@ -56,10 +56,7 @@ class IGolangApi : public QObject
 public:
     IGolangApi(QObject *parent) : QObject(parent) {}
 public:
-    virtual QStringList all(FindApiFlag flag = AllGolangApi) const = 0;
-    virtual QStringList filter(const QString &str, FindApiFlag flag = AllGolangApi) const = 0;
-    virtual QStringList filter(const QRegExp &rx, FindApiFlag flag = AllGolangApi) const = 0;
-    virtual QStringList info(const QString &api) const = 0;
+    virtual QStringList all(int flag = AllGolangApi) const = 0;
 };
 
 class IGolangDoc : public IObject

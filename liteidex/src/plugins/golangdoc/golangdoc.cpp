@@ -198,7 +198,7 @@ void GolangDoc::loadApi()
             return;
     }
     if (m_golangApi->load(info.filePath())) {
-        m_findResultModel->setStringList(m_golangApi->all(LiteApi::AllGolangApi));
+        m_findResultModel->setStringList(m_golangApi->all(LiteApi::AllGolangApi));//&~LiteApi::ConstApi));
     }
 }
 
@@ -543,6 +543,9 @@ QUrl GolangDoc::parserUrl(const QUrl &_url)
         return url;
     }
 #endif
+    if (!url.scheme().isEmpty()) {
+        return url;
+    }
     if (url.isRelative() && !url.path().isEmpty()) {
         if (url.path().compare("/src/pkg/") == 0 || url.path().compare("/pkg/") == 0) {
             url.setScheme("list");
@@ -650,6 +653,12 @@ void GolangDoc::highlighted(const QUrl &_url)
 void GolangDoc::openUrl(const QUrl &_url)
 { 
     QUrl url = parserUrl(_url);
+    if ( (m_openUrl.scheme() == url.scheme()) &&
+         m_openUrl.path() == url.path()) {
+        m_docBrowser->scrollToAnchor(url.fragment());
+        m_openUrl = url;
+        return;
+    }
     m_openUrl = url;
     if (url.scheme() == "find") {
         openUrlFind(url);
@@ -674,6 +683,10 @@ void GolangDoc::doubleClickListView(QModelIndex index)
     QString text = m_findResultModel->data(src,Qt::DisplayRole).toString();
     if (!text.isEmpty()){
         activeBrowser();
+        int n = text.indexOf(".");
+        if (n >= 0) {
+            text.replace(n,1,"#");
+        }
         QUrl url(QString("pdoc:%1").arg(text));
         openUrl(url);
     }

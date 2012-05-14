@@ -55,136 +55,91 @@ bool GolangApi::load(const QString &fileName)
 
 bool GolangApi::loadStream(QTextStream *stream)
 {
-    this->allMap.clear();
-    this->pkgList.clear();
-    this->typeList.clear();
-    this->funcList.clear();
-    this->methodList.clear();
-    this->constList.clear();
-    this->varList.clear();
-
+    pkgMap.clear();
     QRegExp reg("^pkg\\s([\\w\\/]+)(\\s\\(([\\w-]+)\\))?,\\s(\\w+)(\\s\\(\\*?([\\w\\-]+)\\))?\\s(\\w+)");
-    QSet<QString> pkgSet;
     while (!stream->atEnd()) {
-        QString line = stream->readLine();
+        QString line = stream->readLine().trimmed();
         // 1 pkgname
         // 2 ? (system)
         // 3 ? system
         // 4 const|func|method|var|type
         // 5 ? (method-type)
         // 6 ? method-type
-        // 7 name
-        if (reg.indexIn(line.trimmed()) != -1) {
+        // 7 value
+        int pos = reg.indexIn(line);
+        if (pos != -1) {
             //qDebug() << reg.cap() << reg.captureCount();
-            QString pkg = reg.cap(1);
+            QString pkg = reg.cap(1);            
             //QString sys = reg.cap(3);
             QString flag = reg.cap(4);
-            QString type = reg.cap(6);
-            QString name = reg.cap(7);
-            QString tag = pkg;
-            if (!type.isEmpty()) {
-                tag = pkg+"#"+type+"."+name;
-            } else {
-                tag = pkg+"#"+name;
+            QString method_type = reg.cap(6);
+            QString value = reg.cap(7);
+
+            QMap<QString,Package>::iterator it = pkgMap.find(pkg);
+            if (it == pkgMap.end()) {
+                it = pkgMap.insert(pkg,Package());
             }
+
             if (flag == "const") {
-                constList.append(tag);
+                it->appendConst(value);
+                //constList.append(tag);
             } else if (flag == "func") {
-                funcList.append(tag);
+                //funcList.append(tag);
+                it->appendFunc(value);
             } else if (flag == "method") {
-                methodList.append(tag);
+                //methodList.append(tag);
+                it->appendTypeMethod(method_type,value);
             } else if (flag == "type") {
-                typeList.append(tag);
+                //typeList.append(tag);
+                it->insertType(value);
             } else if (flag == "var") {
-                varList.append(tag);
+                //varList.append(tag);
+                it->appendVar(value);
             }
-            pkgSet.insert(pkg);
-            allMap.insert(tag,line);
         }
     }
-    pkgList = pkgSet.toList();
-    pkgList.sort();
-    constList.removeDuplicates();
-    varList.removeDuplicates();
-    typeList.removeDuplicates();
-    methodList.removeDuplicates();
-    funcList.removeDuplicates();
     return true;
 }
 
-QStringList GolangApi::all(LiteApi::FindApiFlag flag) const
+QStringList GolangApi::all(int flag) const
 {
     QStringList finds;
-    if (flag & LiteApi::PkgApi) {
-        finds.append(pkgList);
-    }
-    if (flag & LiteApi::TypeApi) {
-        finds.append(typeList);
-    }
-    if (flag &LiteApi::FuncApi) {
-        finds.append(funcList);
-    }
-    if (flag & LiteApi::MethodApi) {
-        finds.append(methodList);
-    }
-    if (flag & LiteApi::ConstApi) {
-        finds.append(constList);
-    }
-    if (flag &LiteApi::VarApi) {
-        finds.append(varList);
-    }
-    return finds;
-}
-
-QStringList GolangApi::filter(const QString &str, LiteApi::FindApiFlag flag) const
-{
-    QStringList finds;
-    if (flag & LiteApi::PkgApi) {
-        finds.append(pkgList.filter(str));
-    }
-    if (flag & LiteApi::TypeApi) {
-        finds.append(typeList.filter(str));
-    }
-    if (flag &LiteApi::FuncApi) {
-        finds.append(funcList.filter(str));
-    }
-    if (flag & LiteApi::MethodApi) {
-        finds.append(methodList.filter(str));
-    }
-    if (flag & LiteApi::ConstApi) {
-        finds.append(constList.filter(str));
-    }
-    if (flag &LiteApi::VarApi) {
-        finds.append(varList.filter(str));
+    QMapIterator<QString,Package> i(pkgMap);
+    while (i.hasNext()) {
+        i.next();
+        QString pkgName = i.key();
+        Package pkg = i.value();
+        if (flag & LiteApi::PkgApi) {
+            finds.append(pkgName);
+        }
+        if (flag &LiteApi::FuncApi) {
+            foreach(QString v, pkg.funcList()) {
+                finds.append(pkgName+"."+v);
+            }
+        }
+        if (flag & LiteApi::ConstApi) {
+            foreach(QString v, pkg.constList()) {
+                finds.append(pkgName+"."+v);
+            }
+        }
+        if (flag &LiteApi::VarApi) {
+            foreach(QString v, pkg.varList()) {
+                finds.append(pkgName+"."+v);
+            }
+        }
+        if (flag & LiteApi::TypeApi) {
+            QMapIterator<QString,Type> m(pkg.typeMap());
+            while(m.hasNext()) {
+                m.next();
+                QString methodName = pkgName+"."+m.key();
+                finds.append(methodName);
+                if (flag &LiteApi::MethodApi) {
+                    foreach(QString v, m.value().methodList()) {
+                        finds.append(methodName+"."+v);
+                    }
+                }
+            }
+        }
     }
     return finds;
-}
-
-QStringList GolangApi::filter(const QRegExp &rx, LiteApi::FindApiFlag flag) const
-{
-    QStringList finds;
-    if (flag & LiteApi::PkgApi) {
-        finds.append(pkgList.filter(rx));
-    }
-    if (flag & LiteApi::TypeApi) {
-        finds.append(typeList.filter(rx));
-    }
-    if (flag &LiteApi::FuncApi) {
-        finds.append(funcList.filter(rx));
-    }
-    if (flag & LiteApi::MethodApi) {
-        finds.append(methodList.filter(rx));
-    }
-    if (flag & LiteApi::ConstApi) {
-        finds.append(constList.filter(rx));
-    }
-    if (flag &LiteApi::VarApi) {
-        finds.append(varList.filter(rx));
-    }
-    return finds;
-}
-
-QStringList GolangApi::info(const QString &api) const
-{
-    return allMap.values(api);
 }

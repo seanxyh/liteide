@@ -50,8 +50,7 @@ public:
         : d(other.d) {}
     QStringList varList() const { return d->varList; }
     QStringList methodList() const { return d->methodList; }
-    void setVarList(const QStringList &list) { d->varList = list; }
-    void setMethodList(const QStringList &list) { d->methodList = list; }
+    void appendMethod(const QString &value) { d->methodList.append(value); }
 private:
      QSharedDataPointer<TypeData> d;
 };
@@ -65,14 +64,13 @@ public:
           constList(other.constList),
           varList(other.varList),
           funcList(other.funcList),
-          structList(other.structList),
-          interfaceList(other.interfaceList) {}
+          typeMap(other.typeMap)
+    {}
     ~PackageData()  { }
     QStringList constList;
     QStringList varList;
     QStringList funcList;
-    QList<Type> structList;
-    QList<Type> interfaceList;
+    QMap<QString,Type>  typeMap;
 };
 
 class Package
@@ -85,13 +83,33 @@ public:
     QStringList constList() const {return d->constList; }
     QStringList varList() const { return d->varList; }
     QStringList funcList() const { return d->funcList; }
-    QList<Type> structList() const { return d->structList; }
-    QList<Type> interfaceList() const { return d->interfaceList; }
-    void setConstList(const QStringList &list) { d->constList = list; }
-    void setVarList(const QStringList &list) { d->varList = list; }
-    void setFuncList(const QStringList &list) { d->funcList = list; }
-    void setStructList(const QList<Type> &list) { d->structList = list; }
-    void setInterfaceList(const QList<Type> &list) { d->interfaceList = list; }
+    QStringList typeList() const { return d->typeMap.keys(); }
+    QMap<QString,Type> typeMap() const { return d->typeMap; }
+    void appendConst(const QString &value) {
+        if (!d->constList.contains(value))
+            d->constList.append(value);
+    }
+    void appendVar(const QString &value) {
+        if (!d->varList.contains(value))
+            d->varList.append(value);
+    }
+    void appendFunc(const QString &value) {
+        if (!d->funcList.contains(value))
+            d->funcList.append(value);
+    }
+    void insertType(const QString &value) {
+        if (!d->typeMap.contains(value)) {
+            d->typeMap.insert(value,Type());
+        }
+    }
+    void appendTypeMethod(const QString &value, const QString method) {
+        QMap<QString,Type>::iterator it = d->typeMap.find(value);
+        if (it == d->typeMap.end()) {
+            it = d->typeMap.insert(value,Type());
+        }
+        it->appendMethod(method);
+    }
+    Type type(const QString &value) const {return d->typeMap.value(value); }
 protected:
     QSharedDataPointer<PackageData> d;
 };
@@ -103,19 +121,9 @@ public:
     GolangApi(QObject *parent = 0);
     bool load(const QString &fileName);
     bool loadStream(QTextStream *stream);
-    virtual QStringList all(LiteApi::FindApiFlag flag) const;
-    virtual QStringList filter(const QString &str, LiteApi::FindApiFlag flag) const;
-    virtual QStringList filter(const QRegExp &rx, LiteApi::FindApiFlag flag) const;
-    virtual QStringList info(const QString &api) const;
+    virtual QStringList all(int flag) const;
 protected:
-    QMap<QString,Package> namePkgMap;
-    QStringList pkgList;
-    QStringList constList;
-    QStringList varList;
-    QStringList funcList;
-    QStringList methodList;
-    QStringList typeList;
-    QMultiMap<QString,QString> allMap;
+    QMap<QString,Package> pkgMap;
 };
 
 #endif // GOLANGAPI_H
