@@ -227,6 +227,43 @@ QComboBox *DocumentBrowser::urlComboBox()
     return m_urlComboBox;
 }
 
+void DocumentBrowser::scrollToAnchor(const QString &text)
+{
+    const HistoryEntry &historyEntry = createHistoryEntry();
+
+    m_url.setFragment(text);
+    if (text.isEmpty()) {
+        m_textBrowser->horizontalScrollBar()->setValue(0);
+        m_textBrowser->verticalScrollBar()->setValue(0);
+    } else {
+        m_textBrowser->scrollToAnchor(text);
+    }
+
+    if (!m_backwardStack.isEmpty() && m_url == m_backwardStack.top().url)
+    {
+        restoreHistoryEntry(m_backwardStack.top());
+        return;
+    }
+
+    if (!m_backwardStack.isEmpty()) {
+        m_backwardStack.top() = historyEntry;
+    }
+
+    HistoryEntry entry;
+    entry.url = m_url;
+    m_backwardStack.push(entry);
+
+    emit backwardAvailable(m_backwardStack.count() > 1);
+
+    if (!m_forwardStack.isEmpty() && m_url == m_forwardStack.top().url) {
+        m_forwardStack.pop();
+        emit forwardAvailable(m_forwardStack.count() > 0);
+    } else {
+        m_forwardStack.clear();
+        emit forwardAvailable(false);
+    }
+}
+
 void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data,bool html)
 {
     const HistoryEntry &historyEntry = createHistoryEntry();

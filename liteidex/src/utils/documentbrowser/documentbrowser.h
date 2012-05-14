@@ -55,6 +55,7 @@ public:
 public:
     virtual void setSearchPaths(const QStringList &paths);
     virtual void setUrlHtml(const QUrl &url,const QString &html);
+    virtual void scrollToAnchor(const QString &text);
     virtual QToolBar *toolBar();
     virtual QStatusBar *statusBar();
     virtual QComboBox *urlComboBox();
