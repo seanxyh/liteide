@@ -521,9 +521,6 @@ void LiteBuild::execAction(const QString &id)
         return;
     }
     QString codec = ba->codec();
-    if (!ba->regex().isEmpty()) {
-        m_outputRegex = ba->regex();
-    }
     LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
     if (ba->save() == "project") {
         if (editor && editor->isModified()) {
@@ -540,14 +537,12 @@ void LiteBuild::execAction(const QString &id)
 
     m_workDir = env.value("WORKDIR");
 
-    QString cmd;
-    QString args;
-    if (m_envManager) {
-        cmd = m_build->actionCommand(ba,env,m_envManager->currentEnvironment());
-        args = m_build->actionArgs(ba,env,m_envManager->currentEnvironment());
-    } else {
-        cmd = m_build->actionCommand(ba,env,QProcessEnvironment::systemEnvironment());
-        args = m_build->actionArgs(ba,env,QProcessEnvironment::systemEnvironment());
+    QProcessEnvironment sysenv = LiteApi::getGoEnvironment(m_liteApp);
+    QString cmd = m_build->actionValue(ba->cmd(),env,sysenv);
+    QString args = m_build->actionValue(ba->args(),env,sysenv);
+
+    if (!ba->regex().isEmpty()) {
+        m_outputRegex = m_build->actionValue(ba->regex(),env,sysenv);
     }
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
@@ -556,13 +551,6 @@ void LiteBuild::execAction(const QString &id)
     } else {
         m_output->setReadOnly(true);
     }
-    QProcessEnvironment sysenv = m_envManager->currentEnvironment();
-    QStringList liteGopath = m_liteApp->settings()->value("liteide/gopath").toStringList();
-#ifdef Q_OS_WIN
-    sysenv.insert("GOPATH",sysenv.value("GOPATH")+";"+liteGopath.join(";"));
-#else
-    sysenv.insert("GOPATH",sysenv.value("GOPATH")+":"+liteGopath.join(":"));
-#endif
     m_process->setEnvironment(sysenv.toStringList());
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,m_workDir);
@@ -618,7 +606,7 @@ void LiteBuild::dbclickBuildOutput(const QTextCursor &cur)
     int line = fileLine.toInt(&ok);
     if (!ok)
         return;
-
+    qDebug() << fileName << fileLine;
     LiteApi::IProject *project = m_liteApp->projectManager()->currentProject();
     if (project) {
         fileName = project->fileNameToFullPath(fileName);

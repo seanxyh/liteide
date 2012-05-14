@@ -225,51 +225,26 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
     return true;
 }
 
-QString Build::actionCommand(BuildAction *act,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env)
+QString Build::actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env)
 {
-    QString cmd = act->cmd();
+    QString v = value;
     QMapIterator<QString,QString> i(liteEnv);
     while(i.hasNext()) {
         i.next();
-        cmd.replace("$("+i.key()+")",i.value());
+        v.replace("$("+i.key()+")",i.value());
     }
     QRegExp rx("\\$\\((\\w+)\\)");
     int pos = 0;
     QStringList list;
-    while ((pos = rx.indexIn(cmd, pos)) != -1) {
+    while ((pos = rx.indexIn(v, pos)) != -1) {
          list << rx.cap(1);
          pos += rx.matchedLength();
     }
 
     foreach (QString str, list) {
          if (env.contains(str)) {
-            cmd.replace("$("+str+")",env.value(str));
+            v.replace("$("+str+")",env.value(str));
         }
     }
-    return FileUtil::lookPath(cmd,env,true);
+    return v;
 }
-
-QString Build::actionArgs(BuildAction *act,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env)
-{
-    QString args = act->args();
-    QMapIterator<QString,QString> i(liteEnv);
-    while(i.hasNext()) {
-        i.next();
-        args.replace("$("+i.key()+")",i.value());
-    }
-    QRegExp rx("\\$\\((\\w+)\\)");
-    int pos = 0;
-    QStringList list;
-    while ((pos = rx.indexIn(args, pos)) != -1) {
-         list << rx.cap(1);
-         pos += rx.matchedLength();
-    }
-
-    foreach (QString str, list) {
-         if (env.contains(str)) {
-            args.replace("$("+str+")",env.value(str));
-        }
-    }
-    return args;
-}
-
