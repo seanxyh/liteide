@@ -5,8 +5,9 @@
 		<lookup mime-type="text/x-gopro" file="*.e64" top="1"/>
 		<config id="GoproMake" name="GOPROMAKE" value="$(LITEAPPDIR)/gopromake"/>
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
+		<config id="ErrRegex" name="ERRREGEX" value="([\w\d_\\/\.]+):(\d+):"/>
 		<custom id="TargetArgs" name="$(TARGETARGS)" value=""/>
-		<action id="Build" img="go/build.png" key="F7" cmd="$(GOPROMAKE)" args="-gofiles $(EDITORNAME) -o $(TARGETNAME)" save="editor" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" />
+		<action id="Build" img="go/build.png" key="F7" cmd="$(GOPROMAKE)" args="-gofiles $(EDITORNAME) -o $(TARGETNAME)" save="editor" output="true" codec="utf-8" regex="$(ERRREGEX)" />
 		<action id="Clean" img="go/clean.png" cmd="$(GOPROMAKE)" args="-gofiles $(EDITORNAME) -o $(TARGETNAME) -clean=obj" output="true" codec="utf-8"/>
 		<action id="CleanAll" img="go/cleanall.png" cmd="$(GOPROMAKE)" args="-gofiles $(EDITORNAME) -o $(TARGETNAME) -clean=all" output="true" codec="utf-8"/>
 		<action id="Exec" img="go/exec.png" key="CTRL+SHIFT+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>

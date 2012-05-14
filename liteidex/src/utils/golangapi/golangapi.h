@@ -31,21 +31,69 @@
 #include <QTextStream>
 #include <QSharedData>
 
+class TypeData : public QSharedData
+{
+public:
+    TypeData(){}
+    TypeData(const TypeData &other)
+        : QSharedData(other),varList(other.varList),methodList(other.methodList) {}
+    ~TypeData() {}
+    QStringList varList;
+    QStringList methodList;
+};
+
+class Type
+{
+public:
+    Type() { d = new TypeData; }
+    Type(const Type &other)
+        : d(other.d) {}
+    QStringList varList() const { return d->varList; }
+    QStringList methodList() const { return d->methodList; }
+    void setVarList(const QStringList &list) { d->varList = list; }
+    void setMethodList(const QStringList &list) { d->methodList = list; }
+private:
+     QSharedDataPointer<TypeData> d;
+};
+
 class PackageData : public QSharedData
 {
 public:
-    PackageData();
+    PackageData() {}
     PackageData(const PackageData &other)
-    {
-
-    }
-    ~PackageData()
-    {
-    }
+        : QSharedData(other),
+          constList(other.constList),
+          varList(other.varList),
+          funcList(other.funcList),
+          structList(other.structList),
+          interfaceList(other.interfaceList) {}
+    ~PackageData()  { }
     QStringList constList;
-    QStringList typeList;
     QStringList varList;
     QStringList funcList;
+    QList<Type> structList;
+    QList<Type> interfaceList;
+};
+
+class Package
+{
+public:
+    Package() {d = new PackageData;}
+    Package(const Package &other)
+        : d(other.d) {}
+    ~Package() {}
+    QStringList constList() const {return d->constList; }
+    QStringList varList() const { return d->varList; }
+    QStringList funcList() const { return d->funcList; }
+    QList<Type> structList() const { return d->structList; }
+    QList<Type> interfaceList() const { return d->interfaceList; }
+    void setConstList(const QStringList &list) { d->constList = list; }
+    void setVarList(const QStringList &list) { d->varList = list; }
+    void setFuncList(const QStringList &list) { d->funcList = list; }
+    void setStructList(const QList<Type> &list) { d->structList = list; }
+    void setInterfaceList(const QList<Type> &list) { d->interfaceList = list; }
+protected:
+    QSharedDataPointer<PackageData> d;
 };
 
 
@@ -60,6 +108,7 @@ public:
     virtual QStringList filter(const QRegExp &rx, LiteApi::FindApiFlag flag) const;
     virtual QStringList info(const QString &api) const;
 protected:
+    QMap<QString,Package> namePkgMap;
     QStringList pkgList;
     QStringList constList;
     QStringList varList;

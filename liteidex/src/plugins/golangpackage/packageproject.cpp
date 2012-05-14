@@ -85,7 +85,7 @@ PackageProject::PackageProject(LiteApi::IApplication *app) :
 
     connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClicked(QModelIndex)));
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
-    connect(m_liteApp->editorManager(),SIGNAL(editorSaved(LiteApi::IEditor*)),this,SLOT(editorSaved(LiteApi::IEditor*)));
+    //connect(m_liteApp->editorManager(),SIGNAL(editorSaved(LiteApi::IEditor*)),this,SLOT(editorSaved(LiteApi::IEditor*)));
     connect(m_reloadTimer,SIGNAL(timeout()),this,SLOT(reload()));
     connect(addSource,SIGNAL(triggered()),this,SLOT(addSource()));
     connect(reloadAct,SIGNAL(triggered()),this,SLOT(reload()));
@@ -146,6 +146,9 @@ void PackageProject::setPath(const QString &path)
 
 void PackageProject::reload()
 {
+    if (m_reloadTimer->isActive()) {
+        m_reloadTimer->stop();
+    }
     m_goTool->reloadEnv();
     m_goTool->start(QStringList() << "list" << "-e" << "-json" << ".");
 }
@@ -293,7 +296,7 @@ void PackageProject::editorSaved(LiteApi::IEditor *editor)
         }
     }
     if (find) {
-        m_reloadTimer->start(3000);
+        m_reloadTimer->start(10000);
     }
 }
 
