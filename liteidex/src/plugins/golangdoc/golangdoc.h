@@ -29,6 +29,7 @@
 #include "liteapi/liteapi.h"
 #include "litebuildapi/litebuildapi.h"
 #include "liteenvapi/liteenvapi.h"
+#include "liteeditorapi/liteeditorapi.h"
 #include "golangdocapi/golangdocapi.h"
 #include "qtc_editutil/filterlineedit.h"
 

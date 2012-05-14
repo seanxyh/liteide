@@ -39,7 +39,6 @@ public:
     GolangDocPlugin();
     ~GolangDocPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
-    virtual QStringList dependPluginList() const;
 protected slots:
     void currentEditorChanged(LiteApi::IEditor*);
 protected:

@@ -36,6 +36,8 @@ public:
     virtual QStringList apiFiles() const;
     virtual bool loadApi();
     virtual QStringList wordList() const;
+    virtual QStringList expList() const;
+    virtual void appendExp(const QStringList &list);
 
     void setType(const QString &mimeType);
     void appendApiFiles(const QString &globPattern);
@@ -44,6 +46,7 @@ protected:
     QString m_mimeType;
     QStringList m_globApiFiles;
     QStringList m_wordList;
+    QStringList m_expList;
     bool m_bLoad;
 public:
     static bool loadWordApi(LiteApi::IWordApiManager *manager, const QString &fileName);

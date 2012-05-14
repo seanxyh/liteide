@@ -43,6 +43,8 @@ GolangDocPlugin::GolangDocPlugin()
     m_info->setName("GolangDoc");
     m_info->setAnchor("visualfc");
     m_info->setInfo("Golang DocBrowser Plugin");
+    m_info->appendDepend("plugin/liteenv");
+    m_info->appendDepend("plugin/liteeditor");
 }
 
 GolangDocPlugin::~GolangDocPlugin()
@@ -61,11 +63,6 @@ bool GolangDocPlugin::initWithApp(LiteApi::IApplication *app)
     m_golangDoc = new GolangDoc(app,this);
 
     return true;
-}
-
-QStringList GolangDocPlugin::dependPluginList() const
-{
-    return QStringList() << "plugin/liteenv";
 }
 
 void GolangDocPlugin::currentEditorChanged(LiteApi::IEditor *editor)
