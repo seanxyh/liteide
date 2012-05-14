@@ -39,10 +39,10 @@ public:
     QStringList sysGopath() const;
     QStringList liteGopath() const;
     void setLiteGopath(const QStringList &pathList);
-    QStringList gopath() const;
     bool isRuning() const;
     void kill();
     void setWorkDir(const QString &dir);
+    QString workDir() const;
     void start(const QStringList &args);
     QByteArray stdOutputData() const { return m_stdOutput; }
     QString stdOutputUtf8() const {
@@ -61,7 +61,6 @@ protected:
     QString m_gotool;
     QByteArray m_stdOutput;
     QByteArray m_stdError;
-    QStringList m_gopathList;
 };
 
 #endif // GOTOOL_H
