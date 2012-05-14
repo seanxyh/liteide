@@ -64,6 +64,16 @@ QStringList WordApi::wordList() const
     return m_wordList;
 }
 
+QStringList WordApi::expList() const
+{
+    return m_expList;
+}
+
+void WordApi::appendExp(const QStringList &list)
+{
+    m_expList.append(list);
+}
+
 bool WordApi::loadApi()
 {
     if (m_bLoad) {

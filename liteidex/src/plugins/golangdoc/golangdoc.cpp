@@ -199,7 +199,17 @@ void GolangDoc::loadApi()
     }
     if (m_golangApi->load(info.filePath())) {
         m_findResultModel->setStringList(m_golangApi->all(LiteApi::AllGolangApi));//&~LiteApi::ConstApi));
+        /*
+        LiteApi::IWordApiManager *mgr = LiteApi::findExtensionObject<LiteApi::IWordApiManager*>(m_liteApp,"LiteApi.IWordApiManager");
+        if (mgr) {
+            LiteApi::IWordApi *api = mgr->findWordApi("text/x-gosrc");
+            if (api) {
+                api->appendExp(m_golangApi->all(LiteApi::PkgApi|LiteApi::FuncApi|LiteApi::ConstApi|LiteApi::VarApi));
+            }
+        }
+        */
     }
+
 }
 
 void GolangDoc::currentEnvChanged(LiteApi::IEnv*)

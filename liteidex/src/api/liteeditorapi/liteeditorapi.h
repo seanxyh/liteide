@@ -40,6 +40,8 @@ public:
     virtual QStringList apiFiles() const = 0;
     virtual bool loadApi() = 0;
     virtual QStringList wordList() const = 0;
+    virtual QStringList expList() const = 0;
+    virtual void appendExp(const QStringList &list) = 0;
 };
 
 class IWordApiManager : public IManager
