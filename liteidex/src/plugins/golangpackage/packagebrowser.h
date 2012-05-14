@@ -46,6 +46,12 @@ namespace PackageType {
     };
 }
 
+struct PathData
+{
+    QString     path;
+    QByteArray  data;
+};
+
 class QStandardItemModel;
 class PackageBrowser : public QObject
 {
@@ -63,13 +69,16 @@ public slots:
     void finished(int,QProcess::ExitStatus);
     void customContextMenuRequested(QPoint);
     void openSource();
+    void resetTree();
 protected:
+    QStringList m_taskList;
+    QList<PathData> m_taskData;
+    QStringList m_gopathList;
     LiteApi::IApplication *m_liteApp;
     QWidget      *m_widget;
     SymbolTreeView    *m_treeView;
     QStandardItemModel *m_model;
     GoTool       *m_goTool;
-    QStringList   m_gopathList;
     bool         m_groupByPath;
     bool         m_hideStandard;
     QMenu       *m_rootMenu;

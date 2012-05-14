@@ -83,14 +83,9 @@ QStringList GoTool::sysGopath() const
     return pathList;
 }
 
-QStringList GoTool::gopath() const
-{
-    return m_gopathList;
-}
-
 void GoTool::reloadEnv()
 {
-    QProcessEnvironment env = LiteApi::getCurrentEnvironment(m_liteApp);
+    QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);
     QString goroot = env.value("GOROOT");
     QString gobin = env.value("GOBIN");
     if (!goroot.isEmpty() && gobin.isEmpty()) {
@@ -98,23 +93,8 @@ void GoTool::reloadEnv()
     }
     QString gotool = FileUtil::findExecute(gobin+"/go");
     if (gotool.isEmpty()) {
-        gotool = FileUtil::lookPath("gotool",env,true);
+        gotool = FileUtil::lookPath("go",env,true);
     }
-    m_gopathList.clear();
-#ifdef Q_OS_WIN
-    QString sep = ";";
-#else
-    QString sep = ":";
-#endif
-    m_gopathList.append(goroot);
-    foreach (QString path, env.value("GOPATH").split(sep,QString::SkipEmptyParts)) {
-        m_gopathList.append(QDir::toNativeSeparators(path));
-    }
-    foreach (QString path, m_liteApp->settings()->value("liteide/gopath").toStringList()) {
-        m_gopathList.append(QDir::toNativeSeparators(path));
-    }
-    m_gopathList.removeDuplicates();
-    env.insert("GOPATH",m_gopathList.join(sep));
     m_process->setProcessEnvironment(env);
     m_gotool = gotool;
 }
@@ -135,6 +115,11 @@ void GoTool::kill()
 void GoTool::setWorkDir(const QString &dir)
 {
     m_process->setWorkingDirectory(dir);
+}
+
+QString GoTool::workDir() const
+{
+    return m_process->workingDirectory();
 }
 
 void GoTool::start(const QStringList &args)
