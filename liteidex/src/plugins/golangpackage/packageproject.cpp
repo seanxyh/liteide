@@ -293,7 +293,7 @@ void PackageProject::editorSaved(LiteApi::IEditor *editor)
         }
     }
     if (find) {
-        m_reloadTimer->start(10000);
+        //m_reloadTimer->start(10000);
     }
 }
 

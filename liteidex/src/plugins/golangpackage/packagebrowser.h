@@ -70,6 +70,7 @@ public slots:
     void customContextMenuRequested(QPoint);
     void openSource();
     void resetTree();
+    void copyPackageName();
 protected:
     QStringList m_taskList;
     QList<PathData> m_taskData;
@@ -89,6 +90,7 @@ protected:
     QAction     *m_godocAct;
     QAction     *m_editPackageAct;
     QAction     *m_openSrcAct;
+    QAction     *m_copyNameAct;
     QMap<QString,QVariant> m_pkgJson;
 };
 

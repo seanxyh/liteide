@@ -39,6 +39,8 @@
 #include <QToolBar>
 #include <QAction>
 #include <QUrl>
+#include <QClipboard>
+#include <QApplication>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -79,12 +81,14 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_godocAct = new QAction(tr("View Package Document"),this);
     m_editPackageAct = new QAction(tr("Load Package Project"),this);
     m_openSrcAct = new QAction(tr("Open Source File"),this);
+    m_copyNameAct = new QAction(tr("Copy Name To Clipboard"),this);
 
     m_rootMenu->addAction(m_reloadAct);
     m_rootMenu->addAction(m_setupGopathAct);
 
     m_pkgMenu->addAction(m_editPackageAct);
     m_pkgMenu->addAction(m_godocAct);
+    m_pkgMenu->addAction(m_copyNameAct);
     m_pkgMenu->addSeparator();
     m_pkgMenu->addAction(m_reloadAct);
     m_pkgMenu->addAction(m_setupGopathAct);
@@ -104,6 +108,7 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_godocAct,SIGNAL(triggered()),this,SLOT(loadPackageDoc()));
     connect(m_editPackageAct,SIGNAL(triggered()),this,SLOT(loadPackageProject()));
     connect(m_openSrcAct,SIGNAL(triggered()),this,SLOT(openSource()));
+    connect(m_copyNameAct,SIGNAL(triggered()),this,SLOT(copyPackageName()));
 
     QAction *act = new QAction(QIcon(":/images/gopath.png"),tr("GOPATH Setup"),this);
     connect(act,SIGNAL(triggered()),this,SLOT(setupGopath()));
@@ -175,6 +180,16 @@ void PackageBrowser::loadPackageDoc()
             doc->activeBrowser();
         }
     }
+}
+
+void PackageBrowser::copyPackageName()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+    QString name = index.data(Qt::DisplayRole).toString();
+    QApplication::clipboard()->setText(name);
 }
 
 void PackageBrowser::loadPackageProject()
@@ -269,7 +284,7 @@ void PackageBrowser::resetTree()
     m_treeView->saveState(&state);
 
     m_model->clear();
-
+    QString root = LiteApi::getGoroot(m_liteApp);
     foreach(PathData data, m_taskData) {
         QStandardItem *item = new QStandardItem(QDir::toNativeSeparators(data.path));
         QStandardItem *cmd = new QStandardItem("cmd");
@@ -280,6 +295,7 @@ void PackageBrowser::resetTree()
         m_treeView->expand(m_model->indexFromItem(item));
 
         foreach(QByteArray line, data.data.split('\n')) {
+            bool bRoot = (data.path == LiteApi::getGoroot(m_liteApp));
             jsonData.append(line);
             if (line == "}") {
                 QJson::Parser parser;
@@ -293,8 +309,11 @@ void PackageBrowser::resetTree()
                 } else {
                     parent = pkg;
                 }
+                QString pkgName = jsonMap.value("ImportPath").toString();
+                if (bRoot && pkgName.indexOf("_") == 0) {
+                    parent = 0;
+                }
                 if (parent) {
-                    QString pkgName = jsonMap.value("ImportPath").toString();
                     QStandardItem *item = new QStandardItem(pkgName);
                     item->setToolTip(pkgName);
                     item->setData(PackageType::ITEM_PACKAGE,PackageType::RoleItem);
@@ -347,6 +366,7 @@ void PackageBrowser::resetTree()
             }
         }
     }
+    m_taskData.clear();
     //load state
     m_treeView->loadState(m_model,&state);
 }
