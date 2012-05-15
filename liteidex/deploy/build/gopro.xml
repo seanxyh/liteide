@@ -4,7 +4,7 @@
 		<config id="GoproMake" name="GOPROMAKE" value="$(LITEAPPDIR)/gopromake"/>
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
 		<config id="ErrRegex" name="ERRREGEX" value="([\w\d_\\/\.]+):(\d+):"/>	
-		<custom id="TargetArgs" name="$(TARGETARGS)" value=""/>
+		<custom id="TargetArgs" name="TARGETARGS" value=""/>
 		<action id="Build" img="go/build.png" key="F7" cmd="$(GOPROMAKE)" args="-gopro $(PROJECTNAME)" save="project" output="true" codec="utf-8" regex="$(ERRREGEX)" />
 		<action id="Clean" img="go/clean.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECTNAME) -clean=obj" output="true" codec="utf-8"/>
 		<action id="CleanAll" img="go/cleanall.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECTNAME) -clean=all" output="true" codec="utf-8"/>

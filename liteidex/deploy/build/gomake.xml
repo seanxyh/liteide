@@ -4,7 +4,7 @@
 		<config id="Make" name="MAKE" value="$(LITEIDE_MAKE)"/>
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
 		<config id="ErrRegex" name="ERRREGEX" value="([\w\d_\\/\.]+):(\d+):"/>		
-		<custom id="TargetArgs" name="$(TARGETARGS)" value=""/>
+		<custom id="TargetArgs" name="TARGETARGS" value=""/>
 		<action id="Build" img="go/build.png" key="F7" cmd="$(MAKE)" args="-f $(PROJECTNAME) all" save="project" output="true" codec="" regex="$(ERRREGEX)"/>
 		<action id="Rebuild" img="go/rebuild.png" key="CTRL+F7" cmd="$(MAKE)" args="-B -f $(PROJECTNAME) all" save="project" output="true" codec="" regex="$(ERRREGEX)"/>
 		<action id="Clean" img="go/clean.png" cmd="$(MAKE)" args="-f $(PROJECTNAME) clean" save="project" output="true"/>
