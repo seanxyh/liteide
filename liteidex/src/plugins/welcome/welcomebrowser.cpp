@@ -59,6 +59,7 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
     connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
     connect(ui->openFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openFiles()));
     connect(ui->openProjectButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openProjects()));
+    connect(ui->openGopkgButton,SIGNAL(clicked()),this,SLOT(openGopkgDialog()));
     connect(ui->openEditorButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openEditors()));
     connect(ui->optionsButton,SIGNAL(clicked()),m_liteApp->optionManager(),SLOT(exec()));
     connect(ui->textBrowser,SIGNAL(anchorClicked(QUrl)),this,SLOT(openUrl(QUrl)));
@@ -85,6 +86,11 @@ WelcomeBrowser::~WelcomeBrowser()
     if (m_extension) {
         delete m_extension;
     }
+}
+
+void WelcomeBrowser::openGopkgDialog()
+{
+    m_liteApp->projectManager()->openSchemeDialog("gopkg");
 }
 
 LiteApi::IExtension *WelcomeBrowser::extension()
@@ -119,6 +125,8 @@ void WelcomeBrowser::openUrl(const QUrl &url)
         if (browser) {
             m_liteApp->editorManager()->activeBrowser(browser);
         }
+    } else if (url.scheme() == "gopkg") {
+        m_liteApp->projectManager()->openSchemeDialog("gopkg");
     } else {
         m_liteApp->fileManager()->openProjectScheme(url.path(),url.scheme());
     }

@@ -343,6 +343,7 @@ public:
 public slots:
     virtual void saveProject(IProject *project = 0) = 0;
     virtual void closeProject(IProject *project = 0) = 0;
+    virtual void openSchemeDialog(const QString &scheme) = 0;
 signals:
     void currentProjectChanged(LiteApi::IProject *project);
     void projectAboutToClose(LiteApi::IProject *project);
