@@ -140,6 +140,20 @@ void ProjectManager::triggeredProject(QAction* act)
     m_liteApp->fileManager()->openProject(fileName);
 }
 
+void ProjectManager::openSchemeDialog(const QString &scheme)
+{
+    QString dir = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(),
+                                                    QString(tr("Import Directory <%1>").arg(scheme)),
+                                                     "/home",
+                                                     QFileDialog::ShowDirsOnly
+                                                     | QFileDialog::DontResolveSymlinks);
+    if (dir.isEmpty()) {
+        return;
+    }
+
+    m_liteApp->fileManager()->openProjectScheme(dir,scheme);
+}
+
 void ProjectManager::openSchemeAct()
 {
     QAction *act = (QAction*)sender();
@@ -150,15 +164,7 @@ void ProjectManager::openSchemeAct()
     if (scheme.isEmpty()) {
         return;
     }
-    QString dir = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(), tr("Open Directory"),
-                                                     "/home",
-                                                     QFileDialog::ShowDirsOnly
-                                                     | QFileDialog::DontResolveSymlinks);
-    if (dir.isEmpty()) {
-        return;
-    }
-
-    m_liteApp->fileManager()->openProjectScheme(dir,scheme);
+    openSchemeDialog(scheme);
 }
 
 void ProjectManager::currentEditorChanged(LiteApi::IEditor* editor)
