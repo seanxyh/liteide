@@ -167,6 +167,7 @@ void LiteEditor::createActions()
 {
     m_undoAct = new QAction(QIcon(":/images/undo.png"),tr("Undo"),this);
     m_redoAct = new QAction(QIcon(":/images/redo.png"),tr("Redo"),this);
+    m_redoAct->setShortcuts(QList<QKeySequence>() << QKeySequence("CTRL+Y") << QKeySequence("CTRL+SHIFT+Z"));
     m_cutAct = new QAction(QIcon(":/images/cut.png"),tr("Cut"),this);
     m_copyAct = new QAction(QIcon(":/images/copy.png"),tr("Copy"),this);
     m_pasteAct = new QAction(QIcon(":/images/paste.png"),tr("Paste"),this);
