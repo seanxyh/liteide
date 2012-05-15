@@ -43,6 +43,10 @@
 #include <QToolBar>
 #include <QFileSystemWatcher>
 #include <QDebug>
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -221,10 +225,17 @@ void FileSystemWidget::renameFile()
                                              QLineEdit::Normal,info.fileName());
     if (!fileName.isEmpty() && fileName != info.fileName()) {
         QDir dir = contextDir();
+#ifdef Q_OS_WIN
+        if (!MoveFileW(info.filePath().toStdWString().c_str(),QFileInfo(dir,fileName).filePath().toStdWString().c_str())) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Rename File"),
+                                     tr("Failed to rename the file!"));
+        }
+#else
         if (!QFile::rename(info.filePath(),QFileInfo(dir,fileName).filePath())) {
             QMessageBox::information(m_liteApp->mainWindow(),tr("Rename File"),
                                      tr("Failed to rename the file!"));
         }
+#endif
     }
 }
 
@@ -281,10 +292,19 @@ void FileSystemWidget::renameFolder()
     if (!folderName.isEmpty() && folderName != info.fileName()) {
         QDir dir = contextDir();
         dir.cdUp();
+#ifdef Q_OS_WIN
+        QString _old = info.filePath();
+        QString _new = dir.path()+"/"+folderName;
+        if (!MoveFileW(_old.toStdWString().c_str(),_new.toStdWString().c_str())) {
+            QMessageBox::information(m_liteApp->mainWindow(),tr("Rename Folder"),
+                                     tr("Failed to rename the folder!"));
+        }
+#else
         if (!dir.rename(info.fileName(),folderName)) {
             QMessageBox::information(m_liteApp->mainWindow(),tr("Rename Folder"),
                                      tr("Failed to rename the folder!"));
         }
+#endif
     }
 }
 
