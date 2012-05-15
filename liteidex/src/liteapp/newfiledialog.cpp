@@ -211,7 +211,13 @@ void NewFileDialog::activePath(QModelIndex index)
     if (!index.isValid()) {
         return;
     }
-    m_gopath = index.data(Qt::DisplayRole).toString();
+    if (m_cur.type == "project") {
+        m_projectLocation = index.data(Qt::DisplayRole).toString();
+    } else if (m_cur.type == "file"){
+        m_fileLocation = index.data(Qt::DisplayRole).toString();
+    } else if (m_cur.type == "gopath") {
+        m_gopath = index.data(Qt::DisplayRole).toString();
+    }
     QModelIndex i = ui->templateTreeView->currentIndex();
     if (i.isValid()) {
         activeTemplate(i);
