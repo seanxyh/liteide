@@ -2,6 +2,7 @@
  * GolangPackage : enable local package
  * GolangDoc : golang api fmt#Println -> fmt.Println
  * LiteBuild : fix regexp error
+ * FileSystem: (windows) fix rename abc to Abc false
 ==== 2012.5.2 Ver X11 1.71875 beta3 ===
  * GolangPackage : new golang package plugin for GO1
  * GolangPackage : PackageBrowser and PackageProject for GO1
