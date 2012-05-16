@@ -115,7 +115,6 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
         editor->extension()->addObject("TextEditor::SyntaxHighlighter",h);
         connect(editor,SIGNAL(colorStyleChanged()),this,SLOT(colorStyleChanged()));
     }
-    editor->applyOption("option/liteeditor");
     LiteWordCompleter *wordCompleter = new LiteWordCompleter(editor);
     editor->setCompleter(wordCompleter);
     if (wordCompleter) {
@@ -128,6 +127,7 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
             wordCompleter->completer()->model()->sort(0);
         }        
     }
+    editor->applyOption("option/liteeditor");
     return editor;
 }
 
@@ -146,7 +146,6 @@ LiteApi::IEditor *LiteEditorFileFactory::create(const QString &contents, const Q
         editor->extension()->addObject("TextEditor::SyntaxHighlighter",h);
         connect(editor,SIGNAL(colorStyleChanged()),this,SLOT(colorStyleChanged()));
     }
-    editor->applyOption("option/liteeditor");
 
     LiteWordCompleter *wordCompleter = new LiteWordCompleter(editor);
     editor->setCompleter(wordCompleter);
@@ -160,5 +159,6 @@ LiteApi::IEditor *LiteEditorFileFactory::create(const QString &contents, const Q
             wordCompleter->completer()->model()->sort(0);
         }
     }
+    editor->applyOption("option/liteeditor");
     return editor;
 }

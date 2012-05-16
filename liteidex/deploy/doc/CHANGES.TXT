@@ -1,7 +1,8 @@
 ==== 2012.5.16 Ver X11 1.71875 beta4.1 ====
  * LiteBuild: fix execute args for gosrc/gopro/makefile
- * LiteApp: add option when close project auto close project editors
+ * LiteApp: add option - when close project auto close project editors
  * PackageBrowser : double click pkg and load project
+ * LiteEditor: add option - compelter case sensitive
 ==== 2012.5.15 Ver X11 1.71875 beta4 ====
  * GolangPackage : enable local package
  * GolangDoc : golang api fmt#Println -> fmt.Println

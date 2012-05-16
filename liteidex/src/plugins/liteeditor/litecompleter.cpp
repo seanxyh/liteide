@@ -240,6 +240,7 @@ void LiteCompleter::insertCompletion(QModelIndex index)
     if (!index.isValid()) {
         return;
     }
+
     QString text = index.data(WordItem::NameRole).toString();
     QString prefix = m_completer->completionPrefix();
     //IsAbs r.URL.
@@ -248,9 +249,19 @@ void LiteCompleter::insertCompletion(QModelIndex index)
     if (pos != -1) {
         length = prefix.length()-pos-1;
     }
-    QString extra = text.right(text.length()-length);
-    QTextCursor tc = m_editor->textCursor();
-    tc.insertText(extra);
-    m_editor->setTextCursor(tc);
-    emit wordCompleted(prefix+extra,index.data(WordItem::InfoRole).toString());
+    if (m_completer->caseSensitivity() == Qt::CaseSensitive) {
+        QString extra = text.right(text.length()-length);
+        QTextCursor tc = m_editor->textCursor();
+        tc.insertText(extra);
+        m_editor->setTextCursor(tc);
+        emit wordCompleted(prefix+extra,index.data(WordItem::InfoRole).toString());
+    } else {
+        QTextCursor tc = m_editor->textCursor();
+        while (length--) {
+            tc.deletePreviousChar();
+        }
+        tc.insertText(text);
+        m_editor->setTextCursor(tc);
+        emit wordCompleted(text,index.data(WordItem::InfoRole).toString());
+    }
 }
