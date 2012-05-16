@@ -69,6 +69,8 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     m_treeView->setModel(m_model);
     m_treeView->setEditTriggers(QTreeView::NoEditTriggers);
+    m_treeView->setExpandsOnDoubleClick(false);
+
     layout->addWidget(m_treeView);
     m_widget->setLayout(layout);
 
@@ -102,12 +104,12 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->dockManager()->addDock(m_widget,tr("Package Browser"));
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
-    connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openSource()));
+    connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClicked()));
     connect(m_reloadAct,SIGNAL(triggered()),this,SLOT(reloadAll()));
     connect(m_setupGopathAct,SIGNAL(triggered()),this,SLOT(setupGopath()));
     connect(m_godocAct,SIGNAL(triggered()),this,SLOT(loadPackageDoc()));
     connect(m_editPackageAct,SIGNAL(triggered()),this,SLOT(loadPackageProject()));
-    connect(m_openSrcAct,SIGNAL(triggered()),this,SLOT(openSource()));
+    connect(m_openSrcAct,SIGNAL(triggered()),this,SLOT(doubleClicked()));
     connect(m_copyNameAct,SIGNAL(triggered()),this,SLOT(copyPackageName()));
 
     QAction *act = new QAction(QIcon(":/images/gopath.png"),tr("GOPATH Setup"),this);
@@ -125,7 +127,7 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_model->appendRow(new QStandardItem(tr("Loading go package ...")));
 
-    reloadAll();
+    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(reloadAll()));
 }
 
 PackageBrowser::~PackageBrowser()
@@ -198,17 +200,25 @@ void PackageBrowser::loadPackageProject()
     if (!index.isValid()) {
         return;
     }
+    loadPackageProjectHelper(index);
+}
+
+bool PackageBrowser::loadPackageProjectHelper(QModelIndex index)
+{
+    if (!index.isValid()) {
+        return false;
+    }
     int type = index.data(PackageType::RoleItem).toInt();
     if (type != PackageType::ITEM_PACKAGE &&
             type != PackageType::ITEM_DEP &&
             type != PackageType::ITEM_IMPORT) {
-        return;
+        return false;
     }
 
     QString pkgName = index.data(Qt::DisplayRole).toString();
     QVariant json = m_pkgJson.value(pkgName);
     if (json.isNull()) {
-        return;
+        return false;
     }
     QDir dir(json.toMap().value("Dir").toString());
     if (dir.exists()) {
@@ -217,23 +227,33 @@ void PackageBrowser::loadPackageProject()
         proj->setPath(dir.path());
         m_liteApp->projectManager()->setCurrentProject(proj);;
         m_liteApp->fileManager()->addRecentFile(dir.path(),"gopkg");
+        return true;
     }
+    return false;
 }
 
-void PackageBrowser::openSource()
+void PackageBrowser::doubleClicked()
 {
     QModelIndex index = m_treeView->currentIndex();
     if (!index.isValid()) {
         return;
     }
-    int type = index.data(PackageType::RoleItem).toInt();
-    if (type != PackageType::ITEM_SOURCE) {
-        return;
-    }
 
-    QString path = index.data(PackageType::RolePath).toString();
-    if (!path.isEmpty()) {
-        m_liteApp->fileManager()->openEditor(path);
+    int type = index.data(PackageType::RoleItem).toInt();
+    if (type == PackageType::ITEM_SOURCE) {
+        QString path = index.data(PackageType::RolePath).toString();
+        if (!path.isEmpty()) {
+            m_liteApp->fileManager()->openEditor(path);
+        }
+    } else if (type == PackageType::ITEM_PACKAGE) {
+        if (loadPackageProjectHelper(index)) {
+            return;
+        }
+    }
+    if (m_treeView->isExpanded(index)) {
+        m_treeView->collapse(index);
+    } else {
+        m_treeView->expand(index);
     }
 }
 
