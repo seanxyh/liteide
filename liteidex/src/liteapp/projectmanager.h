@@ -69,6 +69,7 @@ public slots:
     void triggeredProject(QAction* act);
     void openSchemeAct();    
     void appLoaded();
+    void applyOption(QString);
 protected:
     virtual void closeProjectHelper(IProject *project);
 protected:
@@ -81,6 +82,7 @@ protected:
     QMenu                   *m_projectMenu;
     QActionGroup            *m_projectActGroup;
     QMenu                   *m_importMenu;
+    bool                    m_bAutoCloseProjectEditors;
 };
 
 #endif // PROJECTMANAGER_H

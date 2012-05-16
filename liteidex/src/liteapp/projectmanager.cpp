@@ -107,6 +107,8 @@ bool ProjectManager::initWithApp(IApplication *app)
     connect(m_projectMenu,SIGNAL(triggered(QAction*)),this,SLOT(triggeredProject(QAction*)));
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
 
+    m_bAutoCloseProjectEditors = m_liteApp->settings()->value("LiteApp/AutoCloseProjectEditors",false).toBool();
+
     return true;
 }
 
@@ -332,8 +334,10 @@ void ProjectManager::closeProjectHelper(IProject *project)
 
     m_scrollArea->takeWidget();
 
-    foreach (IEditor *editor, editorList(cur)) {
-        m_liteApp->editorManager()->closeEditor(editor);
+    if (m_bAutoCloseProjectEditors) {
+        foreach (IEditor *editor, editorList(cur)) {
+            m_liteApp->editorManager()->closeEditor(editor);
+        }
     }
     QAction *act = m_mapNameToAction.value(cur->filePath());
     if (act) {
@@ -349,4 +353,12 @@ void ProjectManager::closeProject(IProject *project)
 {
     closeProjectHelper(project);
     emit currentProjectChanged(0);
+}
+
+void ProjectManager::applyOption(QString id)
+{
+    if (id != "option/liteapp") {
+        return;
+    }
+    m_bAutoCloseProjectEditors = m_liteApp->settings()->value("LiteApp/AutoCloseProjectEditors",false).toBool();
 }
