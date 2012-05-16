@@ -38,6 +38,7 @@ public:
     void reloadEnv();
     QStringList sysGopath() const;
     QStringList liteGopath() const;
+    void setProcessEnvironment(const QProcessEnvironment &environment);
     void setLiteGopath(const QStringList &pathList);
     bool isRuning() const;
     void kill();

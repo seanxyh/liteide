@@ -146,9 +146,10 @@ void PackageBrowser::reloadAll()
     m_gopathList.clear();
     m_gopathList.append(root);
     m_gopathList.append(m_taskList);
-
+    QProcessEnvironment env = LiteApi::getCurrentEnvironment(m_liteApp);
+    env.insert("GOPATH","");
     m_goTool->setWorkDir(root);
-    m_goTool->start(QStringList() << "list" << "-json" << "./...");
+    m_goTool->start(QStringList() << "list" << "-json" << "...");
 }
 
 void PackageBrowser::setupGopath()
@@ -287,6 +288,7 @@ void PackageBrowser::finished(int code,QProcess::ExitStatus)
         if (!m_taskList.isEmpty()) {
             QString work = m_taskList.first();
             m_taskList.removeFirst();
+            m_goTool->setProcessEnvironment(LiteApi::getGoEnvironment(m_liteApp));
             m_goTool->setWorkDir(work);
             m_goTool->start(QStringList() << "list" << "-json" << "./...");
         } else {
@@ -315,7 +317,7 @@ void PackageBrowser::resetTree()
         m_treeView->expand(m_model->indexFromItem(item));
 
         foreach(QByteArray line, data.data.split('\n')) {
-            bool bRoot = (data.path == LiteApi::getGoroot(m_liteApp));
+            //bool bRoot = (data.path == LiteApi::getGoroot(m_liteApp));
             jsonData.append(line);
             if (line == "}") {
                 QJson::Parser parser;
@@ -329,11 +331,11 @@ void PackageBrowser::resetTree()
                 } else {
                     parent = pkg;
                 }
-                QString pkgName = jsonMap.value("ImportPath").toString();
-                if (bRoot && pkgName.indexOf("_") == 0) {
-                    parent = 0;
-                }
+                 //if (bRoot && pkgName.indexOf("_") == 0) {
+                //    parent = 0;
+                //}
                 if (parent) {
+                    QString pkgName = jsonMap.value("ImportPath").toString();
                     QStandardItem *item = new QStandardItem(pkgName);
                     item->setToolTip(pkgName);
                     item->setData(PackageType::ITEM_PACKAGE,PackageType::RoleItem);

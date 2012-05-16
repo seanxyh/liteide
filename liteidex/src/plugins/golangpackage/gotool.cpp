@@ -112,6 +112,11 @@ void GoTool::kill()
     }
 }
 
+void  GoTool::setProcessEnvironment(const QProcessEnvironment &environment)
+{
+    m_process->setProcessEnvironment(environment);
+}
+
 void GoTool::setWorkDir(const QString &dir)
 {
     m_process->setWorkingDirectory(dir);
