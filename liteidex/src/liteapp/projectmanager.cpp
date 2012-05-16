@@ -107,7 +107,7 @@ bool ProjectManager::initWithApp(IApplication *app)
     connect(m_projectMenu,SIGNAL(triggered(QAction*)),this,SLOT(triggeredProject(QAction*)));
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
 
-    m_bAutoCloseProjectEditors = m_liteApp->settings()->value("LiteApp/AutoCloseProjectEditors",false).toBool();
+    m_bAutoCloseProjectEditors = m_liteApp->settings()->value("LiteApp/AutoCloseProjectEditors",true).toBool();
 
     return true;
 }
