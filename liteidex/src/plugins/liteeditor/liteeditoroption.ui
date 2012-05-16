@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>563</width>
-    <height>352</height>
+    <height>383</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -168,6 +168,13 @@
        <widget class="QCheckBox" name="autoIndentCheckBox">
         <property name="text">
          <string>Enable automatic indentation</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="completerCaseSensitiveCheckBox">
+        <property name="text">
+         <string>Completer case sensitive</string>
         </property>
        </widget>
       </item>

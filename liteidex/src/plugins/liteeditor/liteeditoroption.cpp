@@ -81,6 +81,7 @@ LiteEditorOption::LiteEditorOption(LiteApi::IApplication *app,QObject *parent) :
     bool autoBraces2 = m_liteApp->settings()->value("editor/autobraces2",true).toBool();
     bool autoBraces3 = m_liteApp->settings()->value("editor/autobraces3",true).toBool();
     bool autoBraces4 = m_liteApp->settings()->value("editor/autobraces4",true).toBool();
+    bool caseSensitive = m_liteApp->settings()->value("editor/ComplererCaseSensitive",true).toBool();
     bool lineNumberVisible = m_liteApp->settings()->value("editor/linenumbervisible",true).toBool();
 
     int min = m_liteApp->settings()->value("editor/prefixlength",1).toInt();
@@ -92,6 +93,7 @@ LiteEditorOption::LiteEditorOption(LiteApi::IApplication *app,QObject *parent) :
     ui->autoBraces3CheckBox->setChecked(autoBraces3);
     ui->autoBraces4CheckBox->setChecked(autoBraces4);
     ui->lineNumberVisibleCheckBox->setChecked(lineNumberVisible);
+    ui->completerCaseSensitiveCheckBox->setChecked(caseSensitive);
     ui->preMinLineEdit->setText(QString("%1").arg(min));
 
     connect(ui->editPushButton,SIGNAL(clicked()),this,SLOT(editStyleFile()));
@@ -131,6 +133,7 @@ void LiteEditorOption::apply()
     bool autoBraces3 = ui->autoBraces3CheckBox->isChecked();
     bool autoBraces4 = ui->autoBraces4CheckBox->isChecked();
     bool lineNumberVisible = ui->lineNumberVisibleCheckBox->isChecked();
+    bool caseSensitive = ui->completerCaseSensitiveCheckBox->isChecked();
     bool antialias = ui->antialiasCheckBox->isChecked();
     int min = ui->preMinLineEdit->text().toInt();
     if (min < 0 || min > 10) {
@@ -148,6 +151,7 @@ void LiteEditorOption::apply()
     m_liteApp->settings()->setValue("editor/autobraces3",autoBraces3);
     m_liteApp->settings()->setValue("editor/autobraces4",autoBraces4);
     m_liteApp->settings()->setValue("editor/linenumbervisible",lineNumberVisible);
+    m_liteApp->settings()->setValue("editor/ComplererCaseSensitive",caseSensitive);
     m_liteApp->settings()->setValue("editor/prefixlength",min);
 }
 

@@ -475,6 +475,7 @@ void LiteEditor::applyOption(QString id)
     bool autoBraces2 = m_liteApp->settings()->value("editor/autobraces2",true).toBool();
     bool autoBraces3 = m_liteApp->settings()->value("editor/autobraces3",true).toBool();
     bool autoBraces4 = m_liteApp->settings()->value("editor/autobraces4",true).toBool();
+    bool caseSensitive = m_liteApp->settings()->value("editor/ComplererCaseSensitive",true).toBool();
     bool lineNumberVisible = m_liteApp->settings()->value("editor/linenumbervisible",true).toBool();
     int min = m_liteApp->settings()->value("editor/prefixlength",1).toInt();
     m_editorWidget->setPrefixMin(min);
@@ -486,6 +487,11 @@ void LiteEditor::applyOption(QString id)
     m_editorWidget->setAutoBraces3(autoBraces3);
     m_editorWidget->setAutoBraces4(autoBraces4);
     m_editorWidget->setLineNumberVisible(lineNumberVisible);
+
+    if (m_completer) {
+        m_completer->completer()->setCaseSensitivity(caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    }
+
 #if defined(Q_OS_WIN)
     QString fontFamily = m_liteApp->settings()->value("editor/family","Courier").toString();
 #elif defined(Q_OS_LINUX)
