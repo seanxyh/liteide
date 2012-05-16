@@ -68,9 +68,11 @@ public slots:
     void loadPackageProject();
     void finished(int,QProcess::ExitStatus);
     void customContextMenuRequested(QPoint);
-    void openSource();
+    void doubleClicked();
     void resetTree();
     void copyPackageName();
+protected:
+    bool loadPackageProjectHelper(QModelIndex index);
 protected:
     QStringList m_taskList;
     QList<PathData> m_taskData;
