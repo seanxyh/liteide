@@ -41,7 +41,6 @@ PackageProjectFactory::PackageProjectFactory(LiteApi::IApplication *app, QObject
 {
     m_mimeTypes.append("text/x-gopackage");
     m_mimeTypes.append("text/x-gocommand");
-    m_browser = new PackageBrowser(m_liteApp,this);
 }
 
 QStringList PackageProjectFactory::mimeTypes() const
@@ -57,8 +56,6 @@ LiteApi::IProject *PackageProjectFactory::open(const QString &fileName, const QS
     PackageProject *project = new PackageProject(m_liteApp);
     project->setPath(fileName);
     project->reload();
-
-    m_browser->reloadAll();
 
     return project;
 }

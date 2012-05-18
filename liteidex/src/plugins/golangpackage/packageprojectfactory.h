@@ -38,7 +38,6 @@ public:
     virtual bool findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& targetInfo) const;
 public:
     LiteApi::IApplication *m_liteApp;
-    PackageBrowser  *m_browser;
     QStringList m_mimeTypes;
 };
 

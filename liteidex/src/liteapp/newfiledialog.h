@@ -80,6 +80,7 @@ public:
     virtual void accept();
     bool processFile(const QString &infile, const QString &outfile);
     QStringList openFiles() const;
+    QString type() const;
     QString scheme() const;
     QString openPath() const;
 public slots:

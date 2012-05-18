@@ -41,6 +41,7 @@
 #include <QUrl>
 #include <QClipboard>
 #include <QApplication>
+#include <QTimer>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -125,9 +126,8 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
         connect(env,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(reloadAll()));
     }
 
-    m_model->appendRow(new QStandardItem(tr("Loading go package ...")));
-
-    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(reloadAll()));
+    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
+    connect(m_liteApp->fileManager(),SIGNAL(fileWizardFinished(QString,QString,QString)),this,SLOT(fileWizardFinished(QString,QString,QString)));
 }
 
 PackageBrowser::~PackageBrowser()
@@ -137,8 +137,26 @@ PackageBrowser::~PackageBrowser()
     delete m_fileMenu;
 }
 
+void PackageBrowser::appLoaded()
+{
+    QTimer::singleShot(200, this, SLOT(reloadAll()));
+}
+
+void PackageBrowser::fileWizardFinished(const QString &type, const QString &scheme, const QString &location)
+{
+    if (scheme == "gopkg") {
+        reloadAll();
+    }
+}
+
 void PackageBrowser::reloadAll()
 {
+    if (m_goTool->isRuning()) {
+        return;
+    }
+    if (m_model->rowCount() == 0) {
+        m_model->appendRow(new QStandardItem(tr("Loading go package ...")));
+    }
     QString root = LiteApi::getGoroot(m_liteApp);
     m_goTool->reloadEnv();
     m_taskList = LiteApi::getGopathList(m_liteApp,false);
@@ -148,6 +166,7 @@ void PackageBrowser::reloadAll()
     m_gopathList.append(m_taskList);
     QProcessEnvironment env = LiteApi::getCurrentEnvironment(m_liteApp);
     env.insert("GOPATH","");
+    m_goTool->setProcessEnvironment(env);
     m_goTool->setWorkDir(root);
     m_goTool->start(QStringList() << "list" << "-json" << "...");
 }

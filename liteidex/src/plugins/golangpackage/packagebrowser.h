@@ -62,6 +62,7 @@ public:
 signals:
     
 public slots:
+    void appLoaded();
     void reloadAll();
     void setupGopath();
     void loadPackageDoc();
@@ -71,6 +72,7 @@ public slots:
     void doubleClicked();
     void resetTree();
     void copyPackageName();
+    void fileWizardFinished(const QString &type, const QString &scheme, const QString &location);
 protected:
     bool loadPackageProjectHelper(QModelIndex index);
 protected:

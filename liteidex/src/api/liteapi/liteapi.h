@@ -181,6 +181,7 @@ public:
 signals:
     void fileListChanged();
     void recentFilesChanged(QString);
+    void fileWizardFinished(const QString &type, const QString &scheme, const QString &location);
 public slots:
     virtual void newFile() = 0;
     virtual void openFiles() = 0;
