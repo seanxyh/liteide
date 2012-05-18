@@ -362,6 +362,11 @@ QStringList NewFileDialog::openFiles() const
     return m_openFiles;
 }
 
+QString NewFileDialog::type() const
+{
+    return m_cur.type;
+}
+
 QString NewFileDialog::scheme() const
 {
     return m_cur.scheme;

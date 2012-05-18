@@ -244,7 +244,7 @@ void FileManager::execFileWizard(const QString &projPath, const QString &filePat
         m_newFileDialog->setTemplatePath(m_liteApp->resourcePath()+"/template");
     }
 
-    m_newFileDialog->setPathList(LiteApi::getGopathList(m_liteApp,true));
+    m_newFileDialog->setPathList(LiteApi::getGopathList(m_liteApp,false));
     if (!gopath.isEmpty()) {
         m_newFileDialog->setGopath(gopath);
     }
@@ -253,6 +253,8 @@ void FileManager::execFileWizard(const QString &projPath, const QString &filePat
     m_newFileDialog->updateLocation();
 
     if (m_newFileDialog->exec() == QDialog::Accepted) {
+        //emit fileWizardFinished(m_newFileDialog->openPath(),m_newFileDialog->f)
+        emit fileWizardFinished(m_newFileDialog->type(),m_newFileDialog->scheme(),m_newFileDialog->openPath());
         QMessageBox::StandardButton ret;
         ret = QMessageBox::question(m_liteApp->mainWindow(), tr("LiteIDE"),
                                     tr("Project '%1' is created.\n"
