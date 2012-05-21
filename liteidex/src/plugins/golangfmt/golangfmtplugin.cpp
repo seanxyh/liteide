@@ -86,8 +86,9 @@ void GolangFmtPlugin::editorCreated(LiteApi::IEditor *editor)
         m_gofmtAct->setToolTip("gofmt(Shift+F7)");
         connect(m_gofmtAct,SIGNAL(triggered()),m_fmt,SLOT(gofmt()));
     }
-    toolBar->addSeparator();
-    toolBar->addAction(m_gofmtAct);
+    QAction *lastAct = toolBar->actions().last();
+    lastAct = toolBar->insertSeparator(lastAct);
+    toolBar->insertAction(lastAct,m_gofmtAct);
 }
 
 Q_EXPORT_PLUGIN(GolangFmtPlugin)

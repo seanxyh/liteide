@@ -26,6 +26,7 @@
 #include "litefindplugin.h"
 #include "findeditor.h"
 #include "replaceeditor.h"
+#include "filesearch.h"
 
 #include <QMenu>
 #include <QAction>
@@ -42,7 +43,8 @@
 
 LiteFindPlugin::LiteFindPlugin()
     : m_findEditor(0),
-      m_replaceEditor(0)
+      m_replaceEditor(0),
+      m_fileSearch(0)
 {
     m_info->setId("plugin/LiteFind");
     m_info->setName("LiteFind");
@@ -88,11 +90,15 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
     m_replaceAct->setShortcut(QKeySequence::Replace);
     m_replaceAct->setCheckable(true);
 
+    m_fileSearchAct = new QAction(tr("FileSerach"),this);
+
     menu->addAction(m_findAct);
     menu->addAction(m_findNextAct);
     menu->addAction(m_findPrevAct);
     menu->addSeparator();
     menu->addAction(m_replaceAct);
+    menu->addSeparator();
+    menu->addAction(m_fileSearchAct);
 
     connect(m_findAct,SIGNAL(toggled(bool)),this,SLOT(find(bool)));
     connect(m_findNextAct,SIGNAL(triggered()),m_findEditor,SLOT(findNext()));
@@ -101,6 +107,7 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
     connect(m_findEditor,SIGNAL(hideFind()),this,SLOT(hideFind()));
     connect(m_replaceEditor,SIGNAL(hideReplace()),this,SLOT(hideReplace()));
     connect(m_findEditor,SIGNAL(swithReplace()),this,SLOT(switchReplace()));
+    connect(m_fileSearchAct,SIGNAL(toggled(bool)),this,SLOT(fileSerach(bool)));
 
     return true;
 }
@@ -140,6 +147,14 @@ void LiteFindPlugin::replace(bool b)
         m_findAct->setChecked(false);
     }
     m_replaceEditor->widget()->setVisible(b);
+}
+
+void LiteFindPlugin::fileSearch(bool b)
+{
+    if (m_fileSearch == 0) {
+        m_fileSearch = new FileSearch(m_liteApp,this);
+    }
+    m_fileSearch->widget()->setVisible(b);
 }
 
 Q_EXPORT_PLUGIN(LiteFindPlugin)
