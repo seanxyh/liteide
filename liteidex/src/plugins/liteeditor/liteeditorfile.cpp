@@ -72,6 +72,7 @@ bool LiteEditorFile::save(const QString &fileName)
     }
     m_fileName = fileName;
     QString text = m_document->toPlainText();
+
     if (m_lineTerminatorMode == CRLFLineTerminator)
         text.replace(QLatin1Char('\n'), QLatin1String("\r\n"));
 
@@ -185,15 +186,29 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
         m_hasDecodingError = true;
     }
     */
-
     int lf = text.indexOf('\n');
-    if (lf > 0 && text.at(lf-1) == QLatin1Char('\r')) {
+    if (lf < 0) {
+        m_lineTerminatorMode = NativeLineTerminator;
+    } else if (lf == 0) {
+        m_lineTerminatorMode = LFLineTerminator;
+    } else {
+        lf = text.indexOf(QRegExp("[^\r]\n"),lf-1);
+        if (lf >= 0) {
+            m_lineTerminatorMode = LFLineTerminator;
+        } else {
+            m_lineTerminatorMode = CRLFLineTerminator;
+        }
+    }
+    /*
+    int lf = text.indexOf('\n');
+    if (lf > 0 && (text.at(lf-1) == QLatin1Char('\r'))) {
         m_lineTerminatorMode = CRLFLineTerminator;
     } else if (lf >= 0) {
         m_lineTerminatorMode = LFLineTerminator;
     } else {
         m_lineTerminatorMode = NativeLineTerminator;
     }
+    */
 
     m_document->setPlainText(text);
     return true;

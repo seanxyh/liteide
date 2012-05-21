@@ -50,7 +50,7 @@ public:
     bool open(const QString &filePath, const QString &mimeType, bool bCheckCodec);
 protected:
     enum LineTerminatorMode {
-        LFLineTerminator,
+        LFLineTerminator = 0,
         CRLFLineTerminator,
         NativeLineTerminator =
 #if defined (Q_OS_WIN)
