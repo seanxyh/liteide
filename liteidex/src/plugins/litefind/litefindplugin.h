@@ -32,6 +32,7 @@
 
 class FindEditor;
 class ReplaceEditor;
+class FileSearch;
 class LiteFindPlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
@@ -45,13 +46,16 @@ public slots:
     void hideFind();
     void hideReplace();
     void switchReplace();
+    void fileSearch(bool);
 protected:
     FindEditor *m_findEditor;
     ReplaceEditor *m_replaceEditor;
+    FileSearch  *m_fileSearch;
     QAction *m_findAct;
     QAction *m_findNextAct;
     QAction *m_findPrevAct;
     QAction *m_replaceAct;
+    QAction *m_fileSearchAct;
 };
 
 #endif // LITEFINDPLUGIN_H

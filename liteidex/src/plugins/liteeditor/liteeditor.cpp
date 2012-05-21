@@ -275,8 +275,9 @@ void LiteEditor::createToolBars()
     connect(m_findComboBox->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findNextText()));
 #endif
     m_tip = new QLabel(m_widget);
-    m_tip->setAlignment(Qt::AlignCenter);
+    m_tip->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
     m_tip->setText("...");
+    m_tip->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
     m_toolBar->addWidget(m_tip);
 }
 
@@ -549,8 +550,11 @@ void LiteEditor::updateTip(QString func,QString args)
     if (args.isEmpty()) {
         return;
     }
-    m_tip->setToolTip(func+args);
-    QToolTip::showText(m_toolBar->mapToGlobal(m_tip->pos()),func+" "+args,m_tip);
+    QString tip = QString("%1 %2").arg(func).arg(args);
+    m_tip->setText(tip);
+    m_tip->setToolTip(tip);
+    //m_tip->setToolTip(func+args);
+    QToolTip::showText(m_toolBar->mapToGlobal(m_tip->pos()),tip);
 }
 
 void LiteEditor::filePrintPreview()
