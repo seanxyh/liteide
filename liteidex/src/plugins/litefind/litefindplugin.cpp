@@ -52,11 +52,19 @@ LiteFindPlugin::LiteFindPlugin()
     m_info->setInfo("LiteIDE Find Plugin");
 }
 
+LiteFindPlugin::~LiteFindPlugin()
+{
+    if (m_fileSearch) {
+        delete m_fileSearch;
+    }
+}
+
 bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
 {
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
+    m_liteApp = app;
 
     QLayout *layout = m_liteApp->editorManager()->widget()->layout();
     if (!layout) {
@@ -91,6 +99,8 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
     m_replaceAct->setCheckable(true);
 
     m_fileSearchAct = new QAction(tr("FileSerach"),this);
+    m_fileSearchAct->setShortcut(QKeySequence("CTRL+SHIFT+F"));
+    m_fileSearchAct->setCheckable(true);
 
     menu->addAction(m_findAct);
     menu->addAction(m_findNextAct);
@@ -107,7 +117,7 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
     connect(m_findEditor,SIGNAL(hideFind()),this,SLOT(hideFind()));
     connect(m_replaceEditor,SIGNAL(hideReplace()),this,SLOT(hideReplace()));
     connect(m_findEditor,SIGNAL(swithReplace()),this,SLOT(switchReplace()));
-    connect(m_fileSearchAct,SIGNAL(toggled(bool)),this,SLOT(fileSerach(bool)));
+    connect(m_fileSearchAct,SIGNAL(toggled(bool)),this,SLOT(fileSearch(bool)));
 
     return true;
 }
@@ -154,7 +164,7 @@ void LiteFindPlugin::fileSearch(bool b)
     if (m_fileSearch == 0) {
         m_fileSearch = new FileSearch(m_liteApp,this);
     }
-    m_fileSearch->widget()->setVisible(b);
+    m_fileSearch->setVisible(b);
 }
 
 Q_EXPORT_PLUGIN(LiteFindPlugin)

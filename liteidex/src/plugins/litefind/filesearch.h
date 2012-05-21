@@ -28,6 +28,7 @@
 
 #include "liteapi/liteapi.h"
 #include <QStringList>
+#include <QThread>
 
 class FileSearchResult
 {
@@ -52,17 +53,62 @@ public:
     QStringList regexpCapturedTexts;
 };
 
+Q_DECLARE_METATYPE(FileSearchResult)
+
+class FindThread : public QThread
+{
+Q_OBJECT
+public:
+    FindThread(QObject *parent = 0);
+    virtual void run();
+public slots:
+    void stop();
+protected:
+    void findDir(const QRegExp &reg, const QString &path);
+    void findFile(const QRegExp &reg, const QString &fileName);
+signals:
+    void findResult(const FileSearchResult &result);
+public:
+    bool useRegExp;
+    bool matchWord;
+    bool matchCase;
+    bool findSub;
+    QString findText;
+    QString findPath;
+    QStringList nameFilter;
+    volatile bool finding;
+};
+
+class QTabWidget;
+class QLineEdit;
+class QComboBox;
+class QCheckBox;
 class FileSearch : QObject
 {
     Q_OBJECT
 public:
     FileSearch(LiteApi::IApplication *app, QObject *parent = 0);
+    ~FileSearch();
     QWidget* widget();
+    void setVisible(bool b);
+public slots:
+    void findInFiles();
+    void findResult(const FileSearchResult &rsult);
+    void findStarted();
 protected:
     LiteApi::IApplication *m_liteApp;
-    QWidget *m_widget;
+    FindThread *m_thread;
+    QTabWidget  *m_tab;
+    QWidget     *m_findWidget;
+    QLineEdit   *m_findEdit;    
+    QLineEdit   *m_findPathEdit;
+    QComboBox   *m_filterCombo;
+    QCheckBox   *m_findSubCheckBox;
+    QCheckBox   *m_matchWordCheckBox;
+    QCheckBox   *m_matchCaseCheckBox;
+    QCheckBox   *m_useRegexCheckBox;
 };
 
-static QList<FileSearchResult> findInFile(const QString &text, bool useRegExp, bool matchWord, bool matchCase, const QString &fileName);
+//static QList<FileSearchResult> findInFile(const QString &text, bool useRegExp, bool matchWord, bool matchCase, const QString &fileName);
 
 #endif // FILESEARCH_H
