@@ -39,6 +39,7 @@ class LiteFindPlugin : public LiteApi::IPlugin
     Q_INTERFACES(LiteApi::IPlugin)
 public:
     LiteFindPlugin();
+    ~LiteFindPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
 public slots:
     void find(bool);
