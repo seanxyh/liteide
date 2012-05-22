@@ -3,7 +3,7 @@
  * PackageBrowser: fast load
  * LiteEditor: LRLF check by \n
  * LiteEditor: no print char conver to .
- * LiteEditor: update tip
+ * LiteEditor: update tooltip to label
 ==== 2012.5.16 Ver X11 1.71875 beta4.1 ====
  * LiteBuild: fix execute args for gosrc/gopro/makefile
  * LiteApp: add option - when close project auto close project editors

@@ -2005,17 +2005,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
-    <name>TextOutput</name>
-    <message>
-        <source>Hide</source>
-        <translation type="obsolete">Скрыть</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Очистить</translation>
-    </message>
-</context>
-<context>
     <name>Utils::FilterLineEdit</name>
     <message>
         <location filename="src/3rdparty/qtc_editutil/filterlineedit.cpp" line="49"/>
