@@ -83,6 +83,7 @@ signals:
 public slots:
     void applyOption(QString);
     void clipbordDataChanged();
+    void tipTimeout();
 #ifdef LITEEDITOR_FIND
     void findNextText();
 #endif
@@ -118,6 +119,7 @@ public:
     QComboBox *m_findComboBox;
 #endif
     QLabel    *m_tip;
+    QTimer    *m_tipTimer;
     LiteEditorFile *m_file;
     QString  m_colorStyle;
     QPalette m_defPalette;
