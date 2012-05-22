@@ -16,7 +16,8 @@
 		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="$(TARGETPATH)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
 		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
 		<action id="GoFmt" img="go/fmt.png" cmd="$(GO)" args="fmt" save="project" output="true" regex="$(ERRREGEX)"/>
-		<action id="GoVet" img="go/vet.png" cmd="$(GO)" args="vet" save="project" output="true" regex="$(ERRREGEX)"/>
-		<action id="GoFix" img="go/fix.png" cmd="$(GO)" args="fix" save="project" output="true" regex="$(ERRREGEX)"/>
+		<action separator="true"/>
+		<action id="BuildFile" img="go/buildfile.png" work="$(EDITORDIR)" cmd="$(GO)" args="build $(EDITORNAME)" save="editor" output="true" regex="$(ERRREGEX)"/>
+		<action id="RunFile" img="go/runfile.png" work="$(EDITORDIR)" cmd="$(GO)" args="run $(EDITORNAME)" save="editor" output="true" regex="$(ERRREGEX)"/>
 	</mime-type>	
 </mime-info>
