@@ -1,6 +1,7 @@
 ==== 2012.5.22 Ver X11 1.71875 beta5 ====
  * LiteFind: add file search
  * PackageBrowser: fast load
+ * LiteBuild: add go build file.go and go run file.go
  * LiteEditor: LRLF check by \n
  * LiteEditor: no print char conver to .
  * LiteEditor: update tooltip to label
