@@ -1857,10 +1857,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <source>Import Directory &lt;%1&gt;</source>
         <translation>导入目录 &lt;%1&gt;</translation>
     </message>
-    <message>
-        <source>Open Directory</source>
-        <translation type="obsolete">打开目录</translation>
-    </message>
 </context>
 <context>
     <name>ReplaceEditor</name>
@@ -1999,17 +1995,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/3rdparty/qtc_texteditor/colorscheme.cpp" line="212"/>
         <source>Not a color scheme file.</source>
         <translation>没有颜色配置文件.</translation>
-    </message>
-</context>
-<context>
-    <name>TextOutput</name>
-    <message>
-        <source>Hide</source>
-        <translation type="obsolete">隐藏</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">清除</translation>
     </message>
 </context>
 <context>
