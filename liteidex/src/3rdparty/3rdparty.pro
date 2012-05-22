@@ -8,5 +8,6 @@ SUBDIRS = \
     qtc_texteditor  \
     qtc_gdbmi \
     qtc_editutil \
-    qjson
+    qjson \
+    elidedlabel \
 
