@@ -27,6 +27,7 @@
 #include <QFile>
 #include <QTextDocument>
 #include <QTextCodec>
+#include <QTextStream>
 #include <QMessageBox>
 #include <QDir>
 #include <QDebug>
@@ -136,6 +137,20 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
     m_mimeType = mimeType;
     m_fileName = fileName;
 
+    if (bCheckCodec) {
+        if (mimeType == "text/html" || mimeType == "text/xml") {
+            //m_codec = QTextCodec::codecForHtml(buf,QTextCodec::codecForName("utf-8"));
+        } else {
+            LiteApi::IMimeType *im = m_liteApp->mimeTypeManager()->findMimeType(mimeType);
+            if (im) {
+                QString codecName = im->codec();
+                if (!codecName.isEmpty()) {
+                    m_codec = QTextCodec::codecForName(codecName.toAscii());
+                }
+            }
+         }
+     }
+
     QByteArray buf = file.readAll();
     m_hasDecodingError = false;
 
@@ -168,11 +183,15 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
             m_codec = codec;
         }
     }
+
+
     QTextCodec::ConverterState state;
     QString text = m_codec->toUnicode(buf,buf.size(),&state);
     if (state.invalidChars > 0 || state.remainingChars > 0) {
         m_hasDecodingError = true;
     }
+    //qDebug() << state.invalidChars << state.remainingChars;
+
 /*
     QByteArray verifyBuf = m_codec->fromUnicode(text); // slow
     // the minSize trick lets us ignore unicode headers
@@ -186,6 +205,7 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
         m_hasDecodingError = true;
     }
     */
+
     int lf = text.indexOf('\n');
     if (lf < 0) {
         m_lineTerminatorMode = NativeLineTerminator;
@@ -199,16 +219,15 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
             m_lineTerminatorMode = CRLFLineTerminator;
         }
     }
-    /*
-    int lf = text.indexOf('\n');
-    if (lf > 0 && (text.at(lf-1) == QLatin1Char('\r'))) {
-        m_lineTerminatorMode = CRLFLineTerminator;
-    } else if (lf >= 0) {
-        m_lineTerminatorMode = LFLineTerminator;
-    } else {
-        m_lineTerminatorMode = NativeLineTerminator;
+    bool noprintCheck = m_liteApp->settings()->value("editor/noprintcheck",true).toBool();
+    if (noprintCheck) {
+        for (int i = 0; i < text.length(); i++) {
+            if (!text[i].isPrint() && !text[i].isSpace() && text[i] != '\r' && text[i] != '\n') {
+                text[i] = '.';
+                m_hasDecodingError = true;
+            }
+        }
     }
-    */
 
     m_document->setPlainText(text);
     return true;

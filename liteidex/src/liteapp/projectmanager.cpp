@@ -144,15 +144,16 @@ void ProjectManager::triggeredProject(QAction* act)
 
 void ProjectManager::openSchemeDialog(const QString &scheme)
 {
+    static QString last = QDir::homePath();
     QString dir = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(),
                                                     QString(tr("Import Directory <%1>").arg(scheme)),
-                                                     "/home",
+                                                     last,
                                                      QFileDialog::ShowDirsOnly
                                                      | QFileDialog::DontResolveSymlinks);
     if (dir.isEmpty()) {
         return;
     }
-
+    last = dir;
     m_liteApp->fileManager()->openProjectScheme(dir,scheme);
 }
 
