@@ -87,6 +87,8 @@ public:
     ResultTextEdit(QWidget *parent = 0);
 signals:
     void dbclickEvent(const QTextCursor &cur);
+public slots:
+    void slotCursorPositionChanged();
 protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
 };
@@ -123,7 +125,7 @@ protected:
     QPushButton *m_findButton;
     QPushButton *m_stopButton;
     ResultTextEdit *m_resultOutput;
-    int          m_resultCount;
+    QList<FileSearchResult> m_resultList;
 };
 
 //static QList<FileSearchResult> findInFile(const QString &text, bool useRegExp, bool matchWord, bool matchCase, const QString &fileName);
