@@ -155,6 +155,25 @@ ResultTextEdit::ResultTextEdit(QWidget *parent) :
     QPlainTextEdit(parent)
 {
     this->setWordWrapMode(QTextOption::NoWrap);
+
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPositionChanged()));
+}
+
+void ResultTextEdit::slotCursorPositionChanged()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+
+    QTextEdit::ExtraSelection selection;
+
+    QColor lineColor = QColor(180,200,200,128);
+
+    selection.format.setBackground(lineColor);
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = textCursor();
+    selection.cursor.clearSelection();
+    extraSelections.append(selection);
+
+    setExtraSelections(extraSelections);
 }
 
 void ResultTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
@@ -164,7 +183,6 @@ void ResultTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
 
     emit dbclickEvent(cur);
 }
-
 
 FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
@@ -322,7 +340,7 @@ void FileSearch::findInFiles()
     m_thread->nameFilter = m_filterCombo->currentText().split(";");
     m_resultOutput->clear();
     m_resultOutput->appendPlainText(QString(tr("Searching for '%1'...").arg(m_findCombo->currentText())));
-    m_resultCount = 0;
+    m_resultList.clear();
     m_thread->start(QThread::LowPriority);
     if (m_findCombo->findText(text) < 0) {
         m_findCombo->addItem(text);
@@ -367,7 +385,7 @@ void FileSearch::findFinished()
 {
     m_findButton->setEnabled(true);
     m_stopButton->setEnabled(false);
-    m_resultOutput->appendPlainText(QString(tr("%1 occurrence(s) have been found.").arg(m_resultCount)));
+    m_resultOutput->appendPlainText(QString(tr("%1 occurrence(s) have been found.").arg(m_resultList.count())));
 }
 
 void FileSearch::findResult(const FileSearchResult &result)
@@ -383,17 +401,26 @@ void FileSearch::findResult(const FileSearchResult &result)
         }
     }
     m_resultOutput->appendPlainText(QString("%1:%2:%3").arg(result.fileName).arg(result.lineNumber).arg(text.left(max)));
-    m_resultCount++;
+    m_resultList.append(result);
 }
 
 void FileSearch::dbclickOutput(const QTextCursor &cur)
 {
-    QRegExp rep("([:\\w\\d_\\\\/\\.]+):(\\d+):");
+    int index = cur.blockNumber()-1;
+    if (index < 0 || index >= m_resultList.count()) {
+        return;
+    }
+    QString fileName = m_resultList.at(index).fileName;
+    int line = m_resultList.at(index).lineNumber;
+    /*
+    QRegExp rep("([:-\\w\\d_\\\\/\\.]+):(\\d+):");
 
     int index = rep.indexIn(cur.block().text());
     if (index < 0)
         return;
     QStringList capList = rep.capturedTexts();
+
+    qDebug() << cur.block().text() << capList;
 
     if (capList.count() < 3)
         return;
@@ -404,6 +431,7 @@ void FileSearch::dbclickOutput(const QTextCursor &cur)
     int line = fileLine.toInt(&ok);
     if (!ok)
         return;
+    */
     LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName);
     if (editor) {
         editor->widget()->setFocus();
