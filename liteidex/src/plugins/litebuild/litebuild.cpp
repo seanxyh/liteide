@@ -359,6 +359,10 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
                                  << new QStandardItem(i.value()));
     }
     foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
+        if (ba->isSeparator()) {
+            m_actions.append(m_toolBar->addSeparator());
+            continue;
+        }
         QAction *act = m_toolBar->addAction(ba->id());
         if (!ba->key().isEmpty()) {
             act->setShortcut(QKeySequence(ba->key()));
@@ -535,11 +539,15 @@ void LiteBuild::execAction(const QString &id)
 
     QMap<QString,QString> env = buildEnvMap();
 
-    m_workDir = env.value("WORKDIR");
-
     QProcessEnvironment sysenv = LiteApi::getGoEnvironment(m_liteApp);
     QString cmd = m_build->actionValue(ba->cmd(),env,sysenv);
     QString args = m_build->actionValue(ba->args(),env,sysenv);
+
+    m_workDir = env.value("WORKDIR");
+    QString work = ba->work();
+    if (!work.isEmpty()) {
+        m_workDir = m_build->actionValue(work,env,sysenv);
+    }
 
     if (!ba->regex().isEmpty()) {
         m_outputRegex = m_build->actionValue(ba->regex(),env,sysenv);
@@ -563,7 +571,8 @@ void LiteBuild::execAction(const QString &id)
         m_process->setUserData(0,cmd);
         m_process->setUserData(1,args);
         m_process->setUserData(2,codec);
-        m_process->setWorkingDirectory(m_workDir);
+
+        m_process->setWorkingDirectory(m_workDir);        
         m_output->appendTag0(QString("<action id=\"%1\" workdir=\"%2\" cmd=\"%3\" args=\"%4\">\n")
                              .arg(id).arg(m_workDir).arg(ba->cmd()).arg(ba->args()));
         m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
@@ -606,7 +615,21 @@ void LiteBuild::dbclickBuildOutput(const QTextCursor &cur)
     int line = fileLine.toInt(&ok);
     if (!ok)
         return;
-    qDebug() << fileName << fileLine;
+
+    QDir dir(m_workDir);
+    QString filePath = dir.filePath(fileName);
+    if (QFile::exists(filePath)) {
+        fileName = filePath;
+    } else {
+        foreach(QFileInfo info,dir.entryInfoList(QDir::AllDirs | QDir::NoDotAndDotDot)) {
+            QString filePath = info.absoluteDir().filePath(fileName);
+            if (QFile::exists(filePath)) {
+                fileName = filePath;
+                break;
+            }
+        }
+    }
+    /*
     LiteApi::IProject *project = m_liteApp->projectManager()->currentProject();
     if (project) {
         fileName = project->fileNameToFullPath(fileName);
@@ -625,7 +648,7 @@ void LiteBuild::dbclickBuildOutput(const QTextCursor &cur)
             }
         }
     }
-
+    */
     LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName);
     if (editor) {
         editor->widget()->setFocus();
