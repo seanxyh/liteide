@@ -137,20 +137,6 @@ bool LiteEditorFile::open(const QString &fileName, const QString &mimeType, bool
     m_mimeType = mimeType;
     m_fileName = fileName;
 
-    if (bCheckCodec) {
-        if (mimeType == "text/html" || mimeType == "text/xml") {
-            //m_codec = QTextCodec::codecForHtml(buf,QTextCodec::codecForName("utf-8"));
-        } else {
-            LiteApi::IMimeType *im = m_liteApp->mimeTypeManager()->findMimeType(mimeType);
-            if (im) {
-                QString codecName = im->codec();
-                if (!codecName.isEmpty()) {
-                    m_codec = QTextCodec::codecForName(codecName.toAscii());
-                }
-            }
-         }
-     }
-
     QByteArray buf = file.readAll();
     m_hasDecodingError = false;
 
