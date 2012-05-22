@@ -282,9 +282,8 @@ void LiteEditor::createToolBars()
     m_toolBar->addSeparator();
     connect(m_findComboBox->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findNextText()));
 #endif
-    m_tip = new QLabel(m_widget);
-    m_tip->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-    m_tip->setText("...");
+    m_tip = new ElidedLabel("...");
+    //m_tip->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
     m_tip->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
     m_toolBar->addWidget(m_tip);
 }

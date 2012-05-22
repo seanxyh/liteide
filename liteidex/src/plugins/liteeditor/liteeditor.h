@@ -29,6 +29,7 @@
 #include "liteapi/liteapi.h"
 #include "liteeditorapi/liteeditorapi.h"
 #include "extension/extension.h"
+#include "elidedlabel/elidedlabel.h"
 #include <QSet>
 #include <QHash>
 
@@ -118,7 +119,7 @@ public:
 #ifdef LITEEDITOR_FIND
     QComboBox *m_findComboBox;
 #endif
-    QLabel    *m_tip;
+    ElidedLabel    *m_tip;
     QTimer    *m_tipTimer;
     LiteEditorFile *m_file;
     QString  m_colorStyle;
