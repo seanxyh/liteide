@@ -53,6 +53,7 @@
 #include <QTextCodec>
 #include <QDebug>
 #include <QPalette>
+#include <QTimer>
 #include <QMessageBox>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -77,6 +78,9 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
 
     m_colorStyleScheme = new ColorStyleScheme(this);
     m_defPalette = m_editorWidget->palette();
+
+    m_tipTimer = new QTimer(this);
+    m_tipTimer->setSingleShot(true);
 
     createActions();
     createToolBars();
@@ -106,12 +110,16 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
         m_codecComboBox->addItem(codec->name(), codec->mibEnum());
     }
     connect(m_codecComboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(codecComboBoxChanged(QString)));
-
+    connect(m_tipTimer,SIGNAL(timeout()),this,SLOT(tipTimeout()));
     m_editorWidget->installEventFilter(m_liteApp->editorManager());
 }
 
 LiteEditor::~LiteEditor()
 {
+    if (m_tipTimer) {
+        m_tipTimer->stop();
+        delete m_tipTimer;
+    }
     if (m_completer) {
         delete m_completer;
     }
@@ -550,11 +558,15 @@ void LiteEditor::updateTip(QString func,QString args)
     if (args.isEmpty()) {
         return;
     }
+    m_tipTimer->start(30000);
     QString tip = QString("%1 %2").arg(func).arg(args);
     m_tip->setText(tip);
     m_tip->setToolTip(tip);
-    //m_tip->setToolTip(func+args);
-    QToolTip::showText(m_toolBar->mapToGlobal(m_tip->pos()),tip);
+}
+
+void LiteEditor::tipTimeout()
+{
+    m_tip->setText("...");
 }
 
 void LiteEditor::filePrintPreview()
