@@ -82,6 +82,8 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
     m_replaceEditor = new ReplaceEditor(m_liteApp,this);
     m_replaceEditor->widget()->hide();
 
+    m_fileSearch = new FileSearch(m_liteApp,this);
+
     layout->addWidget(m_findEditor->widget());
     layout->addWidget(m_replaceEditor->widget());
 

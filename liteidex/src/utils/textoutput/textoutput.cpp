@@ -45,23 +45,17 @@
 #endif
 //lite_memory_check_end
 
-
-TextOutput::TextOutput(bool readOnly, QWidget *parent) :
-    QWidget(parent)
+Output::Output(QWidget *parent)
+    :QWidget(parent)
 {
     m_toolBar = new QToolBar(this);
     m_toolBar->setIconSize(QSize(16,16));
 
-    m_editor = new TerminalEdit(this);
-    m_editor->setReadOnly(readOnly);
-    m_fmt = m_editor->currentCharFormat();
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setMargin(0);
-    mainLayout->setSpacing(0);
-    mainLayout->addWidget(m_toolBar);
-    mainLayout->addWidget(m_editor);
-    setLayout(mainLayout);
+    m_mainLayout = new QVBoxLayout;
+    m_mainLayout->setMargin(0);
+    m_mainLayout->setSpacing(0);
+    m_mainLayout->addWidget(m_toolBar);
+    setLayout(m_mainLayout);
 
     m_hideAct = new QAction(tr("Hide"),this);
     m_hideAct->setToolTip("Hide");
@@ -76,10 +70,27 @@ TextOutput::TextOutput(bool readOnly, QWidget *parent) :
     m_toolBar->addSeparator();
     m_toolBar->addAction(m_hideAct);
 
+    connect(m_hideAct,SIGNAL(triggered()),this,SIGNAL(hideOutput()));
+    connect(m_clearAct,SIGNAL(triggered()),this,SIGNAL(clearRequest()));
+}
+
+void Output::setCenter(QWidget *widget)
+{
+    m_mainLayout->addWidget(widget);
+}
+
+TextOutput::TextOutput(bool readOnly, QWidget *parent) :
+    Output(parent)
+{
+    m_editor = new TerminalEdit(this);
+    m_editor->setReadOnly(readOnly);
+    m_fmt = m_editor->currentCharFormat();
+
+    m_mainLayout->addWidget(m_editor);
+
     connect(m_editor,SIGNAL(dbclickEvent(QTextCursor)),this,SIGNAL(dbclickEvent(QTextCursor)));
     connect(m_editor,SIGNAL(enterText(QString)),this,SIGNAL(enterText(QString)));
     connect(m_clearAct,SIGNAL(triggered()),this,SLOT(clear()));
-    connect(m_hideAct,SIGNAL(triggered()),this,SIGNAL(hideOutput()));
 }
 
 void TextOutput::clear()

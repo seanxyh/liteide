@@ -35,8 +35,27 @@ class QTextEdit;
 class QToolBar;
 class QLabel;
 class TerminalEdit;
+class QVBoxLayout;
 
-class TextOutput : public QWidget
+class Output : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit Output(QWidget *parent = 0);
+    void setCenter(QWidget *widget);
+signals:
+    void hideOutput();
+    void clearRequest();
+protected:
+    QVBoxLayout  *m_mainLayout;
+    QToolBar      *m_toolBar;
+    QToolButton   *m_closeBtn;
+    QLabel        *m_infoLabel;
+    QAction       *m_clearAct;
+    QAction       *m_hideAct;
+};
+
+class TextOutput : public Output
 {
     Q_OBJECT
 public:
@@ -51,16 +70,10 @@ public:
 signals:
     void dbclickEvent(QTextCursor);
     void enterText(QString);
-    void hideOutput();
 public slots:
     void clear();
 protected:
-    QToolBar      *m_toolBar;
-    QToolButton   *m_closeBtn;
     TerminalEdit  *m_editor;
-    QLabel        *m_infoLabel;
-    QAction       *m_clearAct;
-    QAction       *m_hideAct;
     QTextCharFormat m_fmt;
 };
 

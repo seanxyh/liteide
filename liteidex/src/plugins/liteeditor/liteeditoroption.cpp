@@ -74,7 +74,7 @@ LiteEditorOption::LiteEditorOption(LiteApi::IApplication *app,QObject *parent) :
     if (index >= 0 && index < ui->styleComboBox->count()) {
         ui->styleComboBox->setCurrentIndex(index);
     }
-
+    bool noprintCheck = m_liteApp->settings()->value("editor/noprintcheck",true).toBool();
     bool autoIndent = m_liteApp->settings()->value("editor/autoindent",true).toBool();
     bool autoBraces0 = m_liteApp->settings()->value("editor/autobraces0",true).toBool();
     bool autoBraces1 = m_liteApp->settings()->value("editor/autobraces1",true).toBool();
@@ -86,6 +86,7 @@ LiteEditorOption::LiteEditorOption(LiteApi::IApplication *app,QObject *parent) :
 
     int min = m_liteApp->settings()->value("editor/prefixlength",1).toInt();
 
+    ui->noprintCheckBox->setChecked(noprintCheck);;
     ui->autoIndentCheckBox->setChecked(autoIndent);
     ui->autoBraces0CheckBox->setChecked(autoBraces0);
     ui->autoBraces1CheckBox->setChecked(autoBraces1);
@@ -126,6 +127,7 @@ void LiteEditorOption::apply()
         }
     }
     QString style = ui->styleComboBox->currentText();
+    bool noprintCheck = ui->noprintCheckBox->isChecked();
     bool autoIndent = ui->autoIndentCheckBox->isChecked();
     bool autoBraces0 = ui->autoBraces0CheckBox->isChecked();
     bool autoBraces1 = ui->autoBraces1CheckBox->isChecked();
@@ -140,6 +142,7 @@ void LiteEditorOption::apply()
         min = 1;
     }
 
+    m_liteApp->settings()->setValue("editor/noprintcheck",noprintCheck);
     m_liteApp->settings()->setValue("editor/family",m_fontFamily);
     m_liteApp->settings()->setValue("editor/fontsize",m_fontSize);
     m_liteApp->settings()->setValue("editor/antialias",antialias);

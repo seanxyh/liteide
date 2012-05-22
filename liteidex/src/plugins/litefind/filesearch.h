@@ -27,6 +27,8 @@
 #define FILESEARCH_H
 
 #include "liteapi/liteapi.h"
+#include "textoutput/terminaledit.h"
+#include "textoutput/textoutput.h"
 #include <QStringList>
 #include <QThread>
 
@@ -34,23 +36,15 @@ class FileSearchResult
 {
 public:
     FileSearchResult() {}
-    FileSearchResult(QString fileName, int lineNumber, QString matchingLine,
-                     int matchStart, int matchLength,
-                     QStringList regexpCapturedTexts)
+    FileSearchResult(QString fileName, int lineNumber, QString matchingLine)
             : fileName(fileName),
             lineNumber(lineNumber),
-            matchingLine(matchingLine),
-            matchStart(matchStart),
-            matchLength(matchLength),
-            regexpCapturedTexts(regexpCapturedTexts)
+            matchingLine(matchingLine)
     {
     }
     QString fileName;
     int lineNumber;
     QString matchingLine;
-    int matchStart;
-    int matchLength;
-    QStringList regexpCapturedTexts;
 };
 
 Q_DECLARE_METATYPE(FileSearchResult)
@@ -83,30 +77,53 @@ class QTabWidget;
 class QLineEdit;
 class QComboBox;
 class QCheckBox;
+class QPushButton;
+class QPlainTextEdit;
+
+class ResultTextEdit : public QPlainTextEdit
+{
+    Q_OBJECT
+public:
+    ResultTextEdit(QWidget *parent = 0);
+signals:
+    void dbclickEvent(const QTextCursor &cur);
+protected:
+    virtual void mouseDoubleClickEvent(QMouseEvent *e);
+};
+
+
 class FileSearch : QObject
 {
     Q_OBJECT
 public:
     FileSearch(LiteApi::IApplication *app, QObject *parent = 0);
     ~FileSearch();
-    QWidget* widget();
     void setVisible(bool b);
 public slots:
     void findInFiles();
-    void findResult(const FileSearchResult &rsult);
+    void findResult(const FileSearchResult &result);
     void findStarted();
+    void findFinished();
+    void dbclickOutput(const QTextCursor &cur);
+    void browser();
+    void currentDir();
 protected:
     LiteApi::IApplication *m_liteApp;
     FindThread *m_thread;
+    Output      *m_output;
     QTabWidget  *m_tab;
     QWidget     *m_findWidget;
-    QLineEdit   *m_findEdit;    
-    QLineEdit   *m_findPathEdit;
+    QComboBox   *m_findCombo;
+    QComboBox   *m_findPathCombo;
     QComboBox   *m_filterCombo;
     QCheckBox   *m_findSubCheckBox;
     QCheckBox   *m_matchWordCheckBox;
     QCheckBox   *m_matchCaseCheckBox;
     QCheckBox   *m_useRegexCheckBox;
+    QPushButton *m_findButton;
+    QPushButton *m_stopButton;
+    ResultTextEdit *m_resultOutput;
+    int          m_resultCount;
 };
 
 //static QList<FileSearchResult> findInFile(const QString &text, bool useRegExp, bool matchWord, bool matchCase, const QString &fileName);

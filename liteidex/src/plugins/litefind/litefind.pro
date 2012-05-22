@@ -2,6 +2,7 @@ TARGET = litefind
 TEMPLATE = lib
 
 include(../../liteideplugin.pri)
+include (../../utils/textoutput/textoutput.pri)
 
 DEFINES += LITEFIND_LIBRARY
 

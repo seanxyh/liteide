@@ -72,11 +72,13 @@ QStringList SetupGopathDialog::litePathList() const
 
 void SetupGopathDialog::browser()
 {
+    static QString last = QDir::homePath();
     QString dir = QFileDialog::getExistingDirectory(this, tr("Load GOPATH Directory"),
-                                                    "/home",
+                                                    last,
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty()) {
+        last = dir;
         ui->litePathTextEdit->appendPlainText(dir);
     }
 }

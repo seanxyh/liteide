@@ -24,6 +24,7 @@
 // $Id: filesearch.cpp,v 1.0 2012-5-21 visualfc Exp $
 
 #include "filesearch.h"
+#include "liteapi/litefindobj.h"
 #include <QFile>
 #include <QTableWidget>
 #include <QTextStream>
@@ -37,7 +38,12 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QDir>
+#include <QTextBlock>
+#include <QTextCursor>
+#include <QPlainTextEdit>
+#include <QFileDialog>
 #include <QDebug>
+
 
 FindThread::FindThread(QObject *parent) :
     QThread(parent),
@@ -55,21 +61,23 @@ void FindThread::findDir(const QRegExp &reg, const QString &path)
     if (!dir.exists()) {
         return;
     }
-    QDir::Filters filter = QDir::Files|QDir::NoDotAndDotDot|QDir::NoSymLinks;
+
+    foreach(QFileInfo info, dir.entryInfoList(nameFilter,QDir::Files|QDir::NoSymLinks)) {
+        findFile(reg,info.filePath());
+        if (!finding) {
+            return;
+        }
+    }
     if (findSub) {
-        filter |= QDir::Dirs;
+        foreach(QFileInfo info, dir.entryInfoList(QDir::Dirs|QDir::NoDotAndDotDot)) {
+            findDir(reg,info.filePath());
+            if(!finding) {
+                return;
+            }
+        }
     }
 
-    foreach(QFileInfo info, dir.entryInfoList(nameFilter,filter)) {
-        if (info.isDir()) {
-            findDir(reg,info.filePath());
-        } else if (info.isFile()){
-            findFile(reg,info.filePath());
-        }
-        if (!finding) {
-            break;
-        }
-    }
+
 }
 
 void FindThread::findFile(const QRegExp &reg, const QString &fileName)
@@ -87,6 +95,11 @@ void FindThread::findFile(const QRegExp &reg, const QString &fileName)
     int lineNr = 1;
     while (!stream.atEnd()) {
         line = stream.readLine();
+        int pos = reg.indexIn(line);
+        if (pos >= 0) {
+            emit findResult(FileSearchResult(fileName, lineNr, line));
+        }
+        /*
         int pos = 0;
         while ((pos = reg.indexIn(line, pos)) != -1) {
             emit findResult(FileSearchResult(fileName, lineNr, line,
@@ -94,6 +107,7 @@ void FindThread::findFile(const QRegExp &reg, const QString &fileName)
                                           reg.capturedTexts()));
             pos += reg.matchedLength();
         }
+        */
         lineNr++;
         if (!finding) {
             break;
@@ -105,8 +119,9 @@ void FindThread::findFile(const QRegExp &reg, const QString &fileName)
 void FindThread::stop()
 {
     finding = false;
-    if (!this->wait(200)) {
-        this->terminate();
+    if (this->isRunning()) {
+        if (!this->wait(200))
+            this->terminate();
     }
 }
 
@@ -127,60 +142,87 @@ void FindThread::run()
     finding = false;
 }
 
+ResultTextEdit::ResultTextEdit(QWidget *parent) :
+    QPlainTextEdit(parent)
+{
+    this->setWordWrapMode(QTextOption::NoWrap);
+}
+
+void ResultTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
+{
+    QTextCursor cur = cursorForPosition(e->pos());
+    cur.select(QTextCursor::LineUnderCursor);
+
+    emit dbclickEvent(cur);
+}
+
 
 FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
     m_liteApp(app)
 {
     m_thread = new FindThread;
+
+    m_output = new Output;
+
     m_tab = new QTabWidget;
-    m_liteApp->outputManager()->addOutuput(m_tab,tr("FileSearch"));
 
     m_findWidget = new QWidget;
 
     QGridLayout *topLayout = new QGridLayout;
 
-    m_findEdit = new QLineEdit;
+    m_findCombo = new QComboBox;
+    m_findCombo->setEditable(true);
 
     QHBoxLayout *optLayout = new QHBoxLayout;
     m_matchWordCheckBox = new QCheckBox(tr("Match word"));
     m_matchCaseCheckBox = new QCheckBox(tr("Match case"));
     m_useRegexCheckBox = new QCheckBox(tr("Regular expression"));
-    m_findSubCheckBox = new QCheckBox(tr("Look in subfolders"));
+    m_findSubCheckBox = new QCheckBox(tr("Look in subdirs"));
     optLayout->addWidget(m_matchWordCheckBox);
     optLayout->addWidget(m_matchCaseCheckBox);
     optLayout->addWidget(m_useRegexCheckBox);
     optLayout->addWidget(m_findSubCheckBox);
     optLayout->addStretch();
 
-    topLayout->addWidget(new QLabel(tr("Find Text:")),0,0);
-    topLayout->addWidget(m_findEdit,0,1,1,3);
-    topLayout->addWidget(new QLabel(tr("Option")),1,0);
-    topLayout->addLayout(optLayout,1,1,1,3);
+    topLayout->addWidget(new QLabel(tr("Search for:")),0,0);
+    topLayout->addWidget(m_findCombo,0,1);
+    topLayout->addWidget(new QLabel(tr("Options:")),1,0);
+    topLayout->addLayout(optLayout,1,1);
 
     QHBoxLayout *dirLayout = new QHBoxLayout;
-    m_findPathEdit = new QLineEdit;
+    m_findPathCombo = new QComboBox;
+    m_findPathCombo->setEditable(true);
     QPushButton *browserBtn = new QPushButton(tr("Browser"));
-    dirLayout->addWidget(m_findPathEdit);
+    QPushButton *currentBtn = new QPushButton(tr("Current"));
+    dirLayout->addWidget(m_findPathCombo,1);
+    dirLayout->addWidget(currentBtn);
     dirLayout->addWidget(browserBtn);
 
     topLayout->addWidget(new QLabel("Directory:"),2,0);
-    topLayout->addLayout(dirLayout,2,1,1,3);
+    topLayout->addLayout(dirLayout,2,1);
 
     m_filterCombo = new QComboBox;
-    m_filterCombo->addItem("*.go");
-    m_filterCombo->addItem("*.h;*.c;*.hpp;*.cpp");
+    m_filterCombo->setEditable(true);
 
-    topLayout->addWidget(new QLabel(tr("Filter")),3,0);
-    topLayout->addWidget(m_filterCombo,3,1,1,3);
+    m_filterCombo->addItem("*.go");
+    m_filterCombo->addItem("*.lua;*.wlua");
+    m_filterCombo->addItem("*.c;*.cpp;*.cxx;*.cc;*.c++;*.h;*.hpp;*.hh;*.hxx;*.h++;*.hcc;*.moc");
+    m_filterCombo->addItem("*.htm;*.html;*.shtml;*.shtm");
+    m_filterCombo->addItem("*");
+
+    topLayout->addWidget(new QLabel(tr("Filter:")),3,0);
+    topLayout->addWidget(m_filterCombo,3,1);
 
     QHBoxLayout *findLayout = new QHBoxLayout;
-    QPushButton *findBtn = new QPushButton(tr("Find"));
-    QPushButton *stopBtn = new QPushButton(tr("Cancel"));
-    findLayout->addWidget(findBtn);
-    findLayout->addWidget(stopBtn);
+    findLayout->setMargin(0);
+    m_findButton = new QPushButton(tr("Search"));
+    m_stopButton = new QPushButton(tr("Cancel"));
+    m_stopButton->setEnabled(false);
+    findLayout->addWidget(m_findButton);
+    findLayout->addWidget(m_stopButton);
     findLayout->addStretch(0);
-    topLayout->addLayout(findLayout,4,3);
+    topLayout->addLayout(findLayout,4,1);
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addLayout(topLayout);
@@ -188,17 +230,45 @@ FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
 
     m_findWidget->setLayout(layout);
 
-    m_tab->addTab(m_findWidget,tr("FindFiles"));
+    m_resultOutput = new ResultTextEdit;
+    m_resultOutput->setReadOnly(true);
 
-    m_findPathEdit->setText(QDir::homePath());
+    m_tab->addTab(m_findWidget,tr("Search"));
+    m_tab->addTab(m_resultOutput,tr("Results"));
 
-    connect(findBtn,SIGNAL(clicked()),this,SLOT(findInFiles()));
+    m_output->setCenter(m_tab);
+    m_liteApp->outputManager()->addOutuput(m_output,tr("File Search"));
+
+    m_findPathCombo->setEditText(QDir::homePath());
+
+    m_liteApp->settings()->beginGroup("findfiles");
+    m_matchWordCheckBox->setChecked(m_liteApp->settings()->value("matchWord",false).toBool());
+    m_matchCaseCheckBox->setChecked(m_liteApp->settings()->value("matchCase",false).toBool());
+    m_useRegexCheckBox->setChecked(m_liteApp->settings()->value("useRegexp",false).toBool());
+    m_findSubCheckBox->setChecked(m_liteApp->settings()->value("findSub",true).toBool());
+    m_liteApp->settings()->endGroup();
+
+    connect(browserBtn,SIGNAL(clicked()),this,SLOT(browser()));
+    connect(currentBtn,SIGNAL(clicked()),this,SLOT(currentDir()));
+    connect(m_output,SIGNAL(hideOutput()),m_liteApp->outputManager(),SLOT(setCurrentOutput()));
+    connect(m_output,SIGNAL(clearRequest()),m_resultOutput,SLOT(clear()));
+    connect(m_findButton,SIGNAL(clicked()),this,SLOT(findInFiles()));
+    connect(m_stopButton,SIGNAL(clicked()),m_thread,SLOT(stop()));
+    connect(m_thread,SIGNAL(started()),this,SLOT(findStarted()));
+    connect(m_thread,SIGNAL(finished()),this,SLOT(findFinished()));
     connect(m_thread,SIGNAL(findResult(FileSearchResult)),this,SLOT(findResult(FileSearchResult)));
-    connect(stopBtn,SIGNAL(clicked()),m_thread,SLOT(stop()));
+    connect(m_resultOutput,SIGNAL(dbclickEvent(QTextCursor)),this,SLOT(dbclickOutput(QTextCursor)));
 }
 
 FileSearch::~FileSearch()
 {
+    m_liteApp->settings()->beginGroup("findfiles");
+    m_liteApp->settings()->setValue("matchWord",m_matchWordCheckBox->isChecked());
+    m_liteApp->settings()->setValue("matchCase",m_matchCaseCheckBox->isChecked());
+    m_liteApp->settings()->setValue("useRegexp",m_useRegexCheckBox->isChecked());
+    m_liteApp->settings()->setValue("findSub",m_findSubCheckBox->isChecked());
+    m_liteApp->settings()->endGroup();
+
     if (m_thread) {
         m_thread->stop();
         delete m_thread;
@@ -208,21 +278,17 @@ FileSearch::~FileSearch()
     }
 }
 
-QWidget *FileSearch::widget()
-{
-    return m_tab;
-}
-
 void FileSearch::setVisible(bool b)
 {
     if (b) {
         LiteApi::IProject *proj = m_liteApp->projectManager()->currentProject();
         if (proj) {
-            m_findPathEdit->setText(proj->projectInfo().value("PROJECTPATH"));
+            m_findPathCombo->setEditText(proj->projectInfo().value("PROJECTPATH"));
         }
+        m_findCombo->setFocus();
     }
     if (b) {
-        m_liteApp->outputManager()->setCurrentOutput(m_tab);
+        m_liteApp->outputManager()->setCurrentOutput(m_output);
     } else {
         m_liteApp->outputManager()->setCurrentOutput(0);
     }
@@ -233,25 +299,108 @@ void FileSearch::findInFiles()
     if (m_thread->isRunning()) {
         m_thread->stop();
     }
-    if (m_findEdit->text().isEmpty() || m_findPathEdit->text().isEmpty()) {
+    QString text = m_findCombo->currentText();
+    QString path = m_findPathCombo->currentText();
+    if (text.isEmpty() || path.isEmpty()) {
         return;
     }
-    m_thread->findPath = m_findPathEdit->text();
-    m_thread->findText = m_findEdit->text();
+    m_thread->findPath = path;
+    m_thread->findText = text;
     m_thread->useRegExp = m_useRegexCheckBox->isChecked();
     m_thread->matchCase = m_matchCaseCheckBox->isChecked();
     m_thread->matchWord = m_matchWordCheckBox->isChecked();
     m_thread->findSub = m_findSubCheckBox->isChecked();
     m_thread->nameFilter = m_filterCombo->currentText().split(";");
-    m_thread->start();
+    m_resultOutput->clear();
+    m_resultOutput->appendPlainText(QString(tr("Searching for '%1'...").arg(m_findCombo->currentText())));
+    m_resultCount = 0;
+    m_thread->start(QThread::LowPriority);
+    if (m_findCombo->findText(text) < 0) {
+        m_findCombo->addItem(text);
+    }
+    if (m_findPathCombo->findText(path) < 0) {
+        m_findPathCombo->addItem(path);
+    }
 }
 
 void FileSearch::findStarted()
 {
+    m_findButton->setEnabled(false);
+    m_stopButton->setEnabled(true);
+    m_tab->setCurrentWidget(m_resultOutput);
+}
 
+void FileSearch::currentDir()
+{
+    LiteApi::IProject *proj = m_liteApp->projectManager()->currentProject();
+    if (proj) {
+        m_findPathCombo->setEditText(proj->projectInfo().value("PROJECTPATH"));
+    } else {
+        LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+        if (editor && !editor->filePath().isEmpty()) {
+            m_findPathCombo->setEditText(editor->editorInfo().value("EDITORDIR"));
+        }
+    }
+
+}
+
+void FileSearch::browser()
+{
+    QString dir = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(), tr("Open Directory"),
+                                                    m_findPathCombo->currentText(),
+                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (!dir.isEmpty()) {
+        m_findPathCombo->setEditText(dir);
+    }
+}
+
+void FileSearch::findFinished()
+{
+    m_findButton->setEnabled(true);
+    m_stopButton->setEnabled(false);
+    m_resultOutput->appendPlainText(QString(tr("%1 occurrence(s) have been found.").arg(m_resultCount)));
 }
 
 void FileSearch::findResult(const FileSearchResult &result)
 {
-   // qDebug() << result.fileName << result.lineNumber << result.matchStart << result.matchingLine;
+    QString text = result.matchingLine;
+    int max = text.length();
+    if (max > 128) {
+        max = 128;
+    }
+    for (int i = 0; i < 128; i++) {
+        if (!text[i].isPrint() && !text[i].isSpace()) {
+            text[i] = '.';
+        }
+    }
+    m_resultOutput->appendPlainText(QString("%1:%2:%3").arg(result.fileName).arg(result.lineNumber).arg(text.left(max)));
+    m_resultCount++;
+}
+
+void FileSearch::dbclickOutput(const QTextCursor &cur)
+{
+    QRegExp rep("([:\\w\\d_\\\\/\\.]+):(\\d+):");
+
+    int index = rep.indexIn(cur.block().text());
+    if (index < 0)
+        return;
+    QStringList capList = rep.capturedTexts();
+
+    if (capList.count() < 3)
+        return;
+    QString fileName = capList[1];
+    QString fileLine = capList[2];
+
+    bool ok = false;
+    int line = fileLine.toInt(&ok);
+    if (!ok)
+        return;
+    LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName);
+    if (editor) {
+        editor->widget()->setFocus();
+        LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
+        if (textEditor) {
+            textEditor->gotoLine(line,0,true);
+        }
+    }
 }
