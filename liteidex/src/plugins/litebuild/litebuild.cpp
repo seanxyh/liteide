@@ -543,6 +543,11 @@ void LiteBuild::execAction(const QString &id)
     QString cmd = m_build->actionValue(ba->cmd(),env,sysenv);
     QString args = m_build->actionValue(ba->args(),env,sysenv);
 
+    if (cmd.indexOf("$(") >= 0 || args.indexOf("$(") >= 0) {
+        m_output->appendTag1(QString("> Can not run action <%1>.\n").arg(ba->id()));
+        return;
+    }
+
     m_workDir = env.value("WORKDIR");
     QString work = ba->work();
     if (!work.isEmpty()) {
@@ -562,8 +567,9 @@ void LiteBuild::execAction(const QString &id)
     m_process->setEnvironment(sysenv.toStringList());
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,m_workDir);
-        m_output->appendTag0(QString("<action id=\"%1\" workdir=\"%2\" cmd=\"%3\" args=\"%4\">\n")
-                             .arg(id).arg(m_workDir).arg(ba->cmd()).arg(ba->args()));
+        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")
+                             .arg(id).arg(ba->cmd()).arg(ba->args()));
+        m_output->appendTag1(QString("> cd %1\n").arg(m_workDir));
         m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_output->appendTag1(QString("> Start process %1\n").arg(b?"success":"false"));
         m_output->appendTag0(QString("</action>\n"));
@@ -573,8 +579,9 @@ void LiteBuild::execAction(const QString &id)
         m_process->setUserData(2,codec);
 
         m_process->setWorkingDirectory(m_workDir);        
-        m_output->appendTag0(QString("<action id=\"%1\" workdir=\"%2\" cmd=\"%3\" args=\"%4\">\n")
-                             .arg(id).arg(m_workDir).arg(ba->cmd()).arg(ba->args()));
+        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")
+                             .arg(id).arg(ba->cmd()).arg(ba->args()));
+        m_output->appendTag1(QString("> cd %1\n").arg(m_workDir));
         m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_process->start(cmd,arguments);
     }

@@ -95,9 +95,9 @@ protected:
     QString m_img;
     QString m_work;
     QStringList m_task;
-    bool    m_separator;
     bool    m_output;
     bool    m_readline;
+    bool    m_separator;
 };
 
 class BuildLookup
