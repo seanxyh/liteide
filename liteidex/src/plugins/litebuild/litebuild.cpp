@@ -543,16 +543,18 @@ void LiteBuild::execAction(const QString &id)
     QString cmd = m_build->actionValue(ba->cmd(),env,sysenv);
     QString args = m_build->actionValue(ba->args(),env,sysenv);
 
-    if (cmd.indexOf("$(") >= 0 || args.indexOf("$(") >= 0) {
-        m_output->appendTag1(QString("> Can not run action <%1>.\n").arg(ba->id()));
-        return;
-    }
-
     m_workDir = env.value("WORKDIR");
     QString work = ba->work();
     if (!work.isEmpty()) {
         m_workDir = m_build->actionValue(work,env,sysenv);
     }
+
+    if (cmd.indexOf("$(") >= 0 || args.indexOf("$(") >= 0 || m_workDir.isEmpty()) {
+        m_output->appendTag1(QString("> error, can not execute action '%1'\n").arg(ba->id()));
+        m_process->setUserData(3,QStringList());
+        return;
+    }
+
 
     if (!ba->regex().isEmpty()) {
         m_outputRegex = m_build->actionValue(ba->regex(),env,sysenv);
