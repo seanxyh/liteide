@@ -116,8 +116,6 @@ public:
 #ifdef LITEEDITOR_FIND
     QComboBox *m_findComboBox;
 #endif
-    ElidedLabel    *m_tip;
-    QTimer    *m_tipTimer;
     LiteEditorFile *m_file;
     QString  m_colorStyle;
     QPalette m_defPalette;

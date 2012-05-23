@@ -12,6 +12,7 @@ include (../utils/textoutput/textoutput.pri)
 include (../utils/extension/extension.pri)
 include (../utils/filesystem/filesystem.pri)
 include (../utils/symboltreeview/symboltreeview.pri)
+include (../3rdparty/elidedlabel/elidedlabel.pri)
 
 QT += core gui
 
@@ -27,6 +28,7 @@ LIBS += -L$$IDE_LIBRARY_PATH
 
 INCLUDEPATH += $$IDE_SOURCE_TREE/src/api
 INCLUDEPATH += $$IDE_SOURCE_TREE/src/utils
+INCLUDEPATH += $$IDE_SOURCE_TREE/src/3rdparty
 
 SOURCES += main.cpp\
         mainwindow.cpp \

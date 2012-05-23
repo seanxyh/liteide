@@ -378,6 +378,7 @@ public:
     virtual void hideOutput(QWidget *w) = 0;
     virtual void removeOutput(QWidget *w) = 0;
     virtual QWidget *currentOutput() = 0;
+    virtual void setStatusInfo(const QString &info) = 0;
 public slots:
     virtual void setCurrentOutput(QWidget *w = 0) = 0;
 signals:

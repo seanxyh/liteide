@@ -27,6 +27,7 @@
 #define OUTPUTMANAGER_H
 
 #include "liteapi/liteapi.h"
+#include "elidedlabel/elidedlabel.h"
 #include <QPointer>
 
 using namespace LiteApi;
@@ -55,7 +56,8 @@ public:
     virtual void showOutput(QWidget *w);
     virtual void hideOutput(QWidget *w);
     virtual QWidget *currentOutput();
-    virtual void setProjectInfo(const QString &text);
+    virtual void setStatusInfo(const QString &info);
+    void setProjectInfo(const QString &text);
 public slots:
     virtual void setCurrentOutput(QWidget *w = 0);
 protected slots:
@@ -63,7 +65,8 @@ protected slots:
 protected:
     QStackedWidget    *m_stackedWidget;
     QStatusBar        *m_statusBar;
-    QLabel            *m_projectInfoLabel;
+    ElidedLabel       *m_projectInfoLabel;
+    ElidedLabel       *m_statusInfoLabel;
     QActionGroup      *m_outputActGroup;
     QPointer<QAction>  m_lastOutputAct;
     QMap<QWidget*,QAction*>   m_widgetActionMap;
