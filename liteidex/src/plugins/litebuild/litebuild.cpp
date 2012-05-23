@@ -268,13 +268,15 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
     if (project) {
         connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
         loadProjectEnv(project->filePath());
+        m_targetInfo = project->targetInfo();
         LiteApi::IBuild *build =  m_manager->findBuild(project->mimeType());
         if (build) {
             m_buildFilePath = project->filePath();
         }
         setProjectBuild(build);
     } else {
-        currentEditorChanged(m_liteApp->editorManager()->currentEditor());
+        setProjectBuild(0);
+        findProjectBuildByEditor(m_liteApp->editorManager()->currentEditor());
     }
 }
 
@@ -478,13 +480,9 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
     }
 }
 
-void LiteBuild::loadEditorEnv(LiteApi::IEditor *editor)
+void LiteBuild::loadEditorEnv(const QString &filePath)
 {
     m_editorInfo.clear();
-    if (!editor) {
-        return;
-    }
-    QString filePath = editor->filePath();
     if (filePath.isEmpty()) {
         return;
     }
@@ -517,16 +515,22 @@ EDITOR_TARGETATH
     m_editorInfo.insert("EDITOR_TARGETNAME",target);
     m_editorInfo.insert("EDITOR_TARGETPATH",QFileInfo(info.path(),target).filePath());
 #endif
+}
 
-    if (m_liteApp->projectManager()->currentProject()) {
-        return;
-    }
-
-    m_buildFilePath = filePath;
+bool LiteBuild::findProjectBuildByEditor(IEditor *editor)
+{
+    m_buildFilePath.clear();
+    m_projectInfo.clear();
     m_targetInfo.clear();
 
+    if (!editor) {
+        return false;
+    }
+    QString filePath = editor->filePath();
+    if (filePath.isEmpty()) {
+        return false;
+    }
     QString workDir = QFileInfo(filePath).path();
-
     LiteApi::IBuild *build = m_manager->findBuild(editor->mimeType());
     LiteApi::IBuild *projectBuild = 0;
     QString projectPath;
@@ -548,14 +552,15 @@ EDITOR_TARGETATH
         }
     }
     if (projectBuild) {
-        build = projectBuild;
+        loadProjectEnv(projectPath);
         QMap<QString,QString> projectInfo,targetInfo;
         if (m_liteApp->fileManager()->findProjectInfo(projectPath,projectInfo,targetInfo)) {
-            m_projectInfo = projectInfo;
             m_targetInfo = targetInfo;
         }
-        setProjectBuild(build);
+        setProjectBuild(projectBuild);
+        return true;
     }
+    return false;
 }
 
 void LiteBuild::editorCreated(LiteApi::IEditor *editor)
@@ -600,7 +605,14 @@ void LiteBuild::editorCreated(LiteApi::IEditor *editor)
 
 void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
 {
-    loadEditorEnv(editor);
+    m_editorInfo.clear();
+    if (!editor) {
+        return;
+    }
+    loadEditorEnv(editor->filePath());
+    if (!m_liteApp->projectManager()->currentProject()) {
+        findProjectBuildByEditor(editor);
+    }
 }
 
 void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)
