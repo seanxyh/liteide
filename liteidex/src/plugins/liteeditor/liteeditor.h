@@ -81,7 +81,6 @@ signals:
 public slots:
     void applyOption(QString);
     void clipbordDataChanged();
-    void tipTimeout();
 #ifdef LITEEDITOR_FIND
     void findNextText();
 #endif

@@ -598,9 +598,8 @@ void LiteBuild::editorCreated(LiteApi::IEditor *editor)
         connect(act,SIGNAL(triggered()),this,SLOT(buildAction()));
         actionList.append(act);
     }
-    QAction *lastAct = toolBar->actions().last();
-    lastAct = toolBar->insertSeparator(lastAct);
-    toolBar->insertActions(lastAct,actionList);
+    toolBar->addSeparator();
+    toolBar->addActions(actionList);
 }
 
 void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)

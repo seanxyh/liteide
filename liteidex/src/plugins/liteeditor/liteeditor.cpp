@@ -262,7 +262,6 @@ void LiteEditor::createToolBars()
     m_toolBar->addAction(m_exportPdfAct);
     m_toolBar->addAction(m_filePrintPreviewAct);
     m_toolBar->addAction(m_filePrintAct);
-    m_toolBar->addSeparator();
 #endif
 
 #ifdef LITEEDITOR_FIND
