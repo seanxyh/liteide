@@ -145,11 +145,6 @@ QString ModelProjectImpl::fileNameToFullPath(const QString &fileName)
     return m_file->fileNameToFullPath(fileName);
 }
 
-QMap<QString,QString> ModelProjectImpl::projectInfo() const
-{
-    return m_file->projectInfo();
-}
-
 QMap<QString,QString> ModelProjectImpl::targetInfo() const
 {
     return m_file->targetInfo();

@@ -65,7 +65,7 @@ LiteApi::IProject *MakefileFileFactory::open(const QString &fileName, const QStr
     return project;
 }
 
-bool MakefileFileFactory::findProjectInfo(const QString &fileName, const QString &mimeType, QMap<QString,QString>& projectInfo, QMap<QString,QString>& targetInfo) const
+bool MakefileFileFactory::findTargetInfo(const QString &fileName, const QString &mimeType, QMap<QString,QString>& targetInfo) const
 {
     if (!m_mimeTypes.contains(mimeType)) {
         return false;
@@ -73,7 +73,6 @@ bool MakefileFileFactory::findProjectInfo(const QString &fileName, const QString
     MakefileFile *file = new MakefileFile(m_liteApp,0);
     bool b = file->open(fileName,mimeType);
     if (b) {
-        projectInfo = file->projectInfo();
         targetInfo = file->targetInfo();
     }
     delete file;

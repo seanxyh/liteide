@@ -55,7 +55,7 @@ public:
     virtual void removeRecentFile(const QString &fileName, const QString &scheme);
     virtual QStringList recentFiles(const QString &scheme) const;
 
-    virtual bool findProjectInfo(const QString &fileName, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const;
+    virtual bool findProjectTargetInfo(const QString &fileName, QMap<QString,QString>& targetInfo) const;
 public:
     QString openAllTypeFilter() const;
     QString openProjectTypeFilter() const;

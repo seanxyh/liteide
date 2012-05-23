@@ -55,7 +55,6 @@ public:
     virtual QString target() const = 0;
     virtual QString targetPath() const = 0;
     virtual QString workPath() const;
-    virtual QMap<QString,QString> projectInfo() const = 0;
     virtual QMap<QString,QString> targetInfo() const = 0;
     QStandardItemModel *model() const;
     QString value(const QString &key) const;

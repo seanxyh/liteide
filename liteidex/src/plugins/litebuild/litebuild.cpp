@@ -553,8 +553,8 @@ bool LiteBuild::findProjectBuildByEditor(IEditor *editor)
     }
     if (projectBuild) {
         loadProjectEnv(projectPath);
-        QMap<QString,QString> projectInfo,targetInfo;
-        if (m_liteApp->fileManager()->findProjectInfo(projectPath,projectInfo,targetInfo)) {
+        QMap<QString,QString> targetInfo;
+        if (m_liteApp->fileManager()->findProjectTargetInfo(projectPath,targetInfo)) {
             m_targetInfo = targetInfo;
         }
         setProjectBuild(projectBuild);

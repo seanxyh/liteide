@@ -164,7 +164,12 @@ void GolangAst::loadProject(LiteApi::IProject *project)
                 m_updateFilePaths.append(info.filePath());
             }
         }
-        m_workPath = project->projectInfo().value("PROJECTDIR");
+        QFileInfo info(project->filePath());
+        if (info.isDir()) {
+            m_workPath = info.filePath();
+        } else {
+            m_workPath = info.path();
+        }
         m_process->setWorkingDirectory(m_workPath);
         m_projectAstWidget->setWorkPath(m_workPath);
         updateAst();
