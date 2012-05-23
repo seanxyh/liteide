@@ -55,7 +55,8 @@ public:
     QString actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);
     void setProjectBuild(LiteApi::IBuild *build);
     void loadProjectEnv(const QString &filePath);
-    void loadEditorEnv(LiteApi::IEditor *project);
+    void loadEditorEnv(const QString &filePath);
+    bool findProjectBuildByEditor(LiteApi::IEditor *editor);
 public slots:
     void appLoaded();
     void currentEnvChanged(LiteApi::IEnv*);
