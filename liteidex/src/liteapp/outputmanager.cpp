@@ -76,9 +76,11 @@ bool OutputManager::initWithApp(IApplication *app)
 
     m_stackedWidget->hide();
 
-    m_projectInfoLabel = new QLabel;
+    m_projectInfoLabel = new ElidedLabel;
+    m_statusInfoLabel = new ElidedLabel;
 
     m_statusBar->addWidget(m_buttonsWidget);
+    m_statusBar->addWidget(m_statusInfoLabel);
     m_statusBar->addPermanentWidget(m_projectInfoLabel);
     return true;
 }
@@ -196,4 +198,11 @@ void OutputManager::selectedOutputAct(QAction *act)
 void OutputManager::setProjectInfo(const QString &text)
 {
     m_projectInfoLabel->setText(QString("Project: %1 ").arg(text));
+    m_projectInfoLabel->setToolTip(text);
+}
+
+void OutputManager::setStatusInfo(const QString &info)
+{
+    m_statusInfoLabel->setText(info);
+    m_statusInfoLabel->setToolTip(info);
 }

@@ -79,9 +79,6 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     m_colorStyleScheme = new ColorStyleScheme(this);
     m_defPalette = m_editorWidget->palette();
 
-    m_tipTimer = new QTimer(this);
-    m_tipTimer->setSingleShot(true);
-
     createActions();
     createToolBars();
 
@@ -110,16 +107,11 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
         m_codecComboBox->addItem(codec->name(), codec->mibEnum());
     }
     connect(m_codecComboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(codecComboBoxChanged(QString)));
-    connect(m_tipTimer,SIGNAL(timeout()),this,SLOT(tipTimeout()));
     m_editorWidget->installEventFilter(m_liteApp->editorManager());
 }
 
 LiteEditor::~LiteEditor()
 {
-    if (m_tipTimer) {
-        m_tipTimer->stop();
-        delete m_tipTimer;
-    }
     if (m_completer) {
         delete m_completer;
     }
@@ -282,10 +274,6 @@ void LiteEditor::createToolBars()
     m_toolBar->addSeparator();
     connect(m_findComboBox->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findNextText()));
 #endif
-    m_tip = new ElidedLabel("...");
-    //m_tip->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-    m_tip->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-    m_toolBar->addWidget(m_tip);
 }
 
 #ifdef LITEEDITOR_FIND
@@ -524,15 +512,8 @@ void LiteEditor::updateTip(QString func,QString args)
     if (args.isEmpty()) {
         return;
     }
-    m_tipTimer->start(30000);
     QString tip = QString("%1 %2").arg(func).arg(args);
-    m_tip->setText(tip);
-    m_tip->setToolTip(tip);
-}
-
-void LiteEditor::tipTimeout()
-{
-    m_tip->setText("...");
+    m_liteApp->outputManager()->setStatusInfo(tip);
 }
 
 void LiteEditor::filePrintPreview()
