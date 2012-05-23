@@ -9,13 +9,13 @@
 		<custom id="TargetArgs" name="TARGETARGS" value=""/>		
 		<custom id="BuildArgs" name="BUILDARGS" value=""/>
 		<custom id="InstallArgs" name="INSTALLARGS" value=""/>
-		<action id="BuildFile" img="go/buildfile.png" tootip="go build source" key="ALT+F7" cmd="$(GO)" args="build $(BUILDARGS) $(EDITOR_NAME)" save="editor" output="true" codec="utf-8" regex="$(ERRREGEX)" />
-		<action id="RunFile" img="go/runfile.png" toolip="go run source" key="ALT+F5" cmd="$(GO)" args="run $(EDITOR_NAME)" output="true" codec="utf-8" readline="true"/>
+		<action id="BuildFile" img="image/buildfile2.png" key="F6" cmd="$(GO)" args="build $(BUILDARGS) $(EDITOR_NAME)" save="editor" output="true" codec="utf-8" regex="$(ERRREGEX)" />
+		<action id="RunFile" img="image/runfile2.png" key="ALT+F6" cmd="$(GO)" args="run $(EDITOR_NAME)" output="true" codec="utf-8" readline="true"/>
 		<action id="Sep" separator="true"/>
-		<action id="Build" img="go/build.png" tootip="go build package" key="ALT+SHIFT+F7" cmd="$(GO)" args="build $(BUILDARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" />
-		<action id="Install" img="go/install.png" tootip="go install package" key="" cmd="$(GO)" args="install $(INSTALLARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" />
-		<action id="Exec" img="go/exec.png" tootip="shell execute package" key="" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(EDITOR_TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
-		<action id="Run" img="go/run.png" tootip="run package" key="" cmd="$(EDITOR_DIR)/$(EDITOR_DIRNAME)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
-		<action id="BuildAndRun" tootip="go build and run package" img="go/buildandrun.png" key="ALT+SHIFT+F5" task="Build;Run"/>
+		<action id="Build" img="image/build2.png" key="ALT+F7" cmd="$(GO)" args="build $(BUILDARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" />
+		<action id="Install" img="image/install2.png" key="ALT+F8" cmd="$(GO)" args="install $(INSTALLARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" />
+		<action id="RunTerm" img="image/runterm2.png" key="ALT+SHIFT+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(EDITOR_DIRNAME) $(TARGETARGS)" output="false" readline="true"/>
+		<action id="Run" img="image/run2.png" key="ALT+F5" cmd="$(EDITOR_DIR)/$(EDITOR_DIRNAME)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
+		<action id="BuildAndRun" img="image/buildrun2.png" key="ALT+SHIFT+F7" task="Build;Run"/>
 	</mime-type>
 </mime-info>

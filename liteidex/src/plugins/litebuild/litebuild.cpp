@@ -225,14 +225,9 @@ void LiteBuild::currentEnvChanged(LiteApi::IEnv*)
     m_process->setEnvironment(m_envManager->currentEnvironment().toStringList());
 }
 
-void LiteBuild::loadProjectEnv(LiteApi::IProject *project)
+void LiteBuild::loadProjectEnv(const QString &filePath)
 {    
     m_projectInfo.clear();
-    m_targetInfo.clear();
-    if (!project) {
-        return;
-    }
-    QString filePath = project->filePath();
     if (filePath.isEmpty()) {
         return;
     }
@@ -256,7 +251,6 @@ PROJECT_TARGETATH
         m_projectInfo.insert("PROJECT_DIR",info.path());
         m_projectInfo.insert("PROJECT_DIRNAME",QFileInfo(info.path()).fileName());
     }
-    m_targetInfo = project->targetInfo();
 }
 
 void LiteBuild::reloadProject()
@@ -268,16 +262,17 @@ void LiteBuild::reloadProject()
 
 void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
 {
-    LiteApi::IBuild *build = 0;
     m_buildFilePath.clear();
-    loadProjectEnv(project);
+    m_projectInfo.clear();
+    m_targetInfo.clear();
     if (project) {
         connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
-        build =  m_manager->findBuild(project->mimeType());
+        loadProjectEnv(project->filePath());
+        LiteApi::IBuild *build =  m_manager->findBuild(project->mimeType());
         if (build) {
             m_buildFilePath = project->filePath();
         }
-        setCurrentBuild(build);
+        setProjectBuild(build);
     } else {
         currentEditorChanged(m_liteApp->editorManager()->currentEditor());
     }
@@ -389,7 +384,7 @@ QMap<QString,QString> LiteBuild::buildEnvMap() const
     return env;
 }
 
-void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
+void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
 {
     //update buildconfig
     if (build) {
@@ -526,7 +521,7 @@ EDITOR_TARGETATH
     if (m_liteApp->projectManager()->currentProject()) {
         return;
     }
-    return;
+
     m_buildFilePath = filePath;
     m_targetInfo.clear();
 
@@ -559,10 +554,8 @@ EDITOR_TARGETATH
             m_projectInfo = projectInfo;
             m_targetInfo = targetInfo;
         }
-    } else {
-        m_targetInfo = editor->targetInfo();
+        setProjectBuild(build);
     }
-    setCurrentBuild(build);
 }
 
 void LiteBuild::editorCreated(LiteApi::IEditor *editor)
