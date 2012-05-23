@@ -207,16 +207,6 @@ TARGETNAME
 TARGETDIR
 */
 
-QMap<QString,QString> PackageProject::projectInfo() const
-{
-    QMap<QString,QString> m;
-    QFileInfo info(m_filePath);
-    m.insert("PROJECTPATH",info.filePath());
-    m.insert("PROJECTNAME",info.fileName());
-    m.insert("PROJECTDIR",info.filePath());
-    return m;
-}
-
 QMap<QString,QString> PackageProject::targetInfo() const
 {
     QMap<QString,QString> m;

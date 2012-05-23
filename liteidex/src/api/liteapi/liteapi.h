@@ -155,7 +155,7 @@ public:
     IProjectFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QStringList mimeTypes() const = 0;
     virtual IProject *open(const QString &fileName, const QString &mimeType) = 0;
-    virtual bool findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& targetInfo) const = 0;
+    virtual bool findTargetInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& targetInfo) const = 0;
 };
 
 class IFileManager : public IManager
@@ -177,7 +177,7 @@ public:
     virtual void removeRecentFile(const QString &fileName, const QString &scheme) = 0;
     virtual QStringList recentFiles(const QString &scheme) const = 0;
 
-    virtual bool findProjectInfo(const QString &fileName, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const = 0;
+    virtual bool findProjectTargetInfo(const QString &fileName, QMap<QString,QString>& targetInfo) const = 0;
 signals:
     void fileListChanged();
     void recentFilesChanged(QString);
@@ -213,8 +213,6 @@ public:
     virtual bool isModified() const = 0;
     virtual QString filePath() const = 0;
     virtual QString mimeType() const = 0;
-    virtual QMap<QString,QString> editorInfo() const = 0;
-    virtual QMap<QString,QString> targetInfo() const = 0;
 signals:
     void modificationChanged(bool);
     void contentsChanged();
@@ -287,7 +285,6 @@ public:
     virtual QStringList fileNameList() const = 0;
     virtual QStringList filePathList() const = 0;
     virtual QString fileNameToFullPath(const QString &filePath) = 0;
-    virtual QMap<QString,QString> projectInfo() const = 0;
     virtual QMap<QString,QString> targetInfo() const = 0;
     virtual void load() = 0;
 signals:
@@ -476,7 +473,7 @@ class IPlugin : public IObject
 public:
     IPlugin() : m_info(new PluginInfo)
     {
-        m_info->setVer("X11");
+        m_info->setVer("x11.5");
     }
     virtual ~IPlugin()
     {

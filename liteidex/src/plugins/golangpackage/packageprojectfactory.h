@@ -35,7 +35,7 @@ public:
     PackageProjectFactory(LiteApi::IApplication *app, QObject *parnet);
     virtual QStringList mimeTypes() const;
     virtual LiteApi::IProject *open(const QString &fileName, const QString &mimeType);
-    virtual bool findProjectInfo(const QString &fileName, const QString &mimetype, QMap<QString,QString>& projectInfo, QMap<QString,QString>& targetInfo) const;
+    virtual bool findTargetInfo(const QString &fileName, const QString &mimetype,  QMap<QString,QString>& targetInfo) const;
 public:
     LiteApi::IApplication *m_liteApp;
     QStringList m_mimeTypes;

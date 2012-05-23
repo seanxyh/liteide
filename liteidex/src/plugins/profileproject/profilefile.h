@@ -38,7 +38,6 @@ protected:
 public:
     virtual QString target() const;
     virtual QString targetPath() const;
-    virtual QMap<QString,QString> projectInfo() const;
     virtual QMap<QString,QString> targetInfo() const;
 };
 

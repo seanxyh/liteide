@@ -72,9 +72,6 @@ public:
     virtual QString filePath() const;
     virtual QString mimeType() const;
     virtual LiteApi::IFile *file();
-    virtual QMap<QString,QString> editorInfo() const;
-    virtual QMap<QString,QString> targetInfo() const;
-
     virtual int line() const;
     virtual int column() const;
     virtual void gotoLine(int line, int column, bool center);

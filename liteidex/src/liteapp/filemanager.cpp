@@ -95,14 +95,14 @@ FileManager::~FileManager()
     }
 }
 
-bool FileManager::findProjectInfo(const QString &fileName, QMap<QString,QString>& projectInfo, QMap<QString,QString>& findProjectInfo) const
+bool FileManager::findProjectTargetInfo(const QString &fileName, QMap<QString,QString>& targetInfo) const
 {
     QString mimeType = m_liteApp->mimeTypeManager()->findMimeTypeByFile(fileName);
     if (m_liteApp->projectManager()->mimeTypeList().contains(mimeType)) {
         QList<IProjectFactory*> factoryList = m_liteApp->projectManager()->factoryList();
         foreach(LiteApi::IProjectFactory *factory, factoryList) {
             if (factory->mimeTypes().contains(mimeType)) {
-                bool ret = factory->findProjectInfo(fileName,mimeType,projectInfo,findProjectInfo);
+                bool ret = factory->findTargetInfo(fileName,mimeType,targetInfo);
                 if (ret) {
                     return true;
                 }
@@ -179,8 +179,12 @@ void FileManager::newFile()
     QString filePath;
     IProject *project = m_liteApp->projectManager()->currentProject();
     if (project) {
-        QDir dir(project->projectInfo().value("PROJECTDIR"));
-        filePath = dir.absolutePath();
+        QFileInfo info(project->filePath());
+        if (info.isDir()) {
+            filePath = info.filePath();
+        } else {
+            filePath = info.path();
+        }
     } else {
         IEditor *editor = m_liteApp->editorManager()->currentEditor();
         if (editor && !editor->filePath().isEmpty()) {

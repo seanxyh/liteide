@@ -144,19 +144,6 @@ QString ProfileFile::targetPath() const
     return target;
 }
 
-QMap<QString,QString> ProfileFile::projectInfo() const
-{
-    QMap<QString,QString> m;
-    if (m_fileName.isEmpty()) {
-        return m;
-    }
-    QFileInfo info(m_fileName);
-    m.insert("PROJECTNAME",info.fileName());
-    m.insert("PROJECTPATH",info.filePath());
-    m.insert("PROJECTDIR",info.path());
-    return m;
-}
-
 QMap<QString,QString> ProfileFile::targetInfo() const
 {
     QMap<QString,QString> m;
