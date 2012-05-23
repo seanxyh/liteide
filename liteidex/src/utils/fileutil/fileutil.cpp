@@ -198,6 +198,38 @@ QString FileUtil::lookPath(const QString &file, const QProcessEnvironment &env, 
     }
     return QString();
 }
+
+QString FileUtil::lookPathInDir(const QString &file,const QProcessEnvironment &env, const QString &dir)
+{
+    QString fileName = file;
+    QStringList exts;
+    QString extenv = env.value("PATHEXT");
+    if (!extenv.isEmpty()) {
+        foreach(QString ext, extenv.split(';',QString::SkipEmptyParts)) {
+            if (ext.isEmpty()) {
+                continue;
+            }
+            if (ext[0] != '.') {
+                ext= '.'+ext;
+            }
+            exts.append(ext.toLower());
+        }
+    }
+
+    if (fileName.contains('\\') || fileName.contains('/')) {
+        QString exec = canExec(fileName,exts);
+        if (!exec.isEmpty()) {
+            return exec;
+        }
+    }
+    QFileInfo info(QDir(dir),fileName);
+    QString exec = canExec(info.filePath(),exts);
+    if (!exec.isEmpty()) {
+        return exec;
+    }
+    return QString();
+}
+
 #else
 QString FileUtil::canExec(QString fileName, QStringList /*exts*/)
 {
@@ -232,6 +264,22 @@ QString FileUtil::lookPath(const QString &file, const QProcessEnvironment &env, 
         if (!exec.isEmpty()) {
             return exec;
         }
+    }
+    return QString();
+}
+
+QString FileUtil::lookPathInDir(const QString &fileName, const QProcessEnvironment &env, const QString &dir)
+{
+    QString fileName = file;
+    if (fileName.contains('/')) {
+        QString exec = canExec(fileName);
+        if (!exec.isEmpty()) {
+            return exec;
+        }
+    }
+    QString exec = canExec(dir+"/"+file);
+    if (!exec.isEmpty()) {
+        return exec;
     }
     return QString();
 }

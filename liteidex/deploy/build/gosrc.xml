@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
-	<mime-type type="text/x-gosrc" id="gosrc">
+	<mime-type type="text/x-gosrc" id="gosrc" work="$(EDITOR_DIR)">
 		<lookup mime-type="text/x-gomake" file="Makefile" top="1"/>
-		<lookup mime-type="text/x-gopro" file="*.e64" top="1"/>
+		<lookup mime-type="text/x-gopro" file="*.e64" top="1"/>		
 		<config id="Go" name="GO" value="$(GOROOT)/bin/go"/>
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
 		<config id="ErrRegex" name="ERRREGEX" value="([\w\d_\\/\.]+):(\d+):"/>
-		<custom id="TargetArgs" name="TARGETARGS" value=""/>
+		<custom id="TargetArgs" name="TARGETARGS" value=""/>		
 		<custom id="BuildArgs" name="BUILDARGS" value=""/>
-		<action id="Build" img="go/build.png" key="CTRL+B" cmd="$(GO)" args="build $(BUILDARGS) $(EDITORNAME)" save="editor" output="true" codec="" regex="$(ERRREGEX)" />
-		<action id="Clean" img="go/clean.png" cmd="$(GO)" args="clean $(EDITORNAME)" save="editor" output="true"/>
-		<action id="Exec" img="go/exec.png" key="CTRL+SHIFT+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
-		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="$(TARGETPATH)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
-		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
-		<action id="GoFmt" img="go/fmt.png" cmd="$(GO)" args="fmt $(EDITORNAME)" save="editor" output="true" regex="$(ERRREGEX)"/>
+		<custom id="InstallArgs" name="INSTALLARGS" value=""/>
+		<action id="BuildFile" img="go/buildfile.png" tootip="go build source" key="ALT+F7" cmd="$(GO)" args="build $(BUILDARGS) $(EDITOR_NAME)" save="editor" output="true" codec="utf-8" regex="$(ERRREGEX)" />
+		<action id="RunFile" img="go/runfile.png" toolip="go run source" key="ALT+F5" cmd="$(GO)" args="run $(EDITOR_NAME)" output="true" codec="utf-8" readline="true"/>
+		<action id="Sep" separator="true"/>
+		<action id="Build" img="go/build.png" tootip="go build package" key="ALT+SHIFT+F7" cmd="$(GO)" args="build $(BUILDARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" />
+		<action id="Install" img="go/install.png" tootip="go install package" key="" cmd="$(GO)" args="install $(INSTALLARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" />
+		<action id="Exec" img="go/exec.png" tootip="shell execute package" key="" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(EDITOR_TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
+		<action id="Run" img="go/run.png" tootip="run package" key="" cmd="$(EDITOR_DIR)/$(EDITOR_DIRNAME)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
+		<action id="BuildAndRun" tootip="go build and run package" img="go/buildandrun.png" key="ALT+SHIFT+F5" task="Build;Run"/>
 	</mime-type>
 </mime-info>

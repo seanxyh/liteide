@@ -171,12 +171,12 @@ public:
     virtual ~IBuild() {}
     virtual QString mimeType() const = 0;
     virtual QString id() const = 0;
+    virtual QString work() const = 0;
     virtual QList<BuildAction*> actionList() const = 0;
     virtual QList<BuildLookup*> lookupList() const = 0;
     virtual QList<BuildConfig*> configList() const = 0;
     virtual QList<BuildCustom*> customList() const = 0;
     virtual BuildAction *findAction(const QString &name) = 0;
-    virtual QString actionValue(const QString &value,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env) = 0;
 };
 
 class IBuildManager : public IManager

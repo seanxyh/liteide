@@ -45,8 +45,6 @@
 #include <QDebug>
 #ifdef Q_OS_WIN
 #include <windows.h>
-#endif
-
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -56,6 +54,8 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+#endif
+
 
 
 FileSystemWidget::FileSystemWidget(LiteApi::IApplication *app, QWidget *parent) :
