@@ -53,8 +53,8 @@ public:
     QMap<QString,QString> buildEnvMap(LiteApi::IBuild *build) const;
 public:
     QString actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);
-    void setCurrentBuild(LiteApi::IBuild *build);
-    void loadProjectEnv(LiteApi::IProject *project);
+    void setProjectBuild(LiteApi::IBuild *build);
+    void loadProjectEnv(const QString &filePath);
     void loadEditorEnv(LiteApi::IEditor *project);
 public slots:
     void appLoaded();

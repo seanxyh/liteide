@@ -7,14 +7,14 @@
 		<custom id="TargetArgs" name="TARGETARGS" value=""/>
 		<custom id="BuildArgs" name="BUILDARGS" value=""/>
 		<custom id="InstallArgs" name="INSTALLARGS" value=""/>
-		<action id="Build" img="go/build.png" key="CTRL+B;F7" cmd="$(GO)" args="build $(BUILDARGS)" save="all" output="true" codec="" regex="$(ERRREGEX)" />
-		<action id="Install" img="go/install.png" cmd="$(GO)" args="install $(INSTALLARGS)" save="all" output="true"/>
-		<action id="Clean" img="go/clean.png" cmd="$(GO)" args="clean" save="all" output="true"/>
-		<action id="CleanAll" img="go/nuke.png" cmd="$(GO)" args="clean -i" save="all" output="true"/>
-		<action id="Test" img="go/test.png" key = "CTRL+T" cmd="$(GO)" args="test" save="all" output="true" codec="utf-8"/>
-		<action id="Exec" img="go/exec.png" key="CTRL+SHIFT+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
-		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="$(TARGETPATH)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
-		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+R;CTRL+F7" task="Build;Run"/>
-		<action id="GoFmt" img="go/fmt.png" cmd="$(GO)" args="fmt" save="all" output="true" regex="$(ERRREGEX)"/>
+		<action id="Build" img="image/build.png" key="CTRL+B;F7" cmd="$(GO)" args="build $(BUILDARGS)" save="all" output="true" codec="" regex="$(ERRREGEX)" />
+		<action id="Install" img="image/install.png" key="CTRL+F8" cmd="$(GO)" args="install $(INSTALLARGS)" save="all" output="true"/>
+		<action id="Clean" img="image/clean.png" cmd="$(GO)" args="clean" save="all" output="true"/>
+		<action id="CleanAll" img="image/cleanall.png" cmd="$(GO)" args="clean -i" save="all" output="true"/>
+		<action id="Test" img="image/test.png" key = "CTRL+T" cmd="$(GO)" args="test" save="all" output="true" codec="utf-8"/>
+		<action id="RunTerm" img="image/runterm.png" key="CTRL+SHIFT+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
+		<action id="Run" img="image/run.png" key="CTRL+F5" cmd="$(TARGETPATH)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
+		<action id="BuildAndRun" img="image/buildrun.png" key="CTRL+R;CTRL+F7" task="Build;Run"/>
+		<action id="GoFmt" img="image/fmt.png" cmd="$(GO)" args="fmt" save="all" output="true" regex="$(ERRREGEX)"/>
 	</mime-type>	
 </mime-info>

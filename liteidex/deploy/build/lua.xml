@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
-	<mime-type type="text/x-lua" id="lua">
-		<action id="Exec" key="CTRL+SHIFT+F5" img="lua/exec.png" cmd="lua" args="-e io.stdout:setvbuf(&quot;no&quot;) $(EDITORNAME)" output="false" readline="true"/>
-		<action id="Go" key="CTRL+F5" img="lua/run.png" cmd="lua" args="-e io.stdout:setvbuf(&quot;no&quot;) $(EDITORNAME)" save="editor" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" readline="true" />
+	<mime-type type="text/x-lua" id="lua" work="$(EDITOR_DIR)">
+		<action id="RunTerm" key="CTRL+SHIFT+F5" img="image/runterm2.png" cmd="lua" args="-e io.stdout:setvbuf(&quot;no&quot;) $(EDITOR_NAME)" output="false" readline="true"/>
+		<action id="Run" key="CTRL+R;CTRL+F5" img="image/run2.png" cmd="lua" args="-e io.stdout:setvbuf(&quot;no&quot;) $(EDITOR_NAME)" save="editor" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" readline="true" />
 	</mime-type>
 </mime-info>

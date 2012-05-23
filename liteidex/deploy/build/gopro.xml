@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
-	<mime-type type="text/x-gopro" id="gopro">
+	<mime-type type="text/x-gopro" id="gopro" work="$(PROJECT_DIR)">
 		<config id="GoproMake" name="GOPROMAKE" value="$(LITEAPPDIR)/gopromake"/>
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
 		<config id="ErrRegex" name="ERRREGEX" value="([\w\d_\\/\.]+):(\d+):"/>	
 		<custom id="TargetArgs" name="TARGETARGS" value=""/>
-		<action id="Build" img="go/build.png" key="F7" cmd="$(GOPROMAKE)" args="-gopro $(PROJECTNAME)" save="project" output="true" codec="utf-8" regex="$(ERRREGEX)" />
-		<action id="Clean" img="go/clean.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECTNAME) -clean=obj" output="true" codec="utf-8"/>
-		<action id="CleanAll" img="go/cleanall.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECTNAME) -clean=all" output="true" codec="utf-8"/>
-		<action id="Exec" img="go/exec.png" key="CTRL+SHIFT+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
-		<action id="Run" img="go/run.png" key="CTRL+F5" cmd="$(TARGETPATH)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
-		<action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/>
+		<action id="Build" img="image/build.png" key="CTRL+B;F7" cmd="$(GOPROMAKE)" args="-gopro $(PROJECT_NAME)" save="project" output="true" codec="utf-8" regex="$(ERRREGEX)" />
+		<action id="Clean" img="image/clean.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECT_NAME) -clean=obj" output="true" codec="utf-8"/>
+		<action id="CleanAll" img="image/cleanall.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECT_NAME) -clean=all" output="true" codec="utf-8"/>
+		<action id="RunTerm" img="image/runterm.png" key="CTRL+SHIFT+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
+		<action id="Run" img="image/run.png" key="CTRL+R;CTRL+F5" cmd="$(TARGETPATH)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
+		<action id="BuildAndRun" img="image/buildrun.png" key="CTRL+F7" task="Build;Run"/>
 	</mime-type>
 </mime-info>
