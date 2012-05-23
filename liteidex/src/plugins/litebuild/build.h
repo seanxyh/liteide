@@ -37,15 +37,16 @@ public:
     ~Build();
     virtual QString mimeType() const;
     virtual QString id() const;
+    virtual QString work() const;
     virtual QList<BuildAction*> actionList() const;
     virtual QList<BuildLookup*> lookupList() const;
     virtual QList<BuildConfig*> configList() const;
     virtual QList<BuildCustom*> customList() const;
     virtual BuildAction *findAction(const QString &id);
-    virtual QString actionValue(const QString &value,QMap<QString,QString> &liteEnv, const QProcessEnvironment &env);
 public:
     void setType(const QString &mimeType);
     void setId(const QString &id);
+    void setWork(const QString &work);
     void appendAction(BuildAction *act);
     void appendLookup(BuildLookup *lookup);
     void appendConfig(BuildConfig *config);
@@ -56,6 +57,7 @@ public:
 protected:
     QString m_mimeType;
     QString m_id;
+    QString m_work;
     QList<BuildAction*> m_actionList;
     QList<BuildLookup*> m_lookupList;
     QList<BuildConfig*> m_configList;

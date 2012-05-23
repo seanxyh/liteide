@@ -64,6 +64,11 @@ QString Build::id() const
     return m_id;
 }
 
+QString Build::work() const
+{
+    return m_work;
+}
+
 QList<BuildAction*> Build::actionList() const
 {
     return m_actionList;
@@ -102,6 +107,11 @@ void Build::setType(const QString &mimeType)
 void Build::setId(const QString &id)
 {
     m_id = id;
+}
+
+void Build::setWork(const QString &work)
+{
+    m_work = work;
 }
 
 void Build::appendAction(BuildAction *act)
@@ -151,6 +161,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 build = new Build;
                 build->setType(attrs.value("type").toString());
                 build->setId(attrs.value("id").toString());
+                build->setWork(attrs.value("work").toString());
             } else if (reader.name() == "lookup" && lookup == 0) {
                 lookup = new BuildLookup;
                 lookup->setMimeType(attrs.value("mime-type").toString());
@@ -228,28 +239,4 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
         }
     }
     return true;
-}
-
-QString Build::actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env)
-{
-    QString v = value;
-    QMapIterator<QString,QString> i(liteEnv);
-    while(i.hasNext()) {
-        i.next();
-        v.replace("$("+i.key()+")",i.value());
-    }
-    QRegExp rx("\\$\\((\\w+)\\)");
-    int pos = 0;
-    QStringList list;
-    while ((pos = rx.indexIn(v, pos)) != -1) {
-         list << rx.cap(1);
-         pos += rx.matchedLength();
-    }
-
-    foreach (QString str, list) {
-         if (env.contains(str)) {
-            v.replace("$("+str+")",env.value(str));
-        }
-    }
-    return v;
 }
