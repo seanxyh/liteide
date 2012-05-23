@@ -611,6 +611,7 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
     }
     loadEditorEnv(editor->filePath());
     if (!m_liteApp->projectManager()->currentProject()) {
+        setProjectBuild(0);
         findProjectBuildByEditor(editor);
     }
 }
