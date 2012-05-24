@@ -68,6 +68,7 @@ public slots:
     void loadPackageDoc();
     void loadPackageProject();
     void finished(int,QProcess::ExitStatus);
+    void error(QProcess::ProcessError);
     void customContextMenuRequested(QPoint);
     void doubleClicked();
     void resetTree();
