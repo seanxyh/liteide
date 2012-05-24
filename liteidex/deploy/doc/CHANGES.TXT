@@ -1,10 +1,10 @@
-==== 2012.5.22 Ver X11 1.71875 beta5 ====
+==== 2012.5.24 Ver X11 1.71875 beta5 ====
+ * LiteBuild: project build toolbar and editor build toolbar.
  * LiteFind: add file search
  * PackageBrowser: fast load
- * LiteBuild: add go build file.go and go run file.go
  * LiteEditor: LRLF check by \n
  * LiteEditor: no print char conver to .
- * LiteEditor: update tooltip to label
+ * LiteEditor: move tooltip to status
 ==== 2012.5.16 Ver X11 1.71875 beta4.1 ====
  * LiteBuild: fix execute args for gosrc/gopro/makefile
  * LiteApp: add option - when close project auto close project editors
