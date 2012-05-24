@@ -112,7 +112,6 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
 
     m_configAct = new QAction(QIcon(":/images/config.png"),tr("BuildConfig"),this);
     m_toolBar->addAction(m_configAct);
-    m_toolBar->addSeparator();
 
     m_process = new ProcessEx(this);
     m_output = new LiteOutput;
@@ -213,7 +212,7 @@ void LiteBuild::config()
         for (int i = 0; i < m_customModel->rowCount(); i++) {
             QStandardItem *name = m_customModel->item(i,0);
             QStandardItem *value = m_customModel->item(i,1);
-            m_customMap.insert(name->text(),value->text());
+            //m_customMap.insert(name->text(),value->text());
             if (!key.isEmpty()) {
                 m_liteApp->settings()->setValue(key+"#"+name->text(),value->text());
             }
@@ -353,6 +352,20 @@ QMap<QString,QString> LiteBuild::buildEnvMap(LiteApi::IBuild *build, const QStri
 
 QMap<QString,QString> LiteBuild::buildEnvMap() const
 {
+    return buildEnvMap(m_build,m_buildFilePath);
+    /*
+    LiteApi::IBuild *build = m_build;
+    QString buildFilePath = m_buildFilePath;
+    if (!build) {
+        LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+        if (editor && !editor->filePath().isEmpty()) {
+            build = m_manager->findBuild(editor->mimeType());
+            buildFilePath = QFileInfo(editor->filePath()).path();
+        }
+    }
+    return buildEnvMap(build,buildFilePath);
+    */
+    /*
     QMap<QString,QString> env = liteideEnvMap();
     QMapIterator<QString,QString> i(m_configMap);
     while(i.hasNext()) {
@@ -394,6 +407,7 @@ QMap<QString,QString> LiteBuild::buildEnvMap() const
         env.insert(t.key(),t.value());
     }
     return env;
+    */
 }
 
 void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
@@ -419,7 +433,7 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
             m_customModel->appendRow(QList<QStandardItem*>()
                                      << new QStandardItem(name)
                                      << new QStandardItem(value));
-            m_customMap.insert(name,value);
+            //m_customMap.insert(name,value);
         }
         foreach(LiteApi::BuildConfig *cf, build->configList()) {
             QString name = cf->name();
@@ -430,7 +444,7 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
             m_configModel->appendRow(QList<QStandardItem*>()
                                      << new QStandardItem(name)
                                      << new QStandardItem(value));
-            m_configMap.insert(name,value);
+            //m_configMap.insert(name,value);
         }
         m_output->setInfo(QString("{build id=\"%1\" file=\"%2\"}").
                           arg(build->id()).
@@ -757,8 +771,6 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
         m_workDir = this->actionValue(work,env,sysenv);
     }
 
-    qDebug() << m_workDir << cmd << args;
-
     if (!QFileInfo(cmd).exists()) {
         QString findCmd = FileUtil::lookPathInDir(cmd,sysenv,m_workDir);
         if (!findCmd.isEmpty()) {
@@ -786,9 +798,8 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
     m_process->setEnvironment(sysenv.toStringList());
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,m_workDir);
-        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")
-                             .arg(id).arg(ba->cmd()).arg(ba->args()));
-        m_output->appendTag1(QString("> cd %1\n").arg(m_workDir));
+        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
+                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
         m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_output->appendTag1(QString("> Start process %1\n").arg(b?"success":"false"));
         m_output->appendTag0(QString("</action>\n"));
@@ -798,9 +809,8 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
         m_process->setUserData(2,codec);
 
         m_process->setWorkingDirectory(m_workDir);        
-        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\">\n")
-                             .arg(id).arg(ba->cmd()).arg(ba->args()));
-        m_output->appendTag1(QString("> cd %1\n").arg(m_workDir));
+        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
+                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
         m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_process->start(cmd,arguments);
     }

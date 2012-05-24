@@ -85,8 +85,8 @@ protected:
     QStandardItemModel *m_customModel;
     QList<QAction*> m_actions;
     QMap<QString,QString> m_liteAppInfo;
-    QMap<QString,QString> m_configMap;
-    QMap<QString,QString> m_customMap;
+    //QMap<QString,QString> m_configMap;
+    //QMap<QString,QString> m_customMap;
     QString m_workDir;
     ProcessEx *m_process;
     LiteOutput *m_output;
