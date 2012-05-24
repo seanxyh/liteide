@@ -83,6 +83,11 @@ QStringList GoTool::sysGopath() const
     return pathList;
 }
 
+bool GoTool::exists()
+{
+    return QFileInfo(m_gotool).exists();
+}
+
 void GoTool::reloadEnv()
 {
     QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);

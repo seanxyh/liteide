@@ -104,6 +104,7 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_liteApp->dockManager()->addDock(m_widget,tr("Package Browser"));
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
+    connect(m_goTool,SIGNAL(error(QProcess::ProcessError)),this,SLOT(error(QProcess::ProcessError)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
     connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClicked()));
     connect(m_reloadAct,SIGNAL(triggered()),this,SLOT(reloadAll()));
@@ -126,8 +127,8 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
         connect(env,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(reloadAll()));
     }
 
-    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
     connect(m_liteApp->fileManager(),SIGNAL(fileWizardFinished(QString,QString,QString)),this,SLOT(fileWizardFinished(QString,QString,QString)));
+    this->reloadAll();
 }
 
 PackageBrowser::~PackageBrowser()
@@ -154,11 +155,17 @@ void PackageBrowser::reloadAll()
     if (m_goTool->isRuning()) {
         return;
     }
+    m_goTool->reloadEnv();
+    if (!m_goTool->exists()) {
+        m_model->clear();
+        m_model->appendRow(new QStandardItem(tr("Not find go in PATH...")));
+        return;
+    }
+
     if (m_model->rowCount() == 0) {
         m_model->appendRow(new QStandardItem(tr("Loading go package ...")));
     }
     QString root = LiteApi::getGoroot(m_liteApp);
-    m_goTool->reloadEnv();
     m_taskList = LiteApi::getGopathList(m_liteApp,false);
     m_taskData.clear();
     m_gopathList.clear();
@@ -168,7 +175,7 @@ void PackageBrowser::reloadAll()
     env.insert("GOPATH","");
     m_goTool->setProcessEnvironment(env);
     m_goTool->setWorkDir(root);
-    m_goTool->start(QStringList() << "list" << "-json" << "...");
+    m_goTool->start(QStringList() << "list" << "-e" << "-json" << "...");
 }
 
 void PackageBrowser::setupGopath()
@@ -297,6 +304,13 @@ void PackageBrowser::customContextMenuRequested(QPoint pos)
     }
 }
 
+void PackageBrowser::error(QProcess::ProcessError code)
+{
+    m_model->clear();
+    QString goroot = LiteApi::getGoroot(m_liteApp);
+    m_model->appendRow(new QStandardItem(QString("Load Package Error %1\nGOROOT=%2\nGO=%3").arg(code).arg(goroot).arg(m_goTool->gotool())));
+}
+
 void PackageBrowser::finished(int code,QProcess::ExitStatus)
 {
     if (code == 0) {
@@ -305,14 +319,17 @@ void PackageBrowser::finished(int code,QProcess::ExitStatus)
         data.data = m_goTool->stdOutputData();
         m_taskData.append(data);
         if (!m_taskList.isEmpty()) {
-            QString work = m_taskList.first();
-            m_taskList.removeFirst();
+            QString work = m_taskList.takeFirst();
             m_goTool->setProcessEnvironment(LiteApi::getGoEnvironment(m_liteApp));
             m_goTool->setWorkDir(work);
-            m_goTool->start(QStringList() << "list" << "-json" << "./...");
+            m_goTool->start(QStringList() << "list" << "-e" << "-json" << "./...");
         } else {
             resetTree();
         }
+    } else {
+        m_model->clear();
+        QString goroot = LiteApi::getGoroot(m_liteApp);
+        m_model->appendRow(new QStandardItem(QString("Load Package Error %1\nGOROOT=%2\nGO=%3").arg(code).arg(goroot).arg(m_goTool->gotool())));
     }
 }
 

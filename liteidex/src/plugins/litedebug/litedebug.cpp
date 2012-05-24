@@ -250,10 +250,10 @@ void LiteDebug::startDebug()
     if (targetFilepath.isEmpty() || !QFile::exists(targetFilepath)) {
         return;
     }
-
-    QString workDir = m_liteBuild->buildEnvMap().value("WORKDIR");
-    QString target = m_liteBuild->buildEnvMap().value("TARGETNAME");
-    QString args = m_liteBuild->buildEnvMap().value("TARGETARGS");
+    QMap<QString,QString> m = m_liteBuild->buildEnvMap();
+    QString workDir = m.value("WORKDIR");
+    QString target = m.value("TARGETNAME");
+    QString args = m.value("TARGETARGS");
     int index = targetFilepath.lastIndexOf(target);
     if (index != -1) {
         target = targetFilepath.right(targetFilepath.length()-index);

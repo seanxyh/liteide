@@ -44,6 +44,7 @@ GolangPackagePlugin::GolangPackagePlugin()
     m_info->setName("GolangPackage");
     m_info->setAnchor("visualfc");
     m_info->setInfo("GolangPackage Plugin");
+    m_info->appendDepend("plugin/liteenv");
 }
 
 bool GolangPackagePlugin::initWithApp(LiteApi::IApplication *app)

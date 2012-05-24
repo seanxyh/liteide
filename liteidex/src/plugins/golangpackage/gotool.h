@@ -36,6 +36,7 @@ public:
     explicit GoTool(LiteApi::IApplication *app,QObject *parent = 0);
     virtual ~GoTool();
     void reloadEnv();
+    bool exists();
     QStringList sysGopath() const;
     QStringList liteGopath() const;
     void setProcessEnvironment(const QProcessEnvironment &environment);
@@ -44,6 +45,7 @@ public:
     void kill();
     void setWorkDir(const QString &dir);
     QString workDir() const;
+    QString gotool() const { return m_gotool; }
     void start(const QStringList &args);
     QByteArray stdOutputData() const { return m_stdOutput; }
     QString stdOutputUtf8() const {
