@@ -50,13 +50,14 @@ public:
     virtual QMap<QString,QString> buildEnvMap() const;
     virtual QMap<QString,QString> liteideEnvMap() const;
     virtual LiteApi::IBuildManager *buildManager() const;
-    QMap<QString,QString> buildEnvMap(LiteApi::IBuild *build) const;
+    QMap<QString,QString> buildEnvMap(LiteApi::IBuild *build, const QString &buildFilePath) const;
 public:
     QString actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);
     void setProjectBuild(LiteApi::IBuild *build);
-    void loadProjectEnv(const QString &filePath);
-    void loadEditorEnv(const QString &filePath);
-    bool findProjectBuildByEditor(LiteApi::IEditor *editor);
+    void loadProjectInfo(const QString &filePath);
+    void loadEditorInfo(const QString &filePath);
+    LiteApi::IBuild *findProjectBuildByEditor(LiteApi::IEditor *editor);
+    LiteApi::IBuild *findProjectBuild(LiteApi::IProject *project);
 public slots:
     void appLoaded();
     void currentEnvChanged(LiteApi::IEnv*);
