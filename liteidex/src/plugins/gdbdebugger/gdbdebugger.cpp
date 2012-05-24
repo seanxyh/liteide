@@ -177,7 +177,9 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
     QStringList args;
     args << "--interpreter=mi";
 
-    QString goroot = m_envManager->currentEnvironment().value("GOROOT");
+    QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);
+
+    QString goroot = env.value("GOROOT");
     if (!goroot.isEmpty()) {
         m_runtimeFilePath = QFileInfo(QDir(goroot),"src/pkg/runtime/").path();
     }
@@ -187,9 +189,18 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
         args << arguments;
     }
 
-    QString gdb = m_envManager->currentEnvironment().value("LITEIDE_GDB","gdb");
+    QString gdb = env.value("LITEIDE_GDB","gdb");
+#ifdef Q_OS_WIN
+    if (gdb.isEmpty()) {
+        if (env.value("GOARCH") == "386") {
+            gdb = "gdb";
+        } else {
+            gdb = "gdb64";
+        }
+    }
+#endif
 
-    m_gdbFilePath = FileUtil::lookPath(gdb,m_envManager->currentEnvironment(),true);
+    m_gdbFilePath = FileUtil::lookPath(gdb,env,true);
     if (m_gdbFilePath.isEmpty()) {
         return false;
     }
