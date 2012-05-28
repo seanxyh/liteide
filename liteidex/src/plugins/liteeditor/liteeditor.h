@@ -32,6 +32,7 @@
 #include "elidedlabel/elidedlabel.h"
 #include <QSet>
 #include <QHash>
+#include <QStack>
 
 //#define LITEEDITOR_FIND
 
@@ -45,6 +46,17 @@ class QComboBox;
 class QLabel;
 class LiteCompleter;
 class ColorStyleScheme;
+
+struct EditLocation {
+    EditLocation() :
+        line(0),col(0)
+    {}
+    EditLocation(int l, int c) :
+        line(l),col(c)
+    {}
+    int line;
+    int col;
+};
 
 class LiteEditor : public LiteApi::ITextEditor
 {
@@ -91,6 +103,9 @@ public slots:
     void filePrintPreview();
     void printPreview(QPrinter *printer);
     void codecComboBoxChanged(QString);
+    void editPositionChanged();
+    void goBack();
+    void goForward();
 public:
     void findCodecs();
     ColorStyleScheme    *m_colorStyleScheme;
@@ -115,10 +130,14 @@ public:
 #ifdef LITEEDITOR_FIND
     QComboBox *m_findComboBox;
 #endif
+    QAction *m_goBackAct;
+    QAction *m_goForwardAct;
     LiteEditorFile *m_file;
     QString  m_colorStyle;
     QPalette m_defPalette;
     bool       m_bReadOnly;
+    QList<EditLocation> m_navigateHistroy;
+    int        m_naviagePos;
 };
 
 #endif //LITEEDITOR_H

@@ -70,7 +70,8 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     : m_liteApp(app),
       m_extension(new Extension),
       m_completer(0),
-      m_bReadOnly(false)
+      m_bReadOnly(false),
+      m_naviagePos(0)
 {
     m_widget = new QWidget;
     m_editorWidget = new LiteEditorWidget(m_widget);
@@ -108,6 +109,7 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     }
     connect(m_codecComboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(codecComboBoxChanged(QString)));
     m_editorWidget->installEventFilter(m_liteApp->editorManager());
+    connect(m_editorWidget,SIGNAL(cursorPositionChanged()),this,SLOT(editPositionChanged()));
 }
 
 LiteEditor::~LiteEditor()
@@ -178,6 +180,9 @@ void LiteEditor::createActions()
     m_filePrintAct = new QAction(QIcon(":/images/fileprint.png"),tr("Print Document"),this);
     m_filePrintPreviewAct = new QAction(QIcon(":/images/fileprintpreview.png"),tr("Print Preview Document"),this);
 #endif
+    m_goBackAct = new QAction(QIcon(":/images/goback.png"),tr("Go Back"),this);
+    m_goForwardAct = new QAction(QIcon(":/images/goforward.png"),tr("Go Forward"),this);
+
     m_lockAct->setEnabled(false);
 
     m_undoAct->setEnabled(false);
@@ -203,6 +208,8 @@ void LiteEditor::createActions()
     connect(m_filePrintAct,SIGNAL(triggered()),this,SLOT(filePrint()));
     connect(m_filePrintPreviewAct,SIGNAL(triggered()),this,SLOT(filePrintPreview()));
 #endif
+    connect(m_goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
+    connect(m_goForwardAct,SIGNAL(triggered()),this,SLOT(goForward()));
     QClipboard *clipboard = QApplication::clipboard();
     connect(clipboard,SIGNAL(dataChanged()),this,SLOT(clipbordDataChanged()));
     clipbordDataChanged();
@@ -248,6 +255,10 @@ void LiteEditor::createToolBars()
     m_toolBar->addSeparator();
     m_codecComboBox = new QComboBox;
     m_toolBar->addWidget(m_codecComboBox);
+    m_toolBar->addSeparator();
+
+    m_toolBar->addAction(m_goBackAct);
+    m_toolBar->addAction(m_goForwardAct);
     m_toolBar->addSeparator();
 
     m_toolBar->addAction(m_cutAct);
@@ -327,7 +338,9 @@ bool LiteEditor::createNew(const QString &contents, const QString &mimeType)
 bool LiteEditor::open(const QString &fileName,const QString &mimeType)
 {
     bool success = m_file->open(fileName,mimeType);
-    if (success) {
+    if (success) {        
+        m_navigateHistroy.clear();
+        m_naviagePos = -1;
         m_editorWidget->initLoadDocument();
         QString codecName = m_file->textCodec();
         for (int i = 0; i < m_codecComboBox->count(); i++) {
@@ -624,4 +637,21 @@ void LiteEditor::codecComboBoxChanged(QString codec)
         setReadOnly(m_file->isReadOnly());
     }
     return;
+}
+
+void LiteEditor::editPositionChanged()
+{
+    QTextCursor cur = m_editorWidget->textCursor();
+    EditLocation location(cur.blockNumber(),cur.columnNumber());
+    if (m_naviagePos >= 0) {
+        EditLocation prev = m_navigateHistroy.at(m_naviagePos);
+    }
+}
+
+void LiteEditor::goBack()
+{
+}
+
+void LiteEditor::goForward()
+{
 }
