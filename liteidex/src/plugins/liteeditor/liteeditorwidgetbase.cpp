@@ -84,7 +84,9 @@ protected:
 
 LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     : QPlainTextEdit(parent),
-      m_editorMark(0)
+      m_editorMark(0),
+      m_contentsChanged(false),
+      m_lastCursorChangeWasInteresting(false)
 {
     setLineWrapMode(QPlainTextEdit::NoWrap);
     //document()->setDocumentLayout(new BaseTextDocumentLayout(document()));
@@ -104,6 +106,7 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     connect(this, SIGNAL(modificationChanged(bool)), this, SLOT(slotModificationChanged(bool)));
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPositionChanged()));
     connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(slotUpdateRequest(QRect, int)));
+    connect(this->document(),SIGNAL(contentsChange(int,int,int)),this,SLOT(editContentsChanged(int,int,int)));
     //connect(this, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
     //updateHighlights();
     //setFrameStyle(QFrame::NoFrame);
@@ -132,6 +135,11 @@ void LiteEditorWidgetBase::initLoadDocument()
     m_lastSaveRevision = document()->revision();
     document()->setModified(false);
     moveCursor(QTextCursor::Start);
+}
+
+void LiteEditorWidgetBase::editContentsChanged(int, int, int)
+{
+    m_contentsChanged = true;
 }
 
 void LiteEditorWidgetBase::highlightCurrentLine()
@@ -373,6 +381,12 @@ void LiteEditorWidgetBase::slotUpdateRequest(const QRect &r, int dy)
 
 void LiteEditorWidgetBase::slotCursorPositionChanged()
 {
+    if (!m_contentsChanged && m_lastCursorChangeWasInteresting) {
+        //navigate change
+        m_lastCursorChangeWasInteresting = false;
+    } else if (m_contentsChanged) {
+        m_lastCursorChangeWasInteresting = true;
+    }
     highlightCurrentLine();
 }
 
@@ -383,6 +397,7 @@ void LiteEditorWidgetBase::slotUpdateBlockNotify(const QTextBlock &)
 
 void LiteEditorWidgetBase::gotoLine(int line, int column, bool center)
 {
+    m_lastCursorChangeWasInteresting = false;
     const int blockNumber = line - 1;
     const QTextBlock &block = document()->findBlockByNumber(blockNumber);
     if (block.isValid()) {
@@ -456,6 +471,12 @@ void LiteEditorWidgetBase::gotoLineEnd()
 void LiteEditorWidgetBase::gotoLineEndWithSelection()
 {
     moveCursor(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+}
+
+bool LiteEditorWidgetBase::event(QEvent *e)
+{
+    m_contentsChanged = false;
+    return QPlainTextEdit::event(e);
 }
 
 void LiteEditorWidgetBase::keyPressEvent(QKeyEvent *e)

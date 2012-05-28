@@ -47,6 +47,7 @@ public:
     void showTip(const QString &tip);
     void hideTip();
 protected slots:
+    void editContentsChanged(int,int,int);
     virtual void highlightCurrentLine();
     virtual void slotUpdateExtraAreaWidth();
     virtual void slotModificationChanged(bool);
@@ -98,6 +99,7 @@ public:
         return m_marksVisible;
     }
 protected:
+    bool event(QEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void indentBlock(QTextBlock block, bool bIndent);
     void indentCursor(QTextCursor cur, bool bIndent);
@@ -118,6 +120,8 @@ protected:
     QChar m_lastBraces;
     int m_lastSaveRevision;
     int m_extraAreaSelectionNumber;
+    bool m_contentsChanged;
+    bool m_lastCursorChangeWasInteresting;
 };
 
 #endif // LITEEDITORWIDGETBASE_H
