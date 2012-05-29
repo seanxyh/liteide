@@ -53,8 +53,8 @@
 LiteEditorWidget::LiteEditorWidget(QWidget *parent) :
     LiteEditorWidgetBase(parent),
     m_completer(0),
-    m_completionPrefixMin(3),
-    m_contextMenu(0)
+    m_contextMenu(0),
+    m_completionPrefixMin(3)
 {
 }
 

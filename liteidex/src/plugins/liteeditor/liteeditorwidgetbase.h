@@ -45,7 +45,7 @@ public:
     void extraAreaLeaveEvent(QEvent *e);
     void resizeEvent(QResizeEvent *e);
     void showTip(const QString &tip);
-    void hideTip();
+    void hideTip();    
 protected slots:
     void editContentsChanged(int,int,int);
     virtual void highlightCurrentLine();
@@ -62,6 +62,13 @@ public slots:
     void gotoLineStartWithSelection();
     void gotoLineEnd();
     void gotoLineEndWithSelection();
+    void cutLine();
+    void copyLine();
+    void deleteLine();
+    void gotoBlockStart();
+    void gotoBlockEnd();
+    void gotoBlockStartWithSelection();
+    void gotoBlockEndWithSelection();
 public:
     void setAutoIndent(bool b){
         m_autoIndent = b;
@@ -99,6 +106,22 @@ public:
         return m_marksVisible;
     }
 protected:
+    enum ExtraSelectionKind {
+        CurrentLineSelection,
+        ParenthesesMatchingSelection,
+        CodeWarningsSelection,
+        CodeSemanticsSelection,
+        UndefinedSymbolSelection,
+        UnusedSymbolSelection,
+        FakeVimSelection,
+        OtherSelection,
+        SnippetPlaceholderSelection,
+        ObjCSelection,
+        DebuggerExceptionSelection,
+        NExtraSelectionKinds
+    };
+    void _q_matchParentheses();
+    void maybeSelectLine();
     bool event(QEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void indentBlock(QTextBlock block, bool bIndent);
