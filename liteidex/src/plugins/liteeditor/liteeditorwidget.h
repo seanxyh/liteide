@@ -34,7 +34,7 @@ class LiteEditorWidget : public LiteEditorWidgetBase
     Q_OBJECT
 public:
     explicit LiteEditorWidget(QWidget *parent = 0);
-
+    void setContextMenu(QMenu *contextMenu);
     void setCompleter(QCompleter *m_completer);
     QCompleter *completer() const;
     void setPrefixMin(int min) {m_completionPrefixMin = min; }
@@ -43,6 +43,7 @@ public:
     }
 
 protected:
+    void contextMenuEvent(QContextMenuEvent *);
     void keyPressEvent(QKeyEvent *e);
     void focusInEvent(QFocusEvent *e);
     virtual QMimeData *createMimeDataFromSelection() const;
@@ -55,6 +56,7 @@ public:
     QString textUnderCursor(QTextCursor tc) const;
 protected:
     QCompleter *m_completer;
+    QMenu      *m_contextMenu;
     int m_completionPrefixMin;
 };
 
