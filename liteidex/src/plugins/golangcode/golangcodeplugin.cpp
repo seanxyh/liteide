@@ -27,7 +27,11 @@
 #include "liteapi/litefindobj.h"
 #include "liteeditorapi/liteeditorapi.h"
 #include "fileutil/fileutil.h"
+#include "qtc_editutil/uncommentselection.h"
 #include "golangcode.h"
+#include <QMenu>
+#include <QAction>
+#include <QPlainTextEdit>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -54,6 +58,9 @@ bool GolangCodePlugin::initWithApp(LiteApi::IApplication *app)
     }
 
     m_code = new GolangCode(app,this);
+    m_commentAct = new QAction(tr("Toggle Comment Selection"),this);
+    connect(m_commentAct,SIGNAL(triggered()),this,SLOT(editorComment()));
+    connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     return true;
 }
@@ -61,6 +68,30 @@ bool GolangCodePlugin::initWithApp(LiteApi::IApplication *app)
 QStringList GolangCodePlugin::dependPluginList() const
 {
     return QStringList() << "plugin/liteenv" << "plugin/golangast";
+}
+
+void GolangCodePlugin::editorCreated(LiteApi::IEditor *editor)
+{
+    if (editor && editor->mimeType() == "text/x-gosrc") {
+        QMenu *menu = LiteApi::findExtensionObject<QMenu*>(editor,"LiteApi.ContextMenu");
+        if (menu) {
+            menu->addSeparator();
+            menu->addAction(m_commentAct);
+        }
+    }
+}
+
+void GolangCodePlugin::editorComment()
+{
+    LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+    if (!editor) {
+        return;
+    }
+    QPlainTextEdit *textEdit = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
+    if (!textEdit) {
+        return;
+    }
+    Utils::unCommentSelection(textEdit);
 }
 
 void GolangCodePlugin::currentEditorChanged(LiteApi::IEditor *editor)

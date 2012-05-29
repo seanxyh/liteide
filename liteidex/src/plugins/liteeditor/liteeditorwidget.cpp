@@ -38,6 +38,7 @@
 #include <QTextBlockFormat>
 #include <QTextDocumentFragment>
 #include <QMimeData>
+#include <QMenu>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -52,8 +53,14 @@
 LiteEditorWidget::LiteEditorWidget(QWidget *parent) :
     LiteEditorWidgetBase(parent),
     m_completer(0),
-    m_completionPrefixMin(3)
+    m_completionPrefixMin(3),
+    m_contextMenu(0)
 {
+}
+
+void LiteEditorWidget::setContextMenu(QMenu *contextMenu)
+{
+    m_contextMenu = contextMenu;
 }
 
 void LiteEditorWidget::setCompleter(QCompleter *completer)
@@ -101,6 +108,18 @@ void LiteEditorWidget::focusInEvent(QFocusEvent *e)
     if (m_completer)
         m_completer->setWidget(this);
     LiteEditorWidgetBase::focusInEvent(e);
+}
+
+void LiteEditorWidget::contextMenuEvent(QContextMenuEvent *e)
+{
+    QTextCursor cur = this->textCursor();
+    if (!cur.hasSelection()) {
+        cur = this->cursorForPosition(e->pos());
+        this->setTextCursor(cur);
+    }
+    if (m_contextMenu) {
+        m_contextMenu->exec(e->globalPos());
+    }
 }
 
 void LiteEditorWidget::keyPressEvent(QKeyEvent *e)

@@ -7,10 +7,13 @@ include(../../liteideutils.pri)
 
 HEADERS += \
     filterlineedit.h \
-    fancylineedit.h
+    fancylineedit.h \
+    uncommentselection.h \
+    utils_global.h
 
 SOURCES += \
     filterlineedit.cpp \
-    fancylineedit.cpp
+    fancylineedit.cpp \
+    uncommentselection.cpp
 
 RESOURCES +=

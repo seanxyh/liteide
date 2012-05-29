@@ -55,6 +55,7 @@
 #include <QPalette>
 #include <QTimer>
 #include <QMessageBox>
+#include <QMenu>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -82,6 +83,9 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
 
     createActions();
     createToolBars();
+    createContextMenu();
+
+    m_editorWidget->setContextMenu(m_contextMenu);
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
@@ -101,6 +105,7 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     m_extension->addObject("LiteApi.QToolBar",m_toolBar);
     m_extension->addObject("LiteApi.LiteEditorWidget",m_editorWidget);
     m_extension->addObject("LiteApi.QPlainTextEdit",m_editorWidget);
+    m_extension->addObject("LiteApi.ContextMenu",m_contextMenu);
 
 
     findCodecs();
@@ -173,6 +178,7 @@ void LiteEditor::createActions()
     m_cutAct = new QAction(QIcon(":/images/cut.png"),tr("Cut"),this);
     m_copyAct = new QAction(QIcon(":/images/copy.png"),tr("Copy"),this);
     m_pasteAct = new QAction(QIcon(":/images/paste.png"),tr("Paste"),this);
+    m_selectAllAct = new QAction(tr("Select All"),this);
     m_lockAct = new QAction(QIcon(":/images/unlock.png"),tr("File is writable"),this);
     m_exportHtmlAct = new QAction(QIcon(":/images/exporthtml.png"),tr("Export HTML"),this);
 #ifndef QT_NO_PRINTER
@@ -201,6 +207,7 @@ void LiteEditor::createActions()
     connect(m_cutAct,SIGNAL(triggered()),m_editorWidget,SLOT(cut()));
     connect(m_copyAct,SIGNAL(triggered()),m_editorWidget,SLOT(copy()));
     connect(m_pasteAct,SIGNAL(triggered()),m_editorWidget,SLOT(paste()));
+    connect(m_selectAllAct,SIGNAL(triggered()),m_editorWidget,SLOT(selectAll()));
 
     connect(m_exportHtmlAct,SIGNAL(triggered()),this,SLOT(exportHtml()));
 #ifndef QT_NO_PRINTER
@@ -284,6 +291,16 @@ void LiteEditor::createToolBars()
     m_toolBar->addSeparator();
     connect(m_findComboBox->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findNextText()));
 #endif
+}
+
+void LiteEditor::createContextMenu()
+{
+    m_contextMenu = new QMenu(m_editorWidget);
+    m_contextMenu->addAction(m_cutAct);
+    m_contextMenu->addAction(m_copyAct);
+    m_contextMenu->addAction(m_pasteAct);
+    m_contextMenu->addSeparator();
+    m_contextMenu->addAction(m_selectAllAct);
 }
 
 #ifdef LITEEDITOR_FIND

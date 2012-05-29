@@ -68,6 +68,7 @@ public:
     void setEditorMark(LiteApi::IEditorMark *mark);
     void createActions();
     void createToolBars();
+    void createContextMenu();
     virtual LiteApi::IExtension *extension();
     virtual QWidget *widget();
     virtual QString name() const;
@@ -122,6 +123,7 @@ public:
     QAction *m_cutAct;
     QAction *m_copyAct;
     QAction *m_pasteAct;
+    QAction *m_selectAllAct;
     QAction *m_lockAct;
     QAction *m_exportHtmlAct;
     QAction *m_exportPdfAct;
@@ -133,6 +135,7 @@ public:
     QAction *m_goBackAct;
     QAction *m_goForwardAct;
     LiteEditorFile *m_file;
+    QMenu   *m_contextMenu;
     QString  m_colorStyle;
     QPalette m_defPalette;
     bool       m_bReadOnly;
