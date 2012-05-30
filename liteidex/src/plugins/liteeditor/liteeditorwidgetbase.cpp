@@ -25,7 +25,6 @@
 
 #include "liteeditorwidgetbase.h"
 #include "qtc_texteditor/basetextdocumentlayout.h"
-
 #include <QCoreApplication>
 #include <QTextBlock>
 #include <QPainter>
@@ -43,9 +42,6 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
-
-
-using namespace TextEditor;
 
 class TextEditExtraArea : public QWidget {
 public:
@@ -89,7 +85,6 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
       m_lastCursorChangeWasInteresting(false)
 {
     setLineWrapMode(QPlainTextEdit::NoWrap);
-    document()->setDocumentLayout(new TextEditor::BaseTextDocumentLayout(this->document()));
     m_extraArea = new TextEditExtraArea(this);
 
     setLayoutDirection(Qt::LeftToRight);
@@ -515,138 +510,31 @@ void LiteEditorWidgetBase::deleteLine()
 void LiteEditorWidgetBase::gotoBlockStart()
 {
     QTextCursor cursor = textCursor();
-    if (TextBlockUserData::findPreviousOpenParenthesis(&cursor, false)) {
-        setTextCursor(cursor);
-        _q_matchParentheses();
+    qDebug() << cursor.blockNumber() << cursor.columnNumber();
+    QTextBlock block = cursor.block();
+    while(block.isValid()) {
+        TextEditor::TextBlockUserData *data = TextEditor::BaseTextDocumentLayout::testUserData(block);
+        qDebug() << ">" << block.text() << data->foldingIndent();
+        if (data->foldingIndent() == 1) {
+            data->setFolded(true);
+        }
+        block = block.next();
     }
-}
-
-void LiteEditorWidgetBase::_q_matchParentheses()
-{
-//    if (isReadOnly())
-//        return;
-
-//    QTextCursor backwardMatch = textCursor();
-//    QTextCursor forwardMatch = textCursor();
-//    const TextBlockUserData::MatchType backwardMatchType = TextBlockUserData::matchCursorBackward(&backwardMatch);
-//    const TextBlockUserData::MatchType forwardMatchType = TextBlockUserData::matchCursorForward(&forwardMatch);
-
-//    QList<QTextEdit::ExtraSelection> extraSelections;
-
-//    if (backwardMatchType == TextBlockUserData::NoMatch && forwardMatchType == TextBlockUserData::NoMatch) {
-//        setExtraSelections(ParenthesesMatchingSelection, extraSelections); // clear
-//        return;
-//    }
-
-//    int animatePosition = -1;
-//    if (backwardMatch.hasSelection()) {
-//        QTextEdit::ExtraSelection sel;
-//        if (backwardMatchType == TextBlockUserData::Mismatch) {
-//            sel.cursor = backwardMatch;
-//            sel.format = d->m_mismatchFormat;
-//        } else {
-
-//            if (d->m_displaySettings.m_animateMatchingParentheses) {
-//                animatePosition = backwardMatch.selectionStart();
-//            } else if (d->m_formatRange) {
-//                sel.cursor = backwardMatch;
-//                sel.format = d->m_rangeFormat;
-//                extraSelections.append(sel);
-//            }
-
-//            sel.cursor = backwardMatch;
-//            sel.format = d->m_matchFormat;
-
-//            sel.cursor.setPosition(backwardMatch.selectionStart());
-//            sel.cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-//            extraSelections.append(sel);
-
-//            sel.cursor.setPosition(backwardMatch.selectionEnd());
-//            sel.cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-//        }
-//        extraSelections.append(sel);
-//    }
-
-//    if (forwardMatch.hasSelection()) {
-//        QTextEdit::ExtraSelection sel;
-//        if (forwardMatchType == TextBlockUserData::Mismatch) {
-//            sel.cursor = forwardMatch;
-//            sel.format = d->m_mismatchFormat;
-//        } else {
-
-//            if (d->m_displaySettings.m_animateMatchingParentheses) {
-//                animatePosition = forwardMatch.selectionEnd()-1;
-//            } else if (d->m_formatRange) {
-//                sel.cursor = forwardMatch;
-//                sel.format = d->m_rangeFormat;
-//                extraSelections.append(sel);
-//            }
-
-//            sel.cursor = forwardMatch;
-//            sel.format = d->m_matchFormat;
-
-//            sel.cursor.setPosition(forwardMatch.selectionStart());
-//            sel.cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-//            extraSelections.append(sel);
-
-//            sel.cursor.setPosition(forwardMatch.selectionEnd());
-//            sel.cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-//        }
-//        extraSelections.append(sel);
-//    }
-
-
-//    if (animatePosition >= 0) {
-//        foreach (const QTextEdit::ExtraSelection &sel, BaseTextEditorWidget::extraSelections(ParenthesesMatchingSelection)) {
-//            if (sel.cursor.selectionStart() == animatePosition
-//                || sel.cursor.selectionEnd() - 1 == animatePosition) {
-//                animatePosition = -1;
-//                break;
-//            }
-//        }
-//    }
-
-//    if (animatePosition >= 0) {
-//        if (d->m_animator)
-//            d->m_animator->finish();  // one animation is enough
-//        d->m_animator = new BaseTextEditorAnimator(this);
-//        d->m_animator->setPosition(animatePosition);
-//        QPalette pal;
-//        pal.setBrush(QPalette::Text, d->m_matchFormat.foreground());
-//        pal.setBrush(QPalette::Base, d->m_rangeFormat.background());
-//        d->m_animator->setData(font(), pal, characterAt(d->m_animator->position()));
-//        connect(d->m_animator, SIGNAL(updateRequest(int,QPointF,QRectF)),
-//                this, SLOT(_q_animateUpdate(int,QPointF,QRectF)));
-//    }
-
-//    setExtraSelections(ParenthesesMatchingSelection, extraSelections);
 }
 
 void LiteEditorWidgetBase::gotoBlockEnd()
 {
     QTextCursor cursor = textCursor();
-    if (TextBlockUserData::findNextClosingParenthesis(&cursor, false)) {
-        setTextCursor(cursor);
-        _q_matchParentheses();
-    }
 }
 
 void LiteEditorWidgetBase::gotoBlockStartWithSelection()
 {
     QTextCursor cursor = textCursor();
-    if (TextBlockUserData::findPreviousOpenParenthesis(&cursor, true)) {
-        setTextCursor(cursor);
-        _q_matchParentheses();
-    }
 }
 
 void LiteEditorWidgetBase::gotoBlockEndWithSelection()
 {
     QTextCursor cursor = textCursor();
-    if (TextBlockUserData::findNextClosingParenthesis(&cursor, true)) {
-        setTextCursor(cursor);
-        _q_matchParentheses();
-    }
 }
 
 

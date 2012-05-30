@@ -106,21 +106,6 @@ public:
         return m_marksVisible;
     }
 protected:
-    enum ExtraSelectionKind {
-        CurrentLineSelection,
-        ParenthesesMatchingSelection,
-        CodeWarningsSelection,
-        CodeSemanticsSelection,
-        UndefinedSymbolSelection,
-        UnusedSymbolSelection,
-        FakeVimSelection,
-        OtherSelection,
-        SnippetPlaceholderSelection,
-        ObjCSelection,
-        DebuggerExceptionSelection,
-        NExtraSelectionKinds
-    };
-    void _q_matchParentheses();
     void maybeSelectLine();
     bool event(QEvent *e);
     void keyPressEvent(QKeyEvent *e);

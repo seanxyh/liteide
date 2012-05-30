@@ -119,7 +119,7 @@ public:
      * level increases. The code folding reagion will end in the last line that has the same
      * indention level (or higher).
      */
-    inline void setFoldingIndent(int indent) { m_foldingIndent = indent; }
+    inline void setFoldingIndent(int indent) { m_foldingIndent = indent < 0 ? 0 : indent; }
     // Set whether the first character of the folded region will show when the code is folded.
     inline void setFoldingStartIncluded(bool included) { m_foldingStartIncluded = included; }
     inline bool foldingStartIncluded() const { return m_foldingStartIncluded; }

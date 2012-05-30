@@ -667,8 +667,10 @@ void LiteEditor::editPositionChanged()
 
 void LiteEditor::goBack()
 {
+    m_editorWidget->gotoBlockStart();
 }
 
 void LiteEditor::goForward()
 {
+    m_editorWidget->gotoBlockEnd();
 }

@@ -91,6 +91,8 @@
         <DetectIdentifier />
         <DetectChar attribute="Symbol" context="#stay" char="{" beginRegion="Brace1" />
         <DetectChar attribute="Symbol" context="#stay" char="}" endRegion="Brace1" />
+        <DetectChar attribute="Symbol" context="#stay" char="(" beginRegion="Brace2" />
+        <DetectChar attribute="Symbol" context="#stay" char=")" endRegion="Brace2" />
 
 		<RegExpr      attribute="Numbers"  context="#stay"  String="\-?\.\d*(e|e\-|e\+)?\d+i?\b"/>
 		<RegExpr      attribute="Numbers"  context="#stay"  String="\-\d*\.?\d*(e|e\-|e\+)?\d+i?\b"/>
