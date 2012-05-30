@@ -147,10 +147,15 @@ void LiteEditorWidget::keyPressEvent(QKeyEvent *e)
     if (!m_completer || (ctrlOrShift && e->text().isEmpty()))
         return;
 
+    if (e->modifiers() & Qt::ControlModifier) {
+        m_completer->popup()->hide();
+        return;
+    }
+
     //static QString eow("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
     static QString eow("~!@#$%^&*()+{}|:\"<>?,/;'[]\\-="); // end of word
     bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
-    QString completionPrefix = textUnderCursor(textCursor());
+    QString completionPrefix = textUnderCursor(textCursor());    
 
     if (!isShortcut && (hasModifier || e->text().isEmpty()||
                         ( completionPrefix.length() < m_completionPrefixMin && completionPrefix.right(1) != ".")
