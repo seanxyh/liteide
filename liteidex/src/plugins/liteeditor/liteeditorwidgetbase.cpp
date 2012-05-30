@@ -507,36 +507,49 @@ void LiteEditorWidgetBase::deleteLine()
     textCursor().removeSelectedText();
 }
 
-void LiteEditorWidgetBase::gotoBlockStart()
+void LiteEditorWidgetBase::gotoPrevBlock()
 {
     QTextCursor cursor = textCursor();
-    qDebug() << cursor.blockNumber() << cursor.columnNumber();
-    QTextBlock block = cursor.block();
+    QTextBlock block = cursor.block().previous();
     while(block.isValid()) {
         TextEditor::TextBlockUserData *data = TextEditor::BaseTextDocumentLayout::testUserData(block);
-        qDebug() << ">" << block.text() << data->foldingIndent();
-        if (data->foldingIndent() == 1) {
-            data->setFolded(true);
+        if (data && data->foldingIndent() == 0) {
+            QString text = block.text().trimmed();
+            if (text.isEmpty() || ( text.length() >= 2 && text.left(2) == "//")) {
+                block = block.previous();
+                continue;
+            }
+            cursor.setPosition(block.position());
+            this->setTextCursor(cursor);
+            return;
+        }
+        block = block.previous();
+    }
+    cursor.movePosition(QTextCursor::Start);
+    this->setTextCursor(cursor);
+}
+
+void LiteEditorWidgetBase::gotoNextBlock()
+{
+    QTextCursor cursor = textCursor();
+    QTextBlock block = cursor.block().next();
+    while(block.isValid()) {
+        TextEditor::TextBlockUserData *data = TextEditor::BaseTextDocumentLayout::testUserData(block);
+        if (data && data->foldingIndent() == 0) {
+            QString text = block.text().trimmed();
+            if (text.isEmpty() || ( text.length() >= 2 && text.left(2) == "//")) {
+                block = block.next();
+                continue;
+            }
+            cursor.setPosition(block.position());
+            this->setTextCursor(cursor);
+            return;
         }
         block = block.next();
     }
+    cursor.movePosition(QTextCursor::End);
+    this->setTextCursor(cursor);
 }
-
-void LiteEditorWidgetBase::gotoBlockEnd()
-{
-    QTextCursor cursor = textCursor();
-}
-
-void LiteEditorWidgetBase::gotoBlockStartWithSelection()
-{
-    QTextCursor cursor = textCursor();
-}
-
-void LiteEditorWidgetBase::gotoBlockEndWithSelection()
-{
-    QTextCursor cursor = textCursor();
-}
-
 
 bool LiteEditorWidgetBase::event(QEvent *e)
 {

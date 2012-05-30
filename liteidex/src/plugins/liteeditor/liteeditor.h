@@ -132,6 +132,8 @@ public:
 #ifdef LITEEDITOR_FIND
     QComboBox *m_findComboBox;
 #endif
+    QAction *m_gotoPrevBlockAct;
+    QAction *m_gotoNextBlockAct;
     QAction *m_goBackAct;
     QAction *m_goForwardAct;
     LiteEditorFile *m_file;

@@ -65,10 +65,8 @@ public slots:
     void cutLine();
     void copyLine();
     void deleteLine();
-    void gotoBlockStart();
-    void gotoBlockEnd();
-    void gotoBlockStartWithSelection();
-    void gotoBlockEndWithSelection();
+    void gotoPrevBlock();
+    void gotoNextBlock();
 public:
     void setAutoIndent(bool b){
         m_autoIndent = b;

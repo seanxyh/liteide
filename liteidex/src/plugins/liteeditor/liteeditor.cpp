@@ -189,6 +189,14 @@ void LiteEditor::createActions()
     m_goBackAct = new QAction(QIcon(":/images/goback.png"),tr("Go Back"),this);
     m_goForwardAct = new QAction(QIcon(":/images/goforward.png"),tr("Go Forward"),this);
 
+    m_gotoPrevBlockAct = new QAction(tr("Goto prev block"),this);
+    m_gotoPrevBlockAct->setShortcut(QKeySequence("CTRL+["));
+    m_gotoNextBlockAct = new QAction(tr("Goto next block"),this);
+    m_gotoNextBlockAct->setShortcut(QKeySequence("CTRL+]"));
+
+    m_widget->addAction(m_gotoPrevBlockAct);
+    m_widget->addAction(m_gotoNextBlockAct);
+
     m_lockAct->setEnabled(false);
 
     m_undoAct->setEnabled(false);
@@ -215,6 +223,8 @@ void LiteEditor::createActions()
     connect(m_filePrintAct,SIGNAL(triggered()),this,SLOT(filePrint()));
     connect(m_filePrintPreviewAct,SIGNAL(triggered()),this,SLOT(filePrintPreview()));
 #endif
+    connect(m_gotoPrevBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoPrevBlock()));
+    connect(m_gotoNextBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoNextBlock()));
     connect(m_goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
     connect(m_goForwardAct,SIGNAL(triggered()),this,SLOT(goForward()));
     QClipboard *clipboard = QApplication::clipboard();
@@ -667,10 +677,10 @@ void LiteEditor::editPositionChanged()
 
 void LiteEditor::goBack()
 {
-    m_editorWidget->gotoBlockStart();
+    m_editorWidget->gotoPrevBlock();
 }
 
 void LiteEditor::goForward()
 {
-    m_editorWidget->gotoBlockEnd();
+    m_editorWidget->gotoNextBlock();
 }
