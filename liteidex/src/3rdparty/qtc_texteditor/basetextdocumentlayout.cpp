@@ -32,6 +32,7 @@
 **************************************************************************/
 
 #include "basetextdocumentlayout.h"
+#include <QDebug>
 
 using namespace TextEditor;
 
