@@ -134,6 +134,7 @@ public:
 #endif
     QAction *m_gotoPrevBlockAct;
     QAction *m_gotoNextBlockAct;
+    QAction *m_selectBlockAct;
     QAction *m_goBackAct;
     QAction *m_goForwardAct;
     LiteEditorFile *m_file;

@@ -173,12 +173,23 @@ void LiteEditor::clipbordDataChanged()
 void LiteEditor::createActions()
 {
     m_undoAct = new QAction(QIcon(":/images/undo.png"),tr("Undo"),this);
+    m_undoAct->setShortcut(QKeySequence::Undo);
+
     m_redoAct = new QAction(QIcon(":/images/redo.png"),tr("Redo"),this);
     m_redoAct->setShortcuts(QList<QKeySequence>() << QKeySequence("CTRL+Y") << QKeySequence("CTRL+SHIFT+Z"));
+
     m_cutAct = new QAction(QIcon(":/images/cut.png"),tr("Cut"),this);
+    m_cutAct->setShortcut(QKeySequence::Cut);
+
     m_copyAct = new QAction(QIcon(":/images/copy.png"),tr("Copy"),this);
+    m_copyAct->setShortcut(QKeySequence::Copy);
+
     m_pasteAct = new QAction(QIcon(":/images/paste.png"),tr("Paste"),this);
+    m_pasteAct->setShortcut(QKeySequence::Paste);
+
     m_selectAllAct = new QAction(tr("Select All"),this);
+    m_selectAllAct->setShortcut(QKeySequence::SelectAll);
+
     m_lockAct = new QAction(QIcon(":/images/unlock.png"),tr("File is writable"),this);
     m_exportHtmlAct = new QAction(QIcon(":/images/exporthtml.png"),tr("Export HTML"),this);
 #ifndef QT_NO_PRINTER
@@ -189,13 +200,17 @@ void LiteEditor::createActions()
     m_goBackAct = new QAction(QIcon(":/images/goback.png"),tr("Go Back"),this);
     m_goForwardAct = new QAction(QIcon(":/images/goforward.png"),tr("Go Forward"),this);
 
-    m_gotoPrevBlockAct = new QAction(tr("Goto prev block"),this);
-    m_gotoPrevBlockAct->setShortcut(QKeySequence("CTRL+["));
-    m_gotoNextBlockAct = new QAction(tr("Goto next block"),this);
-    m_gotoNextBlockAct->setShortcut(QKeySequence("CTRL+]"));
+    m_gotoPrevBlockAct = new QAction(tr("Goto Previous Block"),this);
+    m_gotoPrevBlockAct->setShortcut(QKeySequence("Ctrl+["));
+    m_gotoNextBlockAct = new QAction(tr("Goto Next block"),this);
+    m_gotoNextBlockAct->setShortcut(QKeySequence("Ctrl+]"));
+
+    m_selectBlockAct = new QAction(tr("Select Block"),this);
+    m_selectBlockAct->setShortcut(QKeySequence("Ctrl+U"));
 
     m_widget->addAction(m_gotoPrevBlockAct);
     m_widget->addAction(m_gotoNextBlockAct);
+    m_widget->addAction(m_selectBlockAct);
 
     m_lockAct->setEnabled(false);
 
@@ -216,6 +231,7 @@ void LiteEditor::createActions()
     connect(m_copyAct,SIGNAL(triggered()),m_editorWidget,SLOT(copy()));
     connect(m_pasteAct,SIGNAL(triggered()),m_editorWidget,SLOT(paste()));
     connect(m_selectAllAct,SIGNAL(triggered()),m_editorWidget,SLOT(selectAll()));
+    connect(m_selectBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(selectBlock()));
 
     connect(m_exportHtmlAct,SIGNAL(triggered()),this,SLOT(exportHtml()));
 #ifndef QT_NO_PRINTER
@@ -311,6 +327,9 @@ void LiteEditor::createContextMenu()
     m_contextMenu->addAction(m_pasteAct);
     m_contextMenu->addSeparator();
     m_contextMenu->addAction(m_selectAllAct);
+    m_contextMenu->addAction(m_selectBlockAct);
+    m_contextMenu->addAction(m_gotoPrevBlockAct);
+    m_contextMenu->addAction(m_gotoNextBlockAct);
 }
 
 #ifdef LITEEDITOR_FIND
