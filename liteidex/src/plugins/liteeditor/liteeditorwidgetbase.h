@@ -67,6 +67,11 @@ public slots:
     void deleteLine();
     void gotoPrevBlock();
     void gotoNextBlock();
+    void selectBlock();
+    bool findPrevBlock(QTextCursor &cursor, int indent, const QString &skip = "//") const;
+    bool findNextBlock(QTextCursor &cursor, int indent, const QString &skip = "//") const;
+    bool findStartBlock(QTextCursor &cursor, int indent) const;
+    bool findEndBlock(QTextCursor &cursor, int indent) const;
 public:
     void setAutoIndent(bool b){
         m_autoIndent = b;

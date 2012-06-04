@@ -507,47 +507,103 @@ void LiteEditorWidgetBase::deleteLine()
     textCursor().removeSelectedText();
 }
 
-void LiteEditorWidgetBase::gotoPrevBlock()
+bool LiteEditorWidgetBase::findPrevBlock(QTextCursor &cursor, int indent, const QString &skip) const
 {
-    QTextCursor cursor = textCursor();
     QTextBlock block = cursor.block().previous();
     while(block.isValid()) {
         TextEditor::TextBlockUserData *data = TextEditor::BaseTextDocumentLayout::testUserData(block);
-        if (data && data->foldingIndent() == 0) {
+        if (data && data->foldingIndent() == indent) {
             QString text = block.text().trimmed();
-            if (text.isEmpty() || ( text.length() >= 2 && text.left(2) == "//")) {
+            if (text.isEmpty() || text.startsWith(skip)) {
                 block = block.previous();
                 continue;
             }
             cursor.setPosition(block.position());
-            this->setTextCursor(cursor);
-            return;
+            return true;
         }
         block = block.previous();
     }
-    cursor.movePosition(QTextCursor::Start);
+    return false;
+}
+
+bool LiteEditorWidgetBase::findStartBlock(QTextCursor &cursor, int indent) const
+{
+    QTextBlock block = cursor.block();
+    while(block.isValid()) {
+        TextEditor::TextBlockUserData *data = TextEditor::BaseTextDocumentLayout::testUserData(block);
+        if (data && data->foldingIndent() == indent) {
+            cursor.setPosition(block.position());
+            return true;
+        }
+        block = block.previous();
+    }
+    return false;
+}
+
+
+bool LiteEditorWidgetBase::findEndBlock(QTextCursor &cursor, int indent) const
+{
+    QTextBlock block = cursor.block().next();
+    while(block.isValid()) {
+        TextEditor::TextBlockUserData *data = TextEditor::BaseTextDocumentLayout::testUserData(block);
+        if (data && data->foldingIndent() == indent) {
+            cursor.setPosition(block.previous().position());
+            return true;
+        }
+        block = block.next();
+    }
+    return false;
+}
+
+bool LiteEditorWidgetBase::findNextBlock(QTextCursor &cursor, int indent, const QString &skip) const
+{
+    QTextBlock block = cursor.block().next();
+    while(block.isValid()) {
+        TextEditor::TextBlockUserData *data = TextEditor::BaseTextDocumentLayout::testUserData(block);
+        if (data && data->foldingIndent() == indent) {
+            QString text = block.text().trimmed();
+            if (text.isEmpty() || text.startsWith(skip)) {
+                block = block.next();
+                continue;
+            }
+            cursor.setPosition(block.position());
+            return true;
+        }
+        block = block.next();
+    }
+    return false;
+}
+
+
+void LiteEditorWidgetBase::gotoPrevBlock()
+{
+    QTextCursor cursor = this->textCursor();
+    if (!findPrevBlock(cursor,0)) {
+        cursor.movePosition(QTextCursor::Start);
+    }
     this->setTextCursor(cursor);
 }
 
 void LiteEditorWidgetBase::gotoNextBlock()
 {
-    QTextCursor cursor = textCursor();
-    QTextBlock block = cursor.block().next();
-    while(block.isValid()) {
-        TextEditor::TextBlockUserData *data = TextEditor::BaseTextDocumentLayout::testUserData(block);
-        if (data && data->foldingIndent() == 0) {
-            QString text = block.text().trimmed();
-            if (text.isEmpty() || ( text.length() >= 2 && text.left(2) == "//")) {
-                block = block.next();
-                continue;
-            }
-            cursor.setPosition(block.position());
-            this->setTextCursor(cursor);
-            return;
-        }
-        block = block.next();
+    QTextCursor cursor = this->textCursor();
+    if (!findNextBlock(cursor,0)) {
+        cursor.movePosition(QTextCursor::End);
     }
-    cursor.movePosition(QTextCursor::End);
+    this->setTextCursor(cursor);
+}
+
+void LiteEditorWidgetBase::selectBlock()
+{
+    QTextCursor cursor = this->textCursor();
+    if (!findStartBlock(cursor,0)) {
+        return;
+    }
+    QTextCursor end = this->textCursor();
+    if (!findEndBlock(end,0)) {
+        return;
+    }
+    cursor.setPosition(end.position()+end.block().length()-1,QTextCursor::KeepAnchor);
     this->setTextCursor(cursor);
 }
 
