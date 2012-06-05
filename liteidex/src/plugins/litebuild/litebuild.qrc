@@ -1,12 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>images/build.png</file>
-        <file>images/install.png</file>
-        <file>images/nuke.png</file>
-        <file>images/rebuild.png</file>
-        <file>images/test.png</file>
-        <file>images/clean.png</file>
-        <file>images/run.png</file>
         <file>images/stopaction.png</file>
         <file>images/config.png</file>
     </qresource>

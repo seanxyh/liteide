@@ -5,11 +5,11 @@
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
 		<config id="ErrRegex" name="ERRREGEX" value="([\w\d_\\/\.]+):(\d+):"/>	
 		<custom id="TargetArgs" name="TARGETARGS" value=""/>
-		<action id="Build" img="image/build.png" key="CTRL+B;F7" cmd="$(GOPROMAKE)" args="-gopro $(PROJECT_NAME)" save="project" output="true" codec="utf-8" regex="$(ERRREGEX)" />
-		<action id="Clean" img="image/clean.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECT_NAME) -clean=obj" output="true" codec="utf-8"/>
-		<action id="CleanAll" img="image/cleanall.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECT_NAME) -clean=all" output="true" codec="utf-8"/>
-		<action id="RunTerm" img="image/runterm.png" key="CTRL+SHIFT+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
-		<action id="Run" img="image/run.png" key="CTRL+R;CTRL+F5" cmd="$(TARGETPATH)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
-		<action id="BuildAndRun" img="image/buildrun.png" key="CTRL+F7" task="Build;Run"/>
+		<action id="Build" img="blue/build.png" key="Ctrl+B;F7" cmd="$(GOPROMAKE)" args="-gopro $(PROJECT_NAME)" save="project" output="true" codec="utf-8" regex="$(ERRREGEX)" />
+		<action id="Clean" img="blue/clean.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECT_NAME) -clean=obj" output="true" codec="utf-8"/>
+		<action id="CleanAll" img="blue/cleanall.png" cmd="$(GOPROMAKE)" args="-gopro $(PROJECT_NAME) -clean=all" output="true" codec="utf-8"/>
+		<action id="RunTerm" img="blue/runterm.png" key="Ctrl+Shift+F5" cmd="$(LITEIDE_EXEC)" args="$(LITEIDE_EXECOPT) $(GOEXEC) $(TARGETNAME) $(TARGETARGS)" output="false" readline="true"/>
+		<action id="Run" img="blue/run.png" key="Ctrl+R;Ctrl+F5" cmd="$(TARGETPATH)" args="$(TARGETARGS)" output="true" codec="utf-8" readline="true"/>
+		<action id="BuildAndRun" img="blue/buildrun.png" key="Ctrl+F7" task="Build;Run"/>
 	</mime-type>
 </mime-info>
