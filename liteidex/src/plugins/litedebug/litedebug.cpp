@@ -76,34 +76,34 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     layout->addWidget(m_dbgWidget->widget());
     m_widget->setLayout(layout);
 
-    m_startDebugAct = new QAction(QIcon(":/images/startdebug.png"),tr("Go"),this);
+    m_startDebugAct = new QAction(QIcon("icon:litedebug/images/startdebug.png"),tr("Go"),this);
     m_startDebugAct->setShortcut(QKeySequence(Qt::Key_F5));
     m_startDebugAct->setToolTip(tr("Start Debugging (F5)"));
 
-    m_stopDebugAct = new QAction(QIcon(":/images/stopdebug.png"),tr("Stop"),this);
+    m_stopDebugAct = new QAction(QIcon("icon:litedebug/images/stopdebug.png"),tr("Stop"),this);
     m_stopDebugAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F5));
     m_stopDebugAct->setToolTip(tr("Stop Debugger (Shift+F5)"));
 
-    m_showLineAct = new QAction(QIcon(":/images/showline.png"),tr("ShowLine"),this);
+    m_showLineAct = new QAction(QIcon("icon:litedebug/images/showline.png"),tr("ShowLine"),this);
     m_showLineAct->setToolTip(tr("Show Current Line"));
 
-    m_stepIntoAct = new QAction(QIcon(":/images/stepinto.png"),tr("StepInto"),this);
+    m_stepIntoAct = new QAction(QIcon("icon:litedebug/images/stepinto.png"),tr("StepInto"),this);
     m_stepIntoAct->setShortcut(QKeySequence(Qt::Key_F11));
     m_stepIntoAct->setToolTip(tr("Step Info (F11)"));
 
-    m_stepOverAct = new QAction(QIcon(":/images/stepover.png"),tr("StepOver"),this);
+    m_stepOverAct = new QAction(QIcon("icon:litedebug/images/stepover.png"),tr("StepOver"),this);
     m_stepOverAct->setShortcut(QKeySequence(Qt::Key_F10));
     m_stepOverAct->setToolTip(tr("Step Over (F10)"));
 
-    m_stepOutAct = new QAction(QIcon(":/images/stepout.png"),tr("StepOut"),this);
+    m_stepOutAct = new QAction(QIcon("icon:litedebug/images/stepout.png"),tr("StepOut"),this);
     m_stepOutAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F11));
     m_stepOutAct->setToolTip(tr("Step Out (Shift+F11)"));
 
-    m_runToLineAct = new QAction(QIcon(":/images/runtoline.png"),tr("RunToLine"),this);
+    m_runToLineAct = new QAction(QIcon("icon:litedebug/images/runtoline.png"),tr("RunToLine"),this);
     m_runToLineAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_F10));
     m_runToLineAct->setToolTip(tr("Run to Line (Ctrl+F10)"));
 
-    m_insertBreakAct = new QAction(QIcon(":/images/insertbreak.png"),tr("BreakPoint"),this);
+    m_insertBreakAct = new QAction(QIcon("icon:litedebug/images/insertbreak.png"),tr("BreakPoint"),this);
     m_insertBreakAct->setShortcut(QKeySequence(Qt::Key_F9));
     m_insertBreakAct->setToolTip(tr("Insert/Remove Breakpoint (F9)"));
 
@@ -171,8 +171,8 @@ void LiteDebug::appLoaded()
 
     LiteApi::IEditorMarkTypeManager *markTypeManager = LiteApi::findExtensionObject<LiteApi::IEditorMarkTypeManager*>(m_liteApp,"LiteApi.IEditorMarkTypeManager");
     if (markTypeManager) {
-        markTypeManager->registerMark(BreakPointMark,QIcon(":/images/breakmark.png"));
-        markTypeManager->registerMark(CurrentLineMark,QIcon(":/images/linemark.png"));
+        markTypeManager->registerMark(BreakPointMark,QIcon("icon:litedebug/images/breakmark.png"));
+        markTypeManager->registerMark(CurrentLineMark,QIcon("icon:litedebug/images/linemark.png"));
     }
 }
 

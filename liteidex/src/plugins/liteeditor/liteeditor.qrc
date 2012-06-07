@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/liteeditor">
         <file>images/redo.png</file>
         <file>images/undo.png</file>
         <file>images/copy.png</file>

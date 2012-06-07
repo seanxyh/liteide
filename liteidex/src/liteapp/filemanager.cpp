@@ -245,7 +245,7 @@ void FileManager::execFileWizard(const QString &projPath, const QString &filePat
 {
     if (!m_newFileDialog) {
         m_newFileDialog = new NewFileDialog(m_liteApp->mainWindow());
-        m_newFileDialog->setTemplatePath(m_liteApp->resourcePath()+"/template");
+        m_newFileDialog->setTemplatePath(m_liteApp->resourcePath()+"/liteapp/template");
     }
 
     m_newFileDialog->setPathList(LiteApi::getGopathList(m_liteApp,false));

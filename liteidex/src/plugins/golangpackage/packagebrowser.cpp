@@ -114,7 +114,7 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_openSrcAct,SIGNAL(triggered()),this,SLOT(doubleClicked()));
     connect(m_copyNameAct,SIGNAL(triggered()),this,SLOT(copyPackageName()));
 
-    QAction *act = new QAction(QIcon(":/images/gopath.png"),tr("GOPATH Setup"),this);
+    QAction *act = new QAction(QIcon("icon:images/gopath.png"),tr("GOPATH Setup"),this);
     connect(act,SIGNAL(triggered()),this,SLOT(setupGopath()));
 
     QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/nav");

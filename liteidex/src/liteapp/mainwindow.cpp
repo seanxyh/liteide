@@ -60,7 +60,7 @@ MainWindow::MainWindow(IApplication *app,QWidget *parent)
       m_liteApp(app)
 {
    // this->setAttribute(Qt::WA_DeleteOnClose);
-    this->setWindowIcon(QIcon(":images/liteide128.png"));
+    this->setWindowIcon(QIcon("icon:images/liteide128.png"));
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setAcceptDrops(true);
 

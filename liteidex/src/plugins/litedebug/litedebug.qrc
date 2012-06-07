@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/litedebug">
         <file>images/breakmark.png</file>
         <file>images/insertbreak.png</file>
         <file>images/linemark.png</file>

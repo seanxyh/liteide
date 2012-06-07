@@ -94,10 +94,13 @@ int  main(int argc, char *argv[])
             app.setProperty("liteide_locale", locale);
         }
     }
-
+    QString resPath = getResoucePath();
+    QDir::addSearchPath("icon",resPath);
+    QDir::addSearchPath("icon",resPath+"/liteapp");
+    QDir::addSearchPath("icon",":/");
     LiteApp *liteApp = new LiteApp;
     liteApp->setPluginPath(getPluginPath());
-    liteApp->setResourcePath(getResoucePath());
+    liteApp->setResourcePath(resPath);
     liteApp->load();
 
     if (argc >= 2) {

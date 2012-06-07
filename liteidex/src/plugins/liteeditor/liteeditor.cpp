@@ -172,33 +172,33 @@ void LiteEditor::clipbordDataChanged()
 
 void LiteEditor::createActions()
 {
-    m_undoAct = new QAction(QIcon(":/images/undo.png"),tr("Undo"),this);
+    m_undoAct = new QAction(QIcon("icon:liteeditor/images/undo.png"),tr("Undo"),this);
     m_undoAct->setShortcut(QKeySequence::Undo);
 
-    m_redoAct = new QAction(QIcon(":/images/redo.png"),tr("Redo"),this);
+    m_redoAct = new QAction(QIcon("icon:liteeditor/images/redo.png"),tr("Redo"),this);
     m_redoAct->setShortcuts(QList<QKeySequence>() << QKeySequence("CTRL+Y") << QKeySequence("CTRL+SHIFT+Z"));
 
-    m_cutAct = new QAction(QIcon(":/images/cut.png"),tr("Cut"),this);
+    m_cutAct = new QAction(QIcon("icon:liteeditor/images/cut.png"),tr("Cut"),this);
     m_cutAct->setShortcut(QKeySequence::Cut);
 
-    m_copyAct = new QAction(QIcon(":/images/copy.png"),tr("Copy"),this);
+    m_copyAct = new QAction(QIcon("icon:liteeditor/images/copy.png"),tr("Copy"),this);
     m_copyAct->setShortcut(QKeySequence::Copy);
 
-    m_pasteAct = new QAction(QIcon(":/images/paste.png"),tr("Paste"),this);
+    m_pasteAct = new QAction(QIcon("icon:liteeditor/images/paste.png"),tr("Paste"),this);
     m_pasteAct->setShortcut(QKeySequence::Paste);
 
     m_selectAllAct = new QAction(tr("Select All"),this);
     m_selectAllAct->setShortcut(QKeySequence::SelectAll);
 
-    m_lockAct = new QAction(QIcon(":/images/unlock.png"),tr("File is writable"),this);
-    m_exportHtmlAct = new QAction(QIcon(":/images/exporthtml.png"),tr("Export HTML"),this);
+    m_lockAct = new QAction(QIcon("icon:liteeditor/images/unlock.png"),tr("File is writable"),this);
+    m_exportHtmlAct = new QAction(QIcon("icon:liteeditor/images/exporthtml.png"),tr("Export HTML"),this);
 #ifndef QT_NO_PRINTER
-    m_exportPdfAct = new QAction(QIcon(":/images/exportpdf.png"),tr("Export PDF"),this);
-    m_filePrintAct = new QAction(QIcon(":/images/fileprint.png"),tr("Print Document"),this);
-    m_filePrintPreviewAct = new QAction(QIcon(":/images/fileprintpreview.png"),tr("Print Preview Document"),this);
+    m_exportPdfAct = new QAction(QIcon("icon:liteeditor/images/exportpdf.png"),tr("Export PDF"),this);
+    m_filePrintAct = new QAction(QIcon("icon:liteeditor/images/fileprint.png"),tr("Print Document"),this);
+    m_filePrintPreviewAct = new QAction(QIcon("icon:liteeditor/images/fileprintpreview.png"),tr("Print Preview Document"),this);
 #endif
-    m_goBackAct = new QAction(QIcon(":/images/goback.png"),tr("Go Back"),this);
-    m_goForwardAct = new QAction(QIcon(":/images/goforward.png"),tr("Go Forward"),this);
+    m_goBackAct = new QAction(QIcon("icon:liteeditor/images/goback.png"),tr("Go Back"),this);
+    m_goForwardAct = new QAction(QIcon("icon:liteeditor/images/goforward.png"),tr("Go Forward"),this);
 
     m_gotoPrevBlockAct = new QAction(tr("Goto Previous Block"),this);
     m_gotoPrevBlockAct->setShortcut(QKeySequence("Ctrl+["));
@@ -427,10 +427,10 @@ void LiteEditor::setReadOnly(bool b)
 {
     m_bReadOnly = b;
     if (m_bReadOnly) {
-        m_lockAct->setIcon(QIcon(":/images/lock.png"));
+        m_lockAct->setIcon(QIcon("icon:liteeditor/images/lock.png"));
         m_lockAct->setText(tr("File Is ReadOnly"));
     } else {
-        m_lockAct->setIcon(QIcon(":/images/unlock.png"));
+        m_lockAct->setIcon(QIcon("icon:liteeditor/images/unlock.png"));
         m_lockAct->setText(tr("File Is Writable"));
     }
 }
@@ -537,7 +537,7 @@ void LiteEditor::applyOption(QString id)
     if (style != m_colorStyle) {
         m_colorStyle = style;
         m_colorStyleScheme->clear();
-        QString styleFileName = m_liteApp->resourcePath()+"/colorstyle/"+m_colorStyle;
+        QString styleFileName = m_liteApp->resourcePath()+"/liteeditor/color/"+m_colorStyle;
         bool b = m_colorStyleScheme->load(styleFileName);
         if (b) {
             const ColorStyle *style = m_colorStyleScheme->findStyle("Text");

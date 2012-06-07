@@ -62,7 +62,7 @@ LiteEditorOption::LiteEditorOption(LiteApi::IApplication *app,QObject *parent) :
     updatePointSizes();
 
     QString styleName = m_liteApp->settings()->value("editor/style","default.xml").toString();
-    QString stylePath = m_liteApp->resourcePath()+"/colorstyle";
+    QString stylePath = m_liteApp->resourcePath()+"/liteeditor/color";
     QDir dir(stylePath);
     int index = -1;
     foreach(QFileInfo info, dir.entryInfoList(QStringList() << "*.xml")) {
@@ -211,6 +211,6 @@ void LiteEditorOption::editStyleFile()
     if (fileName.isEmpty()) {
         return;
     }
-    QString filePath = m_liteApp->resourcePath()+"/colorstyle/"+fileName;
+    QString filePath = m_liteApp->resourcePath()+"/liteeditor/color/"+fileName;
     m_liteApp->fileManager()->openEditor(filePath);
 }

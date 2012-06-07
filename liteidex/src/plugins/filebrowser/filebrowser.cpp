@@ -109,7 +109,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_filterToolBar = new QToolBar(m_widget);
     m_filterToolBar->setIconSize(QSize(16,16));
 
-    m_syncAct = new QAction(QIcon(":/images/sync.png"),tr("Synchronize with editor"),this);
+    m_syncAct = new QAction(QIcon("icon:filebrowser/images/sync.png"),tr("Synchronize with editor"),this);
     m_syncAct->setCheckable(true);
 
     m_filterCombo = new QComboBox;
@@ -128,7 +128,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_rootToolBar = new QToolBar(m_widget);
     m_rootToolBar->setIconSize(QSize(16,16));
 
-    m_cdupAct = new QAction(QIcon(":/images/cdup.png"),tr("open to parent"),this);
+    m_cdupAct = new QAction(QIcon("icon:filebrowser/images/cdup.png"),tr("open to parent"),this);
 
     m_rootCombo = new QComboBox;
     m_rootCombo->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);

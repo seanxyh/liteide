@@ -59,9 +59,9 @@ Output::Output(QWidget *parent)
 
     m_hideAct = new QAction(tr("Hide"),this);
     m_hideAct->setToolTip("Hide");
-    m_hideAct->setIcon(QIcon(":/images/hideoutput.png"));
+    m_hideAct->setIcon(QIcon("icon:images/hideoutput.png"));
     m_clearAct = new QAction(tr("Clear"),this);
-    m_clearAct->setIcon(QIcon(":/images/cleanoutput.png"));
+    m_clearAct->setIcon(QIcon("icon:images/cleanoutput.png"));
     m_infoLabel = new QLabel(this);
     m_infoLabel->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
     m_toolBar->addAction(m_clearAct);

@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/golangast">
         <file>images/const.png</file>
         <file>images/const_p.png</file>
         <file>images/consts.png</file>
