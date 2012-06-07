@@ -44,7 +44,7 @@
 
 
 LiteWordCompleter::LiteWordCompleter(QObject *parent) :
-    LiteCompleter(parent),m_icon(QIcon(":/images/findword.png"))
+    LiteCompleter(parent),m_icon(QIcon("icon:liteeditor/images/findword.png"))
 {
     m_completer->setSeparator(".");
 }

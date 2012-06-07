@@ -81,7 +81,7 @@ void GolangFmtPlugin::editorCreated(LiteApi::IEditor *editor)
     }
     if (m_fmt == 0) {
         m_fmt = new GolangFmt(m_liteApp,this);
-        m_gofmtAct = new QAction(QIcon(":/images/gofmt.png"),tr("gofmt"),this);
+        m_gofmtAct = new QAction(QIcon("icon:golanfmt/images/gofmt.png"),tr("gofmt"),this);
         m_gofmtAct->setShortcut(QKeySequence("SHIFT+F7"));
         m_gofmtAct->setToolTip("gofmt(Shift+F7)");
         connect(m_gofmtAct,SIGNAL(triggered()),m_fmt,SLOT(gofmt()));

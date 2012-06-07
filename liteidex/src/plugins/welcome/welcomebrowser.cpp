@@ -65,12 +65,12 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
     connect(ui->textBrowser,SIGNAL(anchorClicked(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_liteApp->fileManager(),SIGNAL(recentFilesChanged(QString)),this,SLOT(loadData()));
 
-    ui->textBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/doc");
+    ui->textBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/welcome");
     ui->textBrowser->setOpenLinks(false);
 
     m_extension->addObject("LiteApi.QTextBrowser",ui->textBrowser);
 
-    QString path = m_liteApp->resourcePath()+"/doc/welcome.html";
+    QString path = m_liteApp->resourcePath()+"/welcome/welcome.html";
     QFile file(path);
     if (file.open(QIODevice::ReadOnly)) {
         m_templateData = file.readAll();

@@ -54,8 +54,8 @@ LiteEditorFileFactory::LiteEditorFileFactory(LiteApi::IApplication *app, QObject
     m_mimeTypes.append("text/x-lua");
     m_mimeTypes.append("text/x-profile");
     m_mimeTypes.append("liteide/default.editor");
-    QDir dir(m_liteApp->resourcePath());
-    if (dir.cd("katesyntax")) {
+    QDir dir(m_liteApp->resourcePath()+"/liteeditor/kate");
+    if (dir.exists()) {
         m_kate->loadPath(dir.absolutePath());
         foreach (QString type, m_kate->mimeTypes()) {
             if (!m_liteApp->mimeTypeManager()->findMimeType(type)) {
@@ -75,7 +75,7 @@ LiteEditorFileFactory::LiteEditorFileFactory(LiteApi::IApplication *app, QObject
     m_wordApiManager = new WordApiManager(this);
     if (m_wordApiManager->initWithApp(app)) {
         m_liteApp->extension()->addObject("LiteApi.IWordApiManager",m_wordApiManager);
-        m_wordApiManager->load(m_liteApp->resourcePath()+"/wordapi");
+        m_wordApiManager->load(m_liteApp->resourcePath()+"/liteeditor/wordapi");
     }
     m_markTypeManager = new LiteEditorMarkTypeManager(this);
     if (m_markTypeManager->initWithApp(app)) {
@@ -120,8 +120,8 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
     if (wordCompleter) {
         LiteApi::IWordApi *wordApi = m_wordApiManager->findWordApi(mimeType);
         if (wordApi && wordApi->loadApi()) {
-            QIcon icon(":/images/keyword.png");
-            QIcon exp(":/images/findword.png");
+            QIcon icon("icon:liteeditor/images/keyword.png");
+            QIcon exp("icon:liteeditor/images/findword.png");
             wordCompleter->appendItems(wordApi->wordList(),"keyword","",icon,false);
             wordCompleter->appendItems(wordApi->expList(),"","",exp,false);
             wordCompleter->completer()->model()->sort(0);
@@ -152,8 +152,8 @@ LiteApi::IEditor *LiteEditorFileFactory::create(const QString &contents, const Q
     if (wordCompleter) {
         LiteApi::IWordApi *wordApi = m_wordApiManager->findWordApi(mimeType);
         if (wordApi && wordApi->loadApi()) {
-            QIcon icon(":/images/keyword.png");
-            QIcon exp(":/images/findword.png");
+            QIcon icon("icon:liteeditor/images/keyword.png");
+            QIcon exp("icon:liteeditor/images/findword.png");
             wordCompleter->appendItems(wordApi->wordList(),"keyword","",icon,false);
             wordCompleter->appendItems(wordApi->expList(),"","",exp,false);
             wordCompleter->completer()->model()->sort(0);

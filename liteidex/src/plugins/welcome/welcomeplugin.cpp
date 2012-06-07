@@ -65,8 +65,8 @@ bool WelcomePlugin::initWithApp(LiteApi::IApplication *app)
 
     QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/nav");
     if (toolBar) {
-        m_homeAct = new QAction(QIcon(":/images/home.png"),tr("Home"),this);
-        m_homeAct->setShortcut(QKeySequence("CTRL+ALT+H"));
+        m_homeAct = new QAction(QIcon("icon:welcome/images/home.png"),tr("Home"),this);
+        m_homeAct->setShortcut(QKeySequence("Ctrl+Alt+H"));
         connect(m_homeAct,SIGNAL(triggered()),this,SLOT(home()));
         toolBar->addAction(m_homeAct);
     }

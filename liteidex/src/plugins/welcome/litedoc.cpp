@@ -57,7 +57,7 @@ LiteDoc::LiteDoc(LiteApi::IApplication *app, QObject *parent) :
     m_docBrowser->urlComboBox()->setEditable(false);
     m_docBrowser->setName(tr("LiteIDE Document Browser"));
     QStringList paths;
-    paths << m_liteApp->resourcePath()+"/doc";
+    paths << m_liteApp->resourcePath()+"/welcome";
     m_docBrowser->setSearchPaths(paths);
 
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);

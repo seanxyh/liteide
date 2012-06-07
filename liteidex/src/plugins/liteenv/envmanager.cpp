@@ -205,7 +205,7 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
     if (!LiteApi::IEnvManager::initWithApp(app)) {
         return false;
     }
-    loadEnvFiles(m_liteApp->resourcePath()+"/environment");
+    loadEnvFiles(m_liteApp->resourcePath()+"/liteenv");
 
     m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/liteenv",tr("Environment ToolBar"));
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_toolBar->toggleViewAction());

@@ -46,7 +46,7 @@ LiteBuildOption::LiteBuildOption(LiteApi::IApplication *app,QObject *parent) :
 {
     ui->setupUi(m_widget);
     m_fileModel = new QFileSystemModel(this);
-    QString path = m_liteApp->resourcePath()+"/build";
+    QString path = m_liteApp->resourcePath()+"/litebuild";
     QModelIndex root = m_fileModel->setRootPath(path);
     ui->fileTreeView->setEditTriggers(0);
     ui->fileTreeView->setModel(m_fileModel);

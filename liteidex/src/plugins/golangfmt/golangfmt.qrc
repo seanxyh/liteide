@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/golangfmt">
         <file>images/gofmt.png</file>
     </qresource>
 </RCC>

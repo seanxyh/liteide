@@ -277,8 +277,8 @@ void LiteApp::loadPlugins()
 
 void LiteApp::loadMimeType()
 {
-    QDir dir(m_resourcePath);
-    if (dir.cd("mimetype")) {
+    QDir dir(m_resourcePath+"/liteapp/mimetype");
+    if (dir.exists()) {
         m_mimeTypeManager->loadMimeTypes(dir.absolutePath());
     }
 }
@@ -316,21 +316,21 @@ void LiteApp::initPlugins()
 
 void LiteApp::createActions()
 {
-    m_newAct = new QAction(QIcon(":/images/new.png"),tr("New"),m_mainwindow);
+    m_newAct = new QAction(QIcon("icon:images/new.png"),tr("New"),m_mainwindow);
     m_newAct->setShortcut(QKeySequence::New);
-    m_openAct = new QAction(QIcon(":/images/open.png"),tr("Open"),m_mainwindow);
+    m_openAct = new QAction(QIcon("icon:images/open.png"),tr("Open"),m_mainwindow);
     m_openAct->setShortcut(QKeySequence::Open);
-    m_closeAct = new QAction(QIcon(":/images/close.png"),tr("Close"),m_mainwindow);
-    m_closeAct->setShortcut(QKeySequence("CTRL+W"));
-    m_closeAllAct = new QAction(QIcon(":/images/closeall.png"),tr("Close All"),m_mainwindow);
-    m_openProjectAct = new QAction(QIcon(":/images/openproject.png"),tr("Open Project"),m_mainwindow);
-    m_saveProjectAct = new QAction(QIcon(":/images/saveproject.png"),tr("Save Project"),m_mainwindow);
-    m_closeProjectAct = new QAction(QIcon(":/images/closeproject.png"),tr("Close Project"),m_mainwindow);
-    m_saveAct = new QAction(QIcon(":/images/save.png"),tr("Save"),m_mainwindow);
+    m_closeAct = new QAction(QIcon("icon:images/close.png"),tr("Close"),m_mainwindow);
+    m_closeAct->setShortcut(QKeySequence("Ctrl+W"));
+    m_closeAllAct = new QAction(QIcon("icon:images/closeall.png"),tr("Close All"),m_mainwindow);
+    m_openProjectAct = new QAction(QIcon("icon:images/openproject.png"),tr("Open Project"),m_mainwindow);
+    m_saveProjectAct = new QAction(QIcon("icon:images/saveproject.png"),tr("Save Project"),m_mainwindow);
+    m_closeProjectAct = new QAction(QIcon("icon:images/closeproject.png"),tr("Close Project"),m_mainwindow);
+    m_saveAct = new QAction(QIcon("icon:images/save.png"),tr("Save"),m_mainwindow);
     m_saveAct->setShortcut(QKeySequence::Save);
     m_saveAsAct = new QAction(tr("Save As..."),m_mainwindow);
     m_saveAsAct->setShortcut(QKeySequence::SaveAs);
-    m_saveAllAct = new QAction(QIcon(":/images/saveall.png"),tr("Save All"),m_mainwindow);
+    m_saveAllAct = new QAction(QIcon("icon:images/saveall.png"),tr("Save All"),m_mainwindow);
 
     m_exitAct = new QAction(tr("Exit"),m_mainwindow);
     m_exitAct->setShortcut(QKeySequence::Quit);

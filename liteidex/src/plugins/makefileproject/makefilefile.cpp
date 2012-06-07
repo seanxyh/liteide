@@ -72,7 +72,7 @@ void MakefileFile::updateModel()
 
     QStandardItem *item = new QStandardItem(QFileInfo(m_fileName).fileName());
     item->setData(ItemProFile);
-    item->setIcon(QIcon(":/images/projectitem.png"));
+    item->setIcon(QIcon("icon:images/projectitem.png"));
     m_model->appendRow(item);
     m_filePathList.append(m_fileName);
 
@@ -89,12 +89,12 @@ void MakefileFile::updateModel()
         if (!files.isEmpty()) {
             QStandardItem *folder = new QStandardItem(i.value());
             folder->setData(ItemFolder);
-            folder->setIcon(QIcon(":/images/folderitem.png"));
+            folder->setIcon(QIcon("icon:images/folderitem.png"));
             m_model->appendRow(folder);
             foreach(QString file, files) {
                 QStandardItem *fileItem = new QStandardItem(file);
                 fileItem->setData(ItemFile);
-                fileItem->setIcon(QIcon(":/images/fileitem.png"));
+                fileItem->setIcon(QIcon("icon:images/fileitem.png"));
                 folder->appendRow(fileItem);
                 m_fileNameList.append(file);
                 m_filePathList.append(fileNameToFullPath(file));

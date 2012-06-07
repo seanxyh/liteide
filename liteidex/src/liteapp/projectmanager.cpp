@@ -114,7 +114,7 @@ bool ProjectManager::initWithApp(IApplication *app)
 
 void ProjectManager::appLoaded()
 {
-    QAction *openProjectAct = new QAction(QIcon(":/images/openproject.png"),tr("Project File"),this);
+    QAction *openProjectAct = new QAction(QIcon("icon:images/openproject.png"),tr("Project File"),this);
     connect(openProjectAct,SIGNAL(triggered()),m_liteApp->fileManager(),SLOT(openProjects()));
     m_importMenu->addAction(openProjectAct);
 

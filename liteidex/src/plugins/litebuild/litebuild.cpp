@@ -71,7 +71,7 @@ public:
     LiteOutput(QWidget *parent = 0) : TextOutput(true,parent)
     {
         m_stopAct = new QAction(tr("Stop"),this);
-        m_stopAct->setIcon(QIcon(":/images/stopaction.png"));
+        m_stopAct->setIcon(QIcon("icon:litebuild/images/stopaction.png"));
         m_stopAct->setToolTip("Stop Action");
         m_toolBar->insertAction(m_clearAct,m_stopAct);
         m_toolBar->insertSeparator(m_clearAct);        
@@ -92,7 +92,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_envManager(0)
 {
     if (m_manager->initWithApp(m_liteApp)) {
-        m_manager->load(m_liteApp->resourcePath()+"/build");
+        m_manager->load(m_liteApp->resourcePath()+"/litebuild");
         m_liteApp->extension()->addObject("LiteApi.IBuildManager",m_manager);
     }    
     m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/litebuild",tr("Build ToolBar"));
@@ -110,7 +110,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_customModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
     m_customModel->setHeaderData(1,Qt::Horizontal,tr("Value"));
 
-    m_configAct = new QAction(QIcon(":/images/config.png"),tr("BuildConfig"),this);
+    m_configAct = new QAction(QIcon("icon:litebuild/images/config.png"),tr("BuildConfig"),this);
     m_toolBar->addAction(m_configAct);
 
     m_process = new ProcessEx(this);

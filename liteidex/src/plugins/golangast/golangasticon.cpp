@@ -55,22 +55,22 @@ const (
 */
 
 GolangAstIconPublic::GolangAstIconPublic() :
-    iconPackage(QIcon(":/images/package.png")),
-    iconType(QIcon(":/images/type.png")),
-    iconStruct(QIcon(":/images/struct.png")),
-    iconInterface(QIcon(":/images/interface.png")),
-    iconFunc(QIcon(":/images/func.png")),
-    iconFuncs(QIcon(":/images/funcs.png")),
-    iconVar(QIcon(":/images/var.png")),
-    iconVars(QIcon(":/images/vars.png")),
-    iconConst(QIcon(":/images/const.png")),
-    iconConsts(QIcon(":/images/consts.png")),
-    iconTypeMethod(QIcon(":/images/type_method.png")),
-    iconTypeFactor(QIcon(":/images/type_factor.png")),
-    iconTypeVar(QIcon(":/images/type_var.png")),
-    iconGofile(QIcon(":/images/gofile.png")),
-    iconMakefile(QIcon(":/images/makefile.png")),
-    iconProfile(QIcon(":/images/project.png"))
+    iconPackage(QIcon("icon:golangast/images/package.png")),
+    iconType(QIcon("icon:golangast/images/type.png")),
+    iconStruct(QIcon("icon:golangast/images/struct.png")),
+    iconInterface(QIcon("icon:golangast/images/interface.png")),
+    iconFunc(QIcon("icon:golangast/images/func.png")),
+    iconFuncs(QIcon("icon:golangast/images/funcs.png")),
+    iconVar(QIcon("icon:golangast/images/var.png")),
+    iconVars(QIcon("icon:golangast/images/vars.png")),
+    iconConst(QIcon("icon:golangast/images/const.png")),
+    iconConsts(QIcon("icon:golangast/images/consts.png")),
+    iconTypeMethod(QIcon("icon:golangast/images/type_method.png")),
+    iconTypeFactor(QIcon("icon:golangast/images/type_factor.png")),
+    iconTypeVar(QIcon("icon:golangast/images/type_var.png")),
+    iconGofile(QIcon("icon:golangast/images/gofile.png")),
+    iconMakefile(QIcon("icon:golangast/images/makefile.png")),
+    iconProfile(QIcon("icon:golangast/images/project.png"))
 {
 
 }
@@ -138,19 +138,19 @@ QIcon GolangAstIconPublic::iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub) c
 }
 
 GolangAstIconPrivate::GolangAstIconPrivate() :
-    iconPackage(QIcon(":/images/package.png")),
-    iconType(QIcon(":/images/type_p.png")),
-    iconStruct(QIcon(":/images/struct_p.png")),
-    iconInterface(QIcon(":/images/interface_p.png")),
-    iconFunc(QIcon(":/images/func_p.png")),
-    iconFuncs(QIcon(":/images/funcs.png")),
-    iconVar(QIcon(":/images/var_p.png")),
-    iconVars(QIcon(":/images/vars.png")),
-    iconConst(QIcon(":/images/const_p.png")),
-    iconConsts(QIcon(":/images/consts.png")),
-    iconTypeMethod(QIcon(":/images/type_method_p.png")),
-    iconTypeFactor(QIcon(":/images/type_factor_p.png")),
-    iconTypeVar(QIcon(":/images/type_var_p.png"))
+    iconPackage(QIcon("icon:golangast/images/package.png")),
+    iconType(QIcon("icon:golangast/images/type_p.png")),
+    iconStruct(QIcon("icon:golangast/images/struct_p.png")),
+    iconInterface(QIcon("icon:golangast/images/interface_p.png")),
+    iconFunc(QIcon("icon:golangast/images/func_p.png")),
+    iconFuncs(QIcon("icon:golangast/images/funcs.png")),
+    iconVar(QIcon("icon:golangast/images/var_p.png")),
+    iconVars(QIcon("icon:golangast/images/vars.png")),
+    iconConst(QIcon("icon:golangast/images/const_p.png")),
+    iconConsts(QIcon("icon:golangast/images/consts.png")),
+    iconTypeMethod(QIcon("icon:golangast/images/type_method_p.png")),
+    iconTypeFactor(QIcon("icon:golangast/images/type_factor_p.png")),
+    iconTypeVar(QIcon("icon:golangast/images/type_var_p.png"))
 {
 
 }
