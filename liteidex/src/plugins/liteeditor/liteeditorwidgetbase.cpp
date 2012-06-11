@@ -152,6 +152,58 @@ static QChar find_match(const QChar &ch)
     return QChar();
 }
 
+static bool findMatchBrace(QTextCursor &cur, TextEditor::TextBlockUserData::MatchType &type,int &pos1, int &pos2)
+{
+    QTextBlock block = cur.block();
+    int pos = cur.positionInBlock();
+    pos1 = -1;
+    pos2 = -1;
+    if (block.isValid()) {
+        TextEditor::TextBlockUserData *data = static_cast<TextEditor::TextBlockUserData*>(block.userData());
+        if (data) {
+            TextEditor::Parentheses ses = data->parentheses();
+            TextEditor::Parenthesis::Type typ;
+            QChar chr;
+            int i = ses.size();
+            while(i--) {
+                TextEditor::Parenthesis s = ses.at(i);
+                if (s.pos == pos || s.pos+1 == pos) {
+                    pos1 = cur.block().position()+s.pos;
+                    typ = s.type;
+                    chr = s.chr;
+                    break;
+                }
+            }
+            if (pos1 != -1) {
+                if (typ == TextEditor::Parenthesis::Opened) {
+                    cur.setPosition(pos1);
+                    type = TextEditor::TextBlockUserData::checkOpenParenthesis(&cur,chr);
+                    pos2 = cur.position()-1;
+                } else {
+                    cur.setPosition(pos1+1);
+                    type = TextEditor::TextBlockUserData::checkClosedParenthesis(&cur,chr);
+                    pos2 = cur.position();
+                }
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void LiteEditorWidgetBase::gotoMatchBrace()
+{
+    QTextCursor cur = textCursor();
+    TextEditor::TextBlockUserData::MatchType type;
+    int pos1 = -1;
+    int pos2 = -1;
+    if (findMatchBrace(cur,type,pos1,pos2) && type == TextEditor::TextBlockUserData::Match) {
+        cur.setPosition(pos2);
+        this->setTextCursor(cur);
+        ensureCursorVisible();
+    }
+}
+
 void LiteEditorWidgetBase::highlightCurrentLine()
 {
     QList<QTextEdit::ExtraSelection> extraSelections;
@@ -164,10 +216,36 @@ void LiteEditorWidgetBase::highlightCurrentLine()
         selection.cursor = textCursor();
         extraSelections.append(selection);
     }
-    //setExtraSelections(extraSelections);
-    //return;
-    //()()
     QTextCursor cur = textCursor();
+    TextEditor::TextBlockUserData::MatchType type;
+    int pos1 = -1;
+    int pos2 = -1;
+    if (findMatchBrace(cur,type,pos1,pos2)) {
+        if (type == TextEditor::TextBlockUserData::Match) {
+            QTextEdit::ExtraSelection selection;
+            cur.setPosition(pos1);
+            cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,1);
+            selection.cursor = cur;
+            selection.format.setFontUnderline(true);
+            extraSelections.append(selection);
+
+            cur.setPosition(pos2);
+            cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,1);
+            selection.cursor = cur;
+            selection.format.setFontUnderline(true);
+            extraSelections.append(selection);
+        } else if (type == TextEditor::TextBlockUserData::Mismatch) {
+            QTextEdit::ExtraSelection selection;
+            cur.setPosition(pos1);
+            cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,1);
+            selection.cursor = cur;
+            selection.format.setFontUnderline(true);
+            selection.format.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+            selection.format.setForeground(Qt::red);
+            extraSelections.append(selection);
+        }
+    }
+    /*
     QTextBlock block = cur.block();
     int pos = cur.positionInBlock();
     if (block.isValid()) {
@@ -225,71 +303,8 @@ void LiteEditorWidgetBase::highlightCurrentLine()
             }
         }
     }
-
+    */
     setExtraSelections(extraSelections);
-//    //cur.block();
-//    int pos = cur.positionInBlock();
-//    QTextBlock block = cur.block();
-//    QString text = block.text();
-//    QChar ch = text.at(pos);
-//    QChar match = find_match(ch);
-//    if (match.isNull() && pos >= 1) {
-//        ch = text.at(--pos);
-//        match = find_match(ch);
-//    }
-//    int pos1 = -1;
-//    int pos2 = -1;
-//    if (!match.isNull()) {
-//        pos1 = cur.block().position()+pos;
-//        TextEditor::TextBlockUserData::MatchType type = TextEditor::TextBlockUserData::checkOpenParenthesis(&cur,ch);
-//        qDebug () << type << cur.position();
-//        pos2 = cur.position()-1;
-//        /*
-//        pos1 = cur.block().position()+pos;
-//         if (ch == ')' || ch == '}') {
-//            int m = 1;
-//            QChar c;
-//            while(block.isValid()) {
-//                while (pos--) {
-//                    c = text.at(pos);
-//                    if (c == ch) {
-//                        m++;
-//                    } else if (c == match) {
-//                        //qDebug() << "match" << match << c << m << pos << text;
-//                        m--;
-//                    }
-//                    if (m == 0) {
-//                        pos2 = block.position()+pos;
-//                        break;
-//                    }
-//                }
-//                if (pos2 >= 0) {
-//                    break;
-//                }
-//                block = block.previous();
-//                text = block.text();
-//                pos = text.length();
-//            }
-//        }
-//        */
-//    }
-//    if (pos != -1 && pos2 != -1) {
-//        QTextEdit::ExtraSelection selection;
-//        cur.setPosition(pos1);
-//        cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,1);
-//        selection.cursor = cur;
-//        selection.format.setFontUnderline(true);
-//        selection.format.setForeground(Qt::red);
-//        extraSelections.append(selection);
-
-//        cur.setPosition(pos2);
-//        cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,1);
-//        selection.cursor = cur;
-//        selection.format.setFontUnderline(true);
-//        selection.format.setForeground(Qt::red);
-//        extraSelections.append(selection);
-//    }
-//    setExtraSelections(extraSelections);
 }
 
 

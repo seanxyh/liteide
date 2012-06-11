@@ -136,6 +136,7 @@ public:
 #endif
     QAction *m_gotoPrevBlockAct;
     QAction *m_gotoNextBlockAct;
+    QAction *m_gotoMatchBraceAct;
     QAction *m_selectBlockAct;
     QAction *m_goBackAct;
     QAction *m_goForwardAct;

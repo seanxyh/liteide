@@ -56,8 +56,9 @@ protected slots:
     virtual void slotCursorPositionChanged();
     virtual void slotUpdateBlockNotify(const QTextBlock &);
     QChar characterAt(int pos) const;
-    void handleHomeKey(bool anchor);
+    void handleHomeKey(bool anchor);    
 public slots:
+    void gotoMatchBrace();
     void gotoLine(int line, int column, bool center);
     void gotoLineStart();
     void gotoLineStartWithSelection();
