@@ -43,6 +43,7 @@
 
 #include <QtCore/QLatin1String>
 #include <QtCore/QLatin1Char>
+#include <QDebug>
 
 using namespace TextEditor;
 using namespace Internal;
@@ -63,7 +64,8 @@ Highlighter::Highlighter(QTextDocument *parent) :
     m_tabSettings(0),
     m_persistentObservableStatesCounter(PersistentsStart),
     m_dynamicContextsCounter(0),
-    m_isBroken(false)
+    m_isBroken(false),
+    m_enableBraces(true)
 {}
 
 Highlighter::~Highlighter()
@@ -169,6 +171,7 @@ void Highlighter::setupDataForBlock(const QString &text)
 
         blockData(currentBlockUserData())->m_foldingRegions =
             blockData(currentBlock().previous().userData())->m_foldingRegions;
+        blockData(currentBlockUserData())->clearParentheses();
     }
 
     assignCurrentContext();
@@ -230,18 +233,37 @@ void Highlighter::iterateThroughRules(const QString &text,
 
     RuleIterator it = rules.begin();
     RuleIterator endIt = rules.end();
+
     while (it != endIt && progress->offset() < length) {
         int startOffset = progress->offset();
         const QSharedPointer<Rule> &rule = *it;
+
+        if (rule->itemData() == "String" ||
+                rule->itemData() == "Comment") {
+            m_enableBraces = false;
+        } else {
+            m_enableBraces = true;
+        }
+
         if (rule->matchSucceed(text, length, progress)) {
             atLeastOneMatch = true;
+
+            if (m_enableBraces) {
+                if (rule->beginRegion().indexOf("Brace") >= 0) {
+                    blockData(currentBlockUserData())->appendParenthese(Parenthesis(Parenthesis::Opened,text.at(startOffset),startOffset));
+                }
+                if (rule->endRegion().indexOf("Brace") >= 0) {
+                    blockData(currentBlockUserData())->appendParenthese(Parenthesis(Parenthesis::Closed,text.at(startOffset),startOffset));
+                }
+            }
 
             if (!m_indentationBasedFolding) {
                 if (!rule->beginRegion().isEmpty()) {
                     blockData(currentBlockUserData())->m_foldingRegions.push(rule->beginRegion());
-                    ++m_regionDepth;
-                    if (progress->isOpeningBraceMatchAtFirstNonSpace())
+                    ++m_regionDepth;                    
+                    if (progress->isOpeningBraceMatchAtFirstNonSpace()) {
                         ++blockData(currentBlockUserData())->m_foldingIndentDelta;
+                    }
                 }
                 if (!rule->endRegion().isEmpty()) {
                     QStack<QString> *currentRegions =
@@ -249,8 +271,9 @@ void Highlighter::iterateThroughRules(const QString &text,
                     if (!currentRegions->isEmpty() && rule->endRegion() == currentRegions->top()) {
                         currentRegions->pop();
                         --m_regionDepth;
-                        if (progress->isClosingBraceMatchAtNonEnd())
+                        if (progress->isClosingBraceMatchAtNonEnd()) {
                             --blockData(currentBlockUserData())->m_foldingIndentDelta;
+                         }
                     }
                 }
                 progress->clearBracesMatches();

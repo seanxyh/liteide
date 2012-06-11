@@ -33,6 +33,7 @@
 #include <QSet>
 #include <QHash>
 #include <QStack>
+#include <QTextBlock>
 
 //#define LITEEDITOR_FIND
 
@@ -46,6 +47,7 @@ class QComboBox;
 class QLabel;
 class LiteCompleter;
 class ColorStyleScheme;
+
 
 struct EditLocation {
     EditLocation() :
