@@ -210,9 +210,13 @@ void LiteEditor::createActions()
     m_selectBlockAct = new QAction(tr("Select Block"),this);
     m_selectBlockAct->setShortcut(QKeySequence("Ctrl+U"));
 
+    m_gotoMatchBraceAct = new QAction(tr("Goto Match Brace"),this);
+    m_gotoMatchBraceAct->setShortcut(QKeySequence("Ctrl+E"));
+
     m_widget->addAction(m_gotoPrevBlockAct);
     m_widget->addAction(m_gotoNextBlockAct);
     m_widget->addAction(m_selectBlockAct);
+    m_widget->addAction(m_gotoMatchBraceAct);
 
     m_lockAct->setEnabled(false);
 
@@ -243,6 +247,7 @@ void LiteEditor::createActions()
 #endif
     connect(m_gotoPrevBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoPrevBlock()));
     connect(m_gotoNextBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoNextBlock()));
+    connect(m_gotoMatchBraceAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoMatchBrace()));
     connect(m_goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
     connect(m_goForwardAct,SIGNAL(triggered()),this,SLOT(goForward()));
     QClipboard *clipboard = QApplication::clipboard();
