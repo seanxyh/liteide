@@ -27,6 +27,7 @@
 #define LITEEDITORWIDGETBASE_H
 
 #include <QPlainTextEdit>
+#include <QTextBlock>
 #include "liteeditorapi/liteeditorapi.h"
 
 class LiteEditorWidgetBase : public QPlainTextEdit

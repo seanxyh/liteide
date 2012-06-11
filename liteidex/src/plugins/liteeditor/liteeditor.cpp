@@ -28,6 +28,7 @@
 #include "liteeditorfile.h"
 #include "litecompleter.h"
 #include "colorstyle/colorstyle.h"
+#include "qtc_texteditor/generichighlighter/highlighter.h"
 
 #include <QFileInfo>
 #include <QVBoxLayout>
@@ -55,6 +56,7 @@
 #include <QPalette>
 #include <QTimer>
 #include <QMessageBox>
+#include <QTextBlock>
 #include <QMenu>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -687,17 +689,28 @@ void LiteEditor::codecComboBoxChanged(QString codec)
 
 void LiteEditor::editPositionChanged()
 {
-    QTextCursor cur = m_editorWidget->textCursor();
-    EditLocation location(cur.blockNumber(),cur.columnNumber());
-    if (m_naviagePos >= 0) {
-        EditLocation prev = m_navigateHistroy.at(m_naviagePos);
-    }
+//    QTextCursor cur = m_editorWidget->textCursor();
+//    EditLocation location(cur.blockNumber(),cur.columnNumber());
+//    if (m_naviagePos >= 0) {
+//        EditLocation prev = m_navigateHistroy.at(m_naviagePos);
+//    }
 }
 
 void LiteEditor::goBack()
 {
-    m_editorWidget->gotoPrevBlock();
-}
+    //m_editorWidget->gotoPrevBlock();
+    QTextCursor cursor = m_editorWidget->textCursor();
+    QTextBlock block = cursor.block().next();
+    while(block.isValid()) {
+        TextEditor::TextBlockUserData *data = (TextEditor::TextBlockUserData*)block.userData();
+        if (data) {
+            qDebug() << block.text() << data->parentheses().count();
+            foreach(TextEditor::Parenthesis p, data->parentheses()) {
+                qDebug() << p.pos << p.chr << p.type;
+            }
+        }
+        block = block.next();
+    }}
 
 void LiteEditor::goForward()
 {

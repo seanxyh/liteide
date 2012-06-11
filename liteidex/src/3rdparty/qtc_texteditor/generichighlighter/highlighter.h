@@ -34,8 +34,8 @@
 #ifndef HIGHLIGHTER_H
 #define HIGHLIGHTER_H
 
-#include "basetextdocumentlayout.h"
-#include "syntaxhighlighter.h"
+#include "../basetextdocumentlayout.h"
+#include "../syntaxhighlighter.h"
 #include "context.h"
 
 #include <QtCore/QString>
@@ -141,7 +141,7 @@ private:
     };
     static const KateFormatMap m_kateFormats;
     QHash<TextFormatId, QTextCharFormat> m_creatorFormats;
-
+public:
     struct BlockData : TextBlockUserData
     {
         BlockData();
@@ -152,6 +152,7 @@ private:
         QStack<QString> m_foldingRegions;
         QSharedPointer<Context> m_contextToContinue;
     };
+protected:
     BlockData *initializeBlockData();
     static BlockData *blockData(QTextBlockUserData *userData);
 
@@ -186,6 +187,7 @@ private:
     int m_dynamicContextsCounter;
 
     bool m_isBroken;
+    bool m_enableBraces;
 
     QSharedPointer<Context> m_defaultContext;
     QSharedPointer<Context> m_currentContext;

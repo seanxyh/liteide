@@ -90,6 +90,7 @@ public:
     inline bool folded() const { return m_folded; }
 
     inline void setParentheses(const Parentheses &parentheses) { m_parentheses = parentheses; }
+    inline void appendParenthese(const Parenthesis &parenthesis) { m_parentheses.append(parenthesis); }
     inline void clearParentheses() { m_parentheses.clear(); }
     inline const Parentheses &parentheses() const { return m_parentheses; }
     inline bool hasParentheses() const { return !m_parentheses.isEmpty(); }
