@@ -41,7 +41,6 @@ public:
     int prefixMin() const{
         return m_completionPrefixMin;
     }
-
 protected:
     void contextMenuEvent(QContextMenuEvent *);
     void keyPressEvent(QKeyEvent *e);
