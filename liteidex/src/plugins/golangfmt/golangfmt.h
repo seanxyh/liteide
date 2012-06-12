@@ -27,6 +27,7 @@
 #define GOLANGFMT_H
 
 #include <QObject>
+#include <QTextCursor>
 
 #include "liteapi/liteapi.h"
 #include "liteenvapi/liteenvapi.h"
@@ -42,6 +43,7 @@ public slots:
     void currentEnvChanged(LiteApi::IEnv*);
     void fmtOutput(QByteArray,bool);
     void fmtFinish(bool,int,QString);
+    void loadDiff(QTextCursor &cursor, const QString &diff);
 protected:
     LiteApi::IApplication *m_liteApp;
     ProcessEx *m_process;

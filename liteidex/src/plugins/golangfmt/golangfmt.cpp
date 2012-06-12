@@ -100,7 +100,7 @@ void GolangFmt::gofmt()
         m_liteApp->editorManager()->saveEditor(editor);
     }
     QStringList args;
-    args << fileName;
+    args << "-d" << fileName;
     m_data.clear();;
     m_process->setUserData(0,fileName);
     m_process->start(m_gofmtCmd,args);
@@ -132,11 +132,14 @@ void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
                     QTextCursor cur = ed->textCursor();
                     int pos = cur.position();
                     cur.beginEditBlock();
-                    cur.select(QTextCursor::Document);
-                    cur.removeSelectedText();
-                    cur.insertText(codec->toUnicode(m_data));
+                    //cur.select(QTextCursor::Document);
+                    //cur.removeSelectedText();
+                    //cur.insertText(codec->toUnicode(m_data));
+                    loadDiff(cur,codec->toUnicode(m_data));
+
                     cur.setPosition(pos);
                     cur.endEditBlock();
+
                     ed->setTextCursor(cur);
                     if (vpos != -1) {
                         bar->setSliderPosition(vpos);
@@ -148,3 +151,55 @@ void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
     m_data.clear();
 }
 
+void GolangFmt::loadDiff(QTextCursor &cursor, const QString &diff)
+{
+    QRegExp reg("@@\\s+\\-(\\d+),(\\d+)\\s+\\+(\\d+),(\\d+)\\s+@@");
+    QTextBlock block;
+    int line = -1;
+    int line_add = 0;
+    foreach(QString s, diff.split('\n')) {
+        if (s.length() == 0) {
+            continue;
+        }
+        QChar ch = s.at(0);
+        if (ch == '@') {
+            if (reg.indexIn(s) == 0) {
+                int s1 = reg.cap(1).toInt();
+                int s2 = reg.cap(2).toInt();
+                int n1 = reg.cap(3).toInt();
+                int n2 = reg.cap(4).toInt();
+                line = line_add+s1;
+                block = cursor.document()->findBlockByLineNumber(line-1);
+                line_add += n2-n1-(s2-s1);
+                continue;
+            }
+        }
+        if (line == -1) {
+            continue;
+        }
+        if (ch == '+') {
+            cursor.setPosition(block.position());
+            cursor.insertText(s.right(s.length()-1)+"\n");
+            block = cursor.block();
+            //break;
+        } else if (ch == '-') {
+            bool end = false;
+            if (block.next().isValid()) {
+                cursor.setPosition(block.position());
+                cursor.setPosition(block.next().position(), QTextCursor::KeepAnchor);
+            } else {
+                end = true;
+                cursor.movePosition(QTextCursor::EndOfBlock);
+                cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
+                cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+            }
+            cursor.removeSelectedText();
+            if (end) {
+                cursor.insertBlock();
+            }
+            block = cursor.block();
+        } else if (ch == ' ') {
+            block = block.next();
+        }
+    }
+}

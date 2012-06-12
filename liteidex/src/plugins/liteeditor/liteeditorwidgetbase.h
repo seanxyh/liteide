@@ -66,7 +66,7 @@ public slots:
     void gotoLineEndWithSelection();
     void cutLine();
     void copyLine();
-    void deleteLine();
+    void deleteLine();    
     void gotoPrevBlock();
     void gotoNextBlock();
     void selectBlock();
