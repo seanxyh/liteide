@@ -297,8 +297,8 @@ void LiteEditor::createToolBars()
     m_toolBar->addWidget(m_codecComboBox);
     m_toolBar->addSeparator();
 
-    m_toolBar->addAction(m_goBackAct);
-    m_toolBar->addAction(m_goForwardAct);
+    //m_toolBar->addAction(m_goBackAct);
+    //m_toolBar->addAction(m_goForwardAct);
     m_toolBar->addSeparator();
 
     m_toolBar->addAction(m_cutAct);
@@ -335,6 +335,7 @@ void LiteEditor::createContextMenu()
     m_contextMenu->addSeparator();
     m_contextMenu->addAction(m_selectAllAct);
     m_contextMenu->addAction(m_selectBlockAct);
+    m_contextMenu->addAction(m_gotoMatchBraceAct);
     m_contextMenu->addAction(m_gotoPrevBlockAct);
     m_contextMenu->addAction(m_gotoNextBlockAct);
 }

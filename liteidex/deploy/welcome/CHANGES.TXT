@@ -1,3 +1,10 @@
+==== 2012.6.12 Ver X12 1.875 ====
+ * LiteIDE : reset resource directory
+ * LiteEditor : goto next/prev block
+ * LiteEditor : code comment
+ * LiteEditor : braces match
+ * GolangFmt : enable gofmt diff
+ * GolangFmt : save auto gofmt
 ==== 2012.5.24 Ver X11 1.71875 beta5 ====
  * LiteBuild: project build toolbar and editor build toolbar.
  * LiteFind: add file search
