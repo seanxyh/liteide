@@ -39,12 +39,15 @@ class GolangFmt : public QObject
 public:
     explicit GolangFmt(LiteApi::IApplication *app,QObject *parent = 0);
 public slots:
+    void fmtStarted();
     void gofmt();
     void currentEnvChanged(LiteApi::IEnv*);
     void fmtOutput(QByteArray,bool);
     void fmtFinish(bool,int,QString);
     void loadDiff(QTextCursor &cursor, const QString &diff);
+    void editorAboutToSave(LiteApi::IEditor*);
 protected:
+    void fmtEditor(LiteApi::IEditor*,bool);
     LiteApi::IApplication *m_liteApp;
     ProcessEx *m_process;
     LiteApi::IEnvManager *m_envManager;

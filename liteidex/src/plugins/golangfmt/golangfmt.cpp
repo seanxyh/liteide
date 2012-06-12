@@ -53,6 +53,7 @@ GolangFmt::GolangFmt(LiteApi::IApplication *app,QObject *parent) :
 {
     m_process = new ProcessEx(this);
     connect(m_process,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(fmtOutput(QByteArray,bool)));
+    connect(m_process,SIGNAL(started()),this,SLOT(fmtStarted()));
     connect(m_process,SIGNAL(extFinish(bool,int,QString)),this,SLOT(fmtFinish(bool,int,QString)));
 
     m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
@@ -60,6 +61,56 @@ GolangFmt::GolangFmt(LiteApi::IApplication *app,QObject *parent) :
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
         currentEnvChanged(m_envManager->currentEnv());
     }
+    connect(m_liteApp->editorManager(),SIGNAL(editorAboutToSave(LiteApi::IEditor*)),this,SLOT(editorAboutToSave(LiteApi::IEditor*)));
+}
+
+void GolangFmt::fmtEditor(LiteApi::IEditor *editor, bool save)
+{
+    if (!editor) {
+        return;
+    }
+    QString fileName = editor->filePath();
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFileInfo info(fileName);
+    if (info.suffix() != "go") {
+        return;
+    }
+
+    if (!editor->isModified()) {
+        return;
+    }
+
+    if (m_process->isRuning()) {
+        return;
+    }
+
+    if (m_gofmtCmd.isEmpty()) {
+        return;
+    }
+
+    QPlainTextEdit *edit = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
+    if (!edit) {
+        return;
+    }
+
+    QString text = edit->toPlainText();
+    qDebug() << text;
+
+    QStringList args;
+    args << "-d";
+    m_data.clear();;
+    m_process->setUserData(0,fileName);
+    m_process->setUserData(1,text);
+    m_process->setUserData(2,save);
+    m_process->start(m_gofmtCmd,args);
+}
+
+void GolangFmt::editorAboutToSave(LiteApi::IEditor* editor)
+{
+    fmtEditor(editor,true);
 }
 
 void GolangFmt::currentEnvChanged(LiteApi::IEnv*)
@@ -80,30 +131,18 @@ void GolangFmt::currentEnvChanged(LiteApi::IEnv*)
 
 void GolangFmt::gofmt()
 {
-    if (m_process->isRuning()) {
-        return;
-    }
-
-    if (m_gofmtCmd.isEmpty()) {
-        return;
-    }
-
     LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
     if (!editor) {
         return;
     }
-    QString fileName = editor->filePath();
-    if (fileName.isEmpty()) {
-        return;
-    }
-    if (editor->isModified() && !editor->isReadOnly()) {
-        m_liteApp->editorManager()->saveEditor(editor);
-    }
-    QStringList args;
-    args << "-d" << fileName;
-    m_data.clear();;
-    m_process->setUserData(0,fileName);
-    m_process->start(m_gofmtCmd,args);
+    fmtEditor(editor,false);
+}
+
+void GolangFmt::fmtStarted()
+{
+    QString text = m_process->userData(1).toString();
+    m_process->write(text.toUtf8());
+    m_process->closeWriteChannel();
 }
 
 void GolangFmt::fmtOutput(QByteArray data,bool stdErr)
@@ -118,8 +157,9 @@ void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
 {
     if (!error && code == 0) {
         QString fileName = m_process->userData(0).toString();
+        bool save = m_process->userData(2).toBool();
         if (!fileName.isEmpty()) {
-            LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName);
+            LiteApi::IEditor *editor = m_liteApp->editorManager()->findEditor(fileName,true);
             if (editor) {
                 QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
                 QTextCodec *codec = QTextCodec::codecForName("utf-8");
@@ -144,6 +184,9 @@ void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
                     if (vpos != -1) {
                         bar->setSliderPosition(vpos);
                     }
+                }
+                if (save) {
+                    m_liteApp->editorManager()->saveEditor(editor,false);
                 }
             }
         }
