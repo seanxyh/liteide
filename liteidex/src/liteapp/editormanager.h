@@ -60,7 +60,7 @@ protected:
 public:
     QList<IEditor*> sortedEditorList() const;
 public slots:
-    virtual bool saveEditor(IEditor *editor = 0);
+    virtual bool saveEditor(IEditor *editor = 0, bool emitAboutSave = true);
     virtual bool saveEditorAs(IEditor *editor = 0);
     virtual bool saveAllEditors();
     virtual bool closeEditor(IEditor *editor = 0);

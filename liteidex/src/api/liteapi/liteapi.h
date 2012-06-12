@@ -247,7 +247,7 @@ public:
     virtual QAction *registerBrowser(IEditor *editor) = 0;
     virtual void activeBrowser(IEditor *editor) = 0;
 public slots:
-    virtual bool saveEditor(IEditor *editor = 0) = 0;
+    virtual bool saveEditor(IEditor *editor = 0, bool emitAboutSave = true) = 0;
     virtual bool saveEditorAs(IEditor *editor = 0) = 0;
     virtual bool saveAllEditors() = 0;
     virtual bool closeEditor(IEditor *editor = 0) = 0;
@@ -256,6 +256,7 @@ signals:
     void currentEditorChanged(LiteApi::IEditor *editor);
     void editorCreated(LiteApi::IEditor *editor);
     void editorAboutToClose(LiteApi::IEditor *editor);
+    void editorAboutToSave(LiteApi::IEditor *editor);
     void editorSaved(LiteApi::IEditor *editor);
 };
 

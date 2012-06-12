@@ -218,7 +218,7 @@ bool EditorManager::closeEditor(IEditor *editor)
     return true;
 }
 
-bool EditorManager::saveEditor(IEditor *editor)
+bool EditorManager::saveEditor(IEditor *editor, bool emitAboutSave)
 {
     IEditor *cur = 0;
     if (editor) {
@@ -227,8 +227,13 @@ bool EditorManager::saveEditor(IEditor *editor)
         cur = m_currentEditor;
     }
 
-    if (cur && cur->save()) {
-        emit editorSaved(cur);
+    if (cur) {
+        if (emitAboutSave) {
+            emit editorAboutToSave(cur);
+        }
+        if (cur->save()) {
+            emit editorSaved(cur);
+        }
         return true;
     }
     return false;
