@@ -66,7 +66,7 @@ LiteDoc::LiteDoc(LiteApi::IApplication *app, QObject *parent) :
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));
 
-    QString path = m_liteApp->resourcePath()+"/doc/doc.html";
+    QString path = m_liteApp->resourcePath()+"/welcome/doc.html";
     QFile file(path);
     if (file.open(QIODevice::ReadOnly)) {
         m_templateData = file.readAll();
@@ -86,7 +86,7 @@ void LiteDoc::activeBrowser()
 
 QUrl LiteDoc::parserUrl(const QUrl &_url)
 {
-    QDir root(m_liteApp->resourcePath()+"/doc");
+    QDir root(m_liteApp->resourcePath()+"/welcome");
     QUrl url = _url;
     if (url.isRelative() && !url.path().isEmpty()) {
         QFileInfo info;
