@@ -48,6 +48,7 @@ GolangCodePlugin::GolangCodePlugin()
     m_info->setId("plugin/golangcode");
     m_info->setName("GolangCode");
     m_info->setAnchor("visualfc");
+    m_info->setVer("x11.4");
     m_info->setInfo("Golang Gocode Plugin");
 }
 

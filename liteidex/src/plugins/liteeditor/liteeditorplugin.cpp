@@ -42,6 +42,7 @@ LiteEditorPlugin::LiteEditorPlugin()
     m_info->setId("plugin/liteeditor");
     m_info->setName("LiteEditor");
     m_info->setAnchor("visualfc");
+    m_info->setVer("x12");
     m_info->setInfo("LiteIDE Editor Plugin");
 }
 
