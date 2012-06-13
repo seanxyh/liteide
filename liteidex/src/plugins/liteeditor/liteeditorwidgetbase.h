@@ -121,6 +121,7 @@ protected:
 protected:
     QWidget *m_extraArea;
     LiteApi::IEditorMark *m_editorMark;
+    QList<QTextEdit::ExtraSelection> m_extraSelections;
     bool m_lineNumbersVisible;
     bool m_marksVisible;
     bool m_autoIndent;
