@@ -475,7 +475,7 @@ class IPlugin : public IObject
 public:
     IPlugin() : m_info(new PluginInfo)
     {
-        m_info->setVer("1.0");
+        m_info->setVer("x12");
     }
     virtual ~IPlugin()
     {
