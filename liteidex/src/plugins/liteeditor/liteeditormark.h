@@ -58,6 +58,6 @@ protected:
     MarkTypesMap m_lineMarkTypesMap;
 };
 
-Q_DECLARE_METATYPE(MarkTypesMap);
+Q_DECLARE_METATYPE(MarkTypesMap)
 
 #endif // LITEEDITORMARK_H
