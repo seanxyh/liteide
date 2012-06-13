@@ -1,0 +1,10 @@
+syntax: glob
+*.exe
+*.a
+*.8
+*.6
+*.5
+*.pro.user
+*.orig
+liteide-build-*
+liteidex/liteide

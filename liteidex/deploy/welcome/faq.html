@@ -1,0 +1,149 @@
+<!-- FAQ -->
+
+<h2 id="liteenv">LiteEnv Plugin</h2>
+<p>LiteIDE environment setup plugin</p>
+
+<h3>Select Environment</h3>
+<p>Select current use environment, default system</p>
+<ul>
+<li>Windows - win64 or win32</li>
+<li>Linux - linux64 or linux32</li>
+<li>MacOSX - darwin64 or darwin32</li>
+</ul>
+
+<h3 id="liteenv_edit">Configure Environment</h3>
+<p>Menu: View -> Options -> LiteEnv or Welcome: Options -> LiteEnv</p>
+<p>Double clicked *.env file to editor</p>
+<p>Example win32.env</p>
+<pre>
+#win32 environment
+
+GOROOT=c:\go
+GOARCH=386
+GOOS=windows
+
+PATH=%GOROOT%\bin;%PATH%
+
+LITEIDE_GDB=gdb
+LITEIDE_MAKE=mingw32-make
+LITEIDE_TERM=%COMSPEC%
+LITEIDE_TERMARGS=
+LITEIDE_EXEC=%COMSPEC%
+LITEIDE_EXECOPT=/k
+</pre>
+
+<p>Example linux32.env</p>
+<pre>
+#linux32 environment
+
+GOROOT=$HOME/go
+GOARCH=386
+GOOS=linux
+
+PATH=$GOROOT/bin:$PATH
+
+LITEIDE_GDB=gdb
+LITEIDE_MAKE=make
+LITEIDE_TERM=/usr/bin/gnome-terminal
+LITEIDE_TERMARGS=
+LITEIDE_EXEC=/usr/bin/xterm
+LITEIDE_EXECOPT=-e
+</pre>
+
+<h2 id="litebuild">LiteBuild Plugin</h2>
+<p>LiteIDE build system, build project or file, if file belong a project</p>
+
+<h3 id="litebuild_edit">Configure Build</h3>
+<p>Menu: View -> Options -> LiteBuild or Welcome: Options -> LiteBuild</p>
+<p>Double clicked *.xml file to editor</p>
+<p>Example linux gosrc.xml</p>
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'&gt;
+&lt;mime-type type="text/x-gosrc" id="gosrc"&gt;
+&lt;lookup mime-type="text/x-gomake" file="Makefile" top="1"/&gt;
+&lt;lookup mime-type="text/x-gopro" file="*.e64" top="1"/&gt;
+&lt;action id="Build" img="go/build.png" key="F7" cmd="${LITEAPPDIR}/gopromake" args="-gofiles ${EDITORNAME} -o ${TARGETNAME}" save="editor" output="true" codec="utf-8" regex="([\w\d:_\\/\.]+):(\d+)" /&gt;
+&lt;action id="Clean" img="go/clean.png" cmd="${LITEAPPDIR}/gopromake" args="-gofiles ${EDITORNAME} -o ${TARGETNAME} -clean=obj" output="true" codec="utf-8"/&gt;
+&lt;action id="CleanAll" img="go/cleanall.png" cmd="${LITEAPPDIR}/gopromake" args="-gofiles ${EDITORNAME} -o ${TARGETNAME} -clean=all" output="true" codec="utf-8"/&gt;
+&lt;action id="Exec" img="go/exec.png" key="F5" cmd="${LITEAPPDIR}/goexec" args="${TARGETNAME}" output="false"/&gt;
+&lt;action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="" output="true" codec="utf-8"/&gt;
+&lt;action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/&gt;
+&lt;/mime-type&gt;
+&lt;/mime-info&gt;</pre>
+<ul>
+<li>lookup mime-type: if no project, load example.go first lookup Makefile or *.e64 to use build toolbar</li>
+<li>action task: order execution defined action id list</li>
+</ul>
+
+<p>Example linux gomake.xml</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'&gt;
+&lt;mime-type type="text/x-gomake" id="gomake"&gt;
+&lt;action id="Build" img="go/build.png" key="F7" cmd="gomake" args="${PROJECTNAME} all" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" /&gt;
+&lt;action id="Rebuild" img="go/rebuild.png" key="CTRL+F7" cmd="gomake" args="-B ${PROJECTNAME} all" save="project" output="true" codec="" regex="([\w\d:_\\/\.]+):(\d+)" /&gt;
+&lt;action id="Clean" img="go/clean.png" cmd="gomake" args="${PROJECTNAME} clean" save="project" output="true"/&gt;
+&lt;action id="Nuke" img="go/nuke.png" cmd="gomake" args="${PROJECTNAME} nuke" save="project" output="true"/&gt;
+&lt;action id="Install" img="go/install.png" cmd="gomake" args="${PROJECTNAME} install" save="project" output="true"/&gt;
+&lt;action id="Test" img="go/test.png" key = "ALT+F5" cmd="gotest" args="${PROJECTNAME}" save="project" output="true" codec="utf-8"/&gt;
+&lt;action id="Exec" img="go/exec.png" key="F5" cmd="/usr/bin/xterm" args="-e ${LITEAPPDIR}/goexec  ${TARGETNAME}" output="false"/&gt;
+&lt;action id="Run" img="go/run.png" key="CTRL+F5" cmd="${TARGETPATH}" args="" output="true" codec="utf-8"/&gt;
+&lt;action id="BuildAndRun" img="go/buildandrun.png" key="CTRL+F7" task="Build;Run"/&gt;
+&lt;/mime-type&gt;
+&lt;/mime-info&gt;
+</pre>
+
+
+<h2 id="gocode">GolangCode Plugin</h2>
+<p>Use gocode word complete, example <code>fmt.</code></p>
+<h3>Install gocode</h3>
+<pre>
+$ export GOROOT=$HOME/go
+$ export PATH=$HOME/go/bin:$PATH
+$ go get -u github.com/nsf/gocode
+</pre>
+
+<h3 id="gocode_load">Load gocode incorrect</h3>
+<p>Test gocode status (my = my computer name)</p>
+<pre>
+$ gocode status
+dial unix /tmp/acrserver.my: dial unix /tmp/acrserver.my: connection refused
+$ rm /tmp/acrserver.my 
+</pre>
+<p>Reload LiteIDE</p>
+
+<h2 id="golangcode">GolangDoc Plugin</h2>
+<p>Golang doc browser and search</p>
+
+<h3>Find package</h3>
+<p>example input "zip"</p>
+<pre>
+archive/zip
+compress/bzip2
+compress/gzip
+</pre>
+<p>The result best matche is archive/zip, auto open zip package document.</p>
+
+<h2>CodeSearch Plugin</h2>
+<p>Editor code search and replace</p>
+<h3>Regex</h3>
+<p>(Colo)(u)(r) -> \1\3</p>
+
+<h2 id="litedebug">LiteDebug Plugin</h2>
+<p>LiteIDE debug plugin</p>
+<h3>Gdb version >= 7.1</h3>
+<p>Golang debug request gdb version 7.1 or high </p>
+<h3>Source path</h3>
+<p>The file or project source path cannot include outsite space or latin1 char</p>
+<h3>Environment LITEIDE_GDB</h3>
+<p>example LiteEnv -> win64.env</p>
+<pre>
+PATH=c:/go-w64/bin;%PATH%
+GOROOT=c:/go-w64
+GOBIN=c:/go-w64/bin
+GOARCH=amd64
+GOOS=windows
+LITEIDE_GDB=gdb64
+</pre>
+<h3>WIN32 and WIN64</h3>
+<p>WIN32 request gdb.exe,WIN64 request gdb64.exe.</p>
