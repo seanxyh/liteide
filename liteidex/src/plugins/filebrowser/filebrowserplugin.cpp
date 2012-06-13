@@ -41,6 +41,7 @@ FileBrowserPlugin::FileBrowserPlugin() : m_browser(0)
     m_info->setId("plugin/filebrowser");
     m_info->setName("FileBrowser");
     m_info->setAnchor("visualfc");
+    m_info->setVer("x7");
     m_info->setInfo("LiteIDE FileBrowser Plugin");
 }
 

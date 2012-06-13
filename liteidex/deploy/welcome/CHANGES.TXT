@@ -1,18 +1,16 @@
 ==== 2012.6.13 Ver X12 1.875 ====
- * LiteApp : wizard bug fix
  * LiteIDE : reset resource directory
  * LiteEditor : goto next/prev block
  * LiteEditor : code comment
  * LiteEditor : braces match
- * GolangFmt : enable gofmt diff
- * GolangFmt : save auto gofmt
-==== 2012.5.24 Ver X11 1.71875 beta5 ====
- * LiteBuild: project build toolbar and editor build toolbar.
- * LiteFind: add file search
- * PackageBrowser: fast load
  * LiteEditor: LRLF check by \n
  * LiteEditor: no print char conver to .
  * LiteEditor: move tooltip to status
+ * GolangFmt : enable gofmt diff
+ * GolangFmt : save auto gofmt
+ * LiteBuild: project build toolbar and editor build toolbar.
+ * LiteFind: add file search
+ * PackageBrowser: fast load
 ==== 2012.5.16 Ver X11 1.71875 beta4.1 ====
  * LiteBuild: fix execute args for gosrc/gopro/makefile
  * LiteApp: add option - when close project auto close project editors

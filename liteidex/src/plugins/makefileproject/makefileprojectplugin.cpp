@@ -41,6 +41,7 @@ MakefileProjectPlugin::MakefileProjectPlugin()
     m_info->setId("plugin/makefileproject");
     m_info->setName("MakefileProject");
     m_info->setAnchor("visualfc");
+    m_info->setVer("x2");
     m_info->setInfo("Project Makefile Plugin");
 }
 
