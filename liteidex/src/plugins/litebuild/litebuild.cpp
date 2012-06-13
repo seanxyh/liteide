@@ -413,6 +413,11 @@ QMap<QString,QString> LiteBuild::buildEnvMap() const
 void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
 {
     if (m_build == build) {
+        if (build) {
+            m_output->setInfo(QString("{build id=\"%1\" file=\"%2\"}").
+                              arg(build->id()).
+                              arg(m_buildFilePath));
+        }
         return;
     }
     //update buildconfig

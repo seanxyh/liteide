@@ -247,8 +247,10 @@ void FileManager::execFileWizard(const QString &projPath, const QString &filePat
         m_newFileDialog = new NewFileDialog(m_liteApp->mainWindow());
         m_newFileDialog->setTemplatePath(m_liteApp->resourcePath()+"/liteapp/template");
     }
-
-    m_newFileDialog->setPathList(LiteApi::getGopathList(m_liteApp,false));
+    QStringList pathList = LiteApi::getGopathList(m_liteApp,false);
+    pathList.append(LiteApi::getGoroot(m_liteApp));
+    pathList.removeDuplicates();
+    m_newFileDialog->setPathList(pathList);
     if (!gopath.isEmpty()) {
         m_newFileDialog->setGopath(gopath);
     }

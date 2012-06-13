@@ -191,7 +191,7 @@ void LiteEditorWidgetBase::gotoMatchBrace()
 }
 
 void LiteEditorWidgetBase::highlightCurrentLine()
-{
+{    
     QList<QTextEdit::ExtraSelection> extraSelections;
     if (!isReadOnly()) {
         QTextEdit::ExtraSelection selection;
@@ -231,66 +231,20 @@ void LiteEditorWidgetBase::highlightCurrentLine()
             extraSelections.append(selection);
         }
     }
-    /*
-    QTextBlock block = cur.block();
-    int pos = cur.positionInBlock();
-    if (block.isValid()) {
-        TextEditor::TextBlockUserData *data = static_cast<TextEditor::TextBlockUserData*>(block.userData());
-        if (data) {
-            TextEditor::Parentheses ses = data->parentheses();
-            int pos1 = -1;
-            TextEditor::Parenthesis::Type typ;
-            QChar chr;
-            int i = ses.size();
-            while(i--) {
-                TextEditor::Parenthesis s = ses.at(i);
-                if (s.pos == pos || s.pos+1 == pos) {
-                    pos1 = cur.block().position()+s.pos;
-                    typ = s.type;
-                    chr = s.chr;
-                    break;
-                }
-            }
-            if (pos1 != -1) {
-                int pos2 = -1;
-                TextEditor::TextBlockUserData::MatchType type;
-                if (typ == TextEditor::Parenthesis::Opened) {
-                    cur.setPosition(pos1);
-                    type = TextEditor::TextBlockUserData::checkOpenParenthesis(&cur,chr);
-                    pos2 = cur.position()-1;
-                } else {
-                    cur.setPosition(pos1+1);
-                    type = TextEditor::TextBlockUserData::checkClosedParenthesis(&cur,chr);
-                    pos2 = cur.position();
-                }
-                if (type == TextEditor::TextBlockUserData::Match) {
-                    QTextEdit::ExtraSelection selection;
-                    cur.setPosition(pos1);
-                    cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,1);
-                    selection.cursor = cur;
-                    selection.format.setFontUnderline(true);
-                    extraSelections.append(selection);
-
-                    cur.setPosition(pos2);
-                    cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,1);
-                    selection.cursor = cur;
-                    selection.format.setFontUnderline(true);
-                    extraSelections.append(selection);
-                } else if (type == TextEditor::TextBlockUserData::Mismatch) {
-                    QTextEdit::ExtraSelection selection;
-                    cur.setPosition(pos1);
-                    cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,1);
-                    selection.cursor = cur;
-                    selection.format.setFontUnderline(true);
-                    selection.format.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
-                    selection.format.setForeground(Qt::red);
-                    extraSelections.append(selection);
-                }
+    QList<QTextEdit::ExtraSelection> all = this->extraSelections();
+    QMutableListIterator<QTextEdit::ExtraSelection> i(all);
+    while(i.hasNext()) {
+        i.next();
+        foreach(QTextEdit::ExtraSelection sel, m_extraSelections) {
+            if (sel.cursor == i.value().cursor && sel.format == i.value().format) {
+                i.remove();
+                break;
             }
         }
     }
-    */
-    setExtraSelections(extraSelections);
+    m_extraSelections = extraSelections;
+    all.append(extraSelections);
+    setExtraSelections(all);
 }
 
 

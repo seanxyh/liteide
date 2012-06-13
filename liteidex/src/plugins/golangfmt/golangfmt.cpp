@@ -97,7 +97,6 @@ void GolangFmt::fmtEditor(LiteApi::IEditor *editor, bool save)
     }
 
     QString text = edit->toPlainText();
-    qDebug() << text;
 
     QStringList args;
     args << "-d";

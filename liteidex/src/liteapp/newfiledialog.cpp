@@ -87,7 +87,7 @@ NewFileDialog::~NewFileDialog()
 void NewFileDialog::setPathList(const QStringList &pathList)
 {
     m_pathModel->setStringList(pathList);
-    if (m_gopath.isEmpty()) {
+    if (m_gopath.isEmpty() && !pathList.isEmpty()) {
         m_gopath = pathList.first();
     }
 }
