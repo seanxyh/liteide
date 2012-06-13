@@ -1,4 +1,5 @@
-==== 2012.6.12 Ver X12 1.875 ====
+==== 2012.6.13 Ver X12 1.875 ====
+ * LiteApp : wizard bug fix
  * LiteIDE : reset resource directory
  * LiteEditor : goto next/prev block
  * LiteEditor : code comment
