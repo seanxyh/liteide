@@ -49,7 +49,9 @@
 
 GolangFmt::GolangFmt(LiteApi::IApplication *app,QObject *parent) :
     QObject(parent),
-    m_liteApp(app)
+    m_liteApp(app),
+    m_diff(true),
+    m_autofmt(true)
 {
     m_process = new ProcessEx(this);
     connect(m_process,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(fmtOutput(QByteArray,bool)));
@@ -62,6 +64,20 @@ GolangFmt::GolangFmt(LiteApi::IApplication *app,QObject *parent) :
         currentEnvChanged(m_envManager->currentEnv());
     }
     connect(m_liteApp->editorManager(),SIGNAL(editorAboutToSave(LiteApi::IEditor*)),this,SLOT(editorAboutToSave(LiteApi::IEditor*)));
+    connect(m_liteApp->optionManager(),SIGNAL(applyOption(QString)),this,SLOT(applyOption(QString)));
+    applyOption("option/golangfmt");
+}
+
+void GolangFmt::applyOption(QString id)
+{
+    if (id != "option/golangfmt") {
+        return;
+    }
+    m_diff = m_liteApp->settings()->value("golangfmt/diff",true).toBool();
+    m_autofmt = m_liteApp->settings()->value("golangfmt/autofmt",true).toBool();
+    if (!m_diff) {
+        m_autofmt = false;
+    }
 }
 
 void GolangFmt::fmtEditor(LiteApi::IEditor *editor, bool save)
@@ -99,7 +115,9 @@ void GolangFmt::fmtEditor(LiteApi::IEditor *editor, bool save)
     QString text = edit->toPlainText();
 
     QStringList args;
-    args << "-d";
+    if (m_diff) {
+        args << "-d";
+    }
     m_data.clear();;
     m_process->setUserData(0,fileName);
     m_process->setUserData(1,text);
@@ -109,6 +127,9 @@ void GolangFmt::fmtEditor(LiteApi::IEditor *editor, bool save)
 
 void GolangFmt::editorAboutToSave(LiteApi::IEditor* editor)
 {
+    if (!m_autofmt) {
+        return;
+    }
     fmtEditor(editor,true);
 }
 
@@ -171,11 +192,13 @@ void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
                     QTextCursor cur = ed->textCursor();
                     int pos = cur.position();
                     cur.beginEditBlock();
-                    //cur.select(QTextCursor::Document);
-                    //cur.removeSelectedText();
-                    //cur.insertText(codec->toUnicode(m_data));
-                    loadDiff(cur,codec->toUnicode(m_data));
-
+                    if (m_diff) {
+                        loadDiff(cur,codec->toUnicode(m_data));
+                    } else {
+                        cur.select(QTextCursor::Document);
+                        cur.removeSelectedText();
+                        cur.insertText(codec->toUnicode(m_data));
+                    }
                     cur.setPosition(pos);
                     cur.endEditBlock();
 
