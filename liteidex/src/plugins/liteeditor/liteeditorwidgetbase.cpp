@@ -138,20 +138,6 @@ void LiteEditorWidgetBase::editContentsChanged(int pos, int, int)
     m_contentsChanged = true;
 }
 
-static QChar find_match(const QChar &ch)
-{
-    if (ch == '(') {
-        return ')';
-    } else if (ch == '{') {
-        return '}';
-    } else if (ch == ')') {
-        return '(';
-    } else if (ch == '}') {
-        return '{';
-    }
-    return QChar();
-}
-
 static bool findMatchBrace(QTextCursor &cur, TextEditor::TextBlockUserData::MatchType &type,int &pos1, int &pos2)
 {
     QTextBlock block = cur.block();
@@ -162,7 +148,7 @@ static bool findMatchBrace(QTextCursor &cur, TextEditor::TextBlockUserData::Matc
         TextEditor::TextBlockUserData *data = static_cast<TextEditor::TextBlockUserData*>(block.userData());
         if (data) {
             TextEditor::Parentheses ses = data->parentheses();
-            TextEditor::Parenthesis::Type typ;
+            TextEditor::Parenthesis::Type typ = TextEditor::Parenthesis::Opened;
             QChar chr;
             int i = ses.size();
             while(i--) {
@@ -194,14 +180,16 @@ static bool findMatchBrace(QTextCursor &cur, TextEditor::TextBlockUserData::Matc
 void LiteEditorWidgetBase::gotoMatchBrace()
 {
     QTextCursor cur = textCursor();
-    TextEditor::TextBlockUserData::MatchType type;
-    int pos1 = -1;
-    int pos2 = -1;
-    if (findMatchBrace(cur,type,pos1,pos2) && type == TextEditor::TextBlockUserData::Match) {
-        cur.setPosition(pos2);
-        this->setTextCursor(cur);
-        ensureCursorVisible();
-    }
+    bool b = TextEditor::BaseTextDocumentLayout::isFolded(cur.block());
+    TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(cur.block(),b);
+//    TextEditor::TextBlockUserData::MatchType type;
+//    int pos1 = -1;
+//    int pos2 = -1;
+//    if (findMatchBrace(cur,type,pos1,pos2) && type == TextEditor::TextBlockUserData::Match) {
+//        cur.setPosition(pos2);
+//        this->setTextCursor(cur);
+//        ensureCursorVisible();
+//    }
 }
 
 void LiteEditorWidgetBase::highlightCurrentLine()
