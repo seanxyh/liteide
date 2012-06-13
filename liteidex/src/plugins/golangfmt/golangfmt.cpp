@@ -244,23 +244,17 @@ void GolangFmt::loadDiff(QTextCursor &cursor, const QString &diff)
             block = cursor.block();
             //break;
         } else if (ch == '-') {
-            bool end = false;
+            cursor.setPosition(block.position());
             if (block.next().isValid()) {
-                cursor.setPosition(block.position());
                 cursor.setPosition(block.next().position(), QTextCursor::KeepAnchor);
             } else {
-                end = true;
-                cursor.movePosition(QTextCursor::EndOfBlock);
-                cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
-                cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+                cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
             }
             cursor.removeSelectedText();
-            if (end) {
-                cursor.insertBlock();
-            }
             block = cursor.block();
         } else if (ch == ' ') {
             block = block.next();
+        } else if (ch == '\\') {
         }
     }
 }
