@@ -95,10 +95,6 @@ void GolangFmt::fmtEditor(LiteApi::IEditor *editor, bool save)
         return;
     }
 
-    if (!editor->isModified()) {
-        return;
-    }
-
     if (m_process->isRuning()) {
         return;
     }
@@ -235,7 +231,7 @@ void GolangFmt::loadDiff(QTextCursor &cursor, const QString &diff)
                 int n2 = reg.cap(4).toInt();
                 line = line_add+s1;
                 block = cursor.document()->findBlockByLineNumber(line-1);
-                line_add += n2-n1-(s2-s1);
+                line_add += n2-s2;//n2+n1-(s2+s1);
                 continue;
             }
         }
