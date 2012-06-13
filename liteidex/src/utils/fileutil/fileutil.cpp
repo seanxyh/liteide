@@ -268,7 +268,7 @@ QString FileUtil::lookPath(const QString &file, const QProcessEnvironment &env, 
     return QString();
 }
 
-QString FileUtil::lookPathInDir(const QString &fileName, const QProcessEnvironment &env, const QString &dir)
+QString FileUtil::lookPathInDir(const QString &file, const QProcessEnvironment &env, const QString &dir)
 {
     QString fileName = file;
     if (fileName.contains('/')) {
