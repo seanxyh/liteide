@@ -46,6 +46,7 @@ public slots:
     void fmtFinish(bool,int,QString);
     void loadDiff(QTextCursor &cursor, const QString &diff);
     void editorAboutToSave(LiteApi::IEditor*);
+    void applyOption(QString);
 protected:
     void fmtEditor(LiteApi::IEditor*,bool);
     LiteApi::IApplication *m_liteApp;
@@ -53,6 +54,8 @@ protected:
     LiteApi::IEnvManager *m_envManager;
     QString m_gofmtCmd;
     QByteArray m_data;
+    bool m_diff;
+    bool m_autofmt;
 };
 
 #endif // GOLANGFMT_H

@@ -27,6 +27,7 @@
 #define FINDEDITOR_H
 
 #include "liteapi/liteapi.h"
+#include <QTextEdit>
 #include <QTextCursor>
 #include <QLabel>
 
@@ -62,7 +63,7 @@ public slots:
     void findNext();
     void findPrev();
 public:
-    QTextCursor findEditor(QTextDocument *ed, const QTextCursor &cursor, FindState *state);
+    QTextCursor findEditor(QTextDocument *ed, const QTextCursor &cursor, FindState *state);        
     template <typename T>
     void findHelper(T *ed, FindState *state)
     {
@@ -84,6 +85,24 @@ public:
         } else {
             m_status->setText(tr("Not find"));
         }
+    }
+    template <typename T>
+    void findAllHelper(T *ed, FindState *state)
+    {
+        QTextCursor cursor = ed->textCursor();
+        cursor.setPosition(0);
+        QList<QTextEdit::ExtraSelection> selections;
+        QTextCursor find = findEditor(ed->document(),cursor,state);
+        while (!find.isNull()) {
+            QTextEdit::ExtraSelection sel;
+            sel.cursor = find;
+            sel.format.setFontUnderline(true);
+            sel.format.setAnchor(true);
+            selections.append(sel);
+            cursor.setPosition(find.position()+1);
+            find = findEditor(ed->document(),cursor,state);
+        }
+        ed->setExtraSelections(selections);
     }
 protected:
     LiteApi::IApplication *m_liteApp;

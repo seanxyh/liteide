@@ -167,6 +167,7 @@ void FindEditor::findNext()
     }
     QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
     if (ed) {
+        //findAllHelper(ed,&state);
         findHelper(ed,&state);
     } else {
         QTextBrowser *ed = LiteApi::findExtensionObject<QTextBrowser*>(editor,"LiteApi.QTextBrowser");

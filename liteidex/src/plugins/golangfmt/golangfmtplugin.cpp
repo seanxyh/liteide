@@ -25,6 +25,7 @@
 
 #include "golangfmtplugin.h"
 #include "golangfmt.h"
+#include "golangfmtoptionfactory.h"
 #include "liteapi/litefindobj.h"
 #include "fileutil/fileutil.h"
 
@@ -58,6 +59,9 @@ bool GolangFmtPlugin::initWithApp(LiteApi::IApplication *app)
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
+
+    m_liteApp->optionManager()->addFactory(new GolangFmtOptionFactory(m_liteApp,this));
+
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
 
     return true;
