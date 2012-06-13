@@ -179,17 +179,15 @@ static bool findMatchBrace(QTextCursor &cur, TextEditor::TextBlockUserData::Matc
 
 void LiteEditorWidgetBase::gotoMatchBrace()
 {
-    QTextCursor cur = textCursor();
-    bool b = TextEditor::BaseTextDocumentLayout::isFolded(cur.block());
-    TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(cur.block(),b);
-//    TextEditor::TextBlockUserData::MatchType type;
-//    int pos1 = -1;
-//    int pos2 = -1;
-//    if (findMatchBrace(cur,type,pos1,pos2) && type == TextEditor::TextBlockUserData::Match) {
-//        cur.setPosition(pos2);
-//        this->setTextCursor(cur);
-//        ensureCursorVisible();
-//    }
+    QTextCursor cur = this->textCursor();
+    TextEditor::TextBlockUserData::MatchType type;
+    int pos1 = -1;
+    int pos2 = -1;
+    if (findMatchBrace(cur,type,pos1,pos2) && type == TextEditor::TextBlockUserData::Match) {
+        cur.setPosition(pos2);
+        this->setTextCursor(cur);
+        ensureCursorVisible();
+    }
 }
 
 void LiteEditorWidgetBase::highlightCurrentLine()
