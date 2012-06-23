@@ -324,7 +324,7 @@ IEditor *FileManager::createEditor(const QString &_fileName)
 
 IEditor *FileManager::openEditor(const QString &_fileName, bool bActive)
 {
-    QString fileName = QDir::fromNativeSeparators(_fileName);
+    QString fileName = QDir::fromNativeSeparators(QDir::cleanPath(_fileName));
 
     QString mimeType = m_liteApp->mimeTypeManager()->findMimeTypeByFile(fileName);
 
