@@ -36,6 +36,7 @@
 #include "keywordlist.h"
 #include "progressdata.h"
 #include "reuse.h"
+#include <QDebug>
 
 #include <QtCore/QLatin1Char>
 

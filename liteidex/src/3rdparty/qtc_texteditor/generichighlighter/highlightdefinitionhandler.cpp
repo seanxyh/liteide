@@ -40,6 +40,7 @@
 #include "reuse.h"
 #include "manager2.h"
 #include "highlighterexception.h"
+#include <QDebug>
 
 #include <QtCore/QLatin1String>
 

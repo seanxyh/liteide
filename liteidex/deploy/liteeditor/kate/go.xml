@@ -110,19 +110,19 @@
       </context>
 
       <context attribute="String" lineEndContext="#pop" name="String">
-        <LineContinue attribute="String" context="#stay"/>
+        <!--LineContinue attribute="String" context="#stay"/-->
         <HlCStringChar attribute="String Char" context="#stay"/>
         <DetectChar attribute="String" context="#pop" char="&quot;"/>
       </context>
 
       <context attribute="String" lineEndContext="#stay" name="Multiline String">
-        <LineContinue attribute="String" context="#stay"/>
+        <!--LineContinue attribute="String" context="#stay"/-->
         <HlCStringChar attribute="String Char" context="#stay"/>
         <DetectChar attribute="String" context="#pop" char="`"/>
       </context>
 
       <context attribute="Comment" lineEndContext="#pop" name="Comment 1">
-        <LineContinue attribute="Comment" context="#stay"/>
+        <!--LineContinue attribute="Comment" context="#stay"/-->
       </context>
 
       <context attribute="Comment" lineEndContext="#stay" name="Comment 2">
