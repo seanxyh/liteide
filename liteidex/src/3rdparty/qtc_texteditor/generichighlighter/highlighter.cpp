@@ -65,7 +65,7 @@ Highlighter::Highlighter(QTextDocument *parent) :
     m_persistentObservableStatesCounter(PersistentsStart),
     m_dynamicContextsCounter(0),
     m_isBroken(false),
-    m_enableBraces(true)
+    m_stringOrComment(false)
 {}
 
 Highlighter::~Highlighter()
@@ -240,15 +240,15 @@ void Highlighter::iterateThroughRules(const QString &text,
 
         if (rule->itemData() == "String" ||
                 rule->itemData() == "Comment") {
-            m_enableBraces = false;
+            m_stringOrComment = true;
         } else {
-            m_enableBraces = true;
+            m_stringOrComment = false;
         }
 
         if (rule->matchSucceed(text, length, progress)) {
             atLeastOneMatch = true;
 
-            if (m_enableBraces) {
+            if (!m_stringOrComment) {
                 if (rule->beginRegion().indexOf("Brace") >= 0) {
                     blockData(currentBlockUserData())->appendParenthese(Parenthesis(Parenthesis::Opened,text.at(startOffset),startOffset));
                 }

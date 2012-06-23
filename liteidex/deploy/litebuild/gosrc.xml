@@ -10,7 +10,7 @@
 		<custom id="BuildArgs" name="BUILDARGS" value=""/>
 		<custom id="InstallArgs" name="INSTALLARGS" value=""/>
 		<action id="FileBuild" img="gray/filebuild.png" key="F6" cmd="$(GO)" args="build $(BUILDARGS) $(EDITOR_NAME)" save="editor" output="true" codec="utf-8" regex="$(ERRREGEX)" />
-		<action id="FileRun" img="gray/filerun.png" key="Alt+F6" cmd="$(GO)" args="run $(EDITOR_NAME)" output="true" codec="utf-8" readline="true"/>
+		<action id="FileRun" img="gray/filerun.png" key="Alt+F6" cmd="$(GO)" args="run $(EDITOR_NAME)" save="editor" output="true" codec="utf-8" readline="true"/>
 		<action id="Sep" separator="true"/>
 		<action id="Build" img="gray/build.png" key="Alt+F7" cmd="$(GO)" args="build $(BUILDARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" />
 		<action id="Install" img="gray/install.png" key="Alt+F8" cmd="$(GO)" args="install $(INSTALLARGS)" save="all" output="true" codec="utf-8" regex="$(ERRREGEX)" />

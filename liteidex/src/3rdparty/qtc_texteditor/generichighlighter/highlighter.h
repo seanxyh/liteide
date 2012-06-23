@@ -187,7 +187,8 @@ protected:
     int m_dynamicContextsCounter;
 
     bool m_isBroken;
-    bool m_enableBraces;
+    bool m_stringOrComment;
+    TextFormatId m_currentFormat;
 
     QSharedPointer<Context> m_defaultContext;
     QSharedPointer<Context> m_currentContext;
