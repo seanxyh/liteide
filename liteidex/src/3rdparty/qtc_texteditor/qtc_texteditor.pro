@@ -7,6 +7,7 @@ include(../../liteideutils.pri)
 include(../../utils/colorstyle/colorstyle.pri)
 
 DEFINES += TEXTEDITOR_LIBRARY
+INCLUDEPATH += .
 
 HEADERS += \
     texteditor_global.h \
