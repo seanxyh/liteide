@@ -48,7 +48,6 @@ class QLabel;
 class LiteCompleter;
 class ColorStyleScheme;
 
-
 struct EditLocation {
     EditLocation() :
         line(0),col(0)
@@ -91,6 +90,7 @@ public:
     virtual int column() const;
     virtual void gotoLine(int line, int column, bool center);
     const ColorStyleScheme *colorStyleScheme() const;
+    LiteEditorWidget *editorWidget() const;
 signals:
     void colorStyleChanged();
 public slots:

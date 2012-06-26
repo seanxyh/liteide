@@ -1048,28 +1048,17 @@ void LiteEditorWidgetBase::toggleBlockVisible(const QTextBlock &block)
     documentLayout->emitDocumentSizeChanged();
 }
 
-void LiteEditorWidgetBase::showFoldedBlock(const QTextBlock &block)
+void LiteEditorWidgetBase::foldIndentChanged(QTextBlock block)
 {
-    if (block.isVisible()) {
-        return;
-    }
-    this->unfold();
-    QTextBlock b = block.previous();
-    while (b.isValid()) {
-        if (b.isVisible()) {
-            qDebug() << b.text();
-            TextEditor::BaseTextDocumentLayout *documentLayout = qobject_cast<TextEditor::BaseTextDocumentLayout*>(document()->documentLayout());
-            qDebug() << TextEditor::BaseTextDocumentLayout::isFolded(block);
-            TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(block, true);
-            documentLayout->requestUpdate();
-            documentLayout->emitDocumentSizeChanged();
-            break;
-        }
-        b = block.previous();
+    if (!block.isVisible()) {
+        QTextDocument *doc = document();
+        TextEditor::BaseTextDocumentLayout *documentLayout = qobject_cast<TextEditor::BaseTextDocumentLayout*>(doc->documentLayout());
+        block.setVisible(true);
+        documentLayout->requestUpdate();
     }
 }
 
-void LiteEditorWidgetBase::updateBlock(QTextBlock)
+void LiteEditorWidgetBase::updateBlock(QTextBlock cur)
 {
 
 }

@@ -129,10 +129,9 @@ private:
                      const QString &itemDataName,
                      const QSharedPointer<HighlightDefinition> &definition);
 
-    void applyRegionBasedFolding() const;
-    void applyIndentationBasedFolding(const QString &text) const;
+    void applyRegionBasedFolding();
+    void applyIndentationBasedFolding(const QString &text);
     int neighbouringNonEmptyBlockIndent(QTextBlock block, const bool previous) const;
-
     // Mapping from Kate format strings to format ids.
     struct KateFormatMap
     {
@@ -153,6 +152,7 @@ public:
         QSharedPointer<Context> m_contextToContinue;
     };
 protected:
+    void setFoldIndent(BlockData *data, int indent, const QTextBlock &block);
     BlockData *initializeBlockData();
     static BlockData *blockData(QTextBlockUserData *userData);
 

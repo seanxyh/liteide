@@ -135,6 +135,11 @@ const ColorStyleScheme *LiteEditor::colorStyleScheme() const
     return m_colorStyleScheme;
 }
 
+LiteEditorWidget *LiteEditor::editorWidget() const
+{
+    return m_editorWidget;
+}
+
 void LiteEditor::setEditorMark(LiteApi::IEditorMark *mark)
 {
     m_editorWidget->setEditorMark(mark);
