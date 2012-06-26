@@ -33,6 +33,7 @@
 #include <QMessageBox>
 #include <QToolTip>
 #include <QTextCursor>
+#include <QTextDocumentFragment>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -110,10 +111,6 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
         doc->setDocumentLayout(layout);
         connect(layout,SIGNAL(updateBlock(QTextBlock)),this,SLOT(updateBlock(QTextBlock)));
     }
-
-    //connect(this, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
-    //updateHighlights();
-    //setFrameStyle(QFrame::NoFrame);
 }
 
 LiteEditorWidgetBase::~LiteEditorWidgetBase()
@@ -212,6 +209,7 @@ void LiteEditorWidgetBase::highlightCurrentLine()
         selection.format.setBackground(lineColor);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
         selection.cursor = textCursor();
+
         extraSelections.append(selection);
     }
     QTextCursor cur = textCursor();

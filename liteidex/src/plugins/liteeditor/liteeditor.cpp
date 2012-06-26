@@ -565,21 +565,36 @@ void LiteEditor::applyOption(QString id)
         bool b = m_colorStyleScheme->load(styleFileName);
         if (b) {
             const ColorStyle *style = m_colorStyleScheme->findStyle("Text");
-            const ColorStyle *selection = m_colorStyleScheme->findStyle("Select");
-            if (style) {
-                QPalette p = m_editorWidget->palette();
-                p.setColor(QPalette::Text, style->foregound());
-                p.setColor(QPalette::Foreground, style->foregound());
-                p.setColor(QPalette::Base, style->background());
-                if (selection) {
-                    p.setColor(QPalette::Highlight, (selection->background().isValid()?
-                                                         selection->background(): QApplication::palette().color(QPalette::Highlight) ));
-                    if (selection->foregound().isValid()) {
-                        p.setBrush(QPalette::HighlightedText, selection->foregound());
+            const ColorStyle *selection = m_colorStyleScheme->findStyle("Selection");
+            const ColorStyle *inactiveSelection = m_colorStyleScheme->findStyle("InactiveSelection");
+            if (style || selection || inactiveSelection) {
+                QPalette p = m_defPalette;//m_editorWidget->palette();
+                if (style) {
+                    if (style->foregound().isValid()) {
+                        p.setColor(QPalette::Text,style->foregound());
+                        p.setColor(QPalette::Foreground, style->foregound());
+                    }
+                    if (style->background().isValid()) {
+                        p.setColor(QPalette::Base, style->background());
                     }
                 }
-                p.setBrush(QPalette::Inactive, QPalette::Highlight, p.highlight());
-                p.setBrush(QPalette::Inactive, QPalette::HighlightedText, p.highlightedText());
+                if (selection) {
+                    if (selection->foregound().isValid()) {
+                        p.setBrush(QPalette::HighlightedText,selection->foregound().isValid()?
+                                       selection->foregound() : m_defPalette.foreground());
+                    }
+                    if (selection->background().isValid()) {
+                        p.setBrush(QPalette::Highlight,selection->background());
+                    }
+                }
+                if (inactiveSelection) {
+                    if (inactiveSelection->foregound().isValid()) {
+                        p.setBrush(QPalette::Inactive,QPalette::HighlightedText,inactiveSelection->foregound());
+                    }
+                    if (inactiveSelection->background().isValid()) {
+                        p.setBrush(QPalette::Inactive,QPalette::Highlight,inactiveSelection->background());
+                    }
+                }
                 m_editorWidget->setPalette(p);
             } else {
                 m_editorWidget->setPalette(m_defPalette);
