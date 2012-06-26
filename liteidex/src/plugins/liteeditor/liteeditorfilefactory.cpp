@@ -109,26 +109,7 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
         return 0;
     }
 
-    QTextDocument *doc = editor->m_editorWidget->document();
-    TextEditor::SyntaxHighlighter *h = m_kate->create(doc,mimeType);
-    if (h) {
-        editor->extension()->addObject("TextEditor::SyntaxHighlighter",h);
-        connect(editor,SIGNAL(colorStyleChanged()),this,SLOT(colorStyleChanged()));
-    }
-    LiteWordCompleter *wordCompleter = new LiteWordCompleter(editor);
-    editor->setCompleter(wordCompleter);
-    if (wordCompleter) {
-        LiteApi::IWordApi *wordApi = m_wordApiManager->findWordApi(mimeType);
-        if (wordApi && wordApi->loadApi()) {
-            QIcon icon("icon:liteeditor/images/keyword.png");
-            QIcon exp("icon:liteeditor/images/findword.png");
-            wordCompleter->appendItems(wordApi->wordList(),"keyword","",icon,false);
-            wordCompleter->appendItems(wordApi->expList(),"","",exp,false);
-            wordCompleter->completer()->model()->sort(0);
-        }        
-    }
-    editor->applyOption("option/liteeditor");
-    return editor;
+    return setupEditor(editor,mimeType);
 }
 
 LiteApi::IEditor *LiteEditorFileFactory::create(const QString &contents, const QString &mimeType)
@@ -140,11 +121,17 @@ LiteApi::IEditor *LiteEditorFileFactory::create(const QString &contents, const Q
         return 0;
     }
 
+    return setupEditor(editor,mimeType);
+}
+
+LiteApi::IEditor *LiteEditorFileFactory::setupEditor(LiteEditor *editor, const QString &mimeType)
+{
     QTextDocument *doc = editor->m_editorWidget->document();
     TextEditor::SyntaxHighlighter *h = m_kate->create(doc,mimeType);
     if (h) {
         editor->extension()->addObject("TextEditor::SyntaxHighlighter",h);
         connect(editor,SIGNAL(colorStyleChanged()),this,SLOT(colorStyleChanged()));
+        connect(h,SIGNAL(foldIndentChanged(QTextBlock)),editor->editorWidget(),SLOT(foldIndentChanged(QTextBlock)));
     }
 
     LiteWordCompleter *wordCompleter = new LiteWordCompleter(editor);

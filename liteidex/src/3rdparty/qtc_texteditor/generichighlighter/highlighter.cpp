@@ -551,7 +551,15 @@ int Highlighter::computeState(const int observableState) const
     return m_regionDepth << 12 | observableState;
 }
 
-void Highlighter::applyRegionBasedFolding() const
+void Highlighter::setFoldIndent(BlockData *data, int indent, const QTextBlock &block)
+{
+    if (data->foldingIndent() != indent) {
+        emit foldIndentChanged(block);
+    }
+    data->setFoldingIndent(indent);
+}
+
+void Highlighter::applyRegionBasedFolding()
 {
     int folding = 0;
     BlockData *data = blockData(currentBlockUserData());
@@ -568,25 +576,30 @@ void Highlighter::applyRegionBasedFolding() const
         }
     }
     data->setFoldingEndIncluded(true);
-    data->setFoldingIndent(folding);
+    //data->setFoldingIndent(folding);
+    setFoldIndent(data,folding,currentBlock());
 }
 
-void Highlighter::applyIndentationBasedFolding(const QString &text) const
+void Highlighter::applyIndentationBasedFolding(const QString &text)
 {
     BlockData *data = blockData(currentBlockUserData());
     data->setFoldingEndIncluded(true);
 
     // If this line is empty, check its neighbours. They all might be part of the same block.
     if (text.trimmed().isEmpty()) {
-        data->setFoldingIndent(0);
+        //data->setFoldingIndent(0);
+        setFoldIndent(data,0,currentBlock());
         const int previousIndent = neighbouringNonEmptyBlockIndent(currentBlock().previous(), true);
         if (previousIndent > 0) {
             const int nextIndent = neighbouringNonEmptyBlockIndent(currentBlock().next(), false);
-            if (previousIndent == nextIndent)
-                data->setFoldingIndent(previousIndent);
+            if (previousIndent == nextIndent) {
+                //data->setFoldingIndent(previousIndent);
+                setFoldIndent(data,0,currentBlock());
+            }
         }
     } else {
-        data->setFoldingIndent(m_tabSettings->indentationColumn(text));
+        //data->setFoldingIndent(m_tabSettings->indentationColumn(text));
+        setFoldIndent(data,m_tabSettings->indentationColumn(text),currentBlock());
     }
 }
 

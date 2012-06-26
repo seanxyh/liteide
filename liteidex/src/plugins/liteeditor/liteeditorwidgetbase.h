@@ -79,7 +79,7 @@ public slots:
     void updateBlock(QTextBlock);
     void moveCursorVisible(bool ensureVisible);
     void toggleBlockVisible(const QTextBlock &block);
-    void showFoldedBlock(const QTextBlock &block);
+    void foldIndentChanged(QTextBlock block);
 public:
     void setAutoIndent(bool b){
         m_autoIndent = b;

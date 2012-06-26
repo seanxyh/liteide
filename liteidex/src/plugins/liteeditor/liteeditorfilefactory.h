@@ -40,6 +40,7 @@ public:
     virtual QStringList mimeTypes() const;
     virtual LiteApi::IEditor *open(const QString &fileName, const QString &mimeType);
     virtual LiteApi::IEditor *create(const QString &contents,const QString &mimeType);
+    LiteApi::IEditor *setupEditor(LiteEditor *editor,const QString &mimeType);
 public slots:
     void colorStyleChanged();
 protected:

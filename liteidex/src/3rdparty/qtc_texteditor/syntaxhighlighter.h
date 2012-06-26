@@ -75,7 +75,8 @@ public:
     QTextDocument *document() const;
 
     void setExtraAdditionalFormats(const QTextBlock& block, const QList<QTextLayout::FormatRange> &formats);
-
+signals:
+    void foldIndentChanged(QTextBlock block);
 public Q_SLOTS:
     void rehighlight();
     void rehighlightBlock(const QTextBlock &block);
