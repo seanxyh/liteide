@@ -123,10 +123,14 @@ protected:
     void maybeSelectLine();
     bool event(QEvent *e);
     void keyPressEvent(QKeyEvent *e);
+    void paintEvent(QPaintEvent *);
+    void mousePressEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
     void indentBlock(QTextBlock block, bool bIndent);
     void indentCursor(QTextCursor cur, bool bIndent);
     void indentText(QTextCursor cur, bool bIndent);
     void indentEnter(QTextCursor cur);
+    QTextBlock foldedBlockAt(const QPoint &pos, QRect *box = 0) const;
 protected:
     QWidget *m_extraArea;
     LiteApi::IEditorMark *m_editorMark;
@@ -145,6 +149,7 @@ protected:
     QChar m_lastBraces;
     int m_lastSaveRevision;
     int m_extraAreaSelectionNumber;
+    bool m_mouseOnFoldedMarker;
     bool m_contentsChanged;
     bool m_lastCursorChangeWasInteresting;
 };

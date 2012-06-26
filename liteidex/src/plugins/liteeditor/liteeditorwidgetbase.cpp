@@ -97,6 +97,7 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     m_extraAreaSelectionNumber = -1;
     m_autoIndent = true;
     m_bLastBraces = false;
+    m_mouseOnFoldedMarker = false;
     setTabWidth(4);
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(slotUpdateExtraAreaWidth()));
@@ -1092,4 +1093,174 @@ void LiteEditorWidgetBase::unfold()
     this->moveCursorVisible(true);
     documentLayout->requestUpdate();
     documentLayout->emitDocumentSizeChanged();
+}
+
+QTextBlock LiteEditorWidgetBase::foldedBlockAt(const QPoint &pos, QRect *box) const
+{
+    QPointF offset(contentOffset());
+    QTextBlock block = firstVisibleBlock();
+    qreal top = blockBoundingGeometry(block).translated(offset).top();
+    qreal bottom = top + blockBoundingRect(block).height();
+
+    int viewportHeight = viewport()->height();
+
+    while (block.isValid() && top <= viewportHeight) {
+        QTextBlock nextBlock = block.next();
+        if (block.isVisible() && bottom >= 0) {
+            if (nextBlock.isValid() && !nextBlock.isVisible()) {
+                QTextLayout *layout = block.layout();
+                QTextLine line = layout->lineAt(layout->lineCount()-1);
+                QRectF lineRect = line.naturalTextRect().translated(offset.x(), top);
+                lineRect.adjust(0, 0, -1, -1);
+
+                QRectF collapseRect(lineRect.right() + 12,
+                                    lineRect.top(),
+                                    fontMetrics().width(QLatin1String(" {...}; ")),
+                                    lineRect.height());
+                if (collapseRect.contains(pos)) {
+                    QTextBlock result = block;
+                    if (box)
+                        *box = collapseRect.toAlignedRect();
+                    return result;
+                } else {
+                    block = nextBlock;
+                    while (nextBlock.isValid() && !nextBlock.isVisible()) {
+                        block = nextBlock;
+                        nextBlock = block.next();
+                    }
+                }
+            }
+        }
+
+        block = nextBlock;
+        top = bottom;
+        bottom = top + blockBoundingRect(block).height();
+    }
+    return QTextBlock();
+}
+
+void LiteEditorWidgetBase::mousePressEvent(QMouseEvent *e)
+{
+    if (e->button() == Qt::LeftButton) {
+        QTextBlock foldedBlock = foldedBlockAt(e->pos());
+        if (foldedBlock.isValid()) {
+            toggleBlockVisible(foldedBlock);
+            viewport()->setCursor(Qt::IBeamCursor);
+        }
+    }
+
+    QPlainTextEdit::mousePressEvent(e);
+}
+
+void LiteEditorWidgetBase::mouseMoveEvent(QMouseEvent *e)
+{
+    if (e->buttons() == Qt::NoButton) {
+        const QTextBlock collapsedBlock = foldedBlockAt(e->pos());
+        if (collapsedBlock.isValid() && !m_mouseOnFoldedMarker) {
+            m_mouseOnFoldedMarker = true;
+            viewport()->setCursor(Qt::PointingHandCursor);
+        } else if (!collapsedBlock.isValid() && m_mouseOnFoldedMarker) {
+            m_mouseOnFoldedMarker = false;
+            viewport()->setCursor(Qt::IBeamCursor);
+        }
+    } else {
+        QPlainTextEdit::mouseMoveEvent(e);
+    }
+    if (viewport()->cursor().shape() == Qt::BlankCursor)
+        viewport()->setCursor(Qt::IBeamCursor);
+}
+
+void LiteEditorWidgetBase::paintEvent(QPaintEvent *e)
+{
+    QPlainTextEdit::paintEvent(e);
+
+    QTextDocument *doc = this->document();
+    QPainter painter(viewport());
+
+    QTextCursor cursor = textCursor();
+    bool hasSelection = cursor.hasSelection();
+    int selectionStart = cursor.selectionStart();
+    int selectionEnd = cursor.selectionEnd();
+
+    QTextBlock block = firstVisibleBlock();
+    QPointF offset = contentOffset();
+    qreal top = blockBoundingGeometry(block).translated(offset).top();
+    qreal bottom = top + blockBoundingRect(block).height();
+
+    while (block.isValid() && top <= e->rect().bottom()) {
+        QTextBlock nextBlock = block.next();
+        QTextBlock nextVisibleBlock = nextBlock;
+
+        if (!nextVisibleBlock.isVisible()) {
+            // invisible blocks do have zero line count
+            nextVisibleBlock = doc->findBlockByLineNumber(nextVisibleBlock.firstLineNumber());
+            // paranoia in case our code somewhere did not set the line count
+            // of the invisible block to 0
+            while (nextVisibleBlock.isValid() && !nextVisibleBlock.isVisible())
+                nextVisibleBlock = nextVisibleBlock.next();
+        }
+        if (block.isVisible() && bottom >= e->rect().top()) {
+            if (nextBlock.isValid() && !nextBlock.isVisible()) {
+
+                bool selectThis = (hasSelection
+                                   && nextBlock.position() >= selectionStart
+                                   && nextBlock.position() < selectionEnd);
+                if (selectThis) {
+                    painter.save();
+                    painter.setBrush(palette().highlight());
+                }
+
+                QTextLayout *layout = block.layout();
+                QTextLine line = layout->lineAt(layout->lineCount()-1);
+                QRectF lineRect = line.naturalTextRect().translated(offset.x(), top);
+                lineRect.adjust(0, 0, -1, -1);
+
+                QRectF collapseRect(lineRect.right() + 12,
+                                    lineRect.top(),
+                                    fontMetrics().width(QLatin1String(" {...}; ")),
+                                    lineRect.height());
+                painter.setRenderHint(QPainter::Antialiasing, true);
+                painter.translate(.5, .5);
+                painter.drawRoundedRect(collapseRect.adjusted(0, 0, 0, -1), 3, 3);
+                painter.setRenderHint(QPainter::Antialiasing, false);
+                painter.translate(-.5, -.5);
+
+                QString replacement = QLatin1String("...");
+
+                if (TextEditor::TextBlockUserData *nextBlockUserData = TextEditor::BaseTextDocumentLayout::testUserData(nextBlock)) {
+                    if (nextBlockUserData->foldingStartIncluded())
+                        replacement.prepend(nextBlock.text().trimmed().left(1));
+                }
+
+                block = nextVisibleBlock.previous();
+                if (!block.isValid())
+                    block = doc->lastBlock();
+
+                if (TextEditor::TextBlockUserData *blockUserData = TextEditor::BaseTextDocumentLayout::testUserData(block)) {
+                    if (blockUserData->foldingEndIncluded()) {
+                        QString right = block.text().trimmed();
+                        if (right.endsWith(QLatin1Char(';'))) {
+                            right.chop(1);
+                            right = right.trimmed();
+                            replacement.append(right.right(right.endsWith(QLatin1Char('/')) ? 2 : 1));
+                            replacement.append(QLatin1Char(';'));
+                        } else {
+                            replacement.append(right.right(right.endsWith(QLatin1Char('/')) ? 2 : 1));
+                        }
+                    }
+                }
+
+                if (selectThis)
+                    painter.setPen(palette().highlightedText().color());
+                painter.drawText(collapseRect, Qt::AlignCenter, replacement);
+                if (selectThis)
+                    painter.restore();
+            }
+        }
+
+        block = nextVisibleBlock;
+        top = bottom;
+        bottom = top + blockBoundingRect(block).height();
+    }
+
 }
