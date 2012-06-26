@@ -12,4 +12,6 @@
   <style name="Selection" foreground="#000000" background="#aaaaaa"/>
   <style name="String" foreground="#ff55ff"/>
   <style name="Text" foreground="#bbbbbb" background="#000000"/>
+  <style name="Selection" foreground="#000000" background="#bbbbbb"/>
+  <style name="InactiveSelection" foreground="#000000" background="#bbbbbb"/>
 </style-scheme>

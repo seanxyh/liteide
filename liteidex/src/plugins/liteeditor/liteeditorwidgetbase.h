@@ -131,6 +131,7 @@ protected:
     QWidget *m_extraArea;
     LiteApi::IEditorMark *m_editorMark;
     QList<QTextEdit::ExtraSelection> m_extraSelections;
+    QTextCursor m_lastSelection;
     bool m_lineNumbersVisible;
     bool m_marksVisible;
     bool m_codeFoldingVisible;

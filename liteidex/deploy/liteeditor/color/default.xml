@@ -9,6 +9,7 @@
   <style name="Number" foreground="#800080"/>
   <style name="String" foreground="#008000"/>
   <style name="Error" foreground="#ff0000"/>
-  <!-- style name="Text" foreground="#bbbbbb" background="#000000"/-->
-  <!-- style name="Selection" foreground="#000000" background="#aaaaaa"/-->
+  <style name="Text" foreground="#000000" background="#ffffff"/>
+  <style name="Selection" foreground="#ffffff"/>
+  <style name="InactiveSelection" foreground="#000000" background="#bbbbbb"/>
 </style-scheme>
