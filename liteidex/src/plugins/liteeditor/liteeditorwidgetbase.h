@@ -74,6 +74,12 @@ public slots:
     bool findNextBlock(QTextCursor &cursor, int indent, const QString &skip = "//") const;
     bool findStartBlock(QTextCursor &cursor, int indent) const;
     bool findEndBlock(QTextCursor &cursor, int indent) const;
+    void fold();
+    void unfold();
+    void updateBlock(QTextBlock);
+    void moveCursorVisible(bool ensureVisible);
+    void toggleBlockVisible(const QTextBlock &block);
+    void showFoldedBlock(const QTextBlock &block);
 public:
     void setAutoIndent(bool b){
         m_autoIndent = b;
@@ -111,6 +117,9 @@ public:
         return m_marksVisible;
     }
 protected:
+    void drawFoldingMarker(QPainter *painter, const QPalette &pal,
+                           const QRect &rect,
+                           bool expanded) const;
     void maybeSelectLine();
     bool event(QEvent *e);
     void keyPressEvent(QKeyEvent *e);
@@ -124,6 +133,7 @@ protected:
     QList<QTextEdit::ExtraSelection> m_extraSelections;
     bool m_lineNumbersVisible;
     bool m_marksVisible;
+    bool m_codeFoldingVisible;
     bool m_autoIndent;
     bool m_autoBraces0; //{
     bool m_autoBraces1; //(

@@ -91,6 +91,7 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     viewport()->setMouseTracking(true);
     m_lineNumbersVisible = true;
     m_marksVisible = true;
+    m_codeFoldingVisible = true;
     m_lastSaveRevision = 0;
     m_extraAreaSelectionNumber = -1;
     m_autoIndent = true;
@@ -102,6 +103,14 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPositionChanged()));
     connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(slotUpdateRequest(QRect, int)));
     connect(this->document(),SIGNAL(contentsChange(int,int,int)),this,SLOT(editContentsChanged(int,int,int)));
+
+    QTextDocument *doc = this->document();
+    if (doc) {
+        TextEditor::BaseTextDocumentLayout *layout = new TextEditor::BaseTextDocumentLayout(doc);
+        doc->setDocumentLayout(layout);
+        connect(layout,SIGNAL(updateBlock(QTextBlock)),this,SLOT(updateBlock(QTextBlock)));
+    }
+
     //connect(this, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
     //updateHighlights();
     //setFrameStyle(QFrame::NoFrame);
@@ -186,6 +195,9 @@ void LiteEditorWidgetBase::gotoMatchBrace()
     if (findMatchBrace(cur,type,pos1,pos2) && type == TextEditor::TextBlockUserData::Match) {
         cur.setPosition(pos2);
         this->setTextCursor(cur);
+        if (!cur.block().isVisible()) {
+            unfold();
+        }
         ensureCursorVisible();
     }
 }
@@ -247,6 +259,11 @@ void LiteEditorWidgetBase::highlightCurrentLine()
     setExtraSelections(all);
 }
 
+static int foldBoxWidth(const QFontMetrics &fm)
+{
+    const int lineSpacing = fm.lineSpacing();
+    return lineSpacing/2+lineSpacing%2+1;
+}
 
 int LiteEditorWidgetBase::extraAreaWidth()
 {
@@ -270,8 +287,23 @@ int LiteEditorWidgetBase::extraAreaWidth()
     } else {
         space += 2;
     }
-    space += 4;
+    if (m_codeFoldingVisible) {
+        space += foldBoxWidth(fm);
+    }
+    space += 2;
     return space;
+}
+
+void LiteEditorWidgetBase::drawFoldingMarker(QPainter *painter, const QPalette &pal,
+                                       const QRect &rect,
+                                       bool expanded) const
+{
+    painter->drawRect(rect);
+    QPoint c = rect.center();
+    painter->drawLine(rect.left(),c.y(),rect.right(),c.y());
+    if (!expanded) {
+        painter->drawLine(c.x(),rect.top(),c.x(),rect.bottom());
+    }
 }
 
 void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
@@ -291,10 +323,11 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
     if (m_marksVisible)
         markWidth += fm.lineSpacing();
 
-    const int extraAreaWidth = m_extraArea->width();
+    const int collapseColumnWidth = m_codeFoldingVisible ? foldBoxWidth(fm): 0;
+    const int extraAreaWidth = m_extraArea->width() - collapseColumnWidth;
 
     painter.fillRect(e->rect(), pal.color(QPalette::Base));
-    painter.fillRect(e->rect().intersected(QRect(0, 0, extraAreaWidth, INT_MAX)),
+    painter.fillRect(e->rect().intersected(QRect(0, 0, m_extraArea->width(), INT_MAX)),
                      pal.color(QPalette::Background));
 
     painter.setPen(QPen(Qt::darkCyan,1,Qt::DotLine));
@@ -328,6 +361,65 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
         }
 
         painter.setPen(pal.color(QPalette::Dark));
+
+        if (m_codeFoldingVisible || m_marksVisible) {
+            painter.save();
+            painter.setRenderHint(QPainter::Antialiasing, false);
+
+            int previousBraceDepth = block.previous().userState();
+            if (previousBraceDepth >= 0)
+                previousBraceDepth >>= 8;
+            else
+                previousBraceDepth = 0;
+
+            int braceDepth = block.userState();
+            if (!nextBlock.isVisible()) {
+                QTextBlock lastInvisibleBlock = nextVisibleBlock.previous();
+                if (!lastInvisibleBlock.isValid())
+                    lastInvisibleBlock = doc->lastBlock();
+                braceDepth = lastInvisibleBlock.userState();
+            }
+            if (braceDepth >= 0)
+                braceDepth >>= 8;
+            else
+                braceDepth = 0;
+
+            if (TextEditor::TextBlockUserData *userData = static_cast<TextEditor::TextBlockUserData*>(block.userData())) {
+                if (m_marksVisible) {
+                    int xoffset = 0;
+                    foreach (TextEditor::ITextMark *mrk, userData->marks()) {
+                        int x = 0;
+                        int radius = fmLineSpacing - 1;
+                        QRect r(x + xoffset, top, radius, radius);
+                        mrk->paint(&painter, r);
+                        xoffset += 2;
+                    }
+                }
+            }
+
+            if (m_codeFoldingVisible) {
+                TextEditor::TextBlockUserData *nextBlockUserData = TextEditor::BaseTextDocumentLayout::testUserData(nextBlock);
+
+                bool drawBox = nextBlockUserData
+                               && TextEditor::BaseTextDocumentLayout::foldingIndent(block) < nextBlockUserData->foldingIndent();
+
+                int boxWidth = foldBoxWidth(fm)-1;
+                if (drawBox) {
+                    bool expanded = nextBlock.isVisible();
+                    QRect box(extraAreaWidth, top + (fm.lineSpacing()-boxWidth)/2,
+                              boxWidth,boxWidth);
+                    if (!expanded) {
+                        painter.setPen(Qt::black);
+                    } else {
+                        painter.setPen(Qt::gray);
+                    }
+                    drawFoldingMarker(&painter, pal, box, expanded);
+                }
+            }
+
+            painter.restore();
+        }
+
 
         if (block.revision() != m_lastSaveRevision) {
             painter.save();
@@ -374,12 +466,26 @@ void LiteEditorWidgetBase::extraAreaMouseEvent(QMouseEvent *e)
     QTextCursor cursor = cursorForPosition(QPoint(0, e->pos().y()));
     if (e->type() == QEvent::MouseButtonPress || e->type() == QEvent::MouseButtonDblClick) {
         if (e->button() == Qt::LeftButton) {
-            QTextCursor selection = cursor;
-            selection.setVisualNavigation(true);
-            m_extraAreaSelectionNumber = selection.blockNumber();
-            selection.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
-            selection.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
-            setTextCursor(selection);
+            int boxWidth = foldBoxWidth(fontMetrics());
+            QTextBlock block = cursor.block();
+            bool canFold = TextEditor::BaseTextDocumentLayout::canFold(block);
+            if (m_codeFoldingVisible && canFold && e->pos().x() > extraAreaWidth() - boxWidth) {
+                if (!cursor.block().next().isVisible()) {
+                    toggleBlockVisible(cursor.block());
+                    //moveCursorVisible(false);
+                } else {
+                    QTextBlock c = cursor.block();
+                    toggleBlockVisible(c);
+                    moveCursorVisible(false);
+                }
+            } else {
+                QTextCursor selection = cursor;
+                selection.setVisualNavigation(true);
+                m_extraAreaSelectionNumber = selection.blockNumber();
+                selection.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+                selection.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+                setTextCursor(selection);
+            }
         }
     } else if (m_extraAreaSelectionNumber >= 0) {
         QTextCursor selection = cursor;
@@ -515,6 +621,9 @@ void LiteEditorWidgetBase::gotoLine(int line, int column, bool center)
             cursor.setPosition(pos);
         }
         setTextCursor(cursor);
+        if (!cursor.block().isVisible()) {
+            unfold();
+        }
         if (center) {
             centerCursor();
         } else {
@@ -854,6 +963,10 @@ void LiteEditorWidgetBase::indentText(QTextCursor cur,bool bIndent)
 
 void LiteEditorWidgetBase::indentEnter(QTextCursor cur)
 {
+    QTextBlock block = cur.block();
+    if (block.isValid() && block.next().isValid() && !block.next().isVisible()) {
+        unfold();
+    }
     cur.beginEditBlock();
     int pos = cur.position()-cur.block().position();
     QString text = cur.block().text();
@@ -911,4 +1024,85 @@ void LiteEditorWidgetBase::showTip(const QString &tip)
 void LiteEditorWidgetBase::hideTip()
 {
     QToolTip::hideText();
+}
+
+void LiteEditorWidgetBase::moveCursorVisible(bool ensureVisible)
+{
+    QTextCursor cursor = this->textCursor();
+    if (!cursor.block().isVisible()) {
+        cursor.setVisualNavigation(true);
+        cursor.movePosition(QTextCursor::Up);
+        this->setTextCursor(cursor);
+    }
+    if (ensureVisible)
+        this->ensureCursorVisible();
+}
+
+void LiteEditorWidgetBase::toggleBlockVisible(const QTextBlock &block)
+{
+    TextEditor::BaseTextDocumentLayout *documentLayout = qobject_cast<TextEditor::BaseTextDocumentLayout*>(document()->documentLayout());
+
+    bool visible = block.next().isVisible();
+    TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(block, !visible);
+    documentLayout->requestUpdate();
+    documentLayout->emitDocumentSizeChanged();
+}
+
+void LiteEditorWidgetBase::showFoldedBlock(const QTextBlock &block)
+{
+    if (block.isVisible()) {
+        return;
+    }
+    this->unfold();
+    QTextBlock b = block.previous();
+    while (b.isValid()) {
+        if (b.isVisible()) {
+            qDebug() << b.text();
+            TextEditor::BaseTextDocumentLayout *documentLayout = qobject_cast<TextEditor::BaseTextDocumentLayout*>(document()->documentLayout());
+            qDebug() << TextEditor::BaseTextDocumentLayout::isFolded(block);
+            TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(block, true);
+            documentLayout->requestUpdate();
+            documentLayout->emitDocumentSizeChanged();
+            break;
+        }
+        b = block.previous();
+    }
+}
+
+void LiteEditorWidgetBase::updateBlock(QTextBlock)
+{
+
+}
+
+void LiteEditorWidgetBase::fold()
+{
+    QTextDocument *doc = document();
+    TextEditor::BaseTextDocumentLayout *documentLayout = qobject_cast<TextEditor::BaseTextDocumentLayout*>(doc->documentLayout());
+    QTextBlock block = textCursor().block();
+    if (!(TextEditor::BaseTextDocumentLayout::canFold(block) && block.next().isVisible())) {
+        // find the closest previous block which can fold
+        int indent = TextEditor::BaseTextDocumentLayout::foldingIndent(block);
+        while (block.isValid() && (TextEditor::BaseTextDocumentLayout::foldingIndent(block) >= indent || !block.isVisible()))
+            block = block.previous();
+    }
+    if (block.isValid()) {
+        TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(block, false);
+        this->moveCursorVisible(true);
+        documentLayout->requestUpdate();
+        documentLayout->emitDocumentSizeChanged();
+    }
+}
+
+void LiteEditorWidgetBase::unfold()
+{
+    QTextDocument *doc = document();
+    TextEditor::BaseTextDocumentLayout *documentLayout = qobject_cast<TextEditor::BaseTextDocumentLayout*>(doc->documentLayout());
+
+    QTextBlock block = textCursor().block();
+    while (block.isValid() && !block.isVisible())
+        block = block.previous();
+    TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(block, true);
+    this->moveCursorVisible(true);
+    documentLayout->requestUpdate();
+    documentLayout->emitDocumentSizeChanged();
 }

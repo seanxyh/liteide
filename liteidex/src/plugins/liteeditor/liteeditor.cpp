@@ -213,6 +213,17 @@ void LiteEditor::createActions()
     m_gotoMatchBraceAct = new QAction(tr("Goto Match Brace"),this);
     m_gotoMatchBraceAct->setShortcut(QKeySequence("Ctrl+E"));
 
+    QAction *foldAct = new QAction(tr("Fold"),this);
+    foldAct->setShortcut(QKeySequence("Ctrl+<"));
+    QAction *unfoldAct = new QAction(tr("Unfold"),this);
+    unfoldAct->setShortcut(QKeySequence("Ctrl+>"));
+
+    connect(foldAct,SIGNAL(triggered()),m_editorWidget,SLOT(fold()));
+    connect(unfoldAct,SIGNAL(triggered()),m_editorWidget,SLOT(unfold()));
+
+    m_widget->addAction(foldAct);
+    m_widget->addAction(unfoldAct);;
+
     m_widget->addAction(m_gotoPrevBlockAct);
     m_widget->addAction(m_gotoNextBlockAct);
     m_widget->addAction(m_selectBlockAct);

@@ -97,6 +97,7 @@ public:
             QTextEdit::ExtraSelection sel;
             sel.cursor = find;
             sel.format.setFontUnderline(true);
+            sel.format.setBackground(Qt::yellow);
             sel.format.setAnchor(true);
             selections.append(sel);
             cursor.setPosition(find.position()+1);
