@@ -1,9 +1,11 @@
-==== 2012.6.26 Ver X12.1 ====
+==== 2012.6.27 Ver X12.1 ====
  * LiteIDE : LiteIDE use new logo
  * LiteEditor : fold / unfold
  * LiteEditor : color scheme custom selection 
  * LiteEditor : kate go.xml remove linecontinue
  * LiteEditor : goto line
+ * LiteApp : fix recent file load bug
+ * LiteIDE : update faq document
 ==== 2012.6.13 Ver X12 1.875 ====
  * LiteIDE : reset resource directory
  * LiteEditor : goto next/prev block
