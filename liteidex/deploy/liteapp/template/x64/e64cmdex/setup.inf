@@ -1,0 +1,7 @@
+[SETUP]
+NAME = "Go CommandEx (E64 project)"
+AUTHOR = visualfc
+INFO = new golang command with local package project (*.e64)
+TYPE = project
+FILES = root.e64 main.go info.go doc.go
+OPEN = root.e64
