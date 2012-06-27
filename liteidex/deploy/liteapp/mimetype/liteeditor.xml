@@ -31,7 +31,7 @@
     <glob pattern="*.xspf"/>
     <glob pattern="*.plist"/>
   </mime-type>
-  <mime-type type="text/x-csrc" codec="system">
+  <mime-type type="text/x-csrc" codec="utf-8">
     <sub-class-of type="text/plain"/>
     <comment>C Source File</comment>
     <glob pattern="*.c"/>

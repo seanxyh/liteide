@@ -568,9 +568,18 @@ void GdbDebugeer::handleStopped(const GdbMiValue &result)
     GdbMiValue frame = result.findChild("frame");
     if (frame.isValid()) {
         QString fullname = frame.findChild("fullname").data();
+        QString file = frame.findChild("file").data();
         QString line = frame.findChild("line").data();
         if (!fullname.isEmpty()) {
             emit setCurrentLine(fullname,line.toInt());
+        } else if (!file.isEmpty()) {
+            //fix go build bug, not find fullname
+            //file="C:/Users/ADMINI~1/AppData/Local/Temp/2/bindist308287094/go/src/pkg/fmt/print.go"
+            int i = file.indexOf("/go/src/pkg");
+            if (i > 0) {
+                QString fullname = LiteApi::getGoroot(m_liteApp)+file.right(file.length()-i-3);
+                emit setCurrentLine(fullname,line.toInt());
+            }
         }
     }
 }
@@ -961,13 +970,22 @@ void GdbDebugeer::initGdb()
     command("set auto-solib-add on");
     if (!m_runtimeFilePath.isEmpty()) {
 #ifdef Q_OS_WIN
+        QStringList pathList = LiteApi::getGopathList(m_liteApp,false);
+        QString paths;
+        foreach(QString path, pathList) {
+            paths += QDir::fromNativeSeparators(path)+"/src";
+            paths += ";";
+        }
+
         command("-environment-directory "+m_runtimeFilePath.toLatin1());
+        //command("-environment-directory "+m_runtimeFilePath.toLatin1()+";"+paths.toLatin1());
         command("set substitute-path /go/src/pkg/runtime "+m_runtimeFilePath.toLatin1());
 #else
         command("-environment-directory "+m_runtimeFilePath.toUtf8());
         command("set substitute-path /go/src/pkg/runtime "+m_runtimeFilePath.toUtf8());
 #endif
     }
+    //command("set ");
 
     QMapIterator<QString,int> i(m_initBks);
     while (i.hasNext()) {
