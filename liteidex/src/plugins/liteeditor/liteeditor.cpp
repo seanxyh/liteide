@@ -58,6 +58,9 @@
 #include <QMessageBox>
 #include <QTextBlock>
 #include <QMenu>
+#include <QInputDialog>
+#include <QToolButton>
+
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -226,8 +229,12 @@ void LiteEditor::createActions()
     connect(foldAct,SIGNAL(triggered()),m_editorWidget,SLOT(fold()));
     connect(unfoldAct,SIGNAL(triggered()),m_editorWidget,SLOT(unfold()));
 
+    m_gotoLineAct = new QAction(tr("Goto Line"),this);
+    m_gotoLineAct->setShortcut(QKeySequence("Ctrl+G"));
+
     m_widget->addAction(foldAct);
-    m_widget->addAction(unfoldAct);;
+    m_widget->addAction(unfoldAct);
+    m_widget->addAction(m_gotoLineAct);
 
     m_widget->addAction(m_gotoPrevBlockAct);
     m_widget->addAction(m_gotoNextBlockAct);
@@ -266,6 +273,8 @@ void LiteEditor::createActions()
     connect(m_gotoMatchBraceAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoMatchBrace()));
     connect(m_goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
     connect(m_goForwardAct,SIGNAL(triggered()),this,SLOT(goForward()));
+    connect(m_gotoLineAct,SIGNAL(triggered()),this,SLOT(gotoLine()));
+
     QClipboard *clipboard = QApplication::clipboard();
     connect(clipboard,SIGNAL(dataChanged()),this,SLOT(clipbordDataChanged()));
     clipbordDataChanged();
@@ -313,8 +322,11 @@ void LiteEditor::createToolBars()
     m_toolBar->addWidget(m_codecComboBox);
     m_toolBar->addSeparator();
 
-    //m_toolBar->addAction(m_goBackAct);
-    //m_toolBar->addAction(m_goForwardAct);
+    m_lineInfo = new QToolButton;
+    m_lineInfo->setText("000:000");
+    m_lineInfo->setDefaultAction(m_gotoLineAct);
+    m_lineInfo->setToolTip(tr("Goto Line (Ctrl+G)"));
+    m_toolBar->addWidget(m_lineInfo);
     m_toolBar->addSeparator();
 
     m_toolBar->addAction(m_cutAct);
@@ -726,11 +738,10 @@ void LiteEditor::codecComboBoxChanged(QString codec)
 
 void LiteEditor::editPositionChanged()
 {
-//    QTextCursor cur = m_editorWidget->textCursor();
-//    EditLocation location(cur.blockNumber(),cur.columnNumber());
-//    if (m_naviagePos >= 0) {
-//        EditLocation prev = m_navigateHistroy.at(m_naviagePos);
-//    }
+     QTextCursor cur = m_editorWidget->textCursor();
+     this->m_lineInfo->setText(QString("%1:%2").
+                                arg(cur.blockNumber()+1,3).
+                                arg(cur.columnNumber()+1,3));
 }
 
 void LiteEditor::goBack()
@@ -752,4 +763,17 @@ void LiteEditor::goBack()
 void LiteEditor::goForward()
 {
     m_editorWidget->gotoNextBlock();
+}
+
+void LiteEditor::gotoLine()
+{
+    int min = 1;
+    int max = m_editorWidget->document()->lineCount();
+    int v = m_editorWidget->textCursor().blockNumber()+1;
+    bool ok = false;
+    v = QInputDialog::getInt(this->m_widget,tr("Goto Line"),tr("Line:"),v,min,max,1,&ok);
+    if (!ok) {
+        return;
+    }
+    this->gotoLine(v,0,true);
 }

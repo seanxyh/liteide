@@ -45,6 +45,7 @@ class LiteEditorWidget;
 class LiteEditorFile;
 class QComboBox;
 class QLabel;
+class QToolButton;
 class LiteCompleter;
 class ColorStyleScheme;
 
@@ -109,6 +110,7 @@ public slots:
     void editPositionChanged();
     void goBack();
     void goForward();
+    void gotoLine();
 public:
     void findCodecs();
     ColorStyleScheme    *m_colorStyleScheme;
@@ -118,6 +120,7 @@ public:
     QWidget *m_widget;
     QToolBar *m_toolBar;
     QComboBox *m_codecComboBox;
+    QToolButton  *m_lineInfo;
     LiteEditorWidget    *m_editorWidget;
     LiteCompleter   *m_completer;
     QAction *m_undoAct;
@@ -140,6 +143,8 @@ public:
     QAction *m_selectBlockAct;
     QAction *m_goBackAct;
     QAction *m_goForwardAct;
+    QAction *m_gotoLineAct;
+    QAction *m_lineInfoAct;
     LiteEditorFile *m_file;
     QMenu   *m_contextMenu;
     QString  m_colorStyle;
