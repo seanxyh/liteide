@@ -5,6 +5,7 @@
  * LiteEditor : kate go.xml remove linecontinue
  * LiteEditor : goto line
  * LiteApp : fix recent file load bug
+ * GdbDebugger : fix frame if not find fullname
  * LiteIDE : update faq document
 ==== 2012.6.13 Ver X12 1.875 ====
  * LiteIDE : reset resource directory
