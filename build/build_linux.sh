@@ -29,7 +29,7 @@ fi
 
 echo make liteide ...
 echo .
-make release
+make
 
 if [ $? -ge 1 ]; then
 	echo 'error, make fail'
@@ -69,6 +69,6 @@ cp $LITEIDE_ROOT/liteide/lib/liteide/plugins/*.so liteide/lib/liteide/plugins
 cp -r -v $LITEIDE_ROOT/deploy/* liteide/share/liteide/
 cp -r -v $LITEIDE_ROOT/os_deploy/linux/* liteide/share/liteide/
 
-cp $QTDIR/bin/libQtCore.so.* liteide/lib/liteide
-cp $QTDIR/bin/libQtGui.so.* liteide/lib/liteide
-cp $QTDIR/bin/libQtXml.so.* liteide/lib/liteide
+cp $QTDIR/lib/libQtCore.so.* liteide/lib/liteide
+cp $QTDIR/lib/libQtGui.so.* liteide/lib/liteide
+cp $QTDIR/lib/libQtXml.so.* liteide/lib/liteide
