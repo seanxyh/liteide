@@ -3,6 +3,7 @@
  * LiteEditor : fold / unfold
  * LiteEditor : color scheme custom selection 
  * LiteEditor : kate go.xml remove linecontinue
+ * LiteEditor : goto line
 ==== 2012.6.13 Ver X12 1.875 ====
  * LiteIDE : reset resource directory
  * LiteEditor : goto next/prev block

@@ -441,10 +441,14 @@ void FileManager::openRecentFile()
         return;
     }
     QString scheme = act->data().toString();
+    QString fileName = act->text();
     if (scheme.isEmpty()) {
         return;
     }
-    QString fileName = act->text();
+    if (scheme == "file" || scheme == "proj") {
+        this->openFile(fileName);
+        return;
+    }
     this->openProjectScheme(fileName,scheme);
 }
 
