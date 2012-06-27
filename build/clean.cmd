@@ -1,0 +1,6 @@
+@echo off
+echo remdir liteide ...
+if exist liteide rmdir /s/q liteide
+echo remdir temp ...
+if exist src rmdir /s/q src
+if exist Makefile del Makefile
