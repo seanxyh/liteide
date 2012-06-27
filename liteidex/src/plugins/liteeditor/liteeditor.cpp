@@ -752,9 +752,9 @@ void LiteEditor::goBack()
     while(block.isValid()) {
         TextEditor::TextBlockUserData *data = (TextEditor::TextBlockUserData*)block.userData();
         if (data) {
-            qDebug() << block.text() << data->parentheses().count();
+            //qDebug() << block.text() << data->parentheses().count();
             foreach(TextEditor::Parenthesis p, data->parentheses()) {
-                qDebug() << p.pos << p.chr << p.type;
+            //    qDebug() << p.pos << p.chr << p.type;
             }
         }
         block = block.next();

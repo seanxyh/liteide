@@ -42,7 +42,7 @@ GdbDebuggerPlugin::GdbDebuggerPlugin()
     m_info->setId("plugin/GdbDebugger");
     m_info->setName("GdbDebugger");
     m_info->setAnchor("visualfc");
-    m_info->setVer("x10");
+    m_info->setVer("x12.1");
     m_info->setInfo("Gdb Debugger Plugin");
 }
 
