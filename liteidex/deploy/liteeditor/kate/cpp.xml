@@ -208,6 +208,10 @@
         <Detect2Chars attribute="Comment" context="Commentar 2" char="/" char1="*" beginRegion="Comment"/>
         <DetectChar attribute="Symbol" context="#stay" char="{" beginRegion="Brace1" />
         <DetectChar attribute="Symbol" context="#stay" char="}" endRegion="Brace1" />
+        <DetectChar attribute="Symbol" context="#stay" char="(" beginRegion="Brace2" />
+        <DetectChar attribute="Symbol" context="#stay" char=")" endRegion="Brace2" />
+        <DetectChar attribute="Symbol" context="#stay" char="[" beginRegion="Brace3" />
+        <DetectChar attribute="Symbol" context="#stay" char="]" endRegion="Brace3" />
         <AnyChar attribute="Symbol" context="#stay" String=":!%&amp;()+,-/.*&lt;=&gt;?[]{|}~^&#59;"/>
       </context>
 

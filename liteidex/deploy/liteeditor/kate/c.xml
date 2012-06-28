@@ -76,6 +76,10 @@
         <DetectIdentifier />
         <DetectChar attribute="Symbol" context="#stay" char="{" beginRegion="Brace1" />
         <DetectChar attribute="Symbol" context="#stay" char="}" endRegion="Brace1" />
+        <DetectChar attribute="Symbol" context="#stay" char="(" beginRegion="Brace2" />
+        <DetectChar attribute="Symbol" context="#stay" char=")" endRegion="Brace2" />
+        <DetectChar attribute="Symbol" context="#stay" char="[" beginRegion="Brace3" />
+        <DetectChar attribute="Symbol" context="#stay" char="]" endRegion="Brace3" />
         <Float attribute="Float" context="#stay">
           <AnyChar String="fF" attribute="Float" context="#stay"/>
         </Float>
