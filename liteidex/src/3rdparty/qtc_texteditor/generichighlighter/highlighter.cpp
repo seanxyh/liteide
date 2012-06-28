@@ -249,11 +249,15 @@ void Highlighter::iterateThroughRules(const QString &text,
             atLeastOneMatch = true;
 
             if (!m_stringOrComment) {
-                if (rule->beginRegion().indexOf("Brace") >= 0) {
-                    blockData(currentBlockUserData())->appendParenthese(Parenthesis(Parenthesis::Opened,text.at(startOffset),startOffset));
+                if (!rule->beginRegion().isEmpty()) {
+                    QChar ch = text.at(startOffset);
+                    if (ch == '{' || ch == '(' || ch == '[' )
+                        blockData(currentBlockUserData())->appendParenthese(Parenthesis(Parenthesis::Opened,ch,startOffset));
                 }
-                if (rule->endRegion().indexOf("Brace") >= 0) {
-                    blockData(currentBlockUserData())->appendParenthese(Parenthesis(Parenthesis::Closed,text.at(startOffset),startOffset));
+                if (!rule->endRegion().isEmpty()) {
+                    QChar ch = text.at(startOffset);
+                    if (ch == '}' || ch == ')' || ch == ']' )
+                        blockData(currentBlockUserData())->appendParenthese(Parenthesis(Parenthesis::Closed,ch,startOffset));
                 }
             }
 
@@ -261,9 +265,9 @@ void Highlighter::iterateThroughRules(const QString &text,
                 if (!rule->beginRegion().isEmpty()) {
                     blockData(currentBlockUserData())->m_foldingRegions.push(rule->beginRegion());
                     ++m_regionDepth;                    
-                    if (progress->isOpeningBraceMatchAtFirstNonSpace()) {
-                        ++blockData(currentBlockUserData())->m_foldingIndentDelta;
-                    }
+                    //if (progress->isOpeningBraceMatchAtFirstNonSpace()) {
+                    //    ++blockData(currentBlockUserData())->m_foldingIndentDelta;
+                    //}
                 }
                 if (!rule->endRegion().isEmpty()) {
                     QStack<QString> *currentRegions =
@@ -271,9 +275,9 @@ void Highlighter::iterateThroughRules(const QString &text,
                     if (!currentRegions->isEmpty() && rule->endRegion() == currentRegions->top()) {
                         currentRegions->pop();
                         --m_regionDepth;
-                        if (progress->isClosingBraceMatchAtNonEnd()) {
-                            --blockData(currentBlockUserData())->m_foldingIndentDelta;
-                         }
+                        //if (progress->isClosingBraceMatchAtNonEnd()) {
+                        //    --blockData(currentBlockUserData())->m_foldingIndentDelta;
+                        // }
                     }
                 }
                 progress->clearBracesMatches();
