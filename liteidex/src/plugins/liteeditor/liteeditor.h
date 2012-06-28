@@ -145,6 +145,7 @@ public:
     QAction *m_goForwardAct;
     QAction *m_gotoLineAct;
     QAction *m_lineInfoAct;
+    QAction *m_duplicateAct;
     LiteEditorFile *m_file;
     QMenu   *m_contextMenu;
     QString  m_colorStyle;

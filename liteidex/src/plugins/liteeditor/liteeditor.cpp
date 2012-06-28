@@ -232,6 +232,11 @@ void LiteEditor::createActions()
     m_gotoLineAct = new QAction(tr("Goto Line"),this);
     m_gotoLineAct->setShortcut(QKeySequence("Ctrl+G"));
 
+    m_duplicateAct = new QAction(tr("Duplicate"),this);
+    m_duplicateAct->setShortcut(QKeySequence("Ctrl+D"));
+    m_widget->addAction(m_duplicateAct);
+    connect(m_duplicateAct,SIGNAL(triggered()),m_editorWidget,SLOT(duplicate()));
+
     m_widget->addAction(foldAct);
     m_widget->addAction(unfoldAct);
     m_widget->addAction(m_gotoLineAct);
@@ -360,6 +365,7 @@ void LiteEditor::createContextMenu()
     m_contextMenu->addAction(m_cutAct);
     m_contextMenu->addAction(m_copyAct);
     m_contextMenu->addAction(m_pasteAct);
+    m_contextMenu->addAction(m_duplicateAct);
     m_contextMenu->addSeparator();
     m_contextMenu->addAction(m_selectAllAct);
     m_contextMenu->addAction(m_selectBlockAct);
