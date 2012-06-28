@@ -1,3 +1,6 @@
+==== 2012.6.28 Ver X12.1.1 ====
+ * LiteEditor : fix fold bug - line include "head{}end"
+ * LiteEditor : kate go.xml breace match add "[]"
 ==== 2012.6.27 Ver X12.1 ====
  * LiteIDE : LiteIDE use new logo
  * LiteEditor : fold / unfold
