@@ -18,6 +18,8 @@ if [ -z $QTDIR ]; then
 	exit 1
 fi
 
+export PATH=$QTDIR/bin:$PATH
+
 echo qmake liteide ...
 echo .
 qmake $LITEIDE_ROOT -spec macx-g++ "CONFIG+=release"
@@ -36,10 +38,15 @@ if [ $? -ge 1 ]; then
 	exit 1
 fi
 
+go version
+if [ $? -ge 1 ]; then
+	echo 'error, not find go in PATH'
+	exit 1
+fi
 
 echo build liteide tools ...
 cd $LITEIDE_ROOT
-export GOPATH=$PWD
+export GOPATH=$PWD:$GOPATH
 go install -v -ldflags -s tools/goastview
 go install -v -ldflags -s tools/godocview
 go install -v -ldflags -s tools/goexec
@@ -69,8 +76,8 @@ cp -r -v $LITEIDE_ROOT/deploy/* liteide/LiteIDE.app/Contents/Resources
 cp -r -v $LITEIDE_ROOT/os_deploy/macosx/* liteide/LiteIDE.app/Contents/Resources
 
 echo .
-echo ./macdeployqt liteide/LiteIDE.app -no-plugins
-./macdeployqt liteide/LiteIDE.app -no-plugins
+echo macdeployqt liteide/LiteIDE.app -no-plugins
+macdeployqt liteide/LiteIDE.app -no-plugins
 
 export QTLIBPATH=$QTDIR/lib
 

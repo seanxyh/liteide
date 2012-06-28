@@ -2,20 +2,23 @@
 
 set BUILD_ROOT=%CD%
 if x%LITEIDE_ROOT%==x set LITEIDE_ROOT=%CD%\..\liteidex
-set OLD_GOPATH=%GOPATH%
 
 echo build liteide 
 echo QTDIR=%QTDIR%
 echo GOROOT=%GOROOT%
 echo BUILD_ROOT=%BUILD_ROOT%
 echo LITEIDE_ROOT=%LITEIDE_ROOT%
+echo MINGWDIR=%MINGWDIR%
 echo .
 
 if x%QTDIR%==x goto qtdir_fail
+if x%MINGWDIR%==x goto mwdir_fail
+
+set PATH=%QTDIR%/bin;%MINGWDIR%/bin;%PATH%
 
 echo qmake liteide ...
 echo .
-call qmake %LITEIDE_ROOT% -r -spec win32-g++ "CONFIG+=release"
+qmake %LITEIDE_ROOT% -r -spec win32-g++ "CONFIG+=release"
 
 if ERRORLEVEL 1 goto qmake_fail
 
@@ -25,7 +28,7 @@ mingw32-make
 
 if ERRORLEVEL 1 goto make_fail
 
-call go version
+go version
 
 if ERRORLEVEL 1 goto go_fail
 
@@ -33,7 +36,8 @@ echo build liteide tools
 echo .
 
 cd %LITEIDE_ROOT%
-set GOPATH=%CD%
+set GOPATH=%CD%;%GOPATH%
+
 go install -v tools/goastview
 go install -v tools/godocview
 go install -v tools/goexec
@@ -43,6 +47,8 @@ cd %BUILD_ROOT%
 
 echo deploy liteide ...
 echo .
+
+rmdir /q /s liteide
 
 if not exist liteide mkdir liteide
 if not exist liteide\bin mkdir liteide\bin
@@ -73,6 +79,10 @@ goto end
 echo error, QTDIR is null
 goto end
 
+:mwdir_fail
+echo error, MINGWDIR is null
+goto end
+
 :qmake_fail
 echo error, qmake fail
 goto end
@@ -86,4 +96,3 @@ echo error, go fail
 goto end
 
 :end
-set GOPATH=%OLD_GOPATH%
