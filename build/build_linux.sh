@@ -18,6 +18,8 @@ if [ -z $QTDIR ]; then
 	exit 1
 fi
 
+export PATH=$QTDIR/bin:$PATH
+
 echo qmake liteide ...
 echo .
 qmake $LITEIDE_ROOT -spec linux-g++ "CONFIG+=release"
@@ -36,6 +38,11 @@ if [ $? -ge 1 ]; then
 	exit 1
 fi
 
+go version
+if [ $? -ge 1 ]; then
+	echo 'error, not find go in PATH'
+	exit 1
+fi
 
 echo build liteide tools ...
 cd $LITEIDE_ROOT
@@ -53,6 +60,8 @@ fi
 echo deploy ...
 
 cd $BUILD_ROOT
+
+rm -r liteide
 mkdir -p liteide
 mkdir -p liteide/bin
 mkdir -p liteide/share/liteide
