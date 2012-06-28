@@ -94,12 +94,14 @@ bool DetectCharRule::doMatchSucceed(const QString &text,
     if (matchCharacter(text, length, progress, m_char)) {
         // This is to make code folding have a control flow style look in the case of braces.
         // Naturally, this assumes that language definitions use braces with this meaning.
-        if (m_char == kOpeningBrace && progress->isOnlySpacesSoFar() && !isLookAhead()) {
-            progress->setOpeningBraceMatchAtFirstNonSpace(true);
-        } else if (m_char == kClosingBrace &&
-                   !text.right(length - progress->offset()).trimmed().isEmpty()) {
-            progress->setClosingBraceMatchAtNonEnd(true);
-        }
+
+//        if (m_char == kOpeningBrace && progress->isOnlySpacesSoFar() && !isLookAhead()) {
+//            progress->setOpeningBraceMatchAtFirstNonSpace(true);
+//        } else if (m_char == kClosingBrace &&
+//                   !text.right(length - progress->offset()).trimmed().isEmpty()) {
+//            progress->setClosingBraceMatchAtNonEnd(true);
+//        }
+
         return true;
     }
     return false;
