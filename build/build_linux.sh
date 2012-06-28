@@ -78,6 +78,6 @@ cp $LITEIDE_ROOT/liteide/lib/liteide/plugins/*.so liteide/lib/liteide/plugins
 cp -r -v $LITEIDE_ROOT/deploy/* liteide/share/liteide/
 cp -r -v $LITEIDE_ROOT/os_deploy/linux/* liteide/share/liteide/
 
-cp $QTDIR/lib/libQtCore.so.* liteide/lib/liteide
-cp $QTDIR/lib/libQtGui.so.* liteide/lib/liteide
-cp $QTDIR/lib/libQtXml.so.* liteide/lib/liteide
+cp -a -v $QTDIR/lib/libQtCore.so* liteide/lib/liteide
+cp -a -v $QTDIR/lib/libQtGui.so* liteide/lib/liteide
+cp -a -v $QTDIR/lib/libQtXml.so* liteide/lib/liteide
