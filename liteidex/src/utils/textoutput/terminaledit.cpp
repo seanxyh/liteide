@@ -133,7 +133,7 @@ void TerminalEdit::keyPressEvent(QKeyEvent *e)
     }
 
     if (e->modifiers() != Qt::NoModifier) {
-        return;
+        //return;
     }
 
     if (e->key() == Qt::Key_Enter ||
