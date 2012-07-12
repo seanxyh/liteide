@@ -56,6 +56,7 @@ public:
     virtual void setReady();
     QString findText() const;
     void genFindState(FindState *state, bool backWard);
+    void setVisible(bool b);
 signals:
     void hideFind();
     void swithReplace();

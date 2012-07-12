@@ -146,7 +146,7 @@ void LiteFindPlugin::find(bool b)
         m_replaceAct->setChecked(false);
         m_findEditor->setReady();
     }
-    m_findEditor->widget()->setVisible(b);
+    m_findEditor->setVisible(b);
 }
 
 void LiteFindPlugin::replace(bool b)
@@ -159,7 +159,7 @@ void LiteFindPlugin::replace(bool b)
         }
         m_findAct->setChecked(false);
     }
-    m_replaceEditor->widget()->setVisible(b);
+    m_replaceEditor->setVisible(b);
 }
 
 void LiteFindPlugin::fileSearch(bool b)

@@ -126,6 +126,29 @@ FindEditor::~FindEditor()
     }
 }
 
+void FindEditor::setVisible(bool b)
+{
+    if (b) {
+        LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+        if (editor) {
+            QString text;
+            QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
+            if (ed) {
+                text = ed->textCursor().selectedText();
+            } else {
+                QTextBrowser *ed = LiteApi::findExtensionObject<QTextBrowser*>(editor,"LiteApi.QTextBrowser");
+                if (ed) {
+                    text = ed->textCursor().selectedText();
+                }
+            }
+            if (!text.isEmpty()) {
+                this->m_findEdit->setText(text);
+            }
+        }
+    }
+    this->m_widget->setVisible(b);
+}
+
 QWidget *FindEditor::widget()
 {
     return m_widget;
