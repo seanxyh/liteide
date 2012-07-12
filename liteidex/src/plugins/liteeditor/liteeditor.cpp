@@ -786,7 +786,7 @@ void LiteEditor::gotoLine()
     int max = m_editorWidget->document()->lineCount();
     int v = m_editorWidget->textCursor().blockNumber()+1;
     bool ok = false;
-    v = QInputDialog::getInt(this->m_widget,tr("Goto Line"),tr("Line: ")+QString("%d-%d").arg(min,max),v,min,max,1,&ok);
+    v = QInputDialog::getInt(this->m_widget,tr("Goto Line"),tr("Line: ")+QString("%1-%2").arg(min).arg(max),v,min,max,1,&ok);
     if (!ok) {
         return;
     }

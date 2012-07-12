@@ -49,7 +49,7 @@ LiteFindPlugin::LiteFindPlugin()
     m_info->setId("plugin/LiteFind");
     m_info->setName("LiteFind");
     m_info->setAnchor("visualfc");
-    m_info->setVer("x12");
+    m_info->setVer("x12.2");
     m_info->setInfo("LiteIDE Find Plugin");
 }
 
