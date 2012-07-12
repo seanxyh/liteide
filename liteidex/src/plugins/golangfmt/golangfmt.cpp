@@ -230,7 +230,7 @@ void GolangFmt::loadDiff(QTextCursor &cursor, const QString &diff)
                 int n1 = reg.cap(3).toInt();
                 int n2 = reg.cap(4).toInt();
                 line = line_add+s1;
-                block = cursor.document()->findBlockByLineNumber(line-1);
+                block = cursor.document()->findBlockByNumber(line-1);
                 line_add += n2-s2;//n2+n1-(s2+s1);
                 continue;
             }
