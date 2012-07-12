@@ -461,11 +461,12 @@ void LiteApp::loadSession(const QString &name)
 {
     QString session = "session/"+name;
     QString projectName = m_settings->value(session+"_project").toString();
+    QString scheme = m_settings->value(session+"_scheme").toString();
     QString editorName = m_settings->value(session+"_cureditor").toString();
     QStringList fileList = m_settings->value(session+"_alleditor").toStringList();
 
     if (!projectName.isEmpty()) {
-        m_fileManager->openProject(projectName);
+        m_fileManager->openProjectScheme(projectName,scheme);
     } else {
         m_projectManager->closeProject();
     }
@@ -482,9 +483,14 @@ void LiteApp::saveSession(const QString &name)
 {
     QString projectName;
     QString editorName;
+    QString scheme;
     IProject *project = m_projectManager->currentProject();
     if (project) {
         projectName = project->filePath();
+        IMimeType *type = m_mimeTypeManager->findMimeType(project->mimeType());
+        if (type) {
+            scheme = type->scheme();
+        }
     }
 
     QStringList fileList;
@@ -503,6 +509,7 @@ void LiteApp::saveSession(const QString &name)
     }
     QString session = "session/"+name;
     m_settings->setValue(session+"_project",projectName);
+    m_settings->setValue(session+"_scheme",scheme);
     m_settings->setValue(session+"_cureditor",editorName);
     m_settings->setValue(session+"_alleditor",fileList);
 }
