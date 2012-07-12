@@ -43,6 +43,8 @@ public:
     virtual ~DebugWidget();
     virtual QWidget *widget();
 public slots:
+    void addWatch();
+    void varsViewContextMenu(QPoint);
     void setDebugger(LiteApi::IDebugger *debug);
     void enterText(const QString &cmd);
     void appendLog(const QString &log);
@@ -59,6 +61,8 @@ protected:
     QTreeView *m_statckView;
     QTreeView *m_libraryView;
     TerminalEdit *m_debugLogEdit;
+    QMenu      *m_varsMenu;
+    QAction    *m_addWatchAct;
 };
 
 #endif // DEBUGWIDGET_H

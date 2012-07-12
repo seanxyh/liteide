@@ -35,6 +35,10 @@
 #include <QVariant>
 #include <QDebug>
 #include <QFile>
+#include <QMenu>
+#include <QAction>
+#include <QInputDialog>
+
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -62,6 +66,8 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     m_asyncView->setEditTriggers(0);
 
     m_varsView->setEditTriggers(0);
+    m_varsView->setContextMenuPolicy(Qt::CustomContextMenu);
+
     m_statckView->setEditTriggers(0);
     m_libraryView->setEditTriggers(0);
 
@@ -81,8 +87,14 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_widget->setLayout(layout);
 
+    m_varsMenu = new QMenu(m_widget);
+    m_addWatchAct = new QAction(tr("Add Watch"),this);
+    m_varsMenu->addAction(m_addWatchAct);
+
     connect(m_debugLogEdit,SIGNAL(enterText(QString)),this,SLOT(enterText(QString)));
     connect(m_varsView,SIGNAL(expanded(QModelIndex)),this,SLOT(expandedVarsView(QModelIndex)));
+    connect(m_varsView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(varsViewContextMenu(QPoint)));
+    connect(m_addWatchAct,SIGNAL(triggered()),this,SLOT(addWatch()));
 }
 
 DebugWidget::~DebugWidget()
@@ -187,4 +199,25 @@ void DebugWidget::setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &i
     if (view) {
         view->setExpanded(index,expanded);
     }
+}
+
+void DebugWidget::varsViewContextMenu(QPoint pos)
+{
+    QMenu *contextMenu = m_varsMenu;
+
+    if (contextMenu && contextMenu->actions().count() > 0) {
+        contextMenu->popup(m_varsView->mapToGlobal(pos));
+    }
+}
+
+void DebugWidget::addWatch()
+{
+    QString text = QInputDialog::getText(this->m_widget,tr("Add Watch"),tr("Watch var:(example main.var os.Stdout)"));
+    if (text.isEmpty()) {
+        return;
+    }
+    if (text.indexOf(".") < 0) {
+        text = "main."+text;
+    }
+    m_debugger->createWatch(QString("\'%1\'").arg(text),false);
 }
