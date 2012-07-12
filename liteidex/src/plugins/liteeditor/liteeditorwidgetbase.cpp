@@ -1124,6 +1124,44 @@ void LiteEditorWidgetBase::unfold()
     documentLayout->emitDocumentSizeChanged();
 }
 
+void LiteEditorWidgetBase::foldAll()
+{
+    QTextDocument *doc = document();
+    TextEditor::BaseTextDocumentLayout *documentLayout = qobject_cast<TextEditor::BaseTextDocumentLayout*>(doc->documentLayout());
+
+    QTextBlock block = doc->firstBlock();
+
+    while (block.isValid()) {
+        if (TextEditor::BaseTextDocumentLayout::canFold(block))
+            TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(block, false);
+        block = block.next();
+    }
+
+    moveCursorVisible(true);
+    documentLayout->requestUpdate();
+    documentLayout->emitDocumentSizeChanged();
+    centerCursor();
+}
+
+
+void LiteEditorWidgetBase::unfoldAll()
+{
+    QTextDocument *doc = document();
+    TextEditor::BaseTextDocumentLayout *documentLayout = qobject_cast<TextEditor::BaseTextDocumentLayout*>(doc->documentLayout());
+
+    QTextBlock block = doc->firstBlock();
+    while (block.isValid()) {
+        if (TextEditor::BaseTextDocumentLayout::canFold(block))
+            TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(block, true);
+        block = block.next();
+    }
+
+    moveCursorVisible(true);
+    documentLayout->requestUpdate();
+    documentLayout->emitDocumentSizeChanged();
+    centerCursor();
+}
+
 QTextBlock LiteEditorWidgetBase::foldedBlockAt(const QPoint &pos, QRect *box) const
 {
     QPointF offset(contentOffset());

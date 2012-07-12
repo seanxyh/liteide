@@ -221,13 +221,17 @@ void LiteEditor::createActions()
     m_gotoMatchBraceAct = new QAction(tr("Goto Match Brace"),this);
     m_gotoMatchBraceAct->setShortcut(QKeySequence("Ctrl+E"));
 
-    QAction *foldAct = new QAction(tr("Fold"),this);
-    foldAct->setShortcut(QKeySequence("Ctrl+<"));
-    QAction *unfoldAct = new QAction(tr("Unfold"),this);
-    unfoldAct->setShortcut(QKeySequence("Ctrl+>"));
+    m_foldAct = new QAction(tr("Fold"),this);
+    m_foldAct->setShortcut(QKeySequence("Ctrl+<"));
+    m_unfoldAct = new QAction(tr("Unfold"),this);
+    m_unfoldAct->setShortcut(QKeySequence("Ctrl+>"));
+    m_foldAllAct = new QAction(tr("Fold All"),this);
+    m_unfoldAllAct = new QAction(tr("Unfold All"),this);
 
-    connect(foldAct,SIGNAL(triggered()),m_editorWidget,SLOT(fold()));
-    connect(unfoldAct,SIGNAL(triggered()),m_editorWidget,SLOT(unfold()));
+    connect(m_foldAct,SIGNAL(triggered()),m_editorWidget,SLOT(fold()));
+    connect(m_unfoldAct,SIGNAL(triggered()),m_editorWidget,SLOT(unfold()));
+    connect(m_foldAllAct,SIGNAL(triggered()),m_editorWidget,SLOT(foldAll()));
+    connect(m_unfoldAllAct,SIGNAL(triggered()),m_editorWidget,SLOT(unfoldAll()));
 
     m_gotoLineAct = new QAction(tr("Goto Line"),this);
     m_gotoLineAct->setShortcut(QKeySequence("Ctrl+G"));
@@ -237,8 +241,8 @@ void LiteEditor::createActions()
     m_widget->addAction(m_duplicateAct);
     connect(m_duplicateAct,SIGNAL(triggered()),m_editorWidget,SLOT(duplicate()));
 
-    m_widget->addAction(foldAct);
-    m_widget->addAction(unfoldAct);
+    m_widget->addAction(m_foldAct);
+    m_widget->addAction(m_unfoldAct);
     m_widget->addAction(m_gotoLineAct);
 
     m_widget->addAction(m_gotoPrevBlockAct);
@@ -366,6 +370,11 @@ void LiteEditor::createContextMenu()
     m_contextMenu->addAction(m_copyAct);
     m_contextMenu->addAction(m_pasteAct);
     m_contextMenu->addAction(m_duplicateAct);
+    m_contextMenu->addSeparator();
+    m_contextMenu->addAction(m_foldAct);
+    m_contextMenu->addAction(m_unfoldAct);
+    m_contextMenu->addAction(m_foldAllAct);
+    m_contextMenu->addAction(m_unfoldAllAct);
     m_contextMenu->addSeparator();
     m_contextMenu->addAction(m_selectAllAct);
     m_contextMenu->addAction(m_selectBlockAct);

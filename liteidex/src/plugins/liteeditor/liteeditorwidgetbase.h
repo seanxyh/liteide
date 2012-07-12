@@ -77,6 +77,8 @@ public slots:
     bool findEndBlock(QTextCursor &cursor, int indent) const;
     void fold();
     void unfold();
+    void foldAll();
+    void unfoldAll();
     void updateBlock(QTextBlock);
     void moveCursorVisible(bool ensureVisible);
     void toggleBlockVisible(const QTextBlock &block);

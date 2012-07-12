@@ -146,6 +146,10 @@ public:
     QAction *m_gotoLineAct;
     QAction *m_lineInfoAct;
     QAction *m_duplicateAct;
+    QAction *m_foldAct;
+    QAction *m_unfoldAct;
+    QAction *m_foldAllAct;
+    QAction *m_unfoldAllAct;
     LiteEditorFile *m_file;
     QMenu   *m_contextMenu;
     QString  m_colorStyle;
