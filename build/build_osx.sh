@@ -80,6 +80,7 @@ echo macdeployqt liteide/LiteIDE.app -no-plugins
 macdeployqt liteide/LiteIDE.app -no-plugins
 
 export QTLIBPATH=$QTDIR/lib
+echo QTLIBPATH=$QTLIBPATH
 
 function process_file()
 {
@@ -93,6 +94,10 @@ install_name_tool -change \
  $QTLIBPATH/QtGui.framework/Versions/4/QtGui \
  @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui \
   liteide/LiteIDE.app/Contents/PlugIns/$deploy_file   
+if [ $? -ge 1 ]; then
+	echo 'error, not deploy'
+	exit 1
+fi
 }
 
 function process_file2()
@@ -161,3 +166,4 @@ process_file
 
 export deploy_file=libgolangpackage.dylib
 process_file
+
