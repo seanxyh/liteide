@@ -41,6 +41,7 @@
 #include <QTextBlock>
 #include <QTextCursor>
 #include <QPlainTextEdit>
+#include <QTextBrowser>
 #include <QFileDialog>
 #include <QDebug>
 //lite_memory_check_begin
@@ -317,6 +318,23 @@ void FileSearch::setVisible(bool b)
                 m_findPathCombo->setEditText(info.path());
         }
         m_findCombo->setFocus();
+
+        LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+        if (editor) {
+            QString text;
+            QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
+            if (ed) {
+                text = ed->textCursor().selectedText();
+            } else {
+                QTextBrowser *ed = LiteApi::findExtensionObject<QTextBrowser*>(editor,"LiteApi.QTextBrowser");
+                if (ed) {
+                    text = ed->textCursor().selectedText();
+                }
+            }
+            if (!text.isEmpty()) {
+                this->m_findCombo->setEditText(text);
+            }
+        }
     }
     if (b) {
         m_liteApp->outputManager()->setCurrentOutput(m_output);

@@ -130,6 +130,25 @@ QWidget *ReplaceEditor::widget()
     return m_widget;
 }
 
+void ReplaceEditor::setVisible(bool b)
+{
+    if (b) {
+        LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+        if (editor) {
+            QString text;
+            QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
+            if (ed) {
+                text = ed->textCursor().selectedText();
+            }
+            if (!text.isEmpty()) {
+                this->m_findEdit->setText(text);
+            }
+        }
+    }
+    this->m_widget->setVisible(b);
+}
+
+
 void ReplaceEditor::setReady(const QString &findText)
 {
     m_widget->setFocus();

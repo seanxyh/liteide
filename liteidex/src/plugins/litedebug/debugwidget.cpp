@@ -216,8 +216,8 @@ void DebugWidget::addWatch()
     if (text.isEmpty()) {
         return;
     }
-    if (text.indexOf(".") < 0) {
-        text = "main."+text;
-    }
+//    if (text.indexOf(".") < 0) {
+//        text = "main."+text;
+//    }
     m_debugger->createWatch(QString("\'%1\'").arg(text),false);
 }
