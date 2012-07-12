@@ -1,3 +1,13 @@
+==== 2012.7.12 Ver X12.2 ====
+ * GolangFmt : fix fold error diff bug
+ * LiteDebug : add var watch, example main.var os.Stdout
+ * Welcome : add load last selection
+ * LiteEditor : add fold or unfold all action
+ * LiteEditor : add duplicate action
+ * LiteEditor : add color theme railscast.xml(Alexander Rødseth)
+ * LiteFind : default find use editor selection
+ * LiteEnv : fix windows env LITEIEDE_EXECOPT=/C
+ * LiteApp : fix icon on windows xp unable show
 ==== 2012.6.28 Ver X12.1.1 ====
  * LiteEditor : fix fold bug - line include "head{}end"
  * LiteEditor : kate go.xml breace match add "[]"
