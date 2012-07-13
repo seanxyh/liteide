@@ -77,6 +77,8 @@ LiteAppOption::LiteAppOption(LiteApi::IApplication *app,QObject *parent) :
     ui->maxRecentLineEdit->setText(QString("%1").arg(max));
     bool b = m_liteApp->settings()->value("LiteApp/AutoCloseProjectEditors",true).toBool();
     ui->autoCloseProjecEditorsCheckBox->setChecked(b);
+    bool b1 = m_liteApp->settings()->value("LiteApp/AutoLoadLastSession",false).toBool();
+    ui->autoLoadLastSessionCheckBox->setChecked(b1);
 }
 
 LiteAppOption::~LiteAppOption()
@@ -111,4 +113,6 @@ void LiteAppOption::apply()
     m_liteApp->settings()->setValue("LiteApp/MaxRecentFiles",max);
     bool b = ui->autoCloseProjecEditorsCheckBox->isChecked();
     m_liteApp->settings()->setValue("LiteApp/AutoCloseProjectEditors",b);
+    bool b1 = ui->autoLoadLastSessionCheckBox->isChecked();
+    m_liteApp->settings()->setValue("LiteApp/AutoLoadLastSession",b1);
 }

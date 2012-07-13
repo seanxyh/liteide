@@ -136,6 +136,10 @@ void LiteApp::load()
     emit loaded();
     appendConsole("LiteApp","loaded");
     appendConsole("LiteApp","ObjectIdList",m_extension->objectMetaList().join(";"));
+    bool b = m_settings->value("LiteApp/AutoLoadLastSession",false).toBool();
+    if (b) {
+        loadSession("default");
+    }
 }
 
 LiteApp::~LiteApp()
