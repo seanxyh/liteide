@@ -139,7 +139,9 @@ void TerminalEdit::keyPressEvent(QKeyEvent *e)
     if (e->key() == Qt::Key_Enter ||
             e->key() == Qt::Key_Return) {
         QTextCursor cur = this->textCursor();
-        cur.setPosition(m_lastPos,QTextCursor::KeepAnchor);
+        int pos = m_lastPos;
+        m_lastPos = cur.position();
+        cur.setPosition(pos,QTextCursor::KeepAnchor);
         QString text = cur.selectedText();
 #ifdef Q_OS_WIN
         text.append("\r\n");
