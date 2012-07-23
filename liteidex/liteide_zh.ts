@@ -1014,68 +1014,68 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>控制台</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="319"/>
+        <location filename="src/liteapp/liteapp.cpp" line="323"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="321"/>
+        <location filename="src/liteapp/liteapp.cpp" line="325"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="323"/>
+        <location filename="src/liteapp/liteapp.cpp" line="327"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="325"/>
+        <location filename="src/liteapp/liteapp.cpp" line="329"/>
         <source>Close All</source>
         <translation>关闭所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="326"/>
+        <location filename="src/liteapp/liteapp.cpp" line="330"/>
         <source>Open Project</source>
         <translation>打开项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="327"/>
+        <location filename="src/liteapp/liteapp.cpp" line="331"/>
         <source>Save Project</source>
         <translation>保存项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="328"/>
+        <location filename="src/liteapp/liteapp.cpp" line="332"/>
         <source>Close Project</source>
         <translation>关闭项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="329"/>
+        <location filename="src/liteapp/liteapp.cpp" line="333"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="331"/>
+        <location filename="src/liteapp/liteapp.cpp" line="335"/>
         <source>Save As...</source>
         <translation>另存为...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="333"/>
+        <location filename="src/liteapp/liteapp.cpp" line="337"/>
         <source>Save All</source>
         <oldsource>Save As</oldsource>
         <translation>保存所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="335"/>
+        <location filename="src/liteapp/liteapp.cpp" line="339"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="338"/>
+        <location filename="src/liteapp/liteapp.cpp" line="342"/>
         <source>About LiteIDE...</source>
         <translation>关于LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="339"/>
+        <location filename="src/liteapp/liteapp.cpp" line="343"/>
         <source>About Plugins...</source>
         <translation>关于插件...</translation>
     </message>
@@ -1120,7 +1120,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>关闭项目时自动关闭项目已打开文件.</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteappoption.ui" line="147"/>
+        <location filename="src/liteapp/liteappoption.ui" line="134"/>
+        <source>Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteappoption.ui" line="140"/>
+        <source>Auto load last session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteappoption.ui" line="163"/>
         <source>The language change will take effect after a restart of LiteIDE.</source>
         <translation>语言更改生效,需要重启LiteIDE.</translation>
     </message>

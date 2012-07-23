@@ -1011,68 +1011,68 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="319"/>
+        <location filename="src/liteapp/liteapp.cpp" line="323"/>
         <source>New</source>
         <translation>Nouveau</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="321"/>
+        <location filename="src/liteapp/liteapp.cpp" line="325"/>
         <source>Open</source>
         <translation>Ouvrir</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="323"/>
+        <location filename="src/liteapp/liteapp.cpp" line="327"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="325"/>
+        <location filename="src/liteapp/liteapp.cpp" line="329"/>
         <source>Close All</source>
         <translation>Tout fermer</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="326"/>
+        <location filename="src/liteapp/liteapp.cpp" line="330"/>
         <source>Open Project</source>
         <translation>Ouvrir un projet</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="327"/>
+        <location filename="src/liteapp/liteapp.cpp" line="331"/>
         <source>Save Project</source>
         <translation>Enregistrer un projet</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="328"/>
+        <location filename="src/liteapp/liteapp.cpp" line="332"/>
         <source>Close Project</source>
         <translation>Fermer le projet</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="329"/>
+        <location filename="src/liteapp/liteapp.cpp" line="333"/>
         <source>Save</source>
         <translation>Enregistrer</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="331"/>
+        <location filename="src/liteapp/liteapp.cpp" line="335"/>
         <source>Save As...</source>
         <translation>Enregistrer sous...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="333"/>
+        <location filename="src/liteapp/liteapp.cpp" line="337"/>
         <source>Save All</source>
         <oldsource>Save As</oldsource>
         <translation>Enregistrer tout</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="335"/>
+        <location filename="src/liteapp/liteapp.cpp" line="339"/>
         <source>Exit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="338"/>
+        <location filename="src/liteapp/liteapp.cpp" line="342"/>
         <source>About LiteIDE...</source>
         <translation>À propos de LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="339"/>
+        <location filename="src/liteapp/liteapp.cpp" line="343"/>
         <source>About Plugins...</source>
         <translation>À propos des plugins...</translation>
     </message>
@@ -1117,7 +1117,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteappoption.ui" line="147"/>
+        <location filename="src/liteapp/liteappoption.ui" line="134"/>
+        <source>Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteappoption.ui" line="140"/>
+        <source>Auto load last session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteappoption.ui" line="163"/>
         <source>The language change will take effect after a restart of LiteIDE.</source>
         <translation type="unfinished"></translation>
     </message>
