@@ -8,6 +8,4 @@ syntax: glob
 *.orig
 liteide-build-*
 liteidex/liteide
-build/liteide
-build/src
-build/Makefile
+build
