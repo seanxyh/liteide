@@ -48,7 +48,11 @@ SOURCES += main.cpp\
     newfiledialog.cpp \
     optionsbrowser.cpp \
     liteappoption.cpp \
-    liteappoptionfactory.cpp
+    liteappoptionfactory.cpp \
+    toolmainwindow.cpp \
+    tooldockwidget.cpp \
+    rotationtoolbutton.cpp \
+    toolwindowmanager.cpp
 
 HEADERS  += mainwindow.h \
     liteapp.h \
@@ -67,7 +71,11 @@ HEADERS  += mainwindow.h \
     newfiledialog.h \
     optionsbrowser.h \
     liteappoption.h \
-    liteappoptionfactory.h
+    liteappoptionfactory.h \
+    toolmainwindow.h \
+    tooldockwidget.h \
+    rotationtoolbutton.h \
+    toolwindowmanager.h
 
 FORMS += \
     aboutdialog.ui \

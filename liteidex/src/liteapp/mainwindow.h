@@ -27,10 +27,11 @@
 #define MAINWINDOW_H
 
 #include "liteapi/liteapi.h"
+#include "toolmainwindow.h"
 
 using namespace LiteApi;
 class QSplitter;
-class MainWindow : public QMainWindow
+class MainWindow : public ToolMainWindow
 {
     Q_OBJECT
 public:

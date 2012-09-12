@@ -348,6 +348,15 @@ signals:
     void projectAboutToClose(LiteApi::IProject *project);
 };
 
+class IToolWindowManager : public IManager
+{
+    Q_OBJECT
+public:
+    IToolWindowManager(QObject *parent = 0) : IManager(parent) {}
+    virtual QAction *addToolWindow(Qt::DockWidgetArea area, QWidget *widget, const QString &id, const QString &title, bool split) = 0;
+    virtual void moveToolWindow(Qt::DockWidgetArea area,QAction *action, bool split) = 0;
+    virtual QAction *findToolWindow(QWidget *widget) = 0;
+};
 
 class IDockManager : public IManager
 {
@@ -425,6 +434,7 @@ public:
     virtual IOutputManager  *outputManager() = 0;
     virtual IMimeTypeManager *mimeTypeManager() = 0;
     virtual IOptionManager  *optionManager() = 0;
+    virtual IToolWindowManager *toolWindowManager() = 0;
 
     virtual QMainWindow *mainWindow() const = 0;
     virtual QSettings *settings() = 0;

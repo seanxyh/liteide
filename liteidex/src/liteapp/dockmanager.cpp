@@ -46,6 +46,7 @@ QWidget *DockManager::widget()
 
 QDockWidget *DockManager::addDock(QWidget *widget, const QString &title, Qt::DockWidgetArea area, Qt::DockWidgetAreas alowedAreas, QDockWidget::DockWidgetFeatures features)
 {
+    /*
     QDockWidget *dock = m_widgetDockMap.value(widget);
     if (dock) {
         return dock;
@@ -57,6 +58,12 @@ QDockWidget *DockManager::addDock(QWidget *widget, const QString &title, Qt::Doc
     dock->setFeatures(features);
     m_liteApp->mainWindow()->addDockWidget(area, dock);
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuPanePos,dock->toggleViewAction());
+    */
+    ToolMainWindow *main = static_cast<ToolMainWindow*>(m_liteApp->mainWindow());
+    if (!main) {
+        return NULL;
+    }
+    QDockWidget *dock = (QDockWidget*)main->addToolWindow(area,widget,title,title);
     m_widgetDockMap.insert(widget,dock);
 
     return dock;

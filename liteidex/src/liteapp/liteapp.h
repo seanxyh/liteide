@@ -42,6 +42,7 @@ class OutputManager;
 class ActionManager;
 class MimeTypeManager;
 class OptionManager;
+class ToolWindowManager;
 class QSettings;
 class QSplitter;
 class LiteAppOptionFactory;
@@ -61,6 +62,7 @@ public:
     virtual IOutputManager  *outputManager();
     virtual IMimeTypeManager *mimeTypeManager();
     virtual IOptionManager  *optionManager();
+    virtual IToolWindowManager *toolWindowManager();
 
     virtual QMainWindow *mainWindow() const;
     virtual QSettings *settings();
@@ -98,6 +100,7 @@ protected:
     QSettings       *m_settings;
     Extension     *m_extension;
     MainWindow      *m_mainwindow;
+    ToolWindowManager *m_toolWindowManager;
     ActionManager  *m_actionManager;
     PluginManager   *m_pluginManager;
     ProjectManager *m_projectManager;

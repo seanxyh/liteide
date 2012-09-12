@@ -56,7 +56,7 @@
 
 
 MainWindow::MainWindow(IApplication *app,QWidget *parent)
-    : QMainWindow(parent),
+    : ToolMainWindow(parent),
       m_liteApp(app)
 {
    // this->setAttribute(Qt::WA_DeleteOnClose);
@@ -66,6 +66,9 @@ MainWindow::MainWindow(IApplication *app,QWidget *parent)
 
     m_mainSplitter = new QSplitter(Qt::Vertical,this);
     setCentralWidget(m_mainSplitter);
+
+    loadInitToolState(m_liteApp->settings()->value("liteapp/toolState").toByteArray());
+
 }
 
 QSplitter *MainWindow::splitter()
@@ -75,6 +78,7 @@ QSplitter *MainWindow::splitter()
 
 MainWindow::~MainWindow()
 {
+    this->removeAllToolWindows();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

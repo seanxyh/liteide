@@ -36,5 +36,7 @@
         <file>images/gopher.png</file>
         <file>images/gopath.png</file>
         <file>images/editclear.png</file>
+        <file>images/closetool.png</file>
+        <file>images/movemenu.png</file>
     </qresource>
 </RCC>
