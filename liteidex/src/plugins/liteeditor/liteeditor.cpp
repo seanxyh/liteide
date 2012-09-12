@@ -637,7 +637,7 @@ void LiteEditor::updateTip(QString func,QString args)
         return;
     }
     QString tip = QString("%1 %2").arg(func).arg(args);
-    m_liteApp->outputManager()->setStatusInfo(tip);
+    //m_liteApp->outputManager()->setStatusInfo(tip);
 }
 
 void LiteEditor::filePrintPreview()

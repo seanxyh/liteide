@@ -64,26 +64,6 @@ enum {
     ID_EDITOR = 5
 };
 
-
-class LiteOutput : public TextOutput
-{
-public:
-    LiteOutput(QWidget *parent = 0) : TextOutput(true,parent)
-    {
-        m_stopAct = new QAction(tr("Stop"),this);
-        m_stopAct->setIcon(QIcon("icon:litebuild/images/stopaction.png"));
-        m_stopAct->setToolTip("Stop Action");
-        m_toolBar->insertAction(m_clearAct,m_stopAct);
-        m_toolBar->insertSeparator(m_clearAct);        
-    }
-    void setInfo(const QString &info)
-    {
-        m_infoLabel->setText(info);
-    }
-public:
-    QAction *m_stopAct;
-};
-
 LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     LiteApi::ILiteBuild(parent),
     m_liteApp(app),
@@ -114,13 +94,23 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_toolBar->addAction(m_configAct);
 
     m_process = new ProcessEx(this);
-    m_output = new LiteOutput;
+    m_output = new TextOutput;
     m_output->setMaxLine(1024);
 
-    connect(m_output,SIGNAL(hideOutput()),m_liteApp->outputManager(),SLOT(setCurrentOutput()));
-    connect(m_output->m_stopAct,SIGNAL(triggered()),this,SLOT(stopAction()));
+    QAction *stopAct = new QAction(tr("Stop"),this);
+    stopAct->setIcon(QIcon("icon:litebuild/images/stopaction.png"));
+    QAction *clearAct = new QAction(tr("Clear"),this);
+    clearAct->setIcon(QIcon("icon:images/cleanoutput.png"));
 
-    m_liteApp->outputManager()->addOutuput(m_output,tr("Build Output"));
+    connect(stopAct,SIGNAL(triggered()),this,SLOT(stopAction()));
+    connect(clearAct,SIGNAL(triggered()),m_output,SLOT(clear()));
+
+    //m_liteApp->outputManager()->addOutuput(m_output,tr("Build Output"));
+    m_outputAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::BottomDockWidgetArea,
+                                                                m_output,"buildoutput",
+                                                                tr("Build Output"),
+                                                                false,
+                                                                QList<QAction*>() << stopAct << clearAct);
 
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(currentProjectChanged(LiteApi::IProject*)));
@@ -414,7 +404,7 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
 {
     if (m_build == build) {
         if (build) {
-            m_output->setInfo(QString("{build id=\"%1\" file=\"%2\"}").
+            m_output->appendTag0(QString("{build id=\"%1\" file=\"%2\"}\n").
                               arg(build->id()).
                               arg(m_buildFilePath));
         }
@@ -451,11 +441,9 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
                                      << new QStandardItem(value));
             //m_configMap.insert(name,value);
         }
-        m_output->setInfo(QString("{build id=\"%1\" file=\"%2\"}").
+        m_output->appendTag0(QString("{build id=\"%1\" file=\"%2\"}\n").
                           arg(build->id()).
                           arg(m_buildFilePath));
-    } else {
-        m_output->setInfo(QString());
     }
 
     m_build = build;
@@ -648,7 +636,9 @@ void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)
     if (data.isEmpty()) {
         return;
     }
-    m_liteApp->outputManager()->setCurrentOutput(m_output);
+    //m_liteApp->outputManager()->setCurrentOutput(m_output);
+    m_outputAct->setChecked(true);
+
     QString codecName = m_process->userData(2).toString();
     QTextCodec *codec = QTextCodec::codecForLocale();
     if (!codecName.isEmpty()) {
@@ -712,7 +702,8 @@ void LiteBuild::buildAction()
         return;
     }
 
-    m_liteApp->outputManager()->setCurrentOutput(m_output);
+    //m_liteApp->outputManager()->setCurrentOutput(m_output);
+    m_outputAct->setChecked(true);
     m_output->updateExistsTextColor();
     m_process->setUserData(ID_MIMETYPE,mime);
     m_process->setUserData(ID_EDITOR,editor);

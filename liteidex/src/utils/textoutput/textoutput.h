@@ -21,41 +21,14 @@
 // Module: textoutput.h
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: textoutput.h,v 1.0 2011-5-12 visualfc Exp $
+// $Id: textoutput.h,v 1.0 2011-9-12 visualfc Exp $
 
 #ifndef TEXTOUTPUT_H
 #define TEXTOUTPUT_H
 
-#include <QWidget>
-#include <QTextEdit>
-#include <QToolButton>
-#include <QPlainTextEdit>
+#include "terminaledit.h"
 
-class QTextEdit;
-class QToolBar;
-class QLabel;
-class TerminalEdit;
-class QVBoxLayout;
-
-class Output : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit Output(QWidget *parent = 0);
-    void setCenter(QWidget *widget);
-signals:
-    void hideOutput();
-    void clearRequest();
-protected:
-    QVBoxLayout  *m_mainLayout;
-    QToolBar      *m_toolBar;
-    QToolButton   *m_closeBtn;
-    QLabel        *m_infoLabel;
-    QAction       *m_clearAct;
-    QAction       *m_hideAct;
-};
-
-class TextOutput : public Output
+class TextOutput : public TerminalEdit
 {
     Q_OBJECT
 public:
@@ -65,13 +38,7 @@ public:
     void appendTag0(const QString &text);
     void appendTag1(const QString &text);
     void updateExistsTextColor(const QBrush &foreground = Qt::gray);
-    void setReadOnly(bool bo);
     void setMaxLine(int max);
-signals:
-    void dbclickEvent(QTextCursor);
-    void enterText(QString);
-public slots:
-    void clear();
 protected:
     TerminalEdit  *m_editor;
     QTextCharFormat m_fmt;

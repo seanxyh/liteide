@@ -68,7 +68,11 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_output = new TextOutput;
     m_output->setReadOnly(true);
     m_output->setMaxLine(1024);
-    connect(m_output,SIGNAL(hideOutput()),m_liteApp->outputManager(),SLOT(setCurrentOutput()));
+
+    QAction *clearAct = new QAction(tr("Clear"),this);
+    clearAct->setIcon(QIcon("icon:images/cleanoutput.png"));
+
+    connect(clearAct,SIGNAL(triggered()),m_output,SLOT(clear()));
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
@@ -146,7 +150,9 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
 
-    m_liteApp->outputManager()->addOutuput(m_output,tr("Debug Output"));
+    m_outputAct = m_liteApp->toolWindowManager()->addToolWindow(
+                Qt::BottomDockWidgetArea,m_output,"debugoutput",tr("Debug Output"),false,
+                QList<QAction*>() << clearAct);
 
     m_startDebugAct->setToolTip(tr("Start Debugging (F5)"));
     m_stopDebugAct->setEnabled(false);
@@ -399,7 +405,8 @@ void LiteDebug::debugStarted()
     m_stepOutAct->setEnabled(true);
     m_runToLineAct->setEnabled(true);
     m_output->setReadOnly(false);
-    m_liteApp->outputManager()->setCurrentOutput(m_output);
+    //m_liteApp->outputManager()->setCurrentOutput(m_output);
+    m_outputAct->setChecked(true);
     m_widget->show();    
     emit debugVisible(true);
 }
@@ -415,7 +422,7 @@ void LiteDebug::debugStoped()
     m_runToLineAct->setEnabled(false);
     clearLastLine();
     m_output->setReadOnly(true);
-    m_liteApp->outputManager()->setCurrentOutput(m_output);
+    //m_liteApp->outputManager()->setCurrentOutput(m_output);
     m_widget->hide();
     emit debugVisible(false);
 }

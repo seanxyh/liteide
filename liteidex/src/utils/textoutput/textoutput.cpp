@@ -21,20 +21,14 @@
 // Module: textoutput.cpp
 // Creator: visualfc <visualfc@gmail.com>
 // date: 2011-3-26
-// $Id: textoutput.cpp,v 1.0 2011-5-12 visualfc Exp $
+// $Id: textoutput.cpp,v 1.0 2011-9-12 visualfc Exp $
 
 #include "textoutput.h"
-#include "terminaledit.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QTextCharFormat>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QTextCursor>
-#include <QToolBar>
-#include <QAction>
-#include <QLabel>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -45,69 +39,23 @@
 #endif
 //lite_memory_check_end
 
-Output::Output(QWidget *parent)
-    :QWidget(parent)
-{
-    m_toolBar = new QToolBar(this);
-    m_toolBar->setIconSize(QSize(16,16));
-
-    m_mainLayout = new QVBoxLayout;
-    m_mainLayout->setMargin(0);
-    m_mainLayout->setSpacing(0);
-    m_mainLayout->addWidget(m_toolBar);
-    setLayout(m_mainLayout);
-
-    m_hideAct = new QAction(tr("Hide"),this);
-    m_hideAct->setToolTip("Hide");
-    m_hideAct->setIcon(QIcon("icon:images/hideoutput.png"));
-    m_clearAct = new QAction(tr("Clear"),this);
-    m_clearAct->setIcon(QIcon("icon:images/cleanoutput.png"));
-    m_infoLabel = new QLabel(this);
-    m_infoLabel->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-    m_toolBar->addAction(m_clearAct);
-    m_toolBar->addSeparator();
-    m_toolBar->addWidget(m_infoLabel);
-    m_toolBar->addSeparator();
-    m_toolBar->addAction(m_hideAct);
-
-    connect(m_hideAct,SIGNAL(triggered()),this,SIGNAL(hideOutput()));
-    connect(m_clearAct,SIGNAL(triggered()),this,SIGNAL(clearRequest()));
-}
-
-void Output::setCenter(QWidget *widget)
-{
-    m_mainLayout->addWidget(widget);
-}
-
 TextOutput::TextOutput(bool readOnly, QWidget *parent) :
-    Output(parent)
+    TerminalEdit(parent)
 {
-    m_editor = new TerminalEdit(this);
-    m_editor->setReadOnly(readOnly);
-    m_fmt = m_editor->currentCharFormat();
-
-    m_mainLayout->addWidget(m_editor);
-
-    connect(m_editor,SIGNAL(dbclickEvent(QTextCursor)),this,SIGNAL(dbclickEvent(QTextCursor)));
-    connect(m_editor,SIGNAL(enterText(QString)),this,SIGNAL(enterText(QString)));
-    connect(m_clearAct,SIGNAL(triggered()),this,SLOT(clear()));
-}
-
-void TextOutput::clear()
-{
-    m_editor->clear();
+    this->setReadOnly(readOnly);
+    m_fmt = this->currentCharFormat();
 }
 
 void TextOutput::append(const QString &text)
 {
-    m_editor->append(text,&m_fmt);
+    TerminalEdit::append(text,&m_fmt);
 }
 
 void TextOutput::append(const QString &text,const QBrush &foreground)
 {
     QTextCharFormat f = m_fmt;
     f.setForeground(foreground);
-    m_editor->append(text,&f);
+    TerminalEdit::append(text,&f);
 }
 
 void TextOutput::appendTag0(const QString &text)
@@ -115,7 +63,7 @@ void TextOutput::appendTag0(const QString &text)
     QTextCharFormat f = m_fmt;
     f.setFontWeight(QFont::Bold);
     f.setForeground(Qt::darkBlue);
-    m_editor->append(text,&f);
+    TerminalEdit::append(text,&f);
 }
 
 void TextOutput::appendTag1(const QString &text)
@@ -123,24 +71,19 @@ void TextOutput::appendTag1(const QString &text)
     QTextCharFormat f = m_fmt;
     f.setFontWeight(QFont::Bold);
     f.setForeground(Qt::black);
-    m_editor->append(text,&f);
+    TerminalEdit::append(text,&f);
 }
 
 void TextOutput::updateExistsTextColor(const QBrush &foreground)
 {
     QTextCharFormat f = m_fmt;
     f.setForeground(foreground);
-    QTextCursor all = m_editor->textCursor();
+    QTextCursor all = this->textCursor();
     all.select(QTextCursor::Document);
     all.setCharFormat(f);
 }
 
-void TextOutput::setReadOnly(bool bo)
-{
-    m_editor->setReadOnly(bo);
-}
-
 void TextOutput::setMaxLine(int max)
 {
-    m_editor->setMaximumBlockCount(max);;
+    this->setMaximumBlockCount(max);;
 }

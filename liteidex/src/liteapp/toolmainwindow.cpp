@@ -1,3 +1,28 @@
+/**************************************************************************
+** This file is part of LiteIDE
+**
+** Copyright (c) 2011 LiteIDE Team. All rights reserved.
+**
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Lesser General Public
+** License as published by the Free Software Foundation; either
+** version 2.1 of the License, or (at your option) any later version.
+**
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Lesser General Public License for more details.
+**
+** In addition, as a special exception,  that plugins developed for LiteIDE,
+** are allowed to remain closed sourced and can be distributed under any license .
+** These rights are included in the file LGPL_EXCEPTION.txt in this package.
+**
+**************************************************************************/
+// Module: toolmainwindow.cpp
+// Creator: visualfc <visualfc@gmail.com>
+// date: 2012-9-12
+// $Id: toolmainwindow.cpp,v 1.0 2012-9-12 visualfc Exp $
+
 #include "toolmainwindow.h"
 #include <QToolBar>
 #include <QAction>
@@ -70,6 +95,7 @@ ActionToolBar::ActionToolBar(QObject *parent, Qt::DockWidgetArea _area)
 {
     toolBar = new QToolBar;
     toolBar->hide();
+    toolBar->setObjectName(QString("tool_%1").arg(area));
     toolBar->setMovable(false);
 
     QWidget *spacer = new QWidget;
@@ -193,7 +219,6 @@ ToolMainWindow::ToolMainWindow(QWidget *parent)
             splitDockWidget(actionToolBar->dock1,actionToolBar->dock2,Qt::Horizontal);
         else
             splitDockWidget(actionToolBar->dock1,actionToolBar->dock2,Qt::Vertical);
-        connect(actionToolBar->toolBar,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(dockContextMenu(QPoint)));
         connect(actionToolBar,SIGNAL(moveActionTo(Qt::DockWidgetArea,QAction*,bool)),this,SLOT(moveToolWindow(Qt::DockWidgetArea,QAction*,bool)));
     }
 
@@ -213,7 +238,7 @@ ToolMainWindow::ToolMainWindow(QWidget *parent)
     bar->toolBar->setStyleSheet("QToolBar {border:0}");
     m_statusBar->addWidget(bar->toolBar,1);
 
-    //this->setStatusBar(m_statusBar);
+    this->setStatusBar(m_statusBar);
 
     this->setStyleSheet("QMainWindow::separator{width:1; background-color: gray ;}");
     m_statusBar->setStyleSheet("QStatusBar {border-top: 1px solid gray}");
@@ -228,15 +253,7 @@ ToolMainWindow::ToolMainWindow(QWidget *parent)
 
 ToolMainWindow::~ToolMainWindow()
 {
-
     qDeleteAll(m_actStateMap);
-}
-
-void ToolMainWindow::removeAllToolWindows()
-{
-    foreach(ActionState *state, m_actStateMap.values()) {
-        delete state->widget;
-    }
 }
 
 void ToolMainWindow::toggledAction(bool)
@@ -255,6 +272,7 @@ void ToolMainWindow::toggledAction(bool)
             dock->show();
         }
         dock->setWidget(state->widget);
+        dock->setWidgetActions(state->widgetActions);
         dock->setWindowTitle(state->title);
     } else {
         if (!dock->checkedAction()) {
@@ -290,12 +308,14 @@ void ToolMainWindow::removeToolWindow(QAction *action)
     }
 }
 
-QAction *ToolMainWindow::addToolWindow(Qt::DockWidgetArea area, QWidget *widget, const QString &id, const QString &title, bool split)
+QAction *ToolMainWindow::addToolWindow(Qt::DockWidgetArea area, QWidget *widget, const QString &id, const QString &title, bool split, QList<QAction*> widgetActions)
 {
-    QMap<QString,InitToolSate>::iterator it = m_idStateMap.find(id);
-    if (it != m_idStateMap.end()) {
+    QMap<QString,InitToolSate>::iterator it = m_initIdStateMap.find(id);
+    bool checked = true;
+    if (it != m_initIdStateMap.end()) {
         area = it.value().area;
         split = it.value().split;
+        checked = it.value().checked;
     }
 
     ActionToolBar *actToolBar = m_areaToolBar.value(area);
@@ -307,6 +327,7 @@ QAction *ToolMainWindow::addToolWindow(Qt::DockWidgetArea area, QWidget *widget,
     state->area = area;
     state->split = split;
     state->widget = widget;
+    state->widgetActions = widgetActions;
     state->id = id;
     state->title = title;
 
@@ -321,8 +342,7 @@ QAction *ToolMainWindow::addToolWindow(Qt::DockWidgetArea area, QWidget *widget,
     }
 
     connect(action,SIGNAL(toggled(bool)),this,SLOT(toggledAction(bool)));
-
-    action->setChecked(true);
+    action->setChecked(checked);
     return action;
 }
 
@@ -355,6 +375,22 @@ void ToolMainWindow::restoreToolWindows(){
         action->setChecked(true);
     }
     m_hideActionList.clear();
+}
+
+void ToolMainWindow::showOrHideToolWindow()
+{
+    bool hide = false;
+    foreach(QAction *action, m_actStateMap.keys()) {
+        if (action->isChecked()) {
+            hide = true;
+            break;
+        }
+    }
+    if (hide) {
+        hideAllToolWindows();
+    } else {
+        restoreToolWindows();
+    }
 }
 
 void ToolMainWindow::hideAllToolWindows()
@@ -392,8 +428,24 @@ QByteArray ToolMainWindow::saveToolState(int version) const
         stream << state->id;
         stream << (int)state->area;
         stream << state->split;
+        stream << it.key()->isChecked();
     }
     return data;
+}
+
+bool ToolMainWindow::restoreState(const QByteArray &state, int version)
+{
+    bool b = QMainWindow::restoreState(state,version);
+    QMapIterator<QAction*,ActionState*> it(m_actStateMap);
+    while(it.hasNext()) {
+        it.next();
+        QMap<QString,InitToolSate>::iterator find = m_initIdStateMap.find(it.value()->id);
+        if (find != m_initIdStateMap.end()) {
+            it.key()->setChecked(find.value().checked);
+        }
+    }
+    m_initIdStateMap.clear();
+    return b;
 }
 
 bool ToolMainWindow::loadInitToolState(const QByteArray &state, int version)
@@ -417,10 +469,11 @@ bool ToolMainWindow::loadInitToolState(const QByteArray &state, int version)
         stream >> area;
         value.area = (Qt::DockWidgetArea)area;
         stream >> value.split;
-        m_idStateMap.insert(id,value);
+        stream >> value.checked;
+        m_initIdStateMap.insert(id,value);
     }
     if (stream.status() != QDataStream::Ok) {
-        m_idStateMap.clear();
+        m_initIdStateMap.clear();
         return false;
     }
     return true;

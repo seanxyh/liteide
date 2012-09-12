@@ -67,6 +67,7 @@ public slots:
     virtual bool closeAllEditors(bool autoSaveAll = false);
 signals:
     void tabAddRequest();
+    void doubleClickedTab();
 protected:    
     QWidget      *m_widget;
     LiteTabWidget *m_editorTabWidget;

@@ -35,7 +35,7 @@
 class BuildManager;
 class QComboBox;
 class ProcessEx;
-class LiteOutput;
+class TextOutput;
 class QStandardItemModel;
 
 class LiteBuild : public LiteApi::ILiteBuild
@@ -89,7 +89,8 @@ protected:
     //QMap<QString,QString> m_customMap;
     QString m_workDir;
     ProcessEx *m_process;
-    LiteOutput *m_output;
+    TextOutput *m_output;
+    QAction    *m_outputAct;
     QString     m_outputRegex;
     QString     m_buildFilePath;
     QMap<QString,QString> m_editorInfo;

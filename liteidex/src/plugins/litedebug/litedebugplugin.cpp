@@ -65,14 +65,9 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
 
-    int index = splitter->indexOf(m_liteApp->outputManager()->widget());
-    if (index == -1) {
-        return false;
-    }
-
     m_liteDebug = new LiteDebug(app,this);
     m_liteDebug->widget()->hide();
-    splitter->insertWidget(index,m_liteDebug->widget());
+    splitter->addWidget(m_liteDebug->widget());
 
     m_viewDebug = new QAction(tr("Debug Window"),this);
     m_viewDebug->setCheckable(true);

@@ -132,9 +132,9 @@ void PackageProject::loadProject(LiteApi::IApplication *app, const QString &path
     project->setPath(path);
     project->reload();
     app->projectManager()->setCurrentProject(project);
-    QDockWidget *dock = app->dockManager()->dockWidget(app->projectManager()->widget());
-    if (dock) {
-        dock->raise();
+    QAction *act = app->toolWindowManager()->findToolWindow(app->projectManager()->widget());
+    if (act) {
+        act->setChecked(true);
     }
 }
 

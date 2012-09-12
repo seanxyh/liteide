@@ -60,8 +60,8 @@ ProjectManager::ProjectManager()
 ProjectManager::~ProjectManager()
 {
     if (m_widget) {
+        m_liteApp->toolWindowManager()->removeToolWindow(m_widget);
         delete m_widget;
-        m_liteApp->dockManager()->removeDock(m_widget);
     }
 }
 
@@ -102,7 +102,8 @@ bool ProjectManager::initWithApp(IApplication *app)
     layout->addWidget(tab);
 
     m_widget->setLayout(layout);
-    m_liteApp->dockManager()->addDock(m_widget,tr("Projects"));
+    //m_liteApp->dockManager()->addDock(m_widget,tr("Projects"));
+    m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"projects",tr("Projects"),false);
 
     connect(m_projectMenu,SIGNAL(triggered(QAction*)),this,SLOT(triggeredProject(QAction*)));
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));

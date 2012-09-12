@@ -67,14 +67,14 @@ LiteApp::LiteApp()
       m_editorManager(new EditorManager),
       m_fileManager(new FileManager),
       m_dockManager(new DockManager),
-      m_outputManager(new OutputManager),
+      //m_outputManager(new OutputManager),
       m_mimeTypeManager(new MimeTypeManager),
       m_optionManager(new OptionManager)
 {
     m_actionManager->initWithApp(this);
     m_toolWindowManager->initWithApp(this);
     m_dockManager->initWithApp(this);
-    m_outputManager->initWithApp(this);
+    //m_outputManager->initWithApp(this);
     m_mimeTypeManager->initWithApp(this);
     m_pluginManager->initWithApp(this);
     m_projectManager->initWithApp(this);
@@ -82,17 +82,18 @@ LiteApp::LiteApp()
     m_fileManager->initWithApp(this);
     m_optionManager->initWithApp(this);
 
+    //m_mainwindow->setCentralWidget(m_editorManager->widget());
     m_mainwindow->splitter()->addWidget(m_editorManager->widget());
-    m_mainwindow->splitter()->addWidget(m_outputManager->widget());
-    m_mainwindow->splitter()->setStretchFactor(0,50);
-    m_mainwindow->setStatusBar(m_outputManager->statusBar());
+    //m_mainwindow->splitter()->addWidget(m_outputManager->widget());
+    //m_mainwindow->splitter()->setStretchFactor(0,50);
+    //m_mainwindow->setStatusBar(m_outputManager->statusBar());
 
     m_extension->addObject("LiteApi.IMimeTypeManager",m_mimeTypeManager);
     m_extension->addObject("LiteApi.IPluginManager",m_pluginManager);
     m_extension->addObject("LiteApi.IProjectManager",m_projectManager);
     m_extension->addObject("LiteApi.IEditManager",m_editorManager);
     m_extension->addObject("LiteApi.IDockManager",m_dockManager);
-    m_extension->addObject("LiteApi.IOutputManager",m_outputManager);
+    //m_extension->addObject("LiteApi.IOutputManager",m_outputManager);
     m_extension->addObject("LiteApi.IOptoinManager",m_optionManager);
     m_extension->addObject("LiteApi.IToolWindowManager",m_toolWindowManager);
     m_extension->addObject("LiteApi.QMainWindow",m_mainwindow);
@@ -107,6 +108,7 @@ LiteApp::LiteApp()
     connect(m_editorManager,SIGNAL(editorSaved(LiteApi::IEditor*)),m_fileManager,SLOT(editorSaved(LiteApi::IEditor*)));
     connect(m_editorManager,SIGNAL(editorCreated(LiteApi::IEditor*)),m_fileManager,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_editorManager,SIGNAL(editorAboutToClose(LiteApi::IEditor*)),m_fileManager,SLOT(editorAboutToClose(LiteApi::IEditor*)));
+    connect(m_editorManager,SIGNAL(doubleClickedTab()),m_mainwindow,SLOT(showOrHideToolWindow()));
     connect(m_optionManager,SIGNAL(applyOption(QString)),m_fileManager,SLOT(applyOption(QString)));
     connect(m_optionManager,SIGNAL(applyOption(QString)),m_projectManager,SLOT(applyOption(QString)));
 
@@ -115,8 +117,9 @@ LiteApp::LiteApp()
     createToolBars();
 
     m_logOutput = new TextOutput;
-    m_outputManager->addOutuput(m_logOutput,tr("Console"));
-    connect(m_logOutput,SIGNAL(hideOutput()),m_outputManager,SLOT(setCurrentOutput()));
+    //m_outputManager->addOutuput(m_logOutput,tr("Console"));
+    m_toolWindowManager->addToolWindow(Qt::BottomDockWidgetArea,m_logOutput,"logoutput",tr("Console"),true);
+    //connect(m_logOutput,SIGNAL(hideOutput()),m_outputManager,SLOT(setCurrentOutput()));
 
     m_optionAct = m_editorManager->registerBrowser(m_optionManager->browser());
     m_viewMenu->addAction(m_optionAct);
@@ -165,7 +168,6 @@ void LiteApp::cleanup()
     delete m_pluginManager;
     delete m_actionManager;
     delete m_dockManager;
-    delete m_outputManager;
     delete m_mimeTypeManager;
     delete m_optionManager;
     delete m_extension;
@@ -197,7 +199,7 @@ IDockManager *LiteApp::dockManager()
 
 IOutputManager  *LiteApp::outputManager()
 {
-    return m_outputManager;
+    return 0;
 }
 
 IActionManager  *LiteApp::actionManager()
@@ -412,7 +414,7 @@ void LiteApp::projectReloaded()
 {
     LiteApi::IProject *project = (LiteApi::IProject*)sender();
     if (project) {
-        m_outputManager->setProjectInfo(project->filePath());
+        //m_outputManager->setProjectInfo(project->filePath());
     }
 }
 
@@ -422,10 +424,10 @@ void LiteApp::currentProjectChanged(IProject *project)
     m_saveProjectAct->setEnabled(b);
     m_closeProjectAct->setEnabled(b);
     if (project) {
-        m_outputManager->setProjectInfo(project->filePath());
+        //m_outputManager->setProjectInfo(project->filePath());
         connect(project,SIGNAL(reloaded()),this,SLOT(projectReloaded()));
     } else {
-        m_outputManager->setProjectInfo("");
+        //m_outputManager->setProjectInfo("");
     }
 }
 

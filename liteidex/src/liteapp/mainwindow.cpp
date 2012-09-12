@@ -78,7 +78,6 @@ QSplitter *MainWindow::splitter()
 
 MainWindow::~MainWindow()
 {
-    this->removeAllToolWindows();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

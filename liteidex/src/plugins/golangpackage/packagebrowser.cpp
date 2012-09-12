@@ -102,7 +102,8 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileMenu->addAction(m_setupGopathAct);
 
 
-    m_liteApp->dockManager()->addDock(m_widget,tr("Package Browser"));
+    //m_liteApp->dockManager()->addDock(m_widget,tr("Package Browser"));
+    m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"gopackbrowser",tr("Package Browser"),true);
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
     connect(m_goTool,SIGNAL(error(QProcess::ProcessError)),this,SLOT(error(QProcess::ProcessError)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
