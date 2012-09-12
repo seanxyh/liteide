@@ -24,7 +24,7 @@
 // $Id: golangastplugin.cpp,v 1.0 2011-7-5 visualfc Exp $
 
 #include "golangastplugin.h"
-#include <QDockWidget>
+#include <QAction>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -51,12 +51,14 @@ bool GolangAstPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
     m_golangAst = new GolangAst(m_liteApp,this);
-    QDockWidget *dock = m_liteApp->dockManager()->addDock(m_golangAst->widget(),tr("Golang AstView"));
-    connect(dock,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
+    //QDockWidget *dock = m_liteApp->dockManager()->addDock(m_golangAst->widget(),tr("Golang AstView"));
+    //connect(dock,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
+    QAction *act = m_liteApp->toolWindowManager()->addToolWindow(Qt::RightDockWidgetArea,m_golangAst->widget(),"goastview",tr("Golang AstView"),false);
+    connect(act,SIGNAL(toggled(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(checkEnableGolangAst()));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(checkEnableGolangAst()));
 
-    m_bVisible = dock->isVisible();
+    m_bVisible = act->isChecked();
     m_bEnable = false;
     return true;
 }

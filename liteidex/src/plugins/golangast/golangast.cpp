@@ -100,7 +100,8 @@ GolangAst::~GolangAst()
         m_timerFile->stop();
     }
     delete m_processFile;
-    m_liteApp->dockManager()->removeDock(m_widget);
+    //m_liteApp->dockManager()->removeDock(m_widget);
+    m_liteApp->toolWindowManager()->removeToolWindow(m_widget);
     delete m_widget;
 }
 

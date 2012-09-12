@@ -107,7 +107,7 @@ protected:
     EditorManager   *m_editorManager;
     FileManager    *m_fileManager;
     DockManager    *m_dockManager;
-    OutputManager  *m_outputManager;
+    //OutputManager  *m_outputManager;
     MimeTypeManager *m_mimeTypeManager;
     OptionManager   *m_optionManager;
     TextOutput    *m_logOutput;

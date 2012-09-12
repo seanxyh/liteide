@@ -1,3 +1,28 @@
+/**************************************************************************
+** This file is part of LiteIDE
+**
+** Copyright (c) 2011 LiteIDE Team. All rights reserved.
+**
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Lesser General Public
+** License as published by the Free Software Foundation; either
+** version 2.1 of the License, or (at your option) any later version.
+**
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Lesser General Public License for more details.
+**
+** In addition, as a special exception,  that plugins developed for LiteIDE,
+** are allowed to remain closed sourced and can be distributed under any license .
+** These rights are included in the file LGPL_EXCEPTION.txt in this package.
+**
+**************************************************************************/
+// Module: tooldockwidget.cpp
+// Creator: visualfc <visualfc@gmail.com>
+// date: 2012-9-12
+// $Id: tooldockwidget.cpp,v 1.0 2012-9-12 visualfc Exp $
+
 #include "tooldockwidget.h"
 #include <QAction>
 #include <QIcon>
@@ -20,6 +45,11 @@ ToolDockWidget::ToolDockWidget(QWidget *parent) :
     m_toolbar->setIconSize(QSize(16,16));
     m_toolbar->addWidget(m_comboBox);
 
+    QWidget *spacer = new QWidget;
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    m_toolbar->addSeparator();
+    m_spacerAct = m_toolbar->addWidget(spacer);
+
     m_closeAct = new QAction(tr("Close"), m_toolbar);
     m_closeAct->setToolTip(tr("Close"));
     m_closeAct->setIcon(QIcon("icon:images/closetool.png"));
@@ -28,7 +58,6 @@ ToolDockWidget::ToolDockWidget(QWidget *parent) :
     connect(m_comboBox,SIGNAL(activated(int)),this,SLOT(activeComboBoxIndex(int)));
 
     this->setTitleBarWidget(m_toolbar);
-
 
     m_toolbar->setStyleSheet("QToolBar {border:1 ; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #EEEEEE, stop: 1 #ababab); color : #EEEEEE}");
 }
@@ -95,8 +124,10 @@ void ToolDockWidget::createMenu(Qt::DockWidgetArea area, bool split)
     btn->setPopupMode(QToolButton::InstantPopup);
     btn->setIcon(QIcon("icon:images/movemenu.png"));
     btn->setMenu(menu);
+    btn->setToolTip(tr("Move To"));
+    btn->setStyleSheet("QToolButton::menu-indicator {image: none;}");
 
-    m_toolbar->insertWidget(m_closeAct,btn);
+   m_toolbar->insertWidget(m_closeAct,btn);
 }
 
 void ToolDockWidget::moveAction()
@@ -157,6 +188,17 @@ void ToolDockWidget::setToolMenu(QMenu *menu)
     btn->setMenu(menu);
 
     m_toolbar->insertWidget(m_closeAct,btn);
+}
+
+void ToolDockWidget::setWidgetActions(QList<QAction*> actions)
+{
+    foreach(QAction *action, m_widgetActions) {
+        m_toolbar->removeAction(action);
+    }
+    m_widgetActions = actions;
+    foreach(QAction *action, m_widgetActions) {
+        m_toolbar->insertAction(m_spacerAct,action);
+    }
 }
 
 QList<QAction *> ToolDockWidget::actions() const

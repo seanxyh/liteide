@@ -1,3 +1,28 @@
+/**************************************************************************
+** This file is part of LiteIDE
+**
+** Copyright (c) 2011 LiteIDE Team. All rights reserved.
+**
+** This library is free software; you can redistribute it and/or
+** modify it under the terms of the GNU Lesser General Public
+** License as published by the Free Software Foundation; either
+** version 2.1 of the License, or (at your option) any later version.
+**
+** This library is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Lesser General Public License for more details.
+**
+** In addition, as a special exception,  that plugins developed for LiteIDE,
+** are allowed to remain closed sourced and can be distributed under any license .
+** These rights are included in the file LGPL_EXCEPTION.txt in this package.
+**
+**************************************************************************/
+// Module: toolmainwindow.h
+// Creator: visualfc <visualfc@gmail.com>
+// date: 2012-9-12
+// $Id: toolmainwindow.h,v 1.0 2012-9-12 visualfc Exp $
+
 #ifndef TOOLMAINWINDOW_H
 #define TOOLMAINWINDOW_H
 
@@ -54,6 +79,7 @@ public:
 struct ActionState
 {
     QWidget *widget;
+    QList<QAction*> widgetActions;
     Qt::DockWidgetArea area;
     bool    split;
     QString id;
@@ -64,6 +90,7 @@ struct InitToolSate
 {
     Qt::DockWidgetArea area;
     bool               split;
+    bool               checked;
 };
 
 class ToolMainWindow : public QMainWindow
@@ -72,13 +99,14 @@ class ToolMainWindow : public QMainWindow
 public:
     ToolMainWindow(QWidget *parent = 0);
     ~ToolMainWindow();
-    void removeAllToolWindows();
-    QAction *addToolWindow(Qt::DockWidgetArea area, QWidget *widget, const QString &id, const QString &title, bool split = false);
+    QAction *addToolWindow(Qt::DockWidgetArea area, QWidget *widget, const QString &id, const QString &title, bool split = false, QList<QAction*> widgetActions = QList<QAction*>());
     void removeToolWindow(QAction *action);
     QAction *findToolWindow(QWidget *wiget);
     QByteArray saveToolState(int version = 0) const;
     bool loadInitToolState(const QByteArray &state, int version = 0);
+    bool restoreState(const QByteArray &state, int version = 0);
 public slots:
+    void showOrHideToolWindow();
     void hideAllToolWindows();
     void restoreToolWindows();
     void lockToolWindows(bool b);
@@ -88,7 +116,8 @@ protected slots:
 protected:
     QMap<Qt::DockWidgetArea,ActionToolBar*> m_areaToolBar;
     QMap<QAction*,ActionState*> m_actStateMap;
-    QMap<QString,InitToolSate> m_idStateMap;
+    QMap<QString,InitToolSate> m_initIdStateMap;
+    QList<QString> m_initCheckedList;
     QStatusBar  *m_statusBar;
     QAction     *m_dockLockAct;
     QList<QAction*> m_hideActionList;

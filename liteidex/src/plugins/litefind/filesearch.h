@@ -112,7 +112,7 @@ public slots:
 protected:
     LiteApi::IApplication *m_liteApp;
     FindThread *m_thread;
-    Output      *m_output;
+    QAction     *m_outputAct;
     QTabWidget  *m_tab;
     QWidget     *m_findWidget;
     QComboBox   *m_findCombo;

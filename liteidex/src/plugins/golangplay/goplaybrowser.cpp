@@ -55,15 +55,6 @@
 #endif
 //lite_memory_check_end
 
-class PlayOutput : public TextOutput
-{
-public:
-    PlayOutput() : TextOutput(true)
-    {
-        m_toolBar->hide();
-    }
-};
-
 QString data = "package main\n\nimport \"fmt\"\n\nfunc main(){\n\tfmt.Println(\"Hello World\")\n}";
 GoplayBrowser::GoplayBrowser(LiteApi::IApplication *app, QObject *parent)
     : LiteApi::IBrowserEditor(parent),
@@ -85,7 +76,7 @@ GoplayBrowser::GoplayBrowser(LiteApi::IApplication *app, QObject *parent)
         toolBar->hide();
     }
 
-    m_output = new PlayOutput;
+    m_output = new TextOutput;
 
     QVBoxLayout *layout = new QVBoxLayout;
     QHBoxLayout *head = new QHBoxLayout;

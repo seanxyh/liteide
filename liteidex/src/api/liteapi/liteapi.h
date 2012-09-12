@@ -353,9 +353,11 @@ class IToolWindowManager : public IManager
     Q_OBJECT
 public:
     IToolWindowManager(QObject *parent = 0) : IManager(parent) {}
-    virtual QAction *addToolWindow(Qt::DockWidgetArea area, QWidget *widget, const QString &id, const QString &title, bool split) = 0;
+    virtual QAction *addToolWindow(Qt::DockWidgetArea area, QWidget *widget, const QString &id, const QString &title, bool split, QList<QAction*> widgetActions = QList<QAction*>()) = 0;
     virtual void moveToolWindow(Qt::DockWidgetArea area,QAction *action, bool split) = 0;
     virtual QAction *findToolWindow(QWidget *widget) = 0;
+    virtual void removeToolWindow(QAction *action) = 0;
+    virtual void removeToolWindow(QWidget *widget) = 0;
 };
 
 class IDockManager : public IManager
@@ -485,7 +487,7 @@ class IPlugin : public IObject
 public:
     IPlugin() : m_info(new PluginInfo)
     {
-        m_info->setVer("x12");
+        m_info->setVer("x13");
     }
     virtual ~IPlugin()
     {
@@ -515,7 +517,7 @@ protected:
 
 } //namespace LiteApi
 
-Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/12.0")
+Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/13.0")
 
 
 #endif //__LITEAPI_H__

@@ -56,8 +56,8 @@ function update_head(file,name)
 	local w_info = string.gsub(info,"$FILENAME",name)
 	w_info = string.gsub(w_info,"$ANCHOR","visualfc")
 	w_info = string.gsub(w_info,"$EMAIL","<visualfc@gmail.com>")
-	w_info = string.gsub(w_info,"$DATE","2012-6-13")
-	w_info = string.gsub(w_info,"$UPDATE","2012-6-13")
+	w_info = string.gsub(w_info,"$DATE","2012-9-12")
+	w_info = string.gsub(w_info,"$UPDATE","2012-9-12")
 	f:write(license..w_info..string.sub(data,i,#data))
 	f:close()
 	print(file)
@@ -85,6 +85,7 @@ function attrdir (path)
 	end
 end
 
+attrdir("./liteapp")
 attrdir("./plugins")
 attrdir("./utils")
 attrdir("./api")

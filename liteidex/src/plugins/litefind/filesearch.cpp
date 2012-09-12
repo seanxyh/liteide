@@ -43,6 +43,7 @@
 #include <QPlainTextEdit>
 #include <QTextBrowser>
 #include <QFileDialog>
+#include <QAction>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -191,8 +192,6 @@ FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
 {
     m_thread = new FindThread;
 
-    m_output = new Output;
-
     m_tab = new QTabWidget;
 
     m_findWidget = new QWidget;
@@ -264,11 +263,14 @@ FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
     m_tab->addTab(m_findWidget,tr("Search"));
     m_tab->addTab(m_resultOutput,tr("Results"));
 
-    m_output->setCenter(m_tab);
-    m_liteApp->outputManager()->addOutuput(m_output,tr("File Search"));
+    QAction *clearAct = new QAction(tr("Clear"),this);
+    clearAct->setIcon(QIcon("icon:images/cleanoutput.png"));
+
+    m_outputAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::BottomDockWidgetArea,
+                                                                m_tab,"filesearch",tr("File Search"),true,
+                                                                QList<QAction*>() << clearAct);
 
     m_findPathCombo->setEditText(QDir::homePath());
-
     m_liteApp->settings()->beginGroup("findfiles");
     m_matchWordCheckBox->setChecked(m_liteApp->settings()->value("matchWord",false).toBool());
     m_matchCaseCheckBox->setChecked(m_liteApp->settings()->value("matchCase",false).toBool());
@@ -278,8 +280,7 @@ FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
 
     connect(browserBtn,SIGNAL(clicked()),this,SLOT(browser()));
     connect(currentBtn,SIGNAL(clicked()),this,SLOT(currentDir()));
-    connect(m_output,SIGNAL(hideOutput()),m_liteApp->outputManager(),SLOT(setCurrentOutput()));
-    connect(m_output,SIGNAL(clearRequest()),m_resultOutput,SLOT(clear()));
+    connect(clearAct,SIGNAL(triggered()),m_resultOutput,SLOT(clear()));
     connect(m_findButton,SIGNAL(clicked()),this,SLOT(findInFiles()));
     connect(m_stopButton,SIGNAL(clicked()),m_thread,SLOT(stop()));
     connect(m_thread,SIGNAL(started()),this,SLOT(findStarted()));
@@ -336,11 +337,7 @@ void FileSearch::setVisible(bool b)
             }
         }
     }
-    if (b) {
-        m_liteApp->outputManager()->setCurrentOutput(m_output);
-    } else {
-        m_liteApp->outputManager()->setCurrentOutput(0);
-    }
+    m_outputAct->setChecked(b);
 }
 
 void FileSearch::findInFiles()

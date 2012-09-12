@@ -78,6 +78,7 @@ bool EditorManager::initWithApp(IApplication *app)
     connect(m_editorTabWidget,SIGNAL(tabAddRequest()),this,SIGNAL(tabAddRequest()));
 
     m_editorTabWidget->installEventFilter(this);
+    m_editorTabWidget->tabBar()->installEventFilter(this);
     return true;
 }
 
@@ -152,6 +153,8 @@ bool EditorManager::eventFilter(QObject *target, QEvent *event)
             m_editorTabWidget->setCurrentIndex(index);
             return true;
         }
+    } else if (event->type() == QEvent::MouseButtonDblClick && target == m_editorTabWidget->tabBar()) {
+        emit doubleClickedTab();
     }
     return IEditorManager::eventFilter(target,event);
 }
