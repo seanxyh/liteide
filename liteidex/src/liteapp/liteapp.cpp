@@ -85,7 +85,7 @@ LiteApp::LiteApp()
     //m_mainwindow->setCentralWidget(m_editorManager->widget());
     m_mainwindow->splitter()->addWidget(m_editorManager->widget());
     //m_mainwindow->splitter()->addWidget(m_outputManager->widget());
-    //m_mainwindow->splitter()->setStretchFactor(0,50);
+    m_mainwindow->splitter()->setStretchFactor(0,50);
     //m_mainwindow->setStatusBar(m_outputManager->statusBar());
 
     m_extension->addObject("LiteApi.IMimeTypeManager",m_mimeTypeManager);

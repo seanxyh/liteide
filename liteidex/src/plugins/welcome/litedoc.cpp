@@ -61,7 +61,7 @@ LiteDoc::LiteDoc(LiteApi::IApplication *app, QObject *parent) :
     m_docBrowser->setSearchPaths(paths);
 
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
-    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuPagePos,m_browserAct);
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuEditPagePos,m_browserAct);
 
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));

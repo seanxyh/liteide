@@ -162,7 +162,7 @@ void ActionManager::insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act)
 {
     if (pos == ViewMenuToolBarPos) {
         m_viewMenu->insertAction(m_baseToolBarAct,act);
-    } else if (pos == ViewMenuPanePos) {
+    } else if (pos == ViewMenuToolWindowPos) {
         m_viewMenu->insertAction(m_basePaneAct,act);
     } else {
         m_viewMenu->addAction(act);
