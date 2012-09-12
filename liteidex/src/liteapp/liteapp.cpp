@@ -33,6 +33,7 @@
 #include "actionmanager.h"
 #include "mimetypemanager.h"
 #include "optionmanager.h"
+#include "toolwindowmanager.h"
 #include "mainwindow.h"
 #include "liteappoptionfactory.h"
 
@@ -59,6 +60,7 @@ LiteApp::LiteApp()
     : m_settings(new QSettings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteide",this)),
       m_extension(new Extension),
       m_mainwindow(new MainWindow(this)),
+      m_toolWindowManager(new ToolWindowManager),
       m_actionManager(new ActionManager),
       m_pluginManager(new PluginManager),
       m_projectManager(new ProjectManager),
@@ -70,6 +72,7 @@ LiteApp::LiteApp()
       m_optionManager(new OptionManager)
 {
     m_actionManager->initWithApp(this);
+    m_toolWindowManager->initWithApp(this);
     m_dockManager->initWithApp(this);
     m_outputManager->initWithApp(this);
     m_mimeTypeManager->initWithApp(this);
@@ -91,6 +94,7 @@ LiteApp::LiteApp()
     m_extension->addObject("LiteApi.IDockManager",m_dockManager);
     m_extension->addObject("LiteApi.IOutputManager",m_outputManager);
     m_extension->addObject("LiteApi.IOptoinManager",m_optionManager);
+    m_extension->addObject("LiteApi.IToolWindowManager",m_toolWindowManager);
     m_extension->addObject("LiteApi.QMainWindow",m_mainwindow);
     m_extension->addObject("LiteApi.QMainWindow.QSplitter",m_mainwindow->splitter());
 
@@ -166,6 +170,7 @@ void LiteApp::cleanup()
     delete m_optionManager;
     delete m_extension;
     delete m_logOutput;
+    delete m_toolWindowManager;
     delete m_mainwindow;
     delete m_settings;
 }
@@ -208,6 +213,11 @@ IMimeTypeManager *LiteApp::mimeTypeManager()
 IOptionManager  *LiteApp::optionManager()
 {
     return m_optionManager;
+}
+
+IToolWindowManager *LiteApp::toolWindowManager()
+{
+    return m_toolWindowManager;
 }
 
 QMainWindow *LiteApp::mainWindow() const
@@ -458,6 +468,7 @@ void LiteApp::saveState()
 {
     m_settings->setValue("liteapp/geometry",m_mainwindow->saveGeometry());
     m_settings->setValue("liteapp/state",m_mainwindow->saveState());
+    m_settings->setValue("liteapp/toolState",m_mainwindow->saveToolState());
 }
 
 
