@@ -112,7 +112,10 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_insertBreakAct->setToolTip(tr("Insert/Remove Breakpoint (F9)"));
 
     m_toolBar->addAction(m_startDebugAct);
-    m_toolBar->addAction(m_stopDebugAct);
+    //m_toolBar->addAction(m_stopDebugAct);
+    //m_toolBar->addSeparator();
+    m_toolBar->addAction(m_insertBreakAct);
+    /*
     m_toolBar->addSeparator();
     m_toolBar->addAction(m_showLineAct);
     m_toolBar->addAction(m_stepIntoAct);
@@ -120,8 +123,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_toolBar->addAction(m_stepOutAct);
     m_toolBar->addAction(m_runToLineAct);
     m_toolBar->addSeparator();
-    m_toolBar->addAction(m_insertBreakAct);
-
+    */
     QMenu *menu = m_liteApp->actionManager()->insertMenu("Debug",tr("&Debug"),"help");
     if (menu) {
         menu->addAction(m_startDebugAct);
@@ -152,7 +154,15 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     m_outputAct = m_liteApp->toolWindowManager()->addToolWindow(
                 Qt::BottomDockWidgetArea,m_output,"debugoutput",tr("Debug Output"),false,
-                QList<QAction*>() << clearAct);
+                QList<QAction*>()
+                << m_startDebugAct
+                << m_stopDebugAct
+                << m_showLineAct
+                << m_stepIntoAct
+                << m_stepOverAct
+                << m_stepOutAct
+                << m_runToLineAct
+                << clearAct);
 
     m_startDebugAct->setToolTip(tr("Start Debugging (F5)"));
     m_stopDebugAct->setEnabled(false);

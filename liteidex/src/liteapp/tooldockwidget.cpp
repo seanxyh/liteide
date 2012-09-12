@@ -37,18 +37,20 @@ ToolDockWidget::ToolDockWidget(QWidget *parent) :
     QDockWidget(parent), current(0)
 {
     m_comboBox = new QComboBox;
-    m_comboBox->setMinimumContentsLength(2);
-    m_comboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    m_comboBox->setMinimumContentsLength(4);
+    m_comboBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
     m_toolbar = new QToolBar(this);
     m_toolbar->setContentsMargins(0, 0, 0, 0);
-    m_toolbar->setIconSize(QSize(16,16));
+    m_toolbar->setIconSize(QSize(15,16));
     m_toolbar->addWidget(m_comboBox);
 
     QWidget *spacer = new QWidget;
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_toolbar->addSeparator();
     m_spacerAct = m_toolbar->addWidget(spacer);
+
+    m_toolbar->addSeparator();
 
     m_closeAct = new QAction(tr("Close"), m_toolbar);
     m_closeAct->setToolTip(tr("Close"));
