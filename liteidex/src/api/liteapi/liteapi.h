@@ -400,8 +400,8 @@ signals:
 enum VIEWMENU_ACTION_POS
 {
     ViewMenuToolBarPos = 1,
-    ViewMenuPanePos,
-    ViewMenuPagePos
+    ViewMenuToolWindowPos,
+    ViewMenuEditPagePos
 };
 
 class IActionManager : public IManager
