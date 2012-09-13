@@ -87,6 +87,8 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
 {
     setLineWrapMode(QPlainTextEdit::NoWrap);
     m_extraArea = new TextEditExtraArea(this);
+    m_extraForeground = QColor(Qt::darkCyan);
+    m_extraBackground = m_extraArea->palette().color(QPalette::Background);
 
     setLayoutDirection(Qt::LeftToRight);
     viewport()->setMouseTracking(true);
@@ -264,6 +266,25 @@ static int foldBoxWidth(const QFontMetrics &fm)
     return lineSpacing/2+lineSpacing%2+1;
 }
 
+QWidget* LiteEditorWidgetBase::extraArea()
+{
+    return m_extraArea;
+}
+
+void LiteEditorWidgetBase::setExtraColor(const QColor &foreground,const QColor &background)
+{
+    if (foreground.isValid()) {
+        m_extraForeground = foreground;
+    } else {
+        m_extraForeground = QColor(Qt::darkCyan);
+    }
+    if (background.isValid()) {
+        m_extraBackground = background;
+    } else {
+        m_extraBackground = m_extraArea->palette().color(QPalette::Background);
+    }
+}
+
 int LiteEditorWidgetBase::extraAreaWidth()
 {
     int space = 0;
@@ -327,10 +348,11 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
 
     painter.fillRect(e->rect(), pal.color(QPalette::Base));
     painter.fillRect(e->rect().intersected(QRect(0, 0, m_extraArea->width(), INT_MAX)),
-                     pal.color(QPalette::Background));
+                     m_extraBackground);
 
-    painter.setPen(QPen(Qt::darkCyan,1,Qt::DotLine));
+    painter.setPen(QPen(m_extraForeground,1,Qt::DotLine));
     painter.drawLine(extraAreaWidth - 3, e->rect().top(), extraAreaWidth - 3, e->rect().bottom());
+    painter.drawLine(e->rect().width()-1, e->rect().top(), e->rect().width()-1, e->rect().bottom());
 
     QTextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();
@@ -359,7 +381,7 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
             continue;
         }
 
-        painter.setPen(pal.color(QPalette::Dark));
+        painter.setPen(m_extraForeground);
 
         if (m_codeFoldingVisible || m_marksVisible) {
             painter.save();
@@ -407,11 +429,13 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
                     bool expanded = nextBlock.isVisible();
                     QRect box(extraAreaWidth, top + (fm.lineSpacing()-boxWidth)/2,
                               boxWidth,boxWidth);
+                    /*
                     if (!expanded) {
                         painter.setPen(Qt::black);
                     } else {
                         painter.setPen(Qt::gray);
                     }
+                    */
                     drawFoldingMarker(&painter, pal, box, expanded);
                 }
             }
@@ -431,7 +455,7 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
             painter.restore();
         }
 
-        painter.setPen(QPen(Qt::darkCyan,2));//pal.color(QPalette::BrightText));
+        painter.setPen(QPen(m_extraForeground,2));//pal.color(QPalette::BrightText));
         if (m_lineNumbersVisible) {
             const QString &number = QString::number(blockNumber + 1);
             bool selected = (
