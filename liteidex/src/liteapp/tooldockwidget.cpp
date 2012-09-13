@@ -38,7 +38,7 @@ ToolDockWidget::ToolDockWidget(QWidget *parent) :
 {
     m_comboBox = new QComboBox;
     m_comboBox->setMinimumContentsLength(4);
-    m_comboBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    m_comboBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
     m_toolbar = new QToolBar(this);
     m_toolbar->setContentsMargins(0, 0, 0, 0);
@@ -50,8 +50,6 @@ ToolDockWidget::ToolDockWidget(QWidget *parent) :
     m_toolbar->addSeparator();
     m_spacerAct = m_toolbar->addWidget(spacer);
 
-    m_toolbar->addSeparator();
-
     m_closeAct = new QAction(tr("Close"), m_toolbar);
     m_closeAct->setToolTip(tr("Close"));
     m_closeAct->setIcon(QIcon("icon:images/closetool.png"));
@@ -62,6 +60,7 @@ ToolDockWidget::ToolDockWidget(QWidget *parent) :
     this->setTitleBarWidget(m_toolbar);
 
     m_toolbar->setStyleSheet("QToolBar {border:1 ; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #EEEEEE, stop: 1 #ababab); color : #EEEEEE}");
+                             //"QToolBar::separator {background-color: gray}");
 }
 
 void ToolDockWidget::createMenu(Qt::DockWidgetArea area, bool split)
@@ -122,14 +121,14 @@ void ToolDockWidget::createMenu(Qt::DockWidgetArea area, bool split)
     }
     menu->addAction(moveMenu->menuAction());
 
-    QToolButton *btn = new QToolButton;
+    QToolButton *btn = new QToolButton(m_toolbar);
     btn->setPopupMode(QToolButton::InstantPopup);
     btn->setIcon(QIcon("icon:images/movemenu.png"));
     btn->setMenu(menu);
+    btn->setText(tr("Move To"));
     btn->setToolTip(tr("Move To"));
     btn->setStyleSheet("QToolButton::menu-indicator {image: none;}");
-
-   m_toolbar->insertWidget(m_closeAct,btn);
+    m_toolbar->insertWidget(m_closeAct,btn);
 }
 
 void ToolDockWidget::moveAction()
@@ -198,6 +197,7 @@ void ToolDockWidget::setWidgetActions(QList<QAction*> actions)
         m_toolbar->removeAction(action);
     }
     m_widgetActions = actions;
+    m_spacerAct->setVisible(!m_widgetActions.isEmpty());
     foreach(QAction *action, m_widgetActions) {
         m_toolbar->insertAction(m_spacerAct,action);
     }

@@ -74,9 +74,11 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     connect(clearAct,SIGNAL(triggered()),m_output,SLOT(clear()));
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;    
+    QToolBar *widgetToolBar = new QToolBar;
     layout->setMargin(0);
     layout->setSpacing(0);
+    layout->addWidget(widgetToolBar);
     layout->addWidget(m_dbgWidget->widget());
     m_widget->setLayout(layout);
 
@@ -124,6 +126,17 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_toolBar->addAction(m_runToLineAct);
     m_toolBar->addSeparator();
     */
+
+    widgetToolBar->addAction(m_startDebugAct);
+    widgetToolBar->addAction(m_stopDebugAct);
+    widgetToolBar->addSeparator();
+    widgetToolBar->addAction(m_insertBreakAct);
+    widgetToolBar->addAction(m_showLineAct);
+    widgetToolBar->addAction(m_stepIntoAct);
+    widgetToolBar->addAction(m_stepOverAct);
+    widgetToolBar->addAction(m_stepOutAct);
+    widgetToolBar->addAction(m_runToLineAct);
+
     QMenu *menu = m_liteApp->actionManager()->insertMenu("Debug",tr("&Debug"),"help");
     if (menu) {
         menu->addAction(m_startDebugAct);
@@ -154,15 +167,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 
     m_outputAct = m_liteApp->toolWindowManager()->addToolWindow(
                 Qt::BottomDockWidgetArea,m_output,"debugoutput",tr("Debug Output"),false,
-                QList<QAction*>()
-                << m_startDebugAct
-                << m_stopDebugAct
-                << m_showLineAct
-                << m_stepIntoAct
-                << m_stepOverAct
-                << m_stepOutAct
-                << m_runToLineAct
-                << clearAct);
+                QList<QAction*>() << clearAct);
 
     m_startDebugAct->setToolTip(tr("Start Debugging (F5)"));
     m_stopDebugAct->setEnabled(false);
