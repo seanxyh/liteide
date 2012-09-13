@@ -215,6 +215,20 @@ void FileManager::openFiles()
     }
 }
 
+void FileManager::openFolder()
+{
+    static QString initPath = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+    QString folder = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(),
+           tr("Open Package Folder"), initPath);
+    if (!folder.isEmpty()) {
+        QDir dir(folder);
+        if (dir.cdUp()) {
+            initPath = dir.path();
+        }
+        this->openProjectScheme(folder,"gopkg");
+    }
+}
+
 void FileManager::openEditors()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(m_liteApp->mainWindow(),

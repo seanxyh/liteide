@@ -36,12 +36,12 @@
 //lite_memory_check_end
 
 
-GolangAstPlugin::GolangAstPlugin() : m_golangAst(0)
+GolangAstPlugin::GolangAstPlugin()
 {
     m_info->setId("plugin/golangast");
     m_info->setName("GolangAst");
     m_info->setAnchor("visualfc");
-    m_info->setVer("x11.4");
+    m_info->setVer("x13");
     m_info->setInfo("Golang AstView Plugin");
 }
 
@@ -50,45 +50,8 @@ bool GolangAstPlugin::initWithApp(LiteApi::IApplication *app)
     if (!LiteApi::IPlugin::initWithApp(app)) {
         return false;
     }
-    m_golangAst = new GolangAst(m_liteApp,this);
-    //QDockWidget *dock = m_liteApp->dockManager()->addDock(m_golangAst->widget(),tr("Golang AstView"));
-    //connect(dock,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
-    QAction *act = m_liteApp->toolWindowManager()->addToolWindow(Qt::RightDockWidgetArea,m_golangAst->widget(),"goastview",tr("Golang AstView"),false);
-    connect(act,SIGNAL(toggled(bool)),this,SLOT(visibilityChanged(bool)));
-    connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(checkEnableGolangAst()));
-    connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(checkEnableGolangAst()));
-
-    m_bVisible = act->isChecked();
-    m_bEnable = false;
+    new GolangAst(m_liteApp,this);
     return true;
-}
-
-void GolangAstPlugin::visibilityChanged(bool b)
-{
-    m_bVisible = b;
-    checkEnableGolangAst();
-}
-
-void GolangAstPlugin::checkEnableGolangAst()
-{
-    if (!m_bVisible) {
-        return;
-    }
-    bool active = false;
-    LiteApi::IProject *project = m_liteApp->projectManager()->currentProject();
-    if (project && (project->mimeType() == "text/x-gopro" ||
-                    project->mimeType() == "text/x-gomake" ) ) {
-        active = true;
-    } else {
-        LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
-        if (editor && editor->mimeType() == "text/x-gosrc") {
-            active = true;
-        }
-    }
-    if (active != m_bEnable) {
-        m_bEnable = active;
-        m_golangAst->setEnable(m_bEnable);
-    }
 }
 
 Q_EXPORT_PLUGIN(GolangAstPlugin)

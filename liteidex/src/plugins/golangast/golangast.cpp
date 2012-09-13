@@ -38,6 +38,7 @@
 #include <QSortFilterProxyModel>
 #include <QTimer>
 #include <QDir>
+#include <QAction>
 #include <QLabel>
 #include <QDebug>
 //lite_memory_check_begin
@@ -55,8 +56,6 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     LiteApi::IGolangAst(parent),
     m_liteApp(app)
 {
-    m_widget = new QTabWidget;
-
     m_currentEditor = 0;
     m_blankWidget = new QLabel(tr("No outline available"));
     m_blankWidget->setAlignment(Qt::AlignCenter);
@@ -66,14 +65,16 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
 
     m_projectAstWidget = new AstWidget(m_liteApp);
 
-    m_widget->addTab(m_projectAstWidget,tr("ClassView"));
-    m_widget->addTab(m_stackedWidget,tr("Outline"));
-
     m_process = new QProcess(this);
     m_timer = new QTimer(this);
 
     m_processFile = new QProcess(this);
     m_timerFile = new QTimer(this);
+
+    QAction *projAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::RightDockWidgetArea,m_projectAstWidget,"classview",tr("Class View"),false);
+    QAction *fileAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::RightDockWidgetArea,m_stackedWidget,"outline","Outline",false);
+    connect(projAct,SIGNAL(toggled(bool)),this,SLOT(astProjectEnable(bool)));
+    connect(fileAct,SIGNAL(toggled(bool)),this,SLOT(astFileEnable(bool)));
 
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_liteApp->editorManager(),SIGNAL(editorAboutToClose(LiteApi::IEditor*)),this,SLOT(editorAboutToClose(LiteApi::IEditor*)));
@@ -86,7 +87,6 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     connect(m_timerFile,SIGNAL(timeout()),this,SLOT(updateAstNowFile()));
     connect(m_projectAstWidget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedTree(QModelIndex)));
 
-    m_liteApp->extension()->addObject("GoAstView.Widget",m_widget);
     m_liteApp->extension()->addObject("LiteApi.IGolangAst",this);
 }
 
@@ -100,9 +100,10 @@ GolangAst::~GolangAst()
         m_timerFile->stop();
     }
     delete m_processFile;
-    //m_liteApp->dockManager()->removeDock(m_widget);
-    m_liteApp->toolWindowManager()->removeToolWindow(m_widget);
-    delete m_widget;
+    m_liteApp->toolWindowManager()->removeToolWindow(m_projectAstWidget);
+    m_liteApp->toolWindowManager()->removeToolWindow(m_stackedWidget);
+    delete m_projectAstWidget;
+    delete m_stackedWidget;
 }
 
 QIcon GolangAst::iconFromTag(const QString &tag, bool pub) const
@@ -115,10 +116,20 @@ QIcon GolangAst::iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub) const
     return GolangAstIcon::instance()->iconFromTagEnum(tag,pub);
 }
 
-QWidget *GolangAst::widget()
+void GolangAst::astProjectEnable(bool b)
 {
-    return m_widget;
+    if (b) {
+        loadProject(m_liteApp->projectManager()->currentProject());
+    }
 }
+
+void GolangAst::astFileEnable(bool b)
+{
+    if (b) {
+        editorChanged(m_liteApp->editorManager()->currentEditor());
+    }
+}
+
 
 void GolangAst::setEnable(bool b)
 {

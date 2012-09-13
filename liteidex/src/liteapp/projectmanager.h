@@ -76,12 +76,11 @@ protected:
     QMap<QString,QAction*>   m_mapNameToAction;
     QPointer<IProject>      m_currentProject;
     QList<IProjectFactory*>    m_factoryList;
-    QWidget                 *m_widget;
-    FileSystemWidget        *m_fileSystemWidget;
-    QScrollArea             *m_scrollArea;
-    QMenu                   *m_projectMenu;
+    FileSystemWidget        *m_widget;
+    //QScrollArea             *m_scrollArea;
+    //QMenu                   *m_projectMenu;
     QActionGroup            *m_projectActGroup;
-    QMenu                   *m_importMenu;
+    //QMenu                   *m_importMenu;
     bool                    m_bAutoCloseProjectEditors;
 };
 

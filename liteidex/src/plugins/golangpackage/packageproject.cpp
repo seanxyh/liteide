@@ -175,6 +175,12 @@ QString PackageProject::mimeType() const
 {
     return "text/x-gopackage";
 }
+
+QStringList PackageProject::folderList() const
+{
+    return QStringList() << m_filePath;
+}
+
 QStringList PackageProject::fileNameList() const
 {
     return m_treeView->nameList;

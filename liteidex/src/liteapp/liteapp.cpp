@@ -278,7 +278,7 @@ void LiteApp::appendLog(const QString &model, const QString &log)
     text += dt.toString("hh:mm:ss");
     text += QLatin1Char(' ');
     text += model;
-    text += QLatin1Char(' : ');
+    text += QLatin1String(" : ");
     text += log;
     text += QLatin1Char('\n');
     m_logOutput->append(text);
@@ -331,8 +331,9 @@ void LiteApp::createActions()
 {
     m_newAct = new QAction(QIcon("icon:images/new.png"),tr("New"),m_mainwindow);
     m_newAct->setShortcut(QKeySequence::New);
-    m_openAct = new QAction(QIcon("icon:images/open.png"),tr("Open"),m_mainwindow);
-    m_openAct->setShortcut(QKeySequence::Open);
+    m_openFileAct = new QAction(QIcon("icon:images/openfile.png"),tr("Open File"),m_mainwindow);
+    m_openFileAct->setShortcut(QKeySequence::Open);
+    m_openFolderAct = new QAction(QIcon("icon:images/openfolder.png"),tr("Open Folder"),m_mainwindow);
     m_closeAct = new QAction(QIcon("icon:images/close.png"),tr("Close"),m_mainwindow);
     m_closeAct->setShortcut(QKeySequence("Ctrl+W"));
     m_closeAllAct = new QAction(QIcon("icon:images/closeall.png"),tr("Close All"),m_mainwindow);
@@ -352,7 +353,8 @@ void LiteApp::createActions()
     m_aboutPluginsAct = new QAction(tr("About Plugins..."),m_mainwindow);
 
     connect(m_newAct,SIGNAL(triggered()),m_fileManager,SLOT(newFile()));
-    connect(m_openAct,SIGNAL(triggered()),m_fileManager,SLOT(openFiles()));
+    connect(m_openFileAct,SIGNAL(triggered()),m_fileManager,SLOT(openFiles()));
+    connect(m_openFolderAct,SIGNAL(triggered()),m_fileManager,SLOT(openFolder()));
     connect(m_closeAct,SIGNAL(triggered()),m_editorManager,SLOT(closeEditor()));
     connect(m_closeAllAct,SIGNAL(triggered()),m_editorManager,SLOT(closeAllEditors()));
     connect(m_openProjectAct,SIGNAL(triggered()),m_fileManager,SLOT(openProjects()));
@@ -373,7 +375,8 @@ void LiteApp::createMenus()
     m_helpMenu = m_actionManager->loadMenu("help");
 
     m_fileMenu->addAction(m_newAct);
-    m_fileMenu->addAction(m_openAct);
+    m_fileMenu->addAction(m_openFileAct);
+    m_fileMenu->addAction(m_openFolderAct);
     m_fileMenu->addAction(m_closeAct);
     m_fileMenu->addAction(m_closeAllAct);
     m_fileMenu->addSeparator();
@@ -396,7 +399,8 @@ void LiteApp::createToolBars()
     m_stdToolBar = m_actionManager->loadToolBar("toolbar/std");
     m_stdToolBar->addAction(m_newAct);
     m_stdToolBar->addSeparator();
-    m_stdToolBar->addAction(m_openAct);
+    m_stdToolBar->addAction(m_openFileAct);
+    m_stdToolBar->addAction(m_openFolderAct);
     m_stdToolBar->addAction(m_saveAct);
     m_stdToolBar->addAction(m_saveAllAct);
     m_stdToolBar->addSeparator();

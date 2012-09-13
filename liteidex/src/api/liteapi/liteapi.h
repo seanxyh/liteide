@@ -185,6 +185,7 @@ signals:
 public slots:
     virtual void newFile() = 0;
     virtual void openFiles() = 0;
+    virtual void openFolder() = 0;
     virtual void openEditors() = 0;
     virtual void openProjects() = 0;
 };
@@ -283,6 +284,7 @@ class IProject : public IView
 public:
     virtual QString filePath() const = 0;
     virtual QString mimeType() const = 0;
+    virtual QStringList folderList() const = 0;
     virtual QStringList fileNameList() const = 0;
     virtual QStringList filePathList() const = 0;
     virtual QString fileNameToFullPath(const QString &filePath) = 0;
