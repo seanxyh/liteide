@@ -130,6 +130,12 @@ bool ModelProjectImpl::open(const QString &fileName, const QString &mimeType)
     return success;
 }
 
+QStringList ModelProjectImpl::folderList() const
+{
+    QFileInfo info(m_file->filePath());
+    return QStringList() << info.path();
+}
+
 QStringList ModelProjectImpl::fileNameList() const
 {
     return m_file->fileNameList();

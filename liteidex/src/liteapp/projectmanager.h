@@ -77,6 +77,7 @@ protected:
     QPointer<IProject>      m_currentProject;
     QList<IProjectFactory*>    m_factoryList;
     FileSystemWidget        *m_widget;
+    QAction                 *m_action;
     //QScrollArea             *m_scrollArea;
     //QMenu                   *m_projectMenu;
     QActionGroup            *m_projectActGroup;
