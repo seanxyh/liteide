@@ -117,7 +117,8 @@ protected:
     QString         m_resourcePath;
 protected:
     QAction     *m_newAct;
-    QAction     *m_openAct;
+    QAction     *m_openFileAct;
+    QAction     *m_openFolderAct;
     QAction     *m_closeAct;
     QAction     *m_closeAllAct;
     QAction     *m_openProjectAct;

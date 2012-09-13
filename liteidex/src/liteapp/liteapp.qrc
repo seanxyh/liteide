@@ -4,7 +4,6 @@
         <file>images/closeproject.png</file>
         <file>images/liteide128.png</file>
         <file>images/new.png</file>
-        <file>images/open.png</file>
         <file>images/openfile.png</file>
         <file>images/openproject.png</file>
         <file>images/redo.png</file>
@@ -38,5 +37,6 @@
         <file>images/editclear.png</file>
         <file>images/closetool.png</file>
         <file>images/movemenu.png</file>
+        <file>images/openfolder.png</file>
     </qresource>
 </RCC>

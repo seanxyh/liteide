@@ -359,6 +359,7 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
     qreal top = blockBoundingGeometry(block).translated(contentOffset()).top();
     qreal bottom = top;
 
+    painter.setPen(QPen(m_extraForeground,1));
     while (block.isValid() && top <= e->rect().bottom()) {
 
         top = bottom;
@@ -380,8 +381,6 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
             blockNumber = nextVisibleBlockNumber;
             continue;
         }
-
-        painter.setPen(m_extraForeground);
 
         if (m_codeFoldingVisible || m_marksVisible) {
             painter.save();
@@ -455,8 +454,8 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
             painter.restore();
         }
 
-        painter.setPen(QPen(m_extraForeground,2));//pal.color(QPalette::BrightText));
         if (m_lineNumbersVisible) {
+            painter.setPen(QPen(m_extraForeground,2));//pal.color(QPalette::BrightText));
             const QString &number = QString::number(blockNumber + 1);
             bool selected = (
                     (selStart < block.position() + block.length()
@@ -473,6 +472,7 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
             painter.drawText(QRectF(markWidth, top, extraAreaWidth - markWidth - 4, height), Qt::AlignRight, number);
             if (selected)
                 painter.restore();
+            painter.setPen(QPen(m_extraForeground,1));//pal.color(QPalette::BrightText));
         }
         if (m_marksVisible && m_editorMark) {
             m_editorMark->paint(&painter,blockNumber,0,top,fmLineSpacing-0.5,fmLineSpacing-1);

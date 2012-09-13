@@ -36,6 +36,7 @@
 class QStackedWidget;
 class AstWidget;
 class QLabel;
+
 class GolangAst : public LiteApi::IGolangAst
 {
     Q_OBJECT
@@ -47,9 +48,10 @@ public:
 public:
     void setEnable(bool b);
     void updateModel(const QByteArray &data);
-    QWidget *widget();
     void loadProject(LiteApi::IProject *project);
 public slots:
+    void astProjectEnable(bool);
+    void astFileEnable(bool);
     void projectReloaded();
     void projectChanged(LiteApi::IProject*);
     void editorCreated(LiteApi::IEditor*);
@@ -65,7 +67,6 @@ public slots:
     void doubleClickedTree(QModelIndex);
 protected:
     LiteApi::IApplication *m_liteApp;
-    QTabWidget *m_widget;
     QTimer  *m_timer;
     QTimer  *m_timerFile;
     QProcess *m_process;
