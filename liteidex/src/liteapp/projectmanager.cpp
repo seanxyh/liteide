@@ -271,7 +271,7 @@ void ProjectManager::setCurrentProject(IProject *project)
             m_fileSystemWidget->setRootPath(info.dir().path());
         }
 
-        m_liteApp->appendConsole("ProjectManager","loadProject",m_currentProject->name());
+        m_liteApp->appendLog("ProjectManager","loadProject "+m_currentProject->name());
     }
     emit currentProjectChanged(project);
 }
@@ -346,7 +346,7 @@ void ProjectManager::closeProjectHelper(IProject *project)
         act->setChecked(false);
     }
 
-    m_liteApp->appendConsole("ProjectManager","closeProject",cur->name());
+    m_liteApp->appendLog("ProjectManager","closeProject "+cur->name());
 
     delete cur;
 }

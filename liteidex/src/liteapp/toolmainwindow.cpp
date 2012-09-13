@@ -248,6 +248,12 @@ ToolMainWindow::ToolMainWindow(QWidget *parent)
                         "QMainWindow::separator{width:1; background-color: #ababab ;}");
     */
 
+    QAction *hideBottomAct = new QAction("HideBottom",this);
+    hideBottomAct->setShortcut(QKeySequence(Qt::Key_Escape));
+    this->addAction(hideBottomAct);
+    connect(hideBottomAct,SIGNAL(triggered()),bar->dock1,SLOT(close()));
+    connect(hideBottomAct,SIGNAL(triggered()),bar->dock2,SLOT(close()));
+
     connect(m_dockLockAct,SIGNAL(toggled(bool)),this,SLOT(lockToolWindows(bool)));
 }
 

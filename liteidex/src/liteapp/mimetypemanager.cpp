@@ -115,7 +115,7 @@ void MimeTypeManager::loadMimeTypes(const QString &path)
     dir.setNameFilters(QStringList("*.xml"));
     foreach (QString fileName, dir.entryList()) {
         bool b = MimeType::loadMimeTypes(this,QFileInfo(dir,fileName).absoluteFilePath());
-        m_liteApp->appendConsole("LiteApp","LoadMimeTypes",QString("%1 %2").arg(fileName).arg(b?"true":"fallse"));
+        m_liteApp->appendLog("LiteApp",QString("LoadMimeType %1 %2").arg(fileName).arg(b?"true":"fallse"));
     }
 }
 

@@ -453,7 +453,7 @@ public:
     virtual void loadState() = 0;
     virtual void saveState() = 0;
 
-    virtual void appendConsole(const QString &model, const QString &action, const QString &log = QString()) = 0;
+    virtual void appendLog(const QString &model, const QString &log) = 0;
 };
 
 class PluginInfo

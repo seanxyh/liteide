@@ -92,7 +92,7 @@ IBuild *BuildManager::currentBuild() const
 void BuildManager::load(const QString &path)
 {
     QDir dir = path;
-    m_liteApp->appendConsole("BuildManager","load",path);
+    m_liteApp->appendLog("BuildManager","load "+path);
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     dir.setNameFilters(QStringList("*.xml"));
     foreach (QString fileName, dir.entryList()) {

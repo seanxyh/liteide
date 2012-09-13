@@ -118,14 +118,14 @@ LiteApp::LiteApp()
 
     m_logOutput = new TextOutput;
     //m_outputManager->addOutuput(m_logOutput,tr("Console"));
-    m_toolWindowManager->addToolWindow(Qt::BottomDockWidgetArea,m_logOutput,"logoutput",tr("Console"),true);
+    m_toolWindowManager->addToolWindow(Qt::BottomDockWidgetArea,m_logOutput,"eventlog",tr("Event Log"),true);
     //connect(m_logOutput,SIGNAL(hideOutput()),m_outputManager,SLOT(setCurrentOutput()));
 
     m_optionAct = m_editorManager->registerBrowser(m_optionManager->browser());
     m_viewMenu->addAction(m_optionAct);
     m_optionManager->setAction(m_optionAct);
 
-    this->appendConsole("LiteApp","Init");
+    this->appendLog("LiteApp","Init");
 
     m_liteAppOptionFactory = new LiteAppOptionFactory(this,this);
 
@@ -141,8 +141,8 @@ void LiteApp::load()
     loadState();
     m_projectManager->setCurrentProject(0);
     emit loaded();
-    appendConsole("LiteApp","loaded");
-    appendConsole("LiteApp","ObjectIdList",m_extension->objectMetaList().join(";"));
+    appendLog("LiteApp","loaded");
+    appendLog("LiteApp","Load Objects "+m_extension->objectMetaList().join(";"));
     bool b = m_settings->value("LiteApp/AutoLoadLastSession",false).toBool();
     if (b) {
         loadSession("default");
@@ -255,13 +255,13 @@ QString LiteApp::pluginPath() const
 void LiteApp::setPluginPath(const QString &path)
 {
     m_pluginPath = path;
-    appendConsole("LiteApp","setPluginPath",path);
+    appendLog("LiteApp","setPluginPath "+path);
 }
 
 void LiteApp::setResourcePath(const QString &path)
 {
     m_resourcePath = path;
-    appendConsole("LiteApp","setResourcePath",path);
+    appendLog("LiteApp","setResourcePath "+path);
 }
 
 
@@ -270,17 +270,15 @@ QList<IPlugin*> LiteApp::pluginList() const
     return m_pluginManager->pluginList();
 }
 
-void LiteApp::appendConsole(const QString &model, const QString &action, const QString &log)
+void LiteApp::appendLog(const QString &model, const QString &log)
 {
     QDateTime dt = QDateTime::currentDateTime();
     QString text = dt.toString("yyyy-M-d");
-    text += QLatin1Char('$');
+    text += QLatin1Char(' ');
     text += dt.toString("hh:mm:ss");
-    text += QLatin1Char('$');
+    text += QLatin1Char(' ');
     text += model;
-    text += QLatin1Char('$');
-    text += action;
-    text += QLatin1Char('$');
+    text += QLatin1Char(' : ');
     text += log;
     text += QLatin1Char('\n');
     m_logOutput->append(text);
@@ -324,8 +322,7 @@ void LiteApp::initPlugins()
     foreach(int index, keys) {
         foreach(IPlugin *p, deps.values(index)) {
             bool ret = p->initWithApp(this);
-            appendConsole("LiteApp","initPlugin",
-                          QString("%1 %2").arg(p->id()).arg(ret?"success":"false"));
+            appendLog("LiteApp",QString("initPlugin %1 %2").arg(p->id()).arg(ret?"success":"false"));
         }
     }
 }
