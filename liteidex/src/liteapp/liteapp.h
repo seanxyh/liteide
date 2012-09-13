@@ -79,7 +79,7 @@ public:
     virtual void loadState();
     virtual void saveState();
 
-    virtual void appendConsole(const QString &model, const QString &action, const QString &log = QString());
+    virtual void appendLog(const QString &model, const QString &log = QString());
 public:
     void load();
     void createActions();

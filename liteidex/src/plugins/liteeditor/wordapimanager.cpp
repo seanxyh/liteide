@@ -77,7 +77,7 @@ QList<IWordApi*> WordApiManager::wordApiList() const
 void WordApiManager::load(const QString &path)
 {
     QDir dir = path;
-    m_liteApp->appendConsole("WordApiManager","load",path);
+    m_liteApp->appendLog("WordApiManager","load "+path);
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     dir.setNameFilters(QStringList("*.xml"));
     foreach (QString fileName, dir.entryList()) {
