@@ -40,6 +40,8 @@ public:
     void setTabWidth(int n);
     void setEditorMark(LiteApi::IEditorMark *mark);
 public:
+    QWidget* extraArea();
+    void setExtraColor(const QColor &foreground,const QColor &background);
     int extraAreaWidth();
     void extraAreaPaintEvent(QPaintEvent *e);
     void extraAreaMouseEvent(QMouseEvent *e);
@@ -139,6 +141,8 @@ protected:
     LiteApi::IEditorMark *m_editorMark;
     QList<QTextEdit::ExtraSelection> m_extraSelections;
     QTextCursor m_lastSelection;
+    QColor  m_extraForeground;
+    QColor  m_extraBackground;
     bool m_lineNumbersVisible;
     bool m_marksVisible;
     bool m_codeFoldingVisible;

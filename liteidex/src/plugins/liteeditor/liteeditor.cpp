@@ -591,9 +591,13 @@ void LiteEditor::applyOption(QString id)
         QString styleFileName = m_liteApp->resourcePath()+"/liteeditor/color/"+m_colorStyle;
         bool b = m_colorStyleScheme->load(styleFileName);
         if (b) {
+            const ColorStyle *extra = m_colorStyleScheme->findStyle("Extra");
             const ColorStyle *style = m_colorStyleScheme->findStyle("Text");
             const ColorStyle *selection = m_colorStyleScheme->findStyle("Selection");
             const ColorStyle *inactiveSelection = m_colorStyleScheme->findStyle("InactiveSelection");
+            if (extra) {
+                m_editorWidget->setExtraColor(extra->foregound(),extra->background());
+            }
             if (style || selection || inactiveSelection) {
                 QPalette p = m_defPalette;//m_editorWidget->palette();
                 if (style) {
@@ -602,7 +606,8 @@ void LiteEditor::applyOption(QString id)
                         p.setColor(QPalette::Foreground, style->foregound());
                     }
                     if (style->background().isValid()) {
-                        p.setColor(QPalette::Base, style->background());
+                        //p.setColor(QPalette::Base, style->background());
+                        p.setBrush(QPalette::Base, style->background());
                     }
                 }
                 if (selection) {
