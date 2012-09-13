@@ -104,7 +104,7 @@ bool ProjectManager::initWithApp(IApplication *app)
     m_widget->setLayout(layout);
     */
     //m_liteApp->dockManager()->addDock(m_widget,tr("Projects"));
-    m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"projects",tr("Projects"),false);
+    m_action = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"projects",tr("Projects"),false);
 
     //connect(m_projectMenu,SIGNAL(triggered(QAction*)),this,SLOT(triggeredProject(QAction*)));
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
@@ -261,13 +261,18 @@ void ProjectManager::setCurrentProject(IProject *project)
     m_currentProject = project;
 
     if (m_currentProject) {
+        m_action->setChecked(true);
         //m_scrollArea->setWidget(m_currentProject->widget());
         m_currentProject->load();
         QAction *act = m_mapNameToAction.value(project->filePath());
         if (act) {
             act->setChecked(true);
         }
-        m_widget->setPathList(project->folderList());
+        QStringList folders = project->folderList();
+        if (!folders.isEmpty()) {
+            m_widget->setPathList(folders);
+            m_widget->setRootPath(folders.first());
+        }
         /*
         QFileInfo info(project->filePath());
         if (info.isDir()) {

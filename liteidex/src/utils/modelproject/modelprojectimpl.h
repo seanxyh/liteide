@@ -47,6 +47,7 @@ public:
     virtual LiteApi::IFile *file();
     virtual QString filePath() const;
     virtual QString mimeType() const;
+    virtual QStringList folderList() const;
     virtual QStringList fileNameList() const;
     virtual QStringList filePathList() const;
     virtual QString fileNameToFullPath(const QString &filePath);
