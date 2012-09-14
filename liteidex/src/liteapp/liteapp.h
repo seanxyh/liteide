@@ -79,7 +79,7 @@ public:
     virtual void loadState();
     virtual void saveState();
 
-    virtual void appendLog(const QString &model, const QString &log = QString());
+    virtual void appendLog(const QString &model, const QString &log = QString(), bool error = false);
 public:
     void load();
     void createActions();
@@ -91,6 +91,7 @@ public:
     void setPluginPath(const QString &path); 
     void setResourcePath(const QString &path);
 protected slots:
+    void dbclickLogOutput(QTextCursor);
     void projectReloaded();
     void currentProjectChanged(LiteApi::IProject *project);
     void currentEditorChanged(LiteApi::IEditor *editor);
@@ -111,6 +112,7 @@ protected:
     MimeTypeManager *m_mimeTypeManager;
     OptionManager   *m_optionManager;
     TextOutput    *m_logOutput;
+    QAction       *m_logAct;
     LiteAppOptionFactory *m_liteAppOptionFactory;
     QMap<QString,QVariant> m_cookie;
     QString         m_pluginPath;

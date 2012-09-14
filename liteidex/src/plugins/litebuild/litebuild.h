@@ -50,6 +50,7 @@ public:
     virtual QMap<QString,QString> buildEnvMap() const;
     virtual QMap<QString,QString> liteideEnvMap() const;
     virtual LiteApi::IBuildManager *buildManager() const;
+    virtual void appendOutput(const QString &str, const QBrush &brush, bool active);
     QMap<QString,QString> buildEnvMap(LiteApi::IBuild *build, const QString &buildFilePath) const;
 public:
     QString actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);

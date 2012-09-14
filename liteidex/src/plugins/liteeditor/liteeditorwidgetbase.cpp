@@ -34,6 +34,7 @@
 #include <QToolTip>
 #include <QTextCursor>
 #include <QTextDocumentFragment>
+#include <QScrollBar>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -594,13 +595,97 @@ void LiteEditorWidgetBase::slotUpdateRequest(const QRect &r, int dy)
         slotUpdateExtraAreaWidth();
 }
 
+static bool convertPosition(const QTextDocument *document, int pos, int *line, int *column)
+{
+    QTextBlock block = document->findBlock(pos);
+    if (!block.isValid()) {
+        (*line) = -1;
+        (*column) = -1;
+        return false;
+    } else {
+        (*line) = block.blockNumber() + 1;
+        (*column) = pos - block.position();
+        return true;
+    }
+}
+
+QByteArray LiteEditorWidgetBase::saveState() const
+{
+    QByteArray state;
+    QDataStream stream(&state, QIODevice::WriteOnly);
+    stream << 1; // version number
+    stream << verticalScrollBar()->value();
+    stream << horizontalScrollBar()->value();
+    int line, column;
+    convertPosition(document(),textCursor().position(), &line, &column);
+    stream << line;
+    stream << column;
+
+    // store code folding state
+    QList<int> foldedBlocks;
+    QTextBlock block = document()->firstBlock();
+    while (block.isValid()) {
+        if (block.userData() && static_cast<TextEditor::TextBlockUserData*>(block.userData())->folded()) {
+            int number = block.blockNumber();
+            foldedBlocks += number;
+        }
+        block = block.next();
+    }
+    stream << foldedBlocks;
+
+    return state;
+}
+
+bool LiteEditorWidgetBase::restoreState(const QByteArray &state)
+{
+    if (state.isEmpty()) {
+        return false;
+    }
+    int version;
+    int vval;
+    int hval;
+    int lval;
+    int cval;
+    QDataStream stream(state);
+    stream >> version;
+    stream >> vval;
+    stream >> hval;
+    stream >> lval;
+    stream >> cval;
+
+    if (version >= 1) {
+        QList<int> collapsedBlocks;
+        stream >> collapsedBlocks;
+        QTextDocument *doc = document();
+        foreach(int blockNumber, collapsedBlocks) {
+            QTextBlock block = doc->findBlockByNumber(qMax(0, blockNumber));
+            if (block.isValid())
+                TextEditor::BaseTextDocumentLayout::doFoldOrUnfold(block, false);
+        }
+    }
+
+    m_lastCursorChangeWasInteresting = false; // avoid adding last position to history
+    gotoLine(lval, cval,false);
+    verticalScrollBar()->setValue(vval);
+    horizontalScrollBar()->setValue(hval);
+    saveCurrentCursorPositionForNavigation();
+    return true;
+}
+
+void LiteEditorWidgetBase::saveCurrentCursorPositionForNavigation()
+{
+    m_lastCursorChangeWasInteresting = true;
+    m_tempNavigationState = saveState();
+}
+
 void LiteEditorWidgetBase::slotCursorPositionChanged()
 {
     if (!m_contentsChanged && m_lastCursorChangeWasInteresting) {
         //navigate change
+        emit navigationStateChanged(m_tempNavigationState);
         m_lastCursorChangeWasInteresting = false;
     } else if (m_contentsChanged) {
-        m_lastCursorChangeWasInteresting = true;
+        this->saveCurrentCursorPositionForNavigation();
     }
     highlightCurrentLine();
 }

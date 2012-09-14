@@ -64,6 +64,7 @@ bool EditorManager::initWithApp(IApplication *app)
         return false;
     }
 
+    m_currentNavigationHistoryPosition = 0;
     m_widget = new QWidget;
     m_editorTabWidget = new LiteTabWidget;
     m_editorTabWidget->tabBar()->setTabsClosable(true);
@@ -73,9 +74,25 @@ bool EditorManager::initWithApp(IApplication *app)
     mainLayout->addWidget(m_editorTabWidget);
     m_widget->setLayout(mainLayout);
 
+    QToolBar *toolbar = m_liteApp->actionManager()->insertToolBar("toolbar/nav",tr("Navigation"));
+    m_goBackAct = new QAction(tr("GoBack"),this);
+    m_goBackAct->setIcon(QIcon("icon:images/backward.png"));
+    m_goBackAct->setShortcut(QKeySequence(Qt::ALT+Qt::Key_Left));
+
+    m_goForwardAct = new QAction(tr("GoForward"),this);
+    m_goForwardAct->setIcon(QIcon("icon:images/forward.png"));
+    m_goForwardAct->setShortcut(Qt::ALT+Qt::Key_Right);
+
+    updateNavigatorActions();
+
+    toolbar->addAction(m_goBackAct);
+    toolbar->addAction(m_goForwardAct);
+
     connect(m_editorTabWidget,SIGNAL(currentChanged(int)),this,SLOT(editorTabChanged(int)));
     connect(m_editorTabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(editorTabCloseRequested(int)));
     connect(m_editorTabWidget,SIGNAL(tabAddRequest()),this,SIGNAL(tabAddRequest()));
+    connect(m_goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
+    connect(m_goForwardAct,SIGNAL(triggered()),this,SLOT(goForward()));
 
     m_editorTabWidget->installEventFilter(this);
     m_editorTabWidget->tabBar()->installEventFilter(this);
@@ -432,3 +449,108 @@ void EditorManager::modificationChanged(bool b)
     }
 }
 
+void EditorManager::addNavigationHistory(IEditor *editor,const QByteArray &saveState)
+{
+    if (editor && editor != currentEditor()) {
+        return; // we only save editor sate for the current editor, when the user interacts
+    }
+
+    if (!editor)
+        editor = currentEditor();
+    if (!editor)
+        return;
+
+    QString filePath = editor->filePath();
+    if (filePath.isEmpty()) {
+        return;
+    }
+
+    QByteArray state;
+    if (saveState.isNull()) {
+        state = editor->saveState();
+    } else {
+        state = saveState;
+    }
+
+    EditLocation location;
+    location.filePath = filePath;
+    location.state = state;
+    m_currentNavigationHistoryPosition = qMin(m_currentNavigationHistoryPosition, m_navigationHistory.size()); // paranoia
+    m_navigationHistory.insert(m_currentNavigationHistoryPosition, location);
+    ++m_currentNavigationHistoryPosition;
+
+    while (m_navigationHistory.size() >= 30) {
+        if (m_currentNavigationHistoryPosition > 15) {
+            m_navigationHistory.removeFirst();
+            --m_currentNavigationHistoryPosition;
+        } else {
+            m_navigationHistory.removeLast();
+        }
+    }
+    updateNavigatorActions();
+}
+
+void EditorManager::goBack()
+{
+    updateCurrentPositionInNavigationHistory();
+    while (m_currentNavigationHistoryPosition > 0) {
+        --m_currentNavigationHistoryPosition;
+        EditLocation location = m_navigationHistory.at(m_currentNavigationHistoryPosition);
+        IEditor *editor = m_liteApp->fileManager()->openEditor(location.filePath,true);
+        if (editor) {
+            editor->restoreState(location.state);
+        } else {
+            m_navigationHistory.removeAt(m_currentNavigationHistoryPosition);
+        }
+        break;
+    }
+    updateNavigatorActions();
+}
+
+void EditorManager::goForward()
+{
+    updateCurrentPositionInNavigationHistory();
+    if (m_currentNavigationHistoryPosition >= m_navigationHistory.size()-1)
+        return;
+    ++m_currentNavigationHistoryPosition;
+    EditLocation location = m_navigationHistory.at(m_currentNavigationHistoryPosition);
+    IEditor *editor = m_liteApp->fileManager()->openEditor(location.filePath);
+    if (!editor) {
+        return;
+    }
+    editor->restoreState(location.state);
+    updateNavigatorActions();
+}
+
+void EditorManager::updateNavigatorActions()
+{
+    m_goBackAct->setEnabled(m_currentNavigationHistoryPosition > 0);
+    m_goForwardAct->setEnabled(m_currentNavigationHistoryPosition < m_navigationHistory.size()-1);
+}
+
+void EditorManager::cutForwardNavigationHistory()
+{
+    while (m_currentNavigationHistoryPosition < m_navigationHistory.size() - 1)
+        m_navigationHistory.removeLast();
+}
+
+void EditorManager::updateCurrentPositionInNavigationHistory()
+{
+    IEditor *editor = currentEditor();
+    if (!editor)
+        return;
+    QString filePath = editor->filePath();
+    if(filePath.isEmpty()) {
+        return;
+    }
+
+    EditLocation *location;
+    if (m_currentNavigationHistoryPosition < m_navigationHistory.size()) {
+        location = &m_navigationHistory[m_currentNavigationHistoryPosition];
+    } else {
+        m_navigationHistory.append(EditLocation());
+        location = &m_navigationHistory[m_navigationHistory.size()-1];
+    }
+    location->filePath = filePath;
+    location->state = editor->saveState();
+}

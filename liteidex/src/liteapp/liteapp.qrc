@@ -38,5 +38,7 @@
         <file>images/closetool.png</file>
         <file>images/movemenu.png</file>
         <file>images/openfolder.png</file>
+        <file>images/goback.png</file>
+        <file>images/goforward.png</file>
     </qresource>
 </RCC>

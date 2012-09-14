@@ -34,6 +34,11 @@ using namespace LiteApi;
 class LiteTabWidget;
 class QStackedWidget;
 
+struct EditLocation {
+    QString filePath;
+    QByteArray state;
+};
+
 class EditorManager : public IEditorManager
 {
     Q_OBJECT
@@ -54,6 +59,8 @@ public:
     virtual QList<IEditor*> editorList() const;
     virtual QAction *registerBrowser(IEditor *editor);
     virtual void activeBrowser(IEditor *editor);
+    virtual void addNavigationHistory(IEditor *editor,const QByteArray &saveState);
+    virtual void cutForwardNavigationHistory();
 protected:
     void addEditor(IEditor *editor);
     bool eventFilter(QObject *target, QEvent *event);
@@ -65,16 +72,24 @@ public slots:
     virtual bool saveAllEditors();
     virtual bool closeEditor(IEditor *editor = 0);
     virtual bool closeAllEditors(bool autoSaveAll = false);
+    void goBack();
+    void goForward();
+    void updateNavigatorActions();
+    void updateCurrentPositionInNavigationHistory();
 signals:
     void tabAddRequest();
     void doubleClickedTab();
 protected:    
+    QList<EditLocation> m_navigationHistory;
+    int m_currentNavigationHistoryPosition;
     QWidget      *m_widget;
     LiteTabWidget *m_editorTabWidget;
     QMap<QWidget *, IEditor *> m_widgetEditorMap;
     QPointer<IEditor> m_currentEditor;
     QList<IEditorFactory*>    m_factoryList;
     QMap<IEditor*,QAction*>   m_browserActionMap;
+    QAction     *m_goBackAct;
+    QAction     *m_goForwardAct;
  protected slots:
     void editorTabChanged(int);
     void editorTabCloseRequested(int);
