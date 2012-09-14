@@ -64,6 +64,7 @@ protected:
     QComboBox *m_comboBox;
     QAction  *m_spacerAct;
     QAction  *m_closeAct;
+    QMap<QString,QAction*> m_idActionMap;
     QList<QAction*> m_widgetActions;
     QList<QAction*> m_actions;
     QPointer<QAction> current;
