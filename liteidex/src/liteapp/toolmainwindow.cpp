@@ -99,7 +99,7 @@ void ActionGroup::actionChanged()
     }
 }
 
-ActionToolBar::ActionToolBar(QObject *parent, Qt::DockWidgetArea _area)
+ActionToolBar::ActionToolBar(QWidget *parent, Qt::DockWidgetArea _area)
     : QObject(parent), area(_area), bHideToolBar(false)
 {
     toolBar = new QToolBar;
@@ -115,14 +115,14 @@ ActionToolBar::ActionToolBar(QObject *parent, Qt::DockWidgetArea _area)
     spacer2->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     toolBar->addWidget(spacer2);
 
-    dock1 = new ToolDockWidget;
+    dock1 = new ToolDockWidget(parent);
     dock1->setObjectName(QString("dock_%1").arg(area));
     dock1->setWindowTitle(QString("dock_%1").arg(area));
     dock1->setFeatures(QDockWidget::DockWidgetClosable);
     dock1->hide();
     dock1->createMenu(area,false);
 
-    dock2 = new ToolDockWidget;
+    dock2 = new ToolDockWidget(parent);
     dock2->setObjectName(QString("dock_%1_split").arg(area));
     dock2->setWindowTitle(QString("dock_%1_split").arg(area));
     dock2->setFeatures(QDockWidget::DockWidgetClosable);
@@ -195,7 +195,7 @@ void ActionToolBar::dock1Visible(bool b)
 {
     QAction *action = dock1->checkedAction();
     if (action) {
-        action->setChecked(b);
+        action->setChecked(dock1->isVisible());
     }
 }
 
@@ -203,7 +203,7 @@ void ActionToolBar::dock2Visible(bool b)
 {
     QAction *action = dock2->checkedAction();
     if (action) {
-        action->setChecked(b);
+        action->setChecked(dock2->isVisible());
     }
 }
 
@@ -348,7 +348,6 @@ QAction *ToolMainWindow::addToolWindow(Qt::DockWidgetArea area, QWidget *widget,
     state->title = title;
 
     actToolBar->addAction(action,title,split);
-    m_actStateMap.insert(action,state);
 
     int index = m_actStateMap.size();
     if (index <= 9) {
@@ -356,9 +355,10 @@ QAction *ToolMainWindow::addToolWindow(Qt::DockWidgetArea area, QWidget *widget,
         action->setToolTip(QString("ToolWindow \"%1\"\tATL+%2").arg(title).arg(index));
         action->setShortcut(QKeySequence(QString("ALT+%1").arg(index)));
     }
+    m_actStateMap.insert(action,state);
 
     connect(action,SIGNAL(toggled(bool)),this,SLOT(toggledAction(bool)));
-    action->setChecked(true);
+    //action->setChecked(true);
     return action;
 }
 
@@ -425,7 +425,9 @@ void ToolMainWindow::lockToolWindows(bool b)
     QMapIterator<Qt::DockWidgetArea,ActionToolBar*> it(m_areaToolBar);
     while (it.hasNext()) {
         it.next();
-        it.value()->setHideToolBar(b);
+        if (it.key() != Qt::BottomDockWidgetArea) {
+            it.value()->setHideToolBar(b);
+        }
     }
 }
 

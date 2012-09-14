@@ -197,9 +197,11 @@ FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
     m_findWidget = new QWidget;
 
     QGridLayout *topLayout = new QGridLayout;
+    topLayout->setSpacing(1);
 
     m_findCombo = new QComboBox;
     m_findCombo->setEditable(true);
+    m_findCombo->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
 
     QHBoxLayout *optLayout = new QHBoxLayout;
     m_matchWordCheckBox = new QCheckBox(tr("Match word"));
@@ -212,8 +214,21 @@ FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
     optLayout->addWidget(m_findSubCheckBox);
     optLayout->addStretch();
 
+    QHBoxLayout *findLayout = new QHBoxLayout;
+    //findLayout->setMargin(0);
+    m_findButton = new QPushButton(tr("Search"));
+    m_stopButton = new QPushButton(tr("Cancel"));
+    m_stopButton->setEnabled(false);
+    //findLayout->addWidget();
+    findLayout->addWidget(m_findCombo);
+    findLayout->addWidget(m_findButton);
+    findLayout->addWidget(m_stopButton);
+    //findLayout->addStretch(0);
+    //topLayout->addLayout(findLayout,4,1);
+
+
     topLayout->addWidget(new QLabel(tr("Search for:")),0,0);
-    topLayout->addWidget(m_findCombo,0,1);
+    topLayout->addLayout(findLayout,0,1);
     topLayout->addWidget(new QLabel(tr("Options:")),1,0);
     topLayout->addLayout(optLayout,1,1);
 
@@ -241,21 +256,7 @@ FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
     topLayout->addWidget(new QLabel(tr("Filter:")),3,0);
     topLayout->addWidget(m_filterCombo,3,1);
 
-    QHBoxLayout *findLayout = new QHBoxLayout;
-    findLayout->setMargin(0);
-    m_findButton = new QPushButton(tr("Search"));
-    m_stopButton = new QPushButton(tr("Cancel"));
-    m_stopButton->setEnabled(false);
-    findLayout->addWidget(m_findButton);
-    findLayout->addWidget(m_stopButton);
-    findLayout->addStretch(0);
-    topLayout->addLayout(findLayout,4,1);
-
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addLayout(topLayout);
-    layout->addStretch(0);
-
-    m_findWidget->setLayout(layout);
+    m_findWidget->setLayout(topLayout);
 
     m_resultOutput = new ResultTextEdit;
     m_resultOutput->setReadOnly(true);
