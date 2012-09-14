@@ -1,9 +1,9 @@
 ==== 2012.9.14 Ver x12.5 ====
- * LiteApp : move dock , change to idea style tool windows.
+ * LiteApp : move dock style, change to idea style tool windows.
  * LiteApp : double click editor and maximized or restore editor
  * LiteApp : esc key to hide bottom tool windows
  * LiteApp : auto load last session
- * LiteEditor : add edit navigate hirstroy
+ * LiteEditor : add edit navigate histroy
  * LiteEditor : extra use color scheme
  * GolangFmt : show error log and goto line
 ==== 2012.7.12 Ver X12.2 ====
