@@ -222,7 +222,7 @@ void ToolDockWidget::removeAction(QAction *action)
     if (m_actions.removeAll(action)) {
         if (action == current)
             current = 0;
-        int index = m_comboBox->findData((int)action);
+        int index = m_comboBox->findData(action->objectName());
         if (index >= 0) {
             m_comboBox->removeItem(index);
         }
@@ -244,7 +244,7 @@ void ToolDockWidget::actionChanged()
             if(current)
                 current->setChecked(false);
             current = action;
-            int index = m_comboBox->findData((int)action);
+            int index = m_comboBox->findData(action->objectName());
             if (index >= 0) {
                 m_comboBox->setCurrentIndex(index);
             }
@@ -259,10 +259,14 @@ void ToolDockWidget::activeComboBoxIndex(int index)
     if (index < 0 || index >= m_comboBox->count()) {
         return;
     }
-    bool ok;
-    QAction *action =(QAction*)m_comboBox->itemData(index).toInt(&ok);
-    if (action && !action->isChecked()) {
-        action->setChecked(true);
+    QString objName = m_comboBox->itemData(index).toString();
+    foreach(QAction *act, m_actions) {
+        if (act->objectName() == objName) {
+            if (!act->isChecked()) {
+                act->setChecked(true);
+            }
+            break;
+        }
     }
 }
 
@@ -270,7 +274,7 @@ void ToolDockWidget::addAction(QAction *action, const QString &title)
 {
     if(!m_actions.contains(action)) {
         m_actions.append(action);
-        m_comboBox->addItem(title,QVariant((int)action));
+        m_comboBox->addItem(title,action->objectName());
         QObject::connect(action, SIGNAL(changed()), this, SLOT(actionChanged()));
     }
     if (current && current->isChecked()) {

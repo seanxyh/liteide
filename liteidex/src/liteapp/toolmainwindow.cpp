@@ -337,6 +337,7 @@ QAction *ToolMainWindow::addToolWindow(Qt::DockWidgetArea area, QWidget *widget,
     QAction *action = new QAction(this);
     action->setText(title);
     action->setCheckable(true);
+    action->setObjectName(id);
 
     ActionState *state = new ActionState;
     state->area = area;
