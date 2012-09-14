@@ -176,6 +176,14 @@ LiteApi::IBuildManager *LiteBuild::buildManager() const
     return m_manager;
 }
 
+void LiteBuild::appendOutput(const QString &str, const QBrush &brush, bool active)
+{
+    if (active) {
+        m_outputAct->setChecked(true);
+    }
+    m_output->append(str,brush);
+}
+
 void LiteBuild::appLoaded()
 {
     currentProjectChanged(m_liteApp->projectManager()->currentProject());
@@ -681,7 +689,9 @@ void LiteBuild::stopAction()
 
 void LiteBuild::buildAction()
 {
+    m_outputAct->setChecked(true);
     if (m_process->isRuning()) {
+        m_output->append("\nError,action process is runing, stop action first!\n",Qt::red);
         return;
     }
 
@@ -703,7 +713,6 @@ void LiteBuild::buildAction()
     }
 
     //m_liteApp->outputManager()->setCurrentOutput(m_output);
-    m_outputAct->setChecked(true);
     m_output->updateExistsTextColor();
     m_process->setUserData(ID_MIMETYPE,mime);
     m_process->setUserData(ID_EDITOR,editor);

@@ -348,7 +348,7 @@ QAction *ToolMainWindow::addToolWindow(Qt::DockWidgetArea area, QWidget *widget,
     }
 
     connect(action,SIGNAL(toggled(bool)),this,SLOT(toggledAction(bool)));
-    action->setChecked(checked);
+    action->setChecked(true);
     return action;
 }
 

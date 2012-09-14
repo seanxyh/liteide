@@ -214,6 +214,8 @@ public:
     virtual bool isModified() const = 0;
     virtual QString filePath() const = 0;
     virtual QString mimeType() const = 0;
+    virtual QByteArray saveState() const = 0;
+    virtual bool restoreState(const QByteArray &array) = 0;
 signals:
     void modificationChanged(bool);
     void contentsChanged();
@@ -247,6 +249,8 @@ public:
     virtual QList<IEditor*> editorList() const = 0;
     virtual QAction *registerBrowser(IEditor *editor) = 0;
     virtual void activeBrowser(IEditor *editor) = 0;
+    virtual void addNavigationHistory(IEditor *editor = 0,const QByteArray &saveState = QByteArray()) = 0;
+    virtual void cutForwardNavigationHistory() = 0;
 public slots:
     virtual bool saveEditor(IEditor *editor = 0, bool emitAboutSave = true) = 0;
     virtual bool saveEditorAs(IEditor *editor = 0) = 0;
@@ -276,6 +280,8 @@ public:
     virtual QString filePath() const { return QString(); }
     virtual QMap<QString,QString> editorInfo() const { return QMap<QString,QString>(); }
     virtual QMap<QString,QString> targetInfo() const { return QMap<QString,QString>(); }
+    virtual QByteArray saveState() const {return QByteArray(); }
+    virtual bool restoreState(const QByteArray &array) { return false; }
 };
 
 class IProject : public IView
@@ -455,7 +461,7 @@ public:
     virtual void loadState() = 0;
     virtual void saveState() = 0;
 
-    virtual void appendLog(const QString &model, const QString &log) = 0;
+    virtual void appendLog(const QString &model, const QString &log, bool error = false) = 0;
 };
 
 class PluginInfo
@@ -489,7 +495,7 @@ class IPlugin : public IObject
 public:
     IPlugin() : m_info(new PluginInfo)
     {
-        m_info->setVer("x13");
+        m_info->setVer("x12.5");
     }
     virtual ~IPlugin()
     {
@@ -519,7 +525,7 @@ protected:
 
 } //namespace LiteApi
 
-Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/13.0")
+Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/12.5")
 
 
 #endif //__LITEAPI_H__

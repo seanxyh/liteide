@@ -27,6 +27,7 @@
 #define __LITEBUILDAPI_H__
 
 #include "liteapi/liteapi.h"
+#include "liteapi/litefindobj.h"
 #include <QProcessEnvironment>
 
 namespace LiteApi {
@@ -205,11 +206,16 @@ public:
     virtual QString buildFilePath() const = 0;
     virtual QString targetFilePath() const = 0;
     virtual QMap<QString,QString> buildEnvMap() const = 0;
-    virtual IBuildManager *buildManager() const = 0;
+    virtual IBuildManager *buildManager() const = 0;   
+    virtual void appendOutput(const QString &str, const QBrush &brush, bool active) = 0;
 signals:
     void currentBuildFileChanged(const QString &filePath);
 };
 
+inline ILiteBuild *getLiteBuild(LiteApi::IApplication* app)
+{
+    return LiteApi::findExtensionObject<ILiteBuild*>(app,"LiteApi.ILiteBuild");
+}
 
 } //namespace LiteApi
 

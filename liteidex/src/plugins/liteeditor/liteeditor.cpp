@@ -76,8 +76,7 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     : m_liteApp(app),
       m_extension(new Extension),
       m_completer(0),
-      m_bReadOnly(false),
-      m_naviagePos(0)
+      m_bReadOnly(false)
 {
     m_widget = new QWidget;
     m_editorWidget = new LiteEditorWidget(m_widget);
@@ -120,6 +119,7 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     connect(m_codecComboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(codecComboBoxChanged(QString)));
     m_editorWidget->installEventFilter(m_liteApp->editorManager());
     connect(m_editorWidget,SIGNAL(cursorPositionChanged()),this,SLOT(editPositionChanged()));
+    connect(m_editorWidget,SIGNAL(navigationStateChanged(QByteArray)),this,SLOT(navigationStateChanged(QByteArray)));
 }
 
 LiteEditor::~LiteEditor()
@@ -207,9 +207,6 @@ void LiteEditor::createActions()
     m_filePrintAct = new QAction(QIcon("icon:liteeditor/images/fileprint.png"),tr("Print Document"),this);
     m_filePrintPreviewAct = new QAction(QIcon("icon:liteeditor/images/fileprintpreview.png"),tr("Print Preview Document"),this);
 #endif
-    m_goBackAct = new QAction(QIcon("icon:liteeditor/images/goback.png"),tr("Go Back"),this);
-    m_goForwardAct = new QAction(QIcon("icon:liteeditor/images/goforward.png"),tr("Go Forward"),this);
-
     m_gotoPrevBlockAct = new QAction(tr("Goto Previous Block"),this);
     m_gotoPrevBlockAct->setShortcut(QKeySequence("Ctrl+["));
     m_gotoNextBlockAct = new QAction(tr("Goto Next block"),this);
@@ -280,8 +277,6 @@ void LiteEditor::createActions()
     connect(m_gotoPrevBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoPrevBlock()));
     connect(m_gotoNextBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoNextBlock()));
     connect(m_gotoMatchBraceAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoMatchBrace()));
-    connect(m_goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
-    connect(m_goForwardAct,SIGNAL(triggered()),this,SLOT(goForward()));
     connect(m_gotoLineAct,SIGNAL(triggered()),this,SLOT(gotoLine()));
 
     QClipboard *clipboard = QApplication::clipboard();
@@ -436,8 +431,6 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
 {
     bool success = m_file->open(fileName,mimeType);
     if (success) {        
-        m_navigateHistroy.clear();
-        m_naviagePos = -1;
         m_editorWidget->initLoadDocument();
         QString codecName = m_file->textCodec();
         for (int i = 0; i < m_codecComboBox->count(); i++) {
@@ -764,27 +757,6 @@ void LiteEditor::editPositionChanged()
                                 arg(cur.columnNumber()+1,3));
 }
 
-void LiteEditor::goBack()
-{
-    //m_editorWidget->gotoPrevBlock();
-    QTextCursor cursor = m_editorWidget->textCursor();
-    QTextBlock block = cursor.block().next();
-    while(block.isValid()) {
-        TextEditor::TextBlockUserData *data = (TextEditor::TextBlockUserData*)block.userData();
-        if (data) {
-            //qDebug() << block.text() << data->parentheses().count();
-            foreach(TextEditor::Parenthesis p, data->parentheses()) {
-            //    qDebug() << p.pos << p.chr << p.type;
-            }
-        }
-        block = block.next();
-    }}
-
-void LiteEditor::goForward()
-{
-    m_editorWidget->gotoNextBlock();
-}
-
 void LiteEditor::gotoLine()
 {
     int min = 1;
@@ -796,4 +768,19 @@ void LiteEditor::gotoLine()
         return;
     }
     this->gotoLine(v,0,true);
+}
+
+QByteArray LiteEditor::saveState() const
+{
+    return m_editorWidget->saveState();
+}
+
+bool LiteEditor::restoreState(const QByteArray &array)
+{
+    return m_editorWidget->restoreState(array);
+}
+
+void LiteEditor::navigationStateChanged(const QByteArray &state)
+{
+    m_liteApp->editorManager()->addNavigationHistory(this,state);
 }

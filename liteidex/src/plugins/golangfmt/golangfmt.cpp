@@ -27,6 +27,7 @@
 #include "fileutil/fileutil.h"
 #include "processex/processex.h"
 #include "liteapi/litefindobj.h"
+#include "litebuildapi/litebuildapi.h"
 
 #include <QDebug>
 #include <QProcess>
@@ -115,6 +116,7 @@ void GolangFmt::fmtEditor(LiteApi::IEditor *editor, bool save)
         args << "-d";
     }
     m_data.clear();;
+    m_errData.clear();
     m_process->setUserData(0,fileName);
     m_process->setUserData(1,text);
     m_process->setUserData(2,save);
@@ -164,12 +166,13 @@ void GolangFmt::fmtStarted()
 void GolangFmt::fmtOutput(QByteArray data,bool stdErr)
 {
     if (stdErr) {
+        m_errData.append(data);
         return;
     }
     m_data.append(data);
 }
 
-void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
+void GolangFmt::fmtFinish(bool error,int code,QString msg)
 {
     if (!error && code == 0) {
         QString fileName = m_process->userData(0).toString();
@@ -206,6 +209,39 @@ void GolangFmt::fmtFinish(bool error,int code,QString /*msg*/)
                 if (save) {
                     m_liteApp->editorManager()->saveEditor(editor,false);
                 }
+            }
+        }
+    } else if (!m_errData.isEmpty()){
+        QTextCodec *codec = QTextCodec::codecForName("utf-8");
+        QString filename = m_process->userData(0).toString();
+        QString data = codec->toUnicode(m_errData);
+        m_errData.clear();
+        data.replace("<standard input>",filename);
+        m_liteApp->appendLog("gofmt","\n"+data,true);
+        //goto error line
+        QRegExp rep("([\\w\\d_\\\\/\\.]+):(\\d+):");
+
+        int index = rep.indexIn(data);
+        if (index < 0)
+            return;
+        QStringList capList = rep.capturedTexts();
+
+        if (capList.count() < 3)
+            return;
+        QString fileName = capList[1];
+        QString fileLine = capList[2];
+
+        bool ok = false;
+        int line = fileLine.toInt(&ok);
+        if (!ok)
+            return;
+
+        LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName);
+        if (editor) {
+            editor->widget()->setFocus();
+            LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
+            if (textEditor) {
+                textEditor->gotoLine(line,0,true);
             }
         }
     }

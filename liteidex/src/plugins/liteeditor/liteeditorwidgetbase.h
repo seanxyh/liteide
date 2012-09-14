@@ -48,9 +48,17 @@ public:
     void extraAreaLeaveEvent(QEvent *e);
     void resizeEvent(QResizeEvent *e);
     void showTip(const QString &tip);
-    void hideTip();    
+    void hideTip();
+signals:
+    void navigationStateChanged(const QByteArray &array);
+public:
+    bool restoreState(const QByteArray &state);
+    QByteArray saveState() const;
+protected:
+    void saveCurrentCursorPositionForNavigation();
+    QByteArray m_tempNavigationState;
 protected slots:
-    void editContentsChanged(int,int,int);
+    void editContentsChanged(int,int,int);    
     virtual void highlightCurrentLine();
     virtual void slotUpdateExtraAreaWidth();
     virtual void slotModificationChanged(bool);

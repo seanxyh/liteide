@@ -102,13 +102,14 @@ void LiteEditorFileFactory::colorStyleChanged()
 
 LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QString &mimeType)
 {
+    m_liteApp->editorManager()->cutForwardNavigationHistory();
+    m_liteApp->editorManager()->addNavigationHistory();
     LiteEditor *editor = new LiteEditor(m_liteApp);
     editor->setEditorMark(new LiteEditorMark(m_markTypeManager,editor));
     if (!editor->open(fileName,mimeType)) {
         delete editor;
         return 0;
     }
-
     return setupEditor(editor,mimeType);
 }
 

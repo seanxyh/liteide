@@ -49,17 +49,6 @@ class QToolButton;
 class LiteCompleter;
 class ColorStyleScheme;
 
-struct EditLocation {
-    EditLocation() :
-        line(0),col(0)
-    {}
-    EditLocation(int l, int c) :
-        line(l),col(c)
-    {}
-    int line;
-    int col;
-};
-
 class LiteEditor : public LiteApi::ITextEditor
 {
     Q_OBJECT
@@ -90,6 +79,9 @@ public:
     virtual int line() const;
     virtual int column() const;
     virtual void gotoLine(int line, int column, bool center);
+    virtual QByteArray saveState() const;
+    virtual bool restoreState(const QByteArray &state);
+
     const ColorStyleScheme *colorStyleScheme() const;
     LiteEditorWidget *editorWidget() const;
 signals:
@@ -108,8 +100,7 @@ public slots:
     void printPreview(QPrinter *printer);
     void codecComboBoxChanged(QString);
     void editPositionChanged();
-    void goBack();
-    void goForward();
+    void navigationStateChanged(const QByteArray &state);
     void gotoLine();
 public:
     void findCodecs();
@@ -141,8 +132,6 @@ public:
     QAction *m_gotoNextBlockAct;
     QAction *m_gotoMatchBraceAct;
     QAction *m_selectBlockAct;
-    QAction *m_goBackAct;
-    QAction *m_goForwardAct;
     QAction *m_gotoLineAct;
     QAction *m_lineInfoAct;
     QAction *m_duplicateAct;
@@ -155,8 +144,6 @@ public:
     QString  m_colorStyle;
     QPalette m_defPalette;
     bool       m_bReadOnly;
-    QList<EditLocation> m_navigateHistroy;
-    int        m_naviagePos;
 };
 
 #endif //LITEEDITOR_H

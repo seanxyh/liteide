@@ -24,6 +24,7 @@
 // $Id: liteapp.cpp,v 1.0 2011-5-12 visualfc Exp $
 
 #include "liteapp.h"
+#include "liteapi/litefindobj.h"
 #include "filemanager.h"
 #include "editormanager.h"
 #include "projectmanager.h"
@@ -44,6 +45,8 @@
 #include <QAction>
 #include <QDateTime>
 #include <QSplitter>
+#include <QTextCursor>
+#include <QTextBlock>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -118,9 +121,8 @@ LiteApp::LiteApp()
 
     m_logOutput = new TextOutput;
     //m_outputManager->addOutuput(m_logOutput,tr("Console"));
-    m_toolWindowManager->addToolWindow(Qt::BottomDockWidgetArea,m_logOutput,"eventlog",tr("Event Log"),true);
-    //connect(m_logOutput,SIGNAL(hideOutput()),m_outputManager,SLOT(setCurrentOutput()));
-
+    m_logAct = m_toolWindowManager->addToolWindow(Qt::BottomDockWidgetArea,m_logOutput,"eventlog",tr("Event Log"),true);
+    connect(m_logOutput,SIGNAL(dbclickEvent(QTextCursor)),this,SLOT(dbclickLogOutput(QTextCursor)));
     m_optionAct = m_editorManager->registerBrowser(m_optionManager->browser());
     m_viewMenu->addAction(m_optionAct);
     m_optionManager->setAction(m_optionAct);
@@ -270,18 +272,21 @@ QList<IPlugin*> LiteApp::pluginList() const
     return m_pluginManager->pluginList();
 }
 
-void LiteApp::appendLog(const QString &model, const QString &log)
+void LiteApp::appendLog(const QString &model, const QString &log, bool error)
 {
     QDateTime dt = QDateTime::currentDateTime();
-    QString text = dt.toString("yyyy-M-d");
-    text += QLatin1Char(' ');
-    text += dt.toString("hh:mm:ss");
+    QString text = dt.toString("hh:mm:ss");
     text += QLatin1Char(' ');
     text += model;
-    text += QLatin1String(" : ");
+    text += QLatin1Char(' ');
     text += log;
     text += QLatin1Char('\n');
-    m_logOutput->append(text);
+    if (error) {
+        m_logOutput->append(text,Qt::red);
+        m_logAct->setChecked(true);
+    } else {
+        m_logOutput->append(text);
+    }
 }
 
 void LiteApp::loadPlugins()
@@ -530,4 +535,33 @@ void LiteApp::saveSession(const QString &name)
     m_settings->setValue(session+"_scheme",scheme);
     m_settings->setValue(session+"_cureditor",editorName);
     m_settings->setValue(session+"_alleditor",fileList);
+}
+
+void LiteApp::dbclickLogOutput(QTextCursor cur)
+{
+    QRegExp rep("([\\w\\d_\\\\/\\.]+):(\\d+):");
+
+    int index = rep.indexIn(cur.block().text());
+    if (index < 0)
+        return;
+    QStringList capList = rep.capturedTexts();
+
+    if (capList.count() < 3)
+        return;
+    QString fileName = capList[1];
+    QString fileLine = capList[2];
+
+    bool ok = false;
+    int line = fileLine.toInt(&ok);
+    if (!ok)
+        return;
+
+    LiteApi::IEditor *editor = m_fileManager->openEditor(fileName);
+    if (editor) {
+        editor->widget()->setFocus();
+        LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
+        if (textEditor) {
+            textEditor->gotoLine(line,0,true);
+        }
+    }
 }

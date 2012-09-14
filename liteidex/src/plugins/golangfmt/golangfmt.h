@@ -54,6 +54,7 @@ protected:
     LiteApi::IEnvManager *m_envManager;
     QString m_gofmtCmd;
     QByteArray m_data;
+    QByteArray m_errData;
     bool m_diff;
     bool m_autofmt;
 };
