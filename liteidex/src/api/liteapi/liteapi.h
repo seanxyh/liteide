@@ -281,7 +281,7 @@ public:
     virtual QMap<QString,QString> editorInfo() const { return QMap<QString,QString>(); }
     virtual QMap<QString,QString> targetInfo() const { return QMap<QString,QString>(); }
     virtual QByteArray saveState() const {return QByteArray(); }
-    virtual bool restoreState(const QByteArray &array) { return false; }
+    virtual bool restoreState(const QByteArray &) { return false; }
 };
 
 class IProject : public IView

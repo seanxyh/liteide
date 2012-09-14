@@ -32,6 +32,15 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QDebug>
+//lite_memory_check_begin
+#if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
+     #define _CRTDBG_MAP_ALLOC
+     #include <stdlib.h>
+     #include <crtdbg.h>
+     #define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ )
+     #define new DEBUG_NEW
+#endif
+//lite_memory_check_end
 
 ToolDockWidget::ToolDockWidget(QWidget *parent) :
     QDockWidget(parent), current(0)
@@ -107,7 +116,7 @@ void ToolDockWidget::createMenu(Qt::DockWidgetArea area, bool split)
         connect(act1,SIGNAL(triggered()),this,SLOT(moveActionSplit()));
     }
 
-    QMenu *menu = new QMenu;
+    QMenu *menu = new QMenu(this);
     if (split) {
         QAction *unsplitAct = new QAction(tr("UnSplit"),this);
         unsplitAct->setData(area);
