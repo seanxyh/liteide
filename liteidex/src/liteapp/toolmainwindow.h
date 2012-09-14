@@ -56,7 +56,7 @@ class ActionToolBar : public QObject
 {
     Q_OBJECT
 public:
-    ActionToolBar(QObject *parent, Qt::DockWidgetArea area);
+    ActionToolBar(QWidget *parent, Qt::DockWidgetArea area);
     ToolDockWidget *dock(bool split) const;
     void addAction(QAction *action, const QString &title, bool split);
     void removeAction(QAction *action, bool split);
