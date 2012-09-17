@@ -94,7 +94,16 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
     layout->setSpacing(0);
-    layout->addWidget(m_toolBar);
+
+    QHBoxLayout *toolLayout = new QHBoxLayout;
+    toolLayout->setMargin(0);
+    toolLayout->setSpacing(0);
+
+    m_toolBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+    toolLayout->addWidget(m_toolBar);
+    toolLayout->addWidget(m_rightToolBar);
+
+    layout->addLayout(toolLayout);
     layout->addWidget(m_editorWidget);
     m_widget->setLayout(layout);
     m_file = new LiteEditorFile(m_liteApp,this);
@@ -320,19 +329,6 @@ void LiteEditor::createToolBars()
     m_toolBar = new QToolBar(tr("editor"),m_widget);
     m_toolBar->setIconSize(QSize(16,16));
 
-    m_toolBar->addAction(m_lockAct);
-    m_toolBar->addSeparator();
-    m_codecComboBox = new QComboBox;
-    m_toolBar->addWidget(m_codecComboBox);
-    m_toolBar->addSeparator();
-
-    m_lineInfo = new QToolButton;
-    m_lineInfo->setText("000:000");
-    m_lineInfo->setDefaultAction(m_gotoLineAct);
-    m_lineInfo->setToolTip(tr("Goto Line (Ctrl+G)"));
-    m_toolBar->addWidget(m_lineInfo);
-    m_toolBar->addSeparator();
-
     m_toolBar->addAction(m_cutAct);
     m_toolBar->addAction(m_copyAct);
     m_toolBar->addAction(m_pasteAct);
@@ -356,6 +352,22 @@ void LiteEditor::createToolBars()
     m_toolBar->addSeparator();
     connect(m_findComboBox->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findNextText()));
 #endif
+
+    m_rightToolBar = new QToolBar(m_widget);
+    m_rightToolBar->setIconSize(QSize(16,16));
+
+    m_lineInfo = new QToolButton;
+    m_lineInfo->setText("000:000");
+    m_lineInfo->setDefaultAction(m_gotoLineAct);
+    m_lineInfo->setToolTip(tr("Goto Line (Ctrl+G)"));
+    m_rightToolBar->addWidget(m_lineInfo);
+    m_rightToolBar->addSeparator();
+
+    m_codecComboBox = new QComboBox;
+    m_rightToolBar->addWidget(m_codecComboBox);
+    m_rightToolBar->addSeparator();
+
+    m_rightToolBar->addAction(m_lockAct);
 }
 
 void LiteEditor::createContextMenu()

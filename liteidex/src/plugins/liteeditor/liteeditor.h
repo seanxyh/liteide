@@ -110,6 +110,7 @@ public:
     Extension   *m_extension;
     QWidget *m_widget;
     QToolBar *m_toolBar;
+    QToolBar *m_rightToolBar;
     QComboBox *m_codecComboBox;
     QToolButton  *m_lineInfo;
     LiteEditorWidget    *m_editorWidget;
