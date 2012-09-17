@@ -40,5 +40,6 @@
         <file>images/openfolder.png</file>
         <file>images/goback.png</file>
         <file>images/goforward.png</file>
+        <file>images/hidesidebar.png</file>
     </qresource>
 </RCC>
