@@ -300,6 +300,21 @@ signals:
     void reloaded();
 };
 
+class IFileProject : public IProject
+{
+    Q_OBJECT
+public:
+    virtual bool isFolder() const { return false; }
+};
+
+class IFolderProject : public IProject
+{
+    Q_OBJECT
+public:
+    virtual bool isFolder() const { return true; }
+    virtual QStringList folderList() const = 0;
+};
+
 class IOption : public IView
 {
     Q_OBJECT
@@ -337,6 +352,7 @@ class IProjectManager : public IManager
     Q_OBJECT
 public:
     IProjectManager(QObject *parent = 0) : IManager(parent) {}
+    virtual IFolderProject *openFolder(const QString &folderPath) = 0;
     virtual IProject *openProject(const QString &fileName, const QString &mimeType) = 0;
     virtual void addFactory(IProjectFactory *factory) = 0;
     virtual void removeFactory(IProjectFactory *factory) = 0;

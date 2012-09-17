@@ -53,12 +53,15 @@
 
 
 ProjectManager::ProjectManager()
-    : m_widget(0)
+    : m_widget(0), m_folderProject(0)
 {
 }
 
 ProjectManager::~ProjectManager()
 {
+    if (m_folderProject) {
+        delete m_folderProject;
+    }
     if (m_widget) {
         m_liteApp->toolWindowManager()->removeToolWindow(m_widget);
         delete m_widget;
@@ -71,42 +74,13 @@ bool ProjectManager::initWithApp(IApplication *app)
         return false;
     }
 
-    m_widget = new FileSystemWidget(m_liteApp);
-    /*
-    m_widget = new QWidget;
-    m_projectMenu = new QMenu(m_widget);
-    m_projectActGroup = new QActionGroup(m_widget);
+    m_widget = new QScrollArea;
+    m_widget->setFrameShape(QFrame::NoFrame);
+    m_widget->setWidgetResizable(true);
 
-    m_importMenu = new QMenu(m_widget);
-
-    QBoxLayout *layout = new QVBoxLayout;
-    layout->setMargin(0);
-    QTabWidget *tab = new QTabWidget;
-
-    m_scrollArea = new QScrollArea(m_widget);
-    m_scrollArea->setFrameShape(QFrame::NoFrame);
-    m_scrollArea->setWidgetResizable(true);
-
-    QHBoxLayout *headLayout = new QHBoxLayout;
-    headLayout->setMargin(0);
-    QPushButton *btn = new QPushButton(tr("Import"));
-    btn->setMenu(m_importMenu);
-    headLayout->addWidget(btn);
-    headLayout->addStretch(0);
-
-    layout->addLayout(headLayout);
-
-    tab->addTab(m_fileSystemWidget,tr("FileSystem"));
-    tab->addTab(m_scrollArea,tr("Project Info"));
-
-    layout->addWidget(tab);
-
-    m_widget->setLayout(layout);
-    */
-    //m_liteApp->dockManager()->addDock(m_widget,tr("Projects"));
+    m_folderProject = new FolderProject(m_liteApp);
     m_action = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"projects",tr("Projects"),false);
 
-    //connect(m_projectMenu,SIGNAL(triggered(QAction*)),this,SLOT(triggeredProject(QAction*)));
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
 
     m_bAutoCloseProjectEditors = m_liteApp->settings()->value("LiteApp/AutoCloseProjectEditors",true).toBool();
@@ -116,10 +90,6 @@ bool ProjectManager::initWithApp(IApplication *app)
 
 void ProjectManager::appLoaded()
 {
-    //QAction *openProjectAct = new QAction(QIcon("icon:images/openproject.png"),tr("Project File"),this);
-    //connect(openProjectAct,SIGNAL(triggered()),m_liteApp->fileManager(),SLOT(openProjects()));
-    //m_importMenu->addAction(openProjectAct);
-
     foreach (IProjectFactory *factory, this->m_factoryList) {
         foreach(QString type, factory->mimeTypes()) {
             IMimeType *mimeType = m_liteApp->mimeTypeManager()->findMimeType(type);
@@ -197,6 +167,13 @@ void ProjectManager::currentEditorChanged(LiteApi::IEditor* editor)
 //    }
 }
 
+IFolderProject *ProjectManager::openFolder(const QString &folderPath)
+{
+    m_folderProject->openFolder(folderPath);
+    setCurrentProject(m_folderProject);
+    return m_folderProject;
+}
+
 IProject *ProjectManager::openProject(const QString &fileName, const QString &mimeType)
 {
     if (m_currentProject && m_currentProject->filePath() == fileName) {
@@ -211,17 +188,6 @@ IProject *ProjectManager::openProject(const QString &fileName, const QString &mi
             }
         }
     }
-    /*
-    if (project) {
-        QAction *act = m_mapNameToAction.value(fileName);
-        if (act == 0) {
-            act = m_projectActGroup->addAction(fileName);
-            act->setCheckable(true);
-            m_mapNameToAction.insert(fileName,act);
-            //m_projectMenu->addAction(act);
-        }
-    }
-    */
 
     if (project) {
         setCurrentProject(project);
@@ -262,26 +228,8 @@ void ProjectManager::setCurrentProject(IProject *project)
 
     if (m_currentProject) {
         m_action->setChecked(true);
-        //m_scrollArea->setWidget(m_currentProject->widget());
+        m_widget->setWidget(m_currentProject->widget());
         m_currentProject->load();
-        QAction *act = m_mapNameToAction.value(project->filePath());
-        if (act) {
-            act->setChecked(true);
-        }
-        QStringList folders = project->folderList();
-        if (!folders.isEmpty()) {
-            m_widget->setPathList(folders);
-            m_widget->setRootPath(folders.first());
-        }
-        /*
-        QFileInfo info(project->filePath());
-        if (info.isDir()) {
-            m_fileSystemWidget->setRootPath(info.filePath());
-        } else {
-            m_fileSystemWidget->setRootPath(info.dir().path());
-        }
-        */
-
         m_liteApp->appendLog("ProjectManager","loadProject "+m_currentProject->name());
     }
     emit currentProjectChanged(project);
@@ -342,24 +290,21 @@ void ProjectManager::closeProjectHelper(IProject *project)
     if (cur == 0) {
         return;
     }
-    m_widget->clear();
+    //m_widget->clear();
     emit projectAboutToClose(cur);
 
-    //m_scrollArea->takeWidget();
+    m_widget->takeWidget();
 
     if (m_bAutoCloseProjectEditors) {
         foreach (IEditor *editor, editorList(cur)) {
             m_liteApp->editorManager()->closeEditor(editor);
         }
     }
-    QAction *act = m_mapNameToAction.value(cur->filePath());
-    if (act) {
-        act->setChecked(false);
-    }
 
     m_liteApp->appendLog("ProjectManager","closeProject "+cur->name());
-
-    delete cur;
+    if (cur != m_folderProject) {
+        delete cur;
+    }
 }
 
 void ProjectManager::closeProject(IProject *project)
