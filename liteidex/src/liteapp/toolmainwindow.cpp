@@ -236,11 +236,12 @@ ToolMainWindow::ToolMainWindow(QWidget *parent)
 
     m_statusBar = new QStatusBar;
 
-    m_dockLockAct = new QAction(tr("-"),this);
-    m_dockLockAct->setCheckable(true);
+    m_hideSideAct = new QAction(tr("HideSideBar"),this);
+    m_hideSideAct->setIcon(QIcon("icon:images/hidesidebar.png"));
+    m_hideSideAct->setCheckable(true);
 
     QToolButton *btn = new QToolButton;
-    btn->setDefaultAction(m_dockLockAct);
+    btn->setDefaultAction(m_hideSideAct);
 
     m_statusBar->addWidget(btn);
     ActionToolBar *bar = m_areaToolBar.value(Qt::BottomDockWidgetArea);
@@ -263,7 +264,7 @@ ToolMainWindow::ToolMainWindow(QWidget *parent)
     connect(hideBottomAct,SIGNAL(triggered()),bar->dock1,SLOT(close()));
     connect(hideBottomAct,SIGNAL(triggered()),bar->dock2,SLOT(close()));
 
-    connect(m_dockLockAct,SIGNAL(toggled(bool)),this,SLOT(lockToolWindows(bool)));
+    connect(m_hideSideAct,SIGNAL(toggled(bool)),this,SLOT(hideSideBar(bool)));
 }
 
 ToolMainWindow::~ToolMainWindow()
@@ -420,7 +421,7 @@ void ToolMainWindow::hideAllToolWindows()
     }
 }
 
-void ToolMainWindow::lockToolWindows(bool b)
+void ToolMainWindow::hideSideBar(bool b)
 {
     QMapIterator<Qt::DockWidgetArea,ActionToolBar*> it(m_areaToolBar);
     while (it.hasNext()) {

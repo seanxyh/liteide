@@ -109,7 +109,7 @@ public slots:
     void showOrHideToolWindow();
     void hideAllToolWindows();
     void restoreToolWindows();
-    void lockToolWindows(bool b);
+    void hideSideBar(bool b);
     void moveToolWindow(Qt::DockWidgetArea area, QAction *action,bool split = false);    
 protected slots:
     void toggledAction(bool);
@@ -119,7 +119,7 @@ protected:
     QMap<QString,InitToolSate> m_initIdStateMap;
     QList<QString> m_initCheckedList;
     QStatusBar  *m_statusBar;
-    QAction     *m_dockLockAct;
+    QAction     *m_hideSideAct;
     QList<QAction*> m_hideActionList;
 };
 
