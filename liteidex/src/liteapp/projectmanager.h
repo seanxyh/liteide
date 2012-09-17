@@ -28,6 +28,7 @@
 
 #include "liteapi/liteapi.h"
 #include "filesystem/filesystemwidget.h"
+#include "folderproject.h"
 
 #include <QPointer>
 
@@ -50,6 +51,7 @@ public:
     ProjectManager();
     ~ProjectManager();
     virtual bool initWithApp(IApplication *app);
+    virtual IFolderProject* openFolder(const QString &folderPath);
     virtual IProject *openProject(const QString &fileName, const QString &mimeType);
     virtual void addFactory(IProjectFactory *factory);
     virtual void removeFactory(IProjectFactory *factory);
@@ -73,16 +75,12 @@ public slots:
 protected:
     virtual void closeProjectHelper(IProject *project);
 protected:
-    QMap<QString,QAction*>   m_mapNameToAction;
     QPointer<IProject>      m_currentProject;
     QList<IProjectFactory*>    m_factoryList;
-    FileSystemWidget        *m_widget;
+    QScrollArea             *m_widget;
     QAction                 *m_action;
-    //QScrollArea             *m_scrollArea;
-    //QMenu                   *m_projectMenu;
-    QActionGroup            *m_projectActGroup;
-    //QMenu                   *m_importMenu;
     bool                    m_bAutoCloseProjectEditors;
+    FolderProject           *m_folderProject;
 };
 
 #endif // PROJECTMANAGER_H

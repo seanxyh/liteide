@@ -225,7 +225,8 @@ void FileManager::openFolder()
         if (dir.cdUp()) {
             initPath = dir.path();
         }
-        this->openProjectScheme(folder,"gopkg");
+        //this->openProjectScheme(folder,"gopkg");
+        m_liteApp->projectManager()->openFolder(folder);
     }
 }
 
