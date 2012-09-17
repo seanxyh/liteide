@@ -242,8 +242,10 @@ ToolMainWindow::ToolMainWindow(QWidget *parent)
 
     QToolButton *btn = new QToolButton;
     btn->setDefaultAction(m_hideSideAct);
-
+    btn->setStyleSheet("QToolButton {border:0}"
+                       "QToolButton:checked {background : qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0 rgba(55, 57, 59, 255), stop:1 rgba(255, 255, 255, 255));}");
     m_statusBar->addWidget(btn);
+
     ActionToolBar *bar = m_areaToolBar.value(Qt::BottomDockWidgetArea);
     bar->toolBar->setStyleSheet("QToolBar {border:0}");
     m_statusBar->addWidget(bar->toolBar,1);
@@ -464,6 +466,7 @@ bool ToolMainWindow::restoreState(const QByteArray &state, int version)
         }
     }
     m_initIdStateMap.clear();
+    m_hideSideAct->setChecked(m_areaToolBar.value(Qt::LeftDockWidgetArea)->toolBar->isHidden());
     return b;
 }
 
