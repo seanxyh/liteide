@@ -34,6 +34,7 @@
 #include <QToolBar>
 #include <QComboBox>
 #include <QAction>
+#include <QMenu>
 #include <QDir>
 #include <QFileInfo>
 #include <QTextBlock>
@@ -42,6 +43,7 @@
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QLabel>
+#include <QToolButton>
 #include <QTime>
 #include <QDebug>
 //lite_memory_check_begin
@@ -408,6 +410,28 @@ QMap<QString,QString> LiteBuild::buildEnvMap() const
     */
 }
 
+void LiteBuild::initAction(QAction *act, LiteApi::IBuild *build, LiteApi::BuildAction *ba)
+{
+    act->setProperty("mimetype",build->mimeType());
+    act->setProperty("id",ba->id());
+    act->setText(ba->id());
+    if (!ba->key().isEmpty()) {
+        QList<QKeySequence> list;
+        foreach(QString key, ba->key().split(";")) {
+            list.append(QKeySequence(key));
+        }
+        act->setShortcuts(list);
+        act->setToolTip(QString("%1 (%2)").arg(ba->id()).arg(ba->key()));
+    }
+    if (!ba->img().isEmpty()) {
+        QIcon icon(ba->img());
+        if (!icon.isNull()) {
+            act->setIcon(icon);
+        }
+    }
+    connect(act,SIGNAL(triggered()),this,SLOT(buildAction()));
+}
+
 void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
 {
     if (m_build == build) {
@@ -459,6 +483,12 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
 
     m_outputRegex.clear();
 
+    qDeleteAll(m_actionWidgets);
+    m_actionWidgets.clear();
+
+    qDeleteAll(m_idMenuMap);
+    m_idMenuMap.clear();
+
     foreach(QAction *act, m_actions) {
         m_toolBar->removeAction(act);
         delete act;
@@ -477,29 +507,45 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
                                  << new QStandardItem(i.key())
                                  << new QStandardItem(i.value()));
     }
+
+    foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
+        if (ba->menu().isEmpty()) {
+            continue;
+        }
+        QMenu *menu = m_idMenuMap.value(ba->menu());
+        if (!menu) {
+            menu = new QMenu;
+            m_idMenuMap.insert(ba->menu(),menu);
+        }
+        QAction *act = menu->addAction(ba->id());
+        initAction(act,build,ba);
+    }
+
     foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
         if (ba->isSeparator()) {
             m_actions.append(m_toolBar->addSeparator());
             continue;
         }
-        QAction *act = m_toolBar->addAction(ba->id());
-        act->setProperty("mimetype",build->mimeType());
-        act->setProperty("id",ba->id());
-        if (!ba->key().isEmpty()) {
-            QList<QKeySequence> list;
-            foreach(QString key, ba->key().split(";")) {
-                list.append(QKeySequence(key));
-            }
-            act->setShortcuts(list);
-            act->setToolTip(QString("%1 (%2)").arg(ba->id()).arg(ba->key()));
+        if (!ba->menu().isEmpty()) {
+            continue;
         }
-        if (!ba->img().isEmpty()) {
-            QIcon icon(ba->img());
-            if (!icon.isNull()) {
-                act->setIcon(icon);
-            }
+        QAction *act = 0;
+        QMenu *menu = m_idMenuMap.value(ba->id());
+        if (menu) {
+            QAction *self = menu->addAction(ba->id());
+            initAction(self,build,ba);
+            menu->insertAction(menu->actions().first(),self);
+            QToolButton *btn = new QToolButton;
+            btn->setMenu(menu);
+            btn->setPopupMode(QToolButton::MenuButtonPopup);
+            act = m_toolBar->addWidget(btn);
+            btn->setDefaultAction(act);
+            act->setText(ba->id());
+            m_actionWidgets.append(btn);
+        } else {
+            act = m_toolBar->addAction(ba->id());
         }
-        connect(act,SIGNAL(triggered()),this,SLOT(buildAction()));
+        initAction(act,build,ba);
         m_actions.append(act);
     }
 }

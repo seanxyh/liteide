@@ -37,6 +37,7 @@ class BuildAction
 public:
     BuildAction(): m_output(false),m_readline(false),m_separator(false) {}
     void setId(const QString &id) { m_id = id; }
+    void setMenu(const QString &menu) { m_menu = menu; }
     void setKey(const QString &key) { m_key = key; }
     void setCmd(const QString &bin) { m_cmd = bin; }
     void setArgs(const QString &args) { m_args = args; }
@@ -57,6 +58,7 @@ public:
     void setTask(const QStringList &task) { m_task = task; }
     QString work() const { return m_work; }
     QString id() const { return m_id; }
+    QString menu() const { return m_menu; }
     QString key() const { return m_key; }
     QString cmd() const { return m_cmd; }
     QString args() const { return m_args; }
@@ -95,6 +97,7 @@ protected:
     QString m_save;
     QString m_img;
     QString m_work;
+    QString m_menu;
     QStringList m_task;
     bool    m_output;
     bool    m_readline;
