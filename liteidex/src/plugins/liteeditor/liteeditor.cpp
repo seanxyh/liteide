@@ -108,9 +108,14 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     m_widget->setLayout(layout);
     m_file = new LiteEditorFile(m_liteApp,this);
     m_file->setDocument(m_editorWidget->document());
+
     connect(m_file->document(),SIGNAL(modificationChanged(bool)),this,SIGNAL(modificationChanged(bool)));
     connect(m_file->document(),SIGNAL(contentsChanged()),this,SIGNAL(contentsChanged()));
     connect(m_liteApp->optionManager(),SIGNAL(applyOption(QString)),this,SLOT(applyOption(QString)));
+
+    connect(m_editorWidget,SIGNAL(undoAvailable(bool)),this,SLOT(undoAvailable(bool)));
+    connect(m_editorWidget,SIGNAL(redoAvailable(bool)),this,SLOT(redoAvailable(bool)));
+    connect(m_editorWidget,SIGNAL(copyAvailable(bool)),this,SLOT(copyAvailable(bool)));
 
     //applyOption("option/liteeditor");
 
@@ -184,8 +189,10 @@ void LiteEditor::clipbordDataChanged()
     if (clipboard->mimeData()->hasText() ||
             clipboard->mimeData()->hasHtml()) {
         m_pasteAct->setEnabled(true);
+        m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_PASTE,true);
     } else {
         m_pasteAct->setEnabled(false);
+        m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_PASTE,false);
     }
 }
 
@@ -795,4 +802,54 @@ bool LiteEditor::restoreState(const QByteArray &array)
 void LiteEditor::navigationStateChanged(const QByteArray &state)
 {
     m_liteApp->editorManager()->addNavigationHistory(this,state);
+}
+
+void LiteEditor::executeAction(LiteApi::EditorAction id)
+{
+    switch(id) {
+    case LiteApi::EA_COPY:
+        m_editorWidget->copy();
+        break;
+    case LiteApi::EA_CUT:
+        m_editorWidget->cut();
+        break;
+    case LiteApi::EA_PASTE:
+        m_editorWidget->paste();
+        break;
+    case LiteApi::EA_REDO:
+        m_editorWidget->redo();
+        break;
+    case LiteApi::EA_UNDO:
+        m_editorWidget->undo();
+        break;
+    case LiteApi::EA_SELECTALL:
+        m_editorWidget->selectAll();
+        break;
+    default:
+        m_liteApp->appendLog("LiteEditor",QString("undefine action %1").arg(id),true);
+    }
+}
+
+void LiteEditor::onActive()
+{
+    clipbordDataChanged();
+    undoAvailable(m_undoAct->isEnabled());
+    redoAvailable(m_redoAct->isEnabled());
+    copyAvailable(m_copyAct->isEnabled());
+}
+
+void LiteEditor::undoAvailable(bool b)
+{
+    m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_UNDO,b);
+}
+
+void LiteEditor::redoAvailable(bool b)
+{
+    m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_REDO,b);
+}
+
+void LiteEditor::copyAvailable(bool b)
+{
+    m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_COPY,b);
+    m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_CUT,b);
 }

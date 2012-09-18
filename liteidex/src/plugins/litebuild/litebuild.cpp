@@ -483,9 +483,6 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
 
     m_outputRegex.clear();
 
-    qDeleteAll(m_actionWidgets);
-    m_actionWidgets.clear();
-
     qDeleteAll(m_idMenuMap);
     m_idMenuMap.clear();
 
@@ -532,6 +529,7 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
         QAction *act = 0;
         QMenu *menu = m_idMenuMap.value(ba->id());
         if (menu) {
+            m_actions.append(m_toolBar->addSeparator());
             QAction *self = menu->addAction(ba->id());
             initAction(self,build,ba);
             menu->insertAction(menu->actions().first(),self);
@@ -541,7 +539,6 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
             act = m_toolBar->addWidget(btn);
             btn->setDefaultAction(act);
             act->setText(ba->id());
-            m_actionWidgets.append(btn);
         } else {
             act = m_toolBar->addAction(ba->id());
         }

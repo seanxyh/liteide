@@ -81,6 +81,8 @@ public:
     virtual void gotoLine(int line, int column, bool center);
     virtual QByteArray saveState() const;
     virtual bool restoreState(const QByteArray &state);
+    virtual void executeAction(LiteApi::EditorAction id);
+    virtual void onActive();
 
     const ColorStyleScheme *colorStyleScheme() const;
     LiteEditorWidget *editorWidget() const;
@@ -102,6 +104,9 @@ public slots:
     void editPositionChanged();
     void navigationStateChanged(const QByteArray &state);
     void gotoLine();
+    void undoAvailable(bool);
+    void redoAvailable(bool);
+    void copyAvailable(bool);
 public:
     void findCodecs();
     ColorStyleScheme    *m_colorStyleScheme;

@@ -45,6 +45,7 @@ class EditorManager : public IEditorManager
 public:
     ~EditorManager();
     virtual bool initWithApp(IApplication *app);
+    void createActions();
 public:
     virtual IEditor *openEditor(const QString &fileName, const QString &mimeType);
     virtual void addFactory(IEditorFactory *factory);
@@ -72,10 +73,12 @@ public slots:
     virtual bool saveAllEditors();
     virtual bool closeEditor(IEditor *editor = 0);
     virtual bool closeAllEditors(bool autoSaveAll = false);
+    virtual void setActionEnable(IEditor *editor, EditorAction id, bool b);
     void goBack();
     void goForward();
     void updateNavigatorActions();
     void updateCurrentPositionInNavigationHistory();
+    void executeEditAction(QAction* action);
 signals:
     void tabAddRequest();
     void doubleClickedTab();
@@ -90,7 +93,8 @@ protected:
     QMap<IEditor*,QAction*>   m_browserActionMap;
     QAction     *m_goBackAct;
     QAction     *m_goForwardAct;
- protected slots:
+    QList<QAction*> m_actionList;
+protected slots:
     void editorTabChanged(int);
     void editorTabCloseRequested(int);
     void modificationChanged(bool);
