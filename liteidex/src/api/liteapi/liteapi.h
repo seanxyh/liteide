@@ -200,6 +200,18 @@ public:
     virtual QIcon icon() const { return QIcon(); }
 };
 
+enum EditorAction{
+    EA_NONE = 0,
+    EA_SAVE,
+    EA_COPY,
+    EA_PASTE,
+    EA_CUT,
+    EA_UNDO,
+    EA_REDO,
+    EA_SELECTALL,
+    EA_LAST
+};
+
 class IEditor : public IView
 {
     Q_OBJECT
@@ -216,6 +228,8 @@ public:
     virtual QString mimeType() const = 0;
     virtual QByteArray saveState() const = 0;
     virtual bool restoreState(const QByteArray &array) = 0;
+    virtual void executeAction(EditorAction id) = 0;
+    virtual void onActive() = 0;
 signals:
     void modificationChanged(bool);
     void contentsChanged();
@@ -231,6 +245,7 @@ public:
     virtual int column() const = 0;
     virtual void gotoLine(int line, int column, bool center = false) = 0;
 };
+
 
 class IEditorManager : public IManager
 {
@@ -257,6 +272,7 @@ public slots:
     virtual bool saveAllEditors() = 0;
     virtual bool closeEditor(IEditor *editor = 0) = 0;
     virtual bool closeAllEditors(bool autoSaveAll = false) = 0;
+    virtual void setActionEnable(IEditor *editor, EditorAction id, bool b) = 0;
 signals:
     void currentEditorChanged(LiteApi::IEditor *editor);
     void editorCreated(LiteApi::IEditor *editor);
@@ -282,6 +298,8 @@ public:
     virtual QMap<QString,QString> targetInfo() const { return QMap<QString,QString>(); }
     virtual QByteArray saveState() const {return QByteArray(); }
     virtual bool restoreState(const QByteArray &) { return false; }
+    virtual void executeAction(EditorAction) {}
+    virtual void onActive(){}
 };
 
 class IProject : public IView

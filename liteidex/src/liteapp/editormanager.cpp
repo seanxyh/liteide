@@ -96,7 +96,59 @@ bool EditorManager::initWithApp(IApplication *app)
 
     m_editorTabWidget->installEventFilter(this);
     m_editorTabWidget->tabBar()->installEventFilter(this);
+
+    createActions();
     return true;
+}
+
+void EditorManager::createActions()
+{
+    QAction *undo = new QAction(tr("Undo"),this);
+    undo->setData(EA_UNDO);
+
+    QAction *redo = new QAction(tr("Redo"),this);
+    redo->setData(EA_REDO);
+
+    QAction *cut = new QAction(tr("Cut"),this);
+    cut->setShortcut(QKeySequence::Cut);
+    cut->setData(EA_CUT);
+
+    QAction *copy = new QAction(tr("Copy"),this);
+    copy->setData(EA_COPY);
+
+    QAction *paste = new QAction(tr("paste"),this);
+    paste->setData(EA_PASTE);
+
+    QAction *selectAll = new QAction(tr("Select All"),this);
+    selectAll->setData(EA_SELECTALL);
+
+    QMenu *menu = m_liteApp->actionManager()->loadMenu("edit");
+    if (!menu) {
+        menu = m_liteApp->actionManager()->insertMenu("edit",tr("Edit"));
+    }
+
+
+    menu->addAction(undo);
+    menu->addAction(redo);
+    menu->addSeparator();
+    menu->addAction(cut);
+    menu->addAction(copy);
+    menu->addAction(paste);
+    menu->addSeparator();
+    menu->addAction(selectAll);
+
+    connect(menu,SIGNAL(triggered(QAction*)),this,SLOT(executeEditAction(QAction*)));
+
+    m_actionList << undo << redo << cut << copy << paste << selectAll;
+}
+
+void EditorManager::executeEditAction(QAction *action)
+{
+    bool ok = false;
+    EditorAction id = (EditorAction)action->data().toInt(&ok);
+    if (ok && m_currentEditor) {
+        m_currentEditor->executeAction(id);
+    }
 }
 
 QWidget *EditorManager::widget()
@@ -342,7 +394,9 @@ void EditorManager::setCurrentEditor(IEditor *editor)
     m_currentEditor = editor;
     if (editor != 0) {
         m_editorTabWidget->setCurrentWidget(editor->widget());
+        editor->onActive();
     }
+
     emit currentEditorChanged(editor);
 }
 
@@ -553,4 +607,17 @@ void EditorManager::updateCurrentPositionInNavigationHistory()
     }
     location->filePath = filePath;
     location->state = editor->saveState();
+}
+
+void EditorManager::setActionEnable(IEditor *editor, EditorAction id, bool b)
+{
+    if (editor != m_currentEditor) {
+        return;
+    }
+    foreach(QAction* act, m_actionList) {
+        if (act->data().toInt() == id) {
+            act->setEnabled(b);
+            break;
+        }
+    }
 }

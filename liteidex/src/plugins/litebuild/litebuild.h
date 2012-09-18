@@ -86,7 +86,6 @@ protected:
     QStandardItemModel *m_configModel;
     QStandardItemModel *m_customModel;
     QList<QAction*> m_actions;
-    QList<QWidget*> m_actionWidgets;
     QMap<QString,QMenu*> m_idMenuMap;
     QMap<QString,QString> m_liteAppInfo;
     //QMap<QString,QString> m_configMap;

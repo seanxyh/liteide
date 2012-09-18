@@ -55,6 +55,7 @@ bool ActionManager::initWithApp(IApplication *app)
     }
 
     insertMenu("file",tr("&File"));
+    insertMenu("edit",tr("&Edit"));
     insertMenu("recent",tr("&Recent"));
     m_viewMenu = insertMenu("view",tr("&View"));
     m_baseToolBarAct = m_viewMenu->addSeparator();
