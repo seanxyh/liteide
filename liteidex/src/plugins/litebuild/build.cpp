@@ -170,6 +170,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
             } else if (reader.name() == "action" && act == 0) {
                 act = new BuildAction;
                 act->setId(attrs.value("id").toString());
+                act->setMenu(attrs.value("menu").toString());
                 act->setKey(attrs.value("key").toString());
                 act->setCmd(attrs.value("cmd").toString());
                 act->setArgs(attrs.value("args").toString());

@@ -54,6 +54,7 @@ public:
     QMap<QString,QString> buildEnvMap(LiteApi::IBuild *build, const QString &buildFilePath) const;
 public:
     QString actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);
+    void initAction(QAction *act, LiteApi::IBuild *build, LiteApi::BuildAction *ba);
     void setProjectBuild(LiteApi::IBuild *build);
     void loadProjectInfo(const QString &filePath);
     void loadEditorInfo(const QString &filePath);
@@ -85,6 +86,8 @@ protected:
     QStandardItemModel *m_configModel;
     QStandardItemModel *m_customModel;
     QList<QAction*> m_actions;
+    QList<QWidget*> m_actionWidgets;
+    QMap<QString,QMenu*> m_idMenuMap;
     QMap<QString,QString> m_liteAppInfo;
     //QMap<QString,QString> m_configMap;
     //QMap<QString,QString> m_customMap;
