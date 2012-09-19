@@ -49,11 +49,12 @@ public:
     virtual QString targetFilePath() const;
     virtual QMap<QString,QString> buildEnvMap() const;
     virtual QMap<QString,QString> liteideEnvMap() const;
+    virtual QString envValue(LiteApi::IBuild *build, const QString &value);
     virtual LiteApi::IBuildManager *buildManager() const;
     virtual void appendOutput(const QString &str, const QBrush &brush, bool active);
     QMap<QString,QString> buildEnvMap(LiteApi::IBuild *build, const QString &buildFilePath) const;
 public:
-    QString actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);
+    QString envToValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);
     void initAction(QAction *act, LiteApi::IBuild *build, LiteApi::BuildAction *ba);
     void setCurrentBuild(LiteApi::IBuild *build);
     void loadProjectInfo(const QString &filePath);

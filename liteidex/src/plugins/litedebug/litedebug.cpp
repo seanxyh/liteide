@@ -260,18 +260,18 @@ void LiteDebug::startDebug()
     }
     m_dbgWidget->clearLog();
 
-    QString targetFilepath = m_liteBuild->targetFilePath();
-    if (targetFilepath.isEmpty() || !QFile::exists(targetFilepath)) {
+    LiteApi::IBuild *build = m_liteBuild->buildManager()->currentBuild();
+    QList<LiteApi::BuildDebug*> debugList = build->debugList();
+    if (debugList.isEmpty()) {
         return;
     }
-    QMap<QString,QString> m = m_liteBuild->buildEnvMap();
-    QString workDir = m.value("WORKDIR");
-    QString target = m.value("TARGETNAME");
-    QString args = m.value("TARGETARGS");
-    int index = targetFilepath.lastIndexOf(target);
-    if (index != -1) {
-        target = targetFilepath.right(targetFilepath.length()-index);
-    }
+    LiteApi::BuildDebug *buildDebug = debugList.first();
+    QString workDir = m_liteBuild->envValue(build,buildDebug->work());
+    QString cmd = m_liteBuild->envValue(build,buildDebug->cmd());
+    QString args = m_liteBuild->envValue(build,buildDebug->args());
+    QString target = FileUtil::lookPath(cmd,m_envManager->currentEnvironment(),true);
+
+    qDebug() << cmd << args << target;
 
     m_debugger->setInitBreakTable(m_fileBpMap);
     m_debugger->setEnvironment(m_envManager->currentEnvironment().toStringList());

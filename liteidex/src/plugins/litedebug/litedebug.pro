@@ -4,6 +4,7 @@ TEMPLATE = lib
 include(../../liteideplugin.pri)
 include(../../api/litedebugapi/litedebugapi.pri)
 include(../../api/litebuildapi/litebuildapi.pri)
+include (../../utils/fileutil/fileutil.pri)
 include (../../utils/textoutput/textoutput.pri)
 
 DEFINES += LITEDEBUG_LIBRARY
