@@ -24,7 +24,6 @@
 // $Id: liteapp.cpp,v 1.0 2011-5-12 visualfc Exp $
 
 #include "liteapp.h"
-#include "liteapi/litefindobj.h"
 #include "filemanager.h"
 #include "editormanager.h"
 #include "projectmanager.h"

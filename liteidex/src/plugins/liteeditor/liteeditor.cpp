@@ -188,10 +188,8 @@ void LiteEditor::clipbordDataChanged()
     QClipboard *clipboard = QApplication::clipboard();
     if (clipboard->mimeData()->hasText() ||
             clipboard->mimeData()->hasHtml()) {
-        m_pasteAct->setEnabled(true);
         m_liteApp->editorManager()->setActionEnable(this,"paste",true);
     } else {
-        m_pasteAct->setEnabled(false);
         m_liteApp->editorManager()->setActionEnable(this,"paste",false);
     }
 }
@@ -419,14 +417,6 @@ bool LiteEditor::createNew(const QString &contents, const QString &mimeType)
     bool success = m_file->create(contents,mimeType);
     if (success) {
         m_editorWidget->initLoadDocument();
-        QString codecName = m_file->textCodec();
-        for (int i = 0; i < m_codecComboBox->count(); i++) {
-            QString text = m_codecComboBox->itemText(i);
-            if (codecName == text) {
-                m_codecComboBox->setCurrentIndex(i);
-                break;
-            }
-        }
         setReadOnly(m_file->isReadOnly());
     }
     return success;
@@ -437,14 +427,6 @@ bool LiteEditor::open(const QString &fileName,const QString &mimeType)
     bool success = m_file->open(fileName,mimeType);
     if (success) {        
         m_editorWidget->initLoadDocument();
-        QString codecName = m_file->textCodec();
-        for (int i = 0; i < m_codecComboBox->count(); i++) {
-            QString text = m_codecComboBox->itemText(i);
-            if (codecName == text) {
-                m_codecComboBox->setCurrentIndex(i);
-                break;
-            }
-        }
         setReadOnly(m_file->isReadOnly());
     }
     return success;
@@ -773,6 +755,21 @@ void LiteEditor::gotoLine()
     this->gotoLine(v,0,true);
 }
 
+QString LiteEditor::textCodec() const
+{
+    return m_file->textCodec();
+}
+
+void LiteEditor::setTextCodec(const QString &codec)
+{
+    bool success = m_file->reloadByCodec(codec);
+    if (success) {
+        m_editorWidget->initLoadDocument();
+        setReadOnly(m_file->isReadOnly());
+        emit reloaded();
+    }
+}
+
 QByteArray LiteEditor::saveState() const
 {
     return m_editorWidget->saveState();
@@ -788,7 +785,7 @@ void LiteEditor::navigationStateChanged(const QByteArray &state)
     m_liteApp->editorManager()->addNavigationHistory(this,state);
 }
 
-void LiteEditor::executeAction(const QString &id, QAction */*action*/)
+void LiteEditor::executeAction(const QString &id, QAction*)
 {
     if (id == EA_COPY) {
         m_editorWidget->copy();
@@ -816,6 +813,7 @@ void LiteEditor::onActive()
     redoAvailable(m_redoAvailable);
     copyAvailable(m_copyAvailable);
     m_liteApp->editorManager()->setActionEnable(this,EA_GOTOLINE,true);
+    m_liteApp->editorManager()->setActionEnable(this,EA_SELECTCODEC,true);
     editPositionChanged();
 }
 

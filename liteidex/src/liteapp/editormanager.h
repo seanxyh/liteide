@@ -105,6 +105,8 @@ protected:
     QMenu       *m_editMenu;
     QMap<QString,QAction*> m_idActionMap;
     QToolButton *m_lineInfo;
+    QToolButton *m_codecInfo;
+    QAction     *m_lockAct;
 };
 
 #endif // EDITORMANAGER_H

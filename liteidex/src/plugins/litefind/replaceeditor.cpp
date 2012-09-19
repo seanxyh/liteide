@@ -24,7 +24,6 @@
 // $Id: replaceeditor.cpp,v 1.0 2011-8-12 visualfc Exp $
 
 #include "replaceeditor.h"
-#include "liteapi/litefindobj.h"
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QPlainTextEdit>

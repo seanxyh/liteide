@@ -24,7 +24,6 @@
 // $Id: goplaybrowser.cpp,v 1.0 2012-3-8 visualfc Exp $
 
 #include "goplaybrowser.h"
-#include "liteapi/litefindobj.h"
 #include "liteenvapi/liteenvapi.h"
 #include "fileutil/fileutil.h"
 #include "textoutput/textoutput.h"

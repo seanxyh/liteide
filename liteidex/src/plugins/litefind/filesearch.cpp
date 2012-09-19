@@ -24,7 +24,6 @@
 // $Id: filesearch.cpp,v 1.0 2012-5-21 visualfc Exp $
 
 #include "filesearch.h"
-#include "liteapi/litefindobj.h"
 #include <QFile>
 #include <QTableWidget>
 #include <QTextStream>

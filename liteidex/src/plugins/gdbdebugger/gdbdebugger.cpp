@@ -25,7 +25,6 @@
 
 #include "gdbdebugger.h"
 #include "fileutil/fileutil.h"
-#include "liteapi/litefindobj.h"
 
 #include <QStandardItemModel>
 #include <QProcess>

@@ -41,6 +41,8 @@
 #include <QApplication>
 #include <QStatusBar>
 #include <QToolButton>
+#include <QComboBox>
+#include <QTextCodec>
 #include <QDebug>
 #include "litetabwidget.h"
 #include "fileutil/fileutil.h"
@@ -102,6 +104,37 @@ bool EditorManager::initWithApp(IApplication *app)
     return true;
 }
 
+static QList<QTextCodec*> textCodecList()
+{
+    QMap<QString, QTextCodec *> codecMap;
+    QRegExp iso8859RegExp("ISO[- ]8859-([0-9]+).*");
+
+    foreach (int mib, QTextCodec::availableMibs()) {
+        QTextCodec *codec = QTextCodec::codecForMib(mib);
+
+        QString sortKey = codec->name().toUpper();
+        int rank;
+
+        if (sortKey.startsWith("UTF-8")) {
+            rank = 1;
+        } else if (sortKey.startsWith("UTF-16")) {
+            rank = 2;
+        } else if (iso8859RegExp.exactMatch(sortKey)) {
+            if (iso8859RegExp.cap(1).size() == 1)
+                rank = 3;
+            else
+                rank = 4;
+        } else {
+            rank = 5;
+        }
+        sortKey.prepend(QChar('0' + rank));
+
+        codecMap.insert(sortKey, codec);
+    }
+    return codecMap.values();
+}
+
+
 void EditorManager::createActions()
 {
     QAction *undo = new QAction(QIcon("icon:images/undo.png"),tr("Undo"),this);
@@ -125,6 +158,8 @@ void EditorManager::createActions()
     QAction *gotoLine = new QAction(tr("Goto Line"),this);
     gotoLine->setShortcut(QKeySequence("Ctrl+G"));
 
+    QAction *selectCodec = new QAction(tr("Select Codec"),this);
+
     m_editMenu = m_liteApp->actionManager()->loadMenu("edit");
     if (!m_editMenu) {
         m_editMenu = m_liteApp->actionManager()->insertMenu("edit",tr("Edit"));
@@ -139,6 +174,7 @@ void EditorManager::createActions()
     addAction(EA_SEPARATOR,0);
     addAction(EA_SELECTALL,selectAll);
     addAction(EA_GOTOLINE,gotoLine);
+    addAction(EA_SELECTCODEC,selectCodec);
 
     QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/std");
     toolBar->addSeparator();
@@ -152,6 +188,7 @@ void EditorManager::createActions()
     QStatusBar *statusBar = m_liteApp->mainWindow()->statusBar();
 
     QToolBar *right = new QToolBar;
+    right->setIconSize(QSize(16,16));
 
     m_lineInfo = new QToolButton;
     m_lineInfo->setDefaultAction(gotoLine);
@@ -159,7 +196,18 @@ void EditorManager::createActions()
     right->addWidget(m_lineInfo);
     right->setStyleSheet("QToolBar {border:0}");
     m_lineInfo->setFixedWidth(m_lineInfo->sizeHint().width());
-    m_lineInfo->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
+    m_lineInfo->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Maximum);
+
+    m_codecInfo = new QToolButton;
+    m_codecInfo->setDefaultAction(selectCodec);
+    m_codecInfo->setText("UTF-8");
+    right->addSeparator();
+    right->addWidget(m_codecInfo);
+
+    m_lockAct = new QAction(QIcon("icon:images/unlock.png"),tr("File is writable"),this);
+    right->addSeparator();
+    right->addAction(m_lockAct);
+    m_lockAct->setEnabled(false);
 
     statusBar->addPermanentWidget(right);
 
@@ -414,10 +462,26 @@ void EditorManager::setCurrentEditor(IEditor *editor)
     if (m_currentEditor == editor) {
         return;
     }
+    foreach(QAction *act, m_idActionMap.values()) {
+        act->setEnabled(false);
+    }
+    m_lineInfo->setText("0:0");
+    m_codecInfo->setText("UTF-8");
     m_currentEditor = editor;
     if (editor != 0) {
         m_editorTabWidget->setCurrentWidget(editor->widget());
         editor->onActive();
+        if (editor->isReadOnly()) {
+            m_lockAct->setIcon(QIcon("icon:liteeditor/images/lock.png"));
+            m_lockAct->setText(tr("File Is ReadOnly"));
+        } else {
+            m_lockAct->setIcon(QIcon("icon:liteeditor/images/unlock.png"));
+            m_lockAct->setText(tr("File Is Writable"));
+        }
+        ITextEditor *textEditor = getTextEditor(editor);
+        if (textEditor) {
+            m_codecInfo->setText(textEditor->textCodec());
+        }
     }
 
     emit currentEditorChanged(editor);

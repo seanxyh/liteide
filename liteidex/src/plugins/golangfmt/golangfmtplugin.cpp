@@ -26,7 +26,6 @@
 #include "golangfmtplugin.h"
 #include "golangfmt.h"
 #include "golangfmtoptionfactory.h"
-#include "liteapi/litefindobj.h"
 #include "fileutil/fileutil.h"
 
 #include <QToolBar>

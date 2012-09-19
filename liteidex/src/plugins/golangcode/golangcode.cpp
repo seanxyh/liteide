@@ -25,7 +25,6 @@
 
 #include "golangcode.h"
 #include "fileutil/fileutil.h"
-#include "liteapi/litefindobj.h"
 #include <QProcess>
 #include <QTextDocument>
 #include <QAbstractItemView>

@@ -27,7 +27,6 @@
 #define __GOLANGDOCAPI_H__
 
 #include "liteapi/liteapi.h"
-#include "liteapi/litefindobj.h"
 
 /*
 openUrl(const QUrl &url);

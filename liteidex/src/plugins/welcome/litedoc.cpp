@@ -24,7 +24,6 @@
 // $Id: litedoc.cpp,v 1.0 2011-8-12 visualfc Exp $
 
 #include "litedoc.h"
-#include "liteapi/litefindobj.h"
 #include "documentbrowser/documentbrowser.h"
 #include "htmlutil/htmlutil.h"
 
