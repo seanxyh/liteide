@@ -139,7 +139,25 @@ LiteBuild::~LiteBuild()
     delete m_output;
 }
 
-QString LiteBuild::actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env)
+QString LiteBuild::envValue(LiteApi::IBuild *build, const QString &value)
+{
+    QString buildFilePath;
+    if (m_buildFilePath.isEmpty()) {
+        LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+        if (editor) {
+            QString filePath = editor->filePath();
+            if (!filePath.isEmpty()) {
+                buildFilePath = QFileInfo(filePath).path();
+            }
+        }
+    }
+
+    QMap<QString,QString> env = buildEnvMap(build,buildFilePath);
+    QProcessEnvironment sysenv = LiteApi::getGoEnvironment(m_liteApp);
+    return this->envToValue(value,env,sysenv);
+}
+
+QString LiteBuild::envToValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env)
 {
     QString v = value;
     QMapIterator<QString,QString> i(liteEnv);
@@ -831,13 +849,13 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
     QMap<QString,QString> env = buildEnvMap(build,buildFilePath);
 
     QProcessEnvironment sysenv = LiteApi::getGoEnvironment(m_liteApp);
-    QString cmd = this->actionValue(ba->cmd(),env,sysenv);
-    QString args = this->actionValue(ba->args(),env,sysenv);
+    QString cmd = this->envToValue(ba->cmd(),env,sysenv);
+    QString args = this->envToValue(ba->args(),env,sysenv);
 
-    m_workDir = this->actionValue(build->work(),env,sysenv);
+    m_workDir = this->envToValue(build->work(),env,sysenv);
     QString work = ba->work();
     if (!work.isEmpty()) {
-        m_workDir = this->actionValue(work,env,sysenv);
+        m_workDir = this->envToValue(work,env,sysenv);
     }
 
     if (!QFileInfo(cmd).exists()) {
@@ -855,7 +873,7 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
 
 
     if (!ba->regex().isEmpty()) {
-        m_outputRegex = this->actionValue(ba->regex(),env,sysenv);
+        m_outputRegex = this->envToValue(ba->regex(),env,sysenv);
     }
 
     QStringList arguments =  args.split(" ",QString::SkipEmptyParts);

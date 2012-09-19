@@ -222,6 +222,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 debug->setId(attrs.value("id").toString());
                 debug->setCmd(attrs.value("cmd").toString());
                 debug->setArgs(attrs.value("args").toString());
+                debug->setWork(attrs.value("work").toString());
             }
             break;
         case QXmlStreamReader::EndElement:

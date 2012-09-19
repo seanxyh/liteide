@@ -175,9 +175,11 @@ public:
     void setId(const QString &id) { m_id = id; }
     void setCmd(const QString &cmd) { m_cmd = cmd; }
     void setArgs(const QString &args) { m_args = args; }
+    void setWork(const QString &work) { m_work = work; }
     QString id() const { return m_id; }
     QString cmd() const { return m_cmd; }
     QString args() const { return m_args; }
+    QString work() const { return m_work; }
     bool isEmpty() {
         return m_id.isEmpty();
     }
@@ -185,6 +187,7 @@ protected:
     QString m_id;
     QString m_cmd;
     QString m_args;
+    QString m_work;
 };
 
 class IBuild : public QObject
@@ -231,6 +234,7 @@ public:
     virtual QString targetFilePath() const = 0;
     virtual QMap<QString,QString> buildEnvMap() const = 0;
     virtual IBuildManager *buildManager() const = 0;   
+    virtual QString envValue(LiteApi::IBuild *build, const QString &value) = 0;
     virtual void appendOutput(const QString &str, const QBrush &brush, bool active) = 0;
     virtual void execAction(const QString &mime,const QString &id) = 0;
 signals:
