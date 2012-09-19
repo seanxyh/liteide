@@ -97,57 +97,60 @@ bool EditorManager::initWithApp(IApplication *app)
     m_editorTabWidget->installEventFilter(this);
     m_editorTabWidget->tabBar()->installEventFilter(this);
 
-    createActions();
     return true;
 }
 
 void EditorManager::createActions()
 {
-    QAction *undo = new QAction(tr("Undo"),this);
-    undo->setData(EA_UNDO);
+    QAction *undo = new QAction(QIcon("icon:images/undo.png"),tr("Undo"),this);
+    undo->setShortcut(QKeySequence::Undo);
 
-    QAction *redo = new QAction(tr("Redo"),this);
-    redo->setData(EA_REDO);
+    QAction *redo = new QAction(QIcon("icon:images/redo.png"),tr("Redo"),this);
+    redo->setShortcuts(QList<QKeySequence>() << QKeySequence("CTRL+Y") << QKeySequence("CTRL+SHIFT+Z"));
 
-    QAction *cut = new QAction(tr("Cut"),this);
+    QAction *cut = new QAction(QIcon("icon:images/cut.png"),tr("Cut"),this);
     cut->setShortcut(QKeySequence::Cut);
-    cut->setData(EA_CUT);
 
-    QAction *copy = new QAction(tr("Copy"),this);
-    copy->setData(EA_COPY);
+    QAction *copy = new QAction(QIcon("icon:images/copy.png"),tr("Copy"),this);
+    copy->setShortcut(QKeySequence::Copy);
 
-    QAction *paste = new QAction(tr("paste"),this);
-    paste->setData(EA_PASTE);
+    QAction *paste = new QAction(QIcon("icon:images/paste.png"),tr("paste"),this);
+    paste->setShortcut(QKeySequence::Paste);
 
     QAction *selectAll = new QAction(tr("Select All"),this);
-    selectAll->setData(EA_SELECTALL);
+    selectAll->setShortcut(QKeySequence::SelectAll);
 
-    QMenu *menu = m_liteApp->actionManager()->loadMenu("edit");
-    if (!menu) {
-        menu = m_liteApp->actionManager()->insertMenu("edit",tr("Edit"));
+    m_editMenu = m_liteApp->actionManager()->loadMenu("edit");
+    if (!m_editMenu) {
+        m_editMenu = m_liteApp->actionManager()->insertMenu("edit",tr("Edit"));
     }
 
+    addAction(EA_UNDO,undo);
+    addAction(EA_REDO,redo);
+    addAction(EA_SEPARATOR,0);
+    addAction(EA_CUT,cut);
+    addAction(EA_COPY,copy);
+    addAction(EA_PASTE,paste);
+    addAction(EA_SEPARATOR,0);
+    addAction(EA_SELECTALL,selectAll);
 
-    menu->addAction(undo);
-    menu->addAction(redo);
-    menu->addSeparator();
-    menu->addAction(cut);
-    menu->addAction(copy);
-    menu->addAction(paste);
-    menu->addSeparator();
-    menu->addAction(selectAll);
+    QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/std");
+    toolBar->addSeparator();
+    toolBar->addAction(undo);
+    toolBar->addAction(redo);
+    toolBar->addSeparator();
+    toolBar->addAction(cut);
+    toolBar->addAction(copy);
+    toolBar->addAction(paste);
 
-    connect(menu,SIGNAL(triggered(QAction*)),this,SLOT(executeEditAction(QAction*)));
-
-    m_actionList << undo << redo << cut << copy << paste << selectAll;
+    connect(m_editMenu,SIGNAL(triggered(QAction*)),this,SLOT(executeEditAction(QAction*)));
 }
 
 void EditorManager::executeEditAction(QAction *action)
 {
-    bool ok = false;
-    EditorAction id = (EditorAction)action->data().toInt(&ok);
-    if (ok && m_currentEditor) {
-        m_currentEditor->executeAction(id);
+    QString id = action->data().toString();
+    if (!id.isEmpty() && m_currentEditor) {
+        m_currentEditor->executeAction(id,action);
     }
 }
 
@@ -609,15 +612,33 @@ void EditorManager::updateCurrentPositionInNavigationHistory()
     location->state = editor->saveState();
 }
 
-void EditorManager::setActionEnable(IEditor *editor, EditorAction id, bool b)
+void EditorManager::addAction(const QString &id, QAction *action)
+{
+    if (action) {
+        if (m_idActionMap.find(id) != m_idActionMap.end()) {
+            m_liteApp->appendLog("liteapp",QString("edit action already defined %1").arg(id),true);
+            return;
+        }
+        action->setData(id);
+        m_editMenu->addAction(action);
+        m_idActionMap.insert(id,action);
+    } else {
+        m_editMenu->addSeparator();
+    }
+}
+
+QAction *EditorManager::editAction(const QString &id)
+{
+    return m_idActionMap.value(id);
+}
+
+void EditorManager::setActionEnable(IEditor *editor, const QString &id, bool b)
 {
     if (editor != m_currentEditor) {
         return;
     }
-    foreach(QAction* act, m_actionList) {
-        if (act->data().toInt() == id) {
-            act->setEnabled(b);
-            break;
-        }
+    QAction *action = m_idActionMap.value(id);
+    if (action) {
+        action->setEnabled(b);
     }
 }

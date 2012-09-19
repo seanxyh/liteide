@@ -189,32 +189,21 @@ void LiteEditor::clipbordDataChanged()
     if (clipboard->mimeData()->hasText() ||
             clipboard->mimeData()->hasHtml()) {
         m_pasteAct->setEnabled(true);
-        m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_PASTE,true);
+        m_liteApp->editorManager()->setActionEnable(this,"paste",true);
     } else {
         m_pasteAct->setEnabled(false);
-        m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_PASTE,false);
+        m_liteApp->editorManager()->setActionEnable(this,"paste",false);
     }
 }
 
 void LiteEditor::createActions()
 {
-    m_undoAct = new QAction(QIcon("icon:liteeditor/images/undo.png"),tr("Undo"),this);
-    m_undoAct->setShortcut(QKeySequence::Undo);
-
-    m_redoAct = new QAction(QIcon("icon:liteeditor/images/redo.png"),tr("Redo"),this);
-    m_redoAct->setShortcuts(QList<QKeySequence>() << QKeySequence("CTRL+Y") << QKeySequence("CTRL+SHIFT+Z"));
-
-    m_cutAct = new QAction(QIcon("icon:liteeditor/images/cut.png"),tr("Cut"),this);
-    m_cutAct->setShortcut(QKeySequence::Cut);
-
-    m_copyAct = new QAction(QIcon("icon:liteeditor/images/copy.png"),tr("Copy"),this);
-    m_copyAct->setShortcut(QKeySequence::Copy);
-
-    m_pasteAct = new QAction(QIcon("icon:liteeditor/images/paste.png"),tr("Paste"),this);
-    m_pasteAct->setShortcut(QKeySequence::Paste);
-
-    m_selectAllAct = new QAction(tr("Select All"),this);
-    m_selectAllAct->setShortcut(QKeySequence::SelectAll);
+    m_undoAct = m_liteApp->editorManager()->editAction(EA_UNDO);
+    m_redoAct = m_liteApp->editorManager()->editAction(EA_REDO);
+    m_cutAct = m_liteApp->editorManager()->editAction(EA_CUT);
+    m_copyAct = m_liteApp->editorManager()->editAction(EA_COPY);
+    m_pasteAct = m_liteApp->editorManager()->editAction(EA_PASTE);
+    m_selectAllAct = m_liteApp->editorManager()->editAction(EA_SELECTALL);
 
     m_lockAct = new QAction(QIcon("icon:liteeditor/images/unlock.png"),tr("File is writable"),this);
     m_exportHtmlAct = new QAction(QIcon("icon:liteeditor/images/exporthtml.png"),tr("Export HTML"),this);
@@ -265,11 +254,9 @@ void LiteEditor::createActions()
 
     m_lockAct->setEnabled(false);
 
-    m_undoAct->setEnabled(false);
-    m_redoAct->setEnabled(false);
-    m_cutAct->setEnabled(false);
-    m_copyAct->setEnabled(false);
-    m_pasteAct->setEnabled(false);
+    m_copyAvailable = false;
+    m_redoAvailable = false;
+    m_undoAvailable = false;
 
     connect(m_editorWidget,SIGNAL(undoAvailable(bool)),m_undoAct,SLOT(setEnabled(bool)));
     connect(m_editorWidget,SIGNAL(redoAvailable(bool)),m_redoAct,SLOT(setEnabled(bool)));
@@ -804,28 +791,21 @@ void LiteEditor::navigationStateChanged(const QByteArray &state)
     m_liteApp->editorManager()->addNavigationHistory(this,state);
 }
 
-void LiteEditor::executeAction(LiteApi::EditorAction id)
+void LiteEditor::executeAction(const QString &id, QAction */*action*/)
 {
-    switch(id) {
-    case LiteApi::EA_COPY:
+    if (id == EA_COPY) {
         m_editorWidget->copy();
-        break;
-    case LiteApi::EA_CUT:
+    } else if (id == EA_CUT) {
         m_editorWidget->cut();
-        break;
-    case LiteApi::EA_PASTE:
+    } else if (id == EA_PASTE) {
         m_editorWidget->paste();
-        break;
-    case LiteApi::EA_REDO:
+    } else if (id == EA_REDO) {
         m_editorWidget->redo();
-        break;
-    case LiteApi::EA_UNDO:
-        m_editorWidget->undo();
-        break;
-    case LiteApi::EA_SELECTALL:
+    } else if (id == EA_UNDO) {
+        m_editorWidget->redo();
+    } else if (id == EA_SELECTALL) {
         m_editorWidget->selectAll();
-        break;
-    default:
+    } else {
         m_liteApp->appendLog("LiteEditor",QString("undefine action %1").arg(id),true);
     }
 }
@@ -833,23 +813,26 @@ void LiteEditor::executeAction(LiteApi::EditorAction id)
 void LiteEditor::onActive()
 {
     clipbordDataChanged();
-    undoAvailable(m_undoAct->isEnabled());
-    redoAvailable(m_redoAct->isEnabled());
-    copyAvailable(m_copyAct->isEnabled());
+    undoAvailable(m_undoAvailable);
+    redoAvailable(m_redoAvailable);
+    copyAvailable(m_copyAvailable);
 }
 
 void LiteEditor::undoAvailable(bool b)
 {
-    m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_UNDO,b);
+    m_undoAvailable = b;
+    m_liteApp->editorManager()->setActionEnable(this,EA_UNDO,b);
 }
 
 void LiteEditor::redoAvailable(bool b)
 {
-    m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_REDO,b);
+    m_redoAvailable = b;
+    m_liteApp->editorManager()->setActionEnable(this,EA_REDO,b);
 }
 
 void LiteEditor::copyAvailable(bool b)
 {
-    m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_COPY,b);
-    m_liteApp->editorManager()->setActionEnable(this,LiteApi::EA_CUT,b);
+    m_copyAvailable = b;
+    m_liteApp->editorManager()->setActionEnable(this,EA_COPY,b);
+    m_liteApp->editorManager()->setActionEnable(this,EA_CUT,b);
 }

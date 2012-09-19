@@ -46,6 +46,7 @@ public:
     ~EditorManager();
     virtual bool initWithApp(IApplication *app);
     void createActions();
+    void setupToolBar();
 public:
     virtual IEditor *openEditor(const QString &fileName, const QString &mimeType);
     virtual void addFactory(IEditorFactory *factory);
@@ -62,6 +63,9 @@ public:
     virtual void activeBrowser(IEditor *editor);
     virtual void addNavigationHistory(IEditor *editor,const QByteArray &saveState);
     virtual void cutForwardNavigationHistory();
+    virtual void addAction(const QString &id, QAction *action);
+    virtual QAction *editAction(const QString &id);
+    virtual void setActionEnable(IEditor *editor, const QString &id, bool b);
 protected:
     void addEditor(IEditor *editor);
     bool eventFilter(QObject *target, QEvent *event);
@@ -73,7 +77,6 @@ public slots:
     virtual bool saveAllEditors();
     virtual bool closeEditor(IEditor *editor = 0);
     virtual bool closeAllEditors(bool autoSaveAll = false);
-    virtual void setActionEnable(IEditor *editor, EditorAction id, bool b);
     void goBack();
     void goForward();
     void updateNavigatorActions();
@@ -93,7 +96,8 @@ protected:
     QMap<IEditor*,QAction*>   m_browserActionMap;
     QAction     *m_goBackAct;
     QAction     *m_goForwardAct;
-    QList<QAction*> m_actionList;
+    QMenu       *m_editMenu;
+    QMap<QString,QAction*> m_idActionMap;
 protected slots:
     void editorTabChanged(int);
     void editorTabCloseRequested(int);

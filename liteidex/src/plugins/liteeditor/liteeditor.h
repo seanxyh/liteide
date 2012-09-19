@@ -81,7 +81,7 @@ public:
     virtual void gotoLine(int line, int column, bool center);
     virtual QByteArray saveState() const;
     virtual bool restoreState(const QByteArray &state);
-    virtual void executeAction(LiteApi::EditorAction id);
+    virtual void executeAction(const QString &id, QAction *action);
     virtual void onActive();
 
     const ColorStyleScheme *colorStyleScheme() const;
@@ -150,6 +150,9 @@ public:
     QString  m_colorStyle;
     QPalette m_defPalette;
     bool       m_bReadOnly;
+    bool    m_copyAvailable;
+    bool    m_undoAvailable;
+    bool    m_redoAvailable;
 };
 
 #endif //LITEEDITOR_H
