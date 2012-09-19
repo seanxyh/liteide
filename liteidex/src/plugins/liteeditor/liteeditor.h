@@ -116,10 +116,7 @@ public:
     LiteApi::IApplication *m_liteApp;
     Extension   *m_extension;
     QWidget *m_widget;
-    QToolBar *m_toolBar;
-    QToolBar *m_rightToolBar;
-    QComboBox *m_codecComboBox;
-    QToolButton  *m_lineInfo;
+    //QToolBar *m_toolBar;
     LiteEditorWidget    *m_editorWidget;
     LiteCompleter   *m_completer;
     QAction *m_undoAct;
@@ -128,7 +125,6 @@ public:
     QAction *m_copyAct;
     QAction *m_pasteAct;
     QAction *m_selectAllAct;
-    QAction *m_lockAct;
     QAction *m_exportHtmlAct;
     QAction *m_exportPdfAct;
     QAction *m_filePrintAct;

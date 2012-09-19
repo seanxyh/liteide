@@ -118,8 +118,9 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     QAction *act = new QAction(QIcon("icon:images/gopath.png"),tr("GOPATH Setup"),this);
     connect(act,SIGNAL(triggered()),this,SLOT(setupGopath()));
 
-    QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/nav");
+    QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/std");
     if (toolBar) {
+        toolBar->addSeparator();
         toolBar->addAction(act);
     }
 

@@ -63,6 +63,7 @@ LiteTabWidget::LiteTabWidget(QWidget *parent) :
     m_tabBar->setUsesScrollButtons(true);
 
     m_headerToolBar = new QToolBar(this);
+    m_headerToolBar->setStyleSheet("QToolBar {border:0}");
     m_headerToolBar->setIconSize(QSize(15,16));
 
     m_closeTabAct = new QAction(QIcon("icon:images/closepage.png"),tr("Close Page"),this);

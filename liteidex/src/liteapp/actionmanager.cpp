@@ -63,10 +63,8 @@ bool ActionManager::initWithApp(IApplication *app)
     insertMenu("help",tr("&Help"));
 
     QToolBar *stdToolBar = insertToolBar("toolbar/std",tr("Standard ToolBar"));
-    QToolBar *navToolBar = insertToolBar("toolbar/nav",tr("Navigation ToolBar"));
 
     insertViewMenu(LiteApi::ViewMenuToolBarPos,stdToolBar->toggleViewAction());
-    insertViewMenu(LiteApi::ViewMenuToolBarPos,navToolBar->toggleViewAction());
 
     return true;
 }

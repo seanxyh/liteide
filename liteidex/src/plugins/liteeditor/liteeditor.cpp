@@ -99,9 +99,9 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     toolLayout->setMargin(0);
     toolLayout->setSpacing(0);
 
-    m_toolBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-    toolLayout->addWidget(m_toolBar);
-    toolLayout->addWidget(m_rightToolBar);
+    //m_toolBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+    //toolLayout->addWidget(m_toolBar);
+    //toolLayout->addWidget(m_rightToolBar);
 
     layout->addLayout(toolLayout);
     layout->addWidget(m_editorWidget);
@@ -120,17 +120,11 @@ LiteEditor::LiteEditor(LiteApi::IApplication *app)
     //applyOption("option/liteeditor");
 
     m_extension->addObject("LiteApi.ITextEditor",this);
-    m_extension->addObject("LiteApi.QToolBar",m_toolBar);
-    m_extension->addObject("LiteApi.LiteEditorWidget",m_editorWidget);
+   //m_extension->addObject("LiteApi.QToolBar",m_toolBar);
+   //m_extension->addObject("LiteApi.LiteEditorWidget",m_editorWidget);
     m_extension->addObject("LiteApi.QPlainTextEdit",m_editorWidget);
     m_extension->addObject("LiteApi.ContextMenu",m_contextMenu);
 
-
-    findCodecs();
-    foreach (QTextCodec *codec, m_codecs) {
-        m_codecComboBox->addItem(codec->name(), codec->mibEnum());
-    }
-    connect(m_codecComboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(codecComboBoxChanged(QString)));
     m_editorWidget->installEventFilter(m_liteApp->editorManager());
     connect(m_editorWidget,SIGNAL(cursorPositionChanged()),this,SLOT(editPositionChanged()));
     connect(m_editorWidget,SIGNAL(navigationStateChanged(QByteArray)),this,SLOT(navigationStateChanged(QByteArray)));
@@ -203,7 +197,6 @@ void LiteEditor::createActions()
     m_pasteAct = m_liteApp->editorManager()->editAction(EA_PASTE);
     m_selectAllAct = m_liteApp->editorManager()->editAction(EA_SELECTALL);
 
-    m_lockAct = new QAction(QIcon("icon:liteeditor/images/unlock.png"),tr("File is writable"),this);
     m_exportHtmlAct = new QAction(QIcon("icon:liteeditor/images/exporthtml.png"),tr("Export HTML"),this);
 #ifndef QT_NO_PRINTER
     m_exportPdfAct = new QAction(QIcon("icon:liteeditor/images/exportpdf.png"),tr("Export PDF"),this);
@@ -248,8 +241,6 @@ void LiteEditor::createActions()
     m_widget->addAction(m_gotoNextBlockAct);
     m_widget->addAction(m_selectBlockAct);
     m_widget->addAction(m_gotoMatchBraceAct);
-
-    m_lockAct->setEnabled(false);
 
     m_copyAvailable = false;
     m_redoAvailable = false;
@@ -317,48 +308,32 @@ void LiteEditor::findCodecs()
 
 void LiteEditor::createToolBars()
 {
-    m_toolBar = new QToolBar(tr("editor"),m_widget);
-    m_toolBar->setIconSize(QSize(16,16));
+//    m_toolBar = new QToolBar(tr("editor"),m_widget);
+//    m_toolBar->setIconSize(QSize(16,16));
 
-    m_toolBar->addAction(m_cutAct);
-    m_toolBar->addAction(m_copyAct);
-    m_toolBar->addAction(m_pasteAct);
-    m_toolBar->addSeparator();
-    m_toolBar->addAction(m_undoAct);
-    m_toolBar->addAction(m_redoAct);    
-    m_toolBar->addSeparator();
-    m_toolBar->addAction(m_exportHtmlAct);
-#ifndef QT_NO_PRINTER
-    m_toolBar->addAction(m_exportPdfAct);
-    m_toolBar->addAction(m_filePrintPreviewAct);
-    m_toolBar->addAction(m_filePrintAct);
-#endif
+//    m_toolBar->addAction(m_cutAct);
+//    m_toolBar->addAction(m_copyAct);
+//    m_toolBar->addAction(m_pasteAct);
+//    m_toolBar->addSeparator();
+//    m_toolBar->addAction(m_undoAct);
+//    m_toolBar->addAction(m_redoAct);
+//    m_toolBar->addSeparator();
+//    m_toolBar->addAction(m_exportHtmlAct);
+//#ifndef QT_NO_PRINTER
+//    m_toolBar->addAction(m_exportPdfAct);
+//    m_toolBar->addAction(m_filePrintPreviewAct);
+//    m_toolBar->addAction(m_filePrintAct);
+//#endif
 
-#ifdef LITEEDITOR_FIND
-    m_findComboBox = new QComboBox(m_widget);
-    m_findComboBox->setEditable(true);
-    m_findComboBox->setMinimumWidth(120);
-    m_findComboBox->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
-    m_toolBar->addWidget(m_findComboBox);
-    m_toolBar->addSeparator();
-    connect(m_findComboBox->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findNextText()));
-#endif
-
-    m_rightToolBar = new QToolBar(m_widget);
-    m_rightToolBar->setIconSize(QSize(16,16));
-
-    m_lineInfo = new QToolButton;
-    m_lineInfo->setText("000:000");
-    m_lineInfo->setDefaultAction(m_gotoLineAct);
-    m_lineInfo->setToolTip(tr("Goto Line (Ctrl+G)"));
-    m_rightToolBar->addWidget(m_lineInfo);
-    m_rightToolBar->addSeparator();
-
-    m_codecComboBox = new QComboBox;
-    m_rightToolBar->addWidget(m_codecComboBox);
-    m_rightToolBar->addSeparator();
-
-    m_rightToolBar->addAction(m_lockAct);
+//#ifdef LITEEDITOR_FIND
+//    m_findComboBox = new QComboBox(m_widget);
+//    m_findComboBox->setEditable(true);
+//    m_findComboBox->setMinimumWidth(120);
+//    m_findComboBox->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+//    m_toolBar->addWidget(m_findComboBox);
+//    m_toolBar->addSeparator();
+//    connect(m_findComboBox->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findNextText()));
+//#endif
 }
 
 void LiteEditor::createContextMenu()
@@ -457,13 +432,6 @@ bool LiteEditor::saveAs(const QString &fileName)
 void LiteEditor::setReadOnly(bool b)
 {
     m_bReadOnly = b;
-    if (m_bReadOnly) {
-        m_lockAct->setIcon(QIcon("icon:liteeditor/images/lock.png"));
-        m_lockAct->setText(tr("File Is ReadOnly"));
-    } else {
-        m_lockAct->setIcon(QIcon("icon:liteeditor/images/unlock.png"));
-        m_lockAct->setText(tr("File Is Writable"));
-    }
 }
 
 bool LiteEditor::isReadOnly() const
