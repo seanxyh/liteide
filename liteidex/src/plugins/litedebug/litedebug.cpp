@@ -26,7 +26,6 @@
 #include "litedebug.h"
 #include "debugmanager.h"
 #include "debugwidget.h"
-#include "liteapi/litefindobj.h"
 #include "fileutil/fileutil.h"
 
 

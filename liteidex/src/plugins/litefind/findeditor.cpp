@@ -24,7 +24,6 @@
 // $Id: findeditor.cpp,v 1.0 2011-8-12 visualfc Exp $
 
 #include "findeditor.h"
-#include "liteapi/litefindobj.h"
 
 #include <QLineEdit>
 #include <QTextCursor>

@@ -24,7 +24,6 @@
 // $Id: golangdoc.cpp,v 1.0 2011-7-7 visualfc Exp $
 
 #include "golangdoc.h"
-#include "liteapi/litefindobj.h"
 #include "litebuildapi/litebuildapi.h"
 #include "processex/processex.h"
 #include "fileutil/fileutil.h"

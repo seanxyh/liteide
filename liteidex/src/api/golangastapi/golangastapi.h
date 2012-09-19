@@ -27,7 +27,6 @@
 #define __GOLANGASTAPI_H__
 
 #include "liteapi/liteapi.h"
-#include "liteapi/litefindobj.h"
 #include <QProcessEnvironment>
 
 namespace LiteApi {

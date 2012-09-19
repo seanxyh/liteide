@@ -28,7 +28,6 @@
 #include "fileutil/fileutil.h"
 #include "processex/processex.h"
 #include "textoutput/textoutput.h"
-#include "liteapi/litefindobj.h"
 #include "buildconfigdialog.h"
 
 #include <QToolBar>

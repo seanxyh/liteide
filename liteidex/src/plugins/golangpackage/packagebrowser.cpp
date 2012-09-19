@@ -137,6 +137,9 @@ PackageBrowser::~PackageBrowser()
     delete m_rootMenu;
     delete m_pkgMenu;
     delete m_fileMenu;
+    if (m_widget) {
+        delete m_widget;
+    }
 }
 
 void PackageBrowser::appLoaded()

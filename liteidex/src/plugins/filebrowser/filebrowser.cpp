@@ -26,7 +26,6 @@
 #include "filebrowser.h"
 #include "createfiledialog.h"
 #include "createdirdialog.h"
-#include "liteapi/litefindobj.h"
 #include "golangdocapi/golangdocapi.h"
 #include "liteenvapi/liteenvapi.h"
 

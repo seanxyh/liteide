@@ -25,7 +25,6 @@
 
 #include "welcomebrowser.h"
 #include "ui_welcomewidget.h"
-#include "liteapi/litefindobj.h"
 #include "golangdocapi/golangdocapi.h"
 #include "litedoc.h"
 #include <QMenu>

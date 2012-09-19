@@ -254,6 +254,7 @@ ToolMainWindow::ToolMainWindow(QWidget *parent)
 
     this->setStyleSheet("QMainWindow::separator{width:1; background-color: gray ;}");
     m_statusBar->setStyleSheet("QStatusBar {border-top: 1px solid gray}");
+    //m_statusBar->setStyleSheet("QStatusBar {border:0}");
     /*
     this->setStyleSheet("QToolBar {border:1 ; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #EEEEEE, stop: 1 #ababab); color : #EEEEEE}"
                         "QStatusBar {border:1 ; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #EEEEEE, stop: 1 #ababab); color : #EEEEEE}"

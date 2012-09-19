@@ -26,7 +26,6 @@
 #include "golangfmt.h"
 #include "fileutil/fileutil.h"
 #include "processex/processex.h"
-#include "liteapi/litefindobj.h"
 #include "litebuildapi/litebuildapi.h"
 
 #include <QDebug>

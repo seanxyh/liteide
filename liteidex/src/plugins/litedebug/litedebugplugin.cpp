@@ -25,7 +25,6 @@
 
 #include "litedebugplugin.h"
 #include "litedebug.h"
-#include "liteapi/litefindobj.h"
 #include <QMenu>
 #include <QLayout>
 #include <QAction>

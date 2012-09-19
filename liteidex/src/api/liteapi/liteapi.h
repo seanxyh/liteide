@@ -44,6 +44,7 @@
 #define EA_SELECTALL "selectAll"
 #define EA_SEPARATOR "separator"
 #define EA_GOTOLINE  "gotoLine"
+#define EA_SELECTCODEC  "selectCodec"
 
 namespace LiteApi {
 
@@ -242,8 +243,14 @@ public:
     virtual int line() const = 0;
     virtual int column() const = 0;
     virtual void gotoLine(int line, int column, bool center = false) = 0;
+    virtual QString textCodec() const = 0;
+    virtual void setTextCodec(const QString &codec) = 0;
 };
 
+inline ITextEditor *getTextEditor(IEditor *editor)
+{
+    return findExtensionObject<ITextEditor*>(editor->extension(),"LiteApi.ITextEditor");
+}
 
 class IEditorManager : public IManager
 {

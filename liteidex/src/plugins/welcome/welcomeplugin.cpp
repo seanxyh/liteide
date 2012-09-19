@@ -24,7 +24,6 @@
 // $Id: welcomeplugin.cpp,v 1.0 2011-7-6 visualfc Exp $
 
 #include "welcomeplugin.h"
-#include "liteapi/litefindobj.h"
 #include <QAction>
 #include <QMenu>
 #include <QToolBar>

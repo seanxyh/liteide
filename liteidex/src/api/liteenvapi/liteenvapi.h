@@ -27,7 +27,6 @@
 #define __LITEENVAPI_H__
 
 #include "liteapi/liteapi.h"
-#include "liteapi/litefindobj.h"
 #include <QProcessEnvironment>
 #include <QDir>
 
