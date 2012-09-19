@@ -55,7 +55,7 @@ public:
 public:
     QString actionValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);
     void initAction(QAction *act, LiteApi::IBuild *build, LiteApi::BuildAction *ba);
-    void setProjectBuild(LiteApi::IBuild *build);
+    void setCurrentBuild(LiteApi::IBuild *build);
     void loadProjectInfo(const QString &filePath);
     void loadEditorInfo(const QString &filePath);
     LiteApi::IBuild *findProjectBuildByEditor(LiteApi::IEditor *editor);
@@ -96,6 +96,7 @@ protected:
     QAction    *m_outputAct;
     QString     m_outputRegex;
     QString     m_buildFilePath;
+    bool        m_bProjectBuild;
     QMap<QString,QString> m_editorInfo;
     QMap<QString,QString> m_projectInfo;
     QMap<QString,QString> m_targetInfo;

@@ -65,9 +65,8 @@ QString FolderProject::filePath() const
 
 QString FolderProject::mimeType() const
 {
-    return "project/folder";
+    return "folder/x-path";
 }
-
 
 void FolderProject::openFolder(const QString &folder)
 {

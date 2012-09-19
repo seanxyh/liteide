@@ -36,6 +36,7 @@
 #include "toolwindowmanager.h"
 #include "mainwindow.h"
 #include "liteappoptionfactory.h"
+#include "folderprojectfactory.h"
 
 #include <QApplication>
 #include <QMenuBar>
@@ -133,6 +134,8 @@ LiteApp::LiteApp()
     m_liteAppOptionFactory = new LiteAppOptionFactory(this,this);
 
     m_optionManager->addFactory(m_liteAppOptionFactory);
+
+    m_projectManager->addFactory(new FolderProjectFactory(this,this));
 }
 
 void LiteApp::load()

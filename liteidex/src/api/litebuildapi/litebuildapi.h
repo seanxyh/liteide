@@ -166,6 +166,27 @@ protected:
     QString m_value;
 };
 
+class BuildDebug
+{
+public:
+    BuildDebug()
+    {
+    }
+    void setId(const QString &id) { m_id = id; }
+    void setCmd(const QString &cmd) { m_cmd = cmd; }
+    void setArgs(const QString &args) { m_args = args; }
+    QString id() const { return m_id; }
+    QString cmd() const { return m_cmd; }
+    QString args() const { return m_args; }
+    bool isEmpty() {
+        return m_id.isEmpty();
+    }
+protected:
+    QString m_id;
+    QString m_cmd;
+    QString m_args;
+};
+
 class IBuild : public QObject
 {
     Q_OBJECT
@@ -179,6 +200,7 @@ public:
     virtual QList<BuildLookup*> lookupList() const = 0;
     virtual QList<BuildConfig*> configList() const = 0;
     virtual QList<BuildCustom*> customList() const = 0;
+    virtual QList<BuildDebug*>  debugList() const = 0;
     virtual BuildAction *findAction(const QString &name) = 0;
 };
 
@@ -210,6 +232,7 @@ public:
     virtual QMap<QString,QString> buildEnvMap() const = 0;
     virtual IBuildManager *buildManager() const = 0;   
     virtual void appendOutput(const QString &str, const QBrush &brush, bool active) = 0;
+    virtual void execAction(const QString &mime,const QString &id) = 0;
 signals:
     void currentBuildFileChanged(const QString &filePath);
 };

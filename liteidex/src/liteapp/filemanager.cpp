@@ -225,8 +225,7 @@ void FileManager::openFolder()
         if (dir.cdUp()) {
             initPath = dir.path();
         }
-        //this->openProjectScheme(folder,"gopkg");
-        m_liteApp->projectManager()->openFolder(folder);
+        this->openFolderProject(folder);
     }
 }
 
@@ -366,6 +365,17 @@ IProject *FileManager::openProject(const QString &_fileName)
         removeRecentFile(fileName,"proj");
     }
     return proj;
+}
+
+IProject *FileManager::openFolderProject(const QString &folder)
+{
+    IProject *project = m_liteApp->projectManager()->openFolder(folder);
+    if (project) {
+        addRecentFile(folder,"folder");
+    } else {
+        removeRecentFile(folder,"folder");
+    }
+    return project;
 }
 
 IProject *FileManager::openProjectScheme(const QString &_fileName, const QString &scheme)

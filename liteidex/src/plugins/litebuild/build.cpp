@@ -52,6 +52,7 @@ Build::~Build()
     qDeleteAll(m_actionList);
     qDeleteAll(m_configList);
     qDeleteAll(m_customList);
+    qDeleteAll(m_debugList);
 }
 
 QString Build::mimeType() const
@@ -87,6 +88,11 @@ QList<BuildConfig*> Build::configList() const
 QList<BuildCustom*> Build::customList() const
 {
     return m_customList;
+}
+
+QList<BuildDebug*>  Build::debugList() const
+{
+    return m_debugList;
 }
 
 BuildAction *Build::findAction(const QString &id)
@@ -134,6 +140,11 @@ void Build::appendCustom(BuildCustom *custom)
     m_customList.append(custom);
 }
 
+void Build::appendDebug(BuildDebug *debug)
+{
+    m_debugList.append(debug);
+}
+
 bool Build::loadBuild(LiteApi::IBuildManager *manager, const QString &fileName)
 {
     QFile file(fileName);
@@ -153,6 +164,7 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
     BuildLookup *lookup = 0;
     BuildConfig *config = 0;
     BuildCustom *custom = 0;
+    BuildDebug  *debug = 0;
     while (!reader.atEnd()) {
         switch (reader.readNext()) {
         case QXmlStreamReader::StartElement:
@@ -205,6 +217,11 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 custom->setId(attrs.value("id").toString());
                 custom->setName(attrs.value("name").toString());
                 custom->setValue(attrs.value("value").toString());
+            } else if (reader.name() == "debug" && debug == 0) {
+                debug = new BuildDebug;
+                debug->setId(attrs.value("id").toString());
+                debug->setCmd(attrs.value("cmd").toString());
+                debug->setArgs(attrs.value("args").toString());
             }
             break;
         case QXmlStreamReader::EndElement:
@@ -233,6 +250,11 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                     build->appendCustom(custom);
                 }
                 custom = 0;
+            } else if (reader.name() == "debug") {
+                if (build && debug) {
+                    build->appendDebug(debug);
+                }
+                debug = 0;
             }
             break;
         default:

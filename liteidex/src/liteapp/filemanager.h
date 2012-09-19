@@ -48,6 +48,7 @@ public:
     virtual IEditor *createEditor(const QString &contents, const QString &mimeType);
     virtual IEditor *createEditor(const QString &fileName);
     virtual IProject *openProject(const QString &fileName);
+    virtual IProject *openFolderProject(const QString &folder);
     virtual IProject *openProjectScheme(const QString &fileName, const QString &scheme);
 
     virtual QStringList schemeList() const;
