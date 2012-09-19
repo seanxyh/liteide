@@ -63,8 +63,9 @@ bool WelcomePlugin::initWithApp(LiteApi::IApplication *app)
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuEditPagePos,m_welcomeAct);
     m_welcomeAct->toggle();
 
-    QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/nav");
+    QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/std");
     if (toolBar) {
+        toolBar->addSeparator();
         m_homeAct = new QAction(QIcon("icon:welcome/images/home.png"),tr("Home"),this);
         m_homeAct->setShortcut(QKeySequence("Ctrl+Alt+H"));
         connect(m_homeAct,SIGNAL(triggered()),this,SLOT(home()));

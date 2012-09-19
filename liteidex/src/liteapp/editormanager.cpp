@@ -78,25 +78,9 @@ bool EditorManager::initWithApp(IApplication *app)
     mainLayout->addWidget(m_editorTabWidget);
     m_widget->setLayout(mainLayout);
 
-    QToolBar *toolbar = m_liteApp->actionManager()->insertToolBar("toolbar/nav",tr("Navigation"));
-    m_goBackAct = new QAction(tr("GoBack"),this);
-    m_goBackAct->setIcon(QIcon("icon:images/backward.png"));
-    m_goBackAct->setShortcut(QKeySequence(Qt::ALT+Qt::Key_Left));
-
-    m_goForwardAct = new QAction(tr("GoForward"),this);
-    m_goForwardAct->setIcon(QIcon("icon:images/forward.png"));
-    m_goForwardAct->setShortcut(Qt::ALT+Qt::Key_Right);
-
-    updateNavigatorActions();
-
-    toolbar->addAction(m_goBackAct);
-    toolbar->addAction(m_goForwardAct);
-
     connect(m_editorTabWidget,SIGNAL(currentChanged(int)),this,SLOT(editorTabChanged(int)));
     connect(m_editorTabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(editorTabCloseRequested(int)));
     connect(m_editorTabWidget,SIGNAL(tabAddRequest()),this,SIGNAL(tabAddRequest()));
-    connect(m_goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
-    connect(m_goForwardAct,SIGNAL(triggered()),this,SLOT(goForward()));
 
     m_editorTabWidget->installEventFilter(this);
     m_editorTabWidget->tabBar()->installEventFilter(this);
@@ -184,6 +168,23 @@ void EditorManager::createActions()
     toolBar->addAction(cut);
     toolBar->addAction(copy);
     toolBar->addAction(paste);
+
+    m_goBackAct = new QAction(tr("GoBack"),this);
+    m_goBackAct->setIcon(QIcon("icon:images/backward.png"));
+    m_goBackAct->setShortcut(QKeySequence(Qt::ALT+Qt::Key_Left));
+
+    m_goForwardAct = new QAction(tr("GoForward"),this);
+    m_goForwardAct->setIcon(QIcon("icon:images/forward.png"));
+    m_goForwardAct->setShortcut(Qt::ALT+Qt::Key_Right);
+
+    updateNavigatorActions();
+
+    toolBar->addSeparator();
+    toolBar->addAction(m_goBackAct);
+    toolBar->addAction(m_goForwardAct);
+
+    connect(m_goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
+    connect(m_goForwardAct,SIGNAL(triggered()),this,SLOT(goForward()));
 
     QStatusBar *statusBar = m_liteApp->mainWindow()->statusBar();
 

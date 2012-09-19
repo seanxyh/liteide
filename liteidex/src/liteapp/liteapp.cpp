@@ -409,12 +409,10 @@ void LiteApp::createToolBars()
     m_stdToolBar->addAction(m_openFolderAct);
     m_stdToolBar->addAction(m_saveAct);
     m_stdToolBar->addAction(m_saveAllAct);
-    m_stdToolBar->addSeparator();
-    m_stdToolBar->addAction(m_openProjectAct);
-    m_stdToolBar->addAction(m_saveProjectAct);
-    m_stdToolBar->addAction(m_closeProjectAct);
-
-    m_navToolBar = m_actionManager->loadToolBar("toolbar/nav");
+    //m_stdToolBar->addSeparator();
+    //m_stdToolBar->addAction(m_openProjectAct);
+    //m_stdToolBar->addAction(m_saveProjectAct);
+    //m_stdToolBar->addAction(m_closeProjectAct);
 }
 
 void LiteApp::projectReloaded()

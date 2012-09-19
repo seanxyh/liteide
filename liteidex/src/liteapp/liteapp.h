@@ -133,7 +133,6 @@ protected:
     QAction     *m_aboutAct;
     QAction     *m_aboutPluginsAct;
     QToolBar    *m_stdToolBar;
-    QToolBar    *m_navToolBar;
     QMenu       *m_fileMenu;
     QMenu       *m_viewMenu;
     QMenu       *m_helpMenu;    
