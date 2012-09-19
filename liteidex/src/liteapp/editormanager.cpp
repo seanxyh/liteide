@@ -39,6 +39,8 @@
 #include <QKeyEvent>
 #include <QTabBar>
 #include <QApplication>
+#include <QStatusBar>
+#include <QToolButton>
 #include <QDebug>
 #include "litetabwidget.h"
 #include "fileutil/fileutil.h"
@@ -120,6 +122,9 @@ void EditorManager::createActions()
     QAction *selectAll = new QAction(tr("Select All"),this);
     selectAll->setShortcut(QKeySequence::SelectAll);
 
+    QAction *gotoLine = new QAction(tr("Goto Line"),this);
+    gotoLine->setShortcut(QKeySequence("Ctrl+G"));
+
     m_editMenu = m_liteApp->actionManager()->loadMenu("edit");
     if (!m_editMenu) {
         m_editMenu = m_liteApp->actionManager()->insertMenu("edit",tr("Edit"));
@@ -133,6 +138,7 @@ void EditorManager::createActions()
     addAction(EA_PASTE,paste);
     addAction(EA_SEPARATOR,0);
     addAction(EA_SELECTALL,selectAll);
+    addAction(EA_GOTOLINE,gotoLine);
 
     QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/std");
     toolBar->addSeparator();
@@ -142,6 +148,20 @@ void EditorManager::createActions()
     toolBar->addAction(cut);
     toolBar->addAction(copy);
     toolBar->addAction(paste);
+
+    QStatusBar *statusBar = m_liteApp->mainWindow()->statusBar();
+
+    QToolBar *right = new QToolBar;
+
+    m_lineInfo = new QToolButton;
+    m_lineInfo->setDefaultAction(gotoLine);
+    m_lineInfo->setText("000:000");
+    right->addWidget(m_lineInfo);
+    right->setStyleSheet("QToolBar {border:0}");
+    m_lineInfo->setFixedWidth(m_lineInfo->sizeHint().width());
+    m_lineInfo->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
+
+    statusBar->addPermanentWidget(right);
 
     connect(m_editMenu,SIGNAL(triggered(QAction*)),this,SLOT(executeEditAction(QAction*)));
 }
@@ -640,5 +660,12 @@ void EditorManager::setActionEnable(IEditor *editor, const QString &id, bool b)
     QAction *action = m_idActionMap.value(id);
     if (action) {
         action->setEnabled(b);
+    }
+}
+
+void EditorManager::updateLine(IEditor *editor, int line, int col)
+{
+    if (m_currentEditor == editor) {
+        m_lineInfo->setText(QString("%1:%2").arg(line).arg(col));
     }
 }

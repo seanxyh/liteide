@@ -33,6 +33,7 @@ using namespace LiteApi;
 
 class LiteTabWidget;
 class QStackedWidget;
+class QToolButton;
 
 struct EditLocation {
     QString filePath;
@@ -46,7 +47,6 @@ public:
     ~EditorManager();
     virtual bool initWithApp(IApplication *app);
     void createActions();
-    void setupToolBar();
 public:
     virtual IEditor *openEditor(const QString &fileName, const QString &mimeType);
     virtual void addFactory(IEditorFactory *factory);
@@ -66,6 +66,7 @@ public:
     virtual void addAction(const QString &id, QAction *action);
     virtual QAction *editAction(const QString &id);
     virtual void setActionEnable(IEditor *editor, const QString &id, bool b);
+    virtual void updateLine(IEditor *editor, int line, int col);
 protected:
     void addEditor(IEditor *editor);
     bool eventFilter(QObject *target, QEvent *event);
@@ -85,7 +86,12 @@ public slots:
 signals:
     void tabAddRequest();
     void doubleClickedTab();
-protected:    
+protected slots:
+    void editorTabChanged(int);
+    void editorTabCloseRequested(int);
+    void modificationChanged(bool);
+    void toggleBrowserAction(bool);
+protected:
     QList<EditLocation> m_navigationHistory;
     int m_currentNavigationHistoryPosition;
     QWidget      *m_widget;
@@ -98,11 +104,7 @@ protected:
     QAction     *m_goForwardAct;
     QMenu       *m_editMenu;
     QMap<QString,QAction*> m_idActionMap;
-protected slots:
-    void editorTabChanged(int);
-    void editorTabCloseRequested(int);
-    void modificationChanged(bool);
-    void toggleBrowserAction(bool);
+    QToolButton *m_lineInfo;
 };
 
 #endif // EDITORMANAGER_H
