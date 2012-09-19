@@ -235,8 +235,7 @@ void LiteEditor::createActions()
     connect(m_foldAllAct,SIGNAL(triggered()),m_editorWidget,SLOT(foldAll()));
     connect(m_unfoldAllAct,SIGNAL(triggered()),m_editorWidget,SLOT(unfoldAll()));
 
-    m_gotoLineAct = new QAction(tr("Goto Line"),this);
-    m_gotoLineAct->setShortcut(QKeySequence("Ctrl+G"));
+    m_gotoLineAct = m_liteApp->editorManager()->editAction(EA_GOTOLINE);
 
     m_duplicateAct = new QAction(tr("Duplicate"),this);
     m_duplicateAct->setShortcut(QKeySequence("Ctrl+D"));
@@ -263,12 +262,12 @@ void LiteEditor::createActions()
     connect(m_editorWidget,SIGNAL(copyAvailable(bool)),m_cutAct,SLOT(setEnabled(bool)));
     connect(m_editorWidget,SIGNAL(copyAvailable(bool)),m_copyAct,SLOT(setEnabled(bool)));
 
-    connect(m_undoAct,SIGNAL(triggered()),m_editorWidget,SLOT(undo()));
-    connect(m_redoAct,SIGNAL(triggered()),m_editorWidget,SLOT(redo()));
-    connect(m_cutAct,SIGNAL(triggered()),m_editorWidget,SLOT(cut()));
-    connect(m_copyAct,SIGNAL(triggered()),m_editorWidget,SLOT(copy()));
-    connect(m_pasteAct,SIGNAL(triggered()),m_editorWidget,SLOT(paste()));
-    connect(m_selectAllAct,SIGNAL(triggered()),m_editorWidget,SLOT(selectAll()));
+    //connect(m_undoAct,SIGNAL(triggered()),m_editorWidget,SLOT(undo()));
+    //connect(m_redoAct,SIGNAL(triggered()),m_editorWidget,SLOT(redo()));
+    //connect(m_cutAct,SIGNAL(triggered()),m_editorWidget,SLOT(cut()));
+    //connect(m_copyAct,SIGNAL(triggered()),m_editorWidget,SLOT(copy()));
+    //connect(m_pasteAct,SIGNAL(triggered()),m_editorWidget,SLOT(paste()));
+    //connect(m_selectAllAct,SIGNAL(triggered()),m_editorWidget,SLOT(selectAll()));
     connect(m_selectBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(selectBlock()));
 
     connect(m_exportHtmlAct,SIGNAL(triggered()),this,SLOT(exportHtml()));
@@ -280,7 +279,7 @@ void LiteEditor::createActions()
     connect(m_gotoPrevBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoPrevBlock()));
     connect(m_gotoNextBlockAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoNextBlock()));
     connect(m_gotoMatchBraceAct,SIGNAL(triggered()),m_editorWidget,SLOT(gotoMatchBrace()));
-    connect(m_gotoLineAct,SIGNAL(triggered()),this,SLOT(gotoLine()));
+    //connect(m_gotoLineAct,SIGNAL(triggered()),this,SLOT(gotoLine()));
 
     QClipboard *clipboard = QApplication::clipboard();
     connect(clipboard,SIGNAL(dataChanged()),this,SLOT(clipbordDataChanged()));
@@ -758,9 +757,7 @@ void LiteEditor::codecComboBoxChanged(QString codec)
 void LiteEditor::editPositionChanged()
 {
      QTextCursor cur = m_editorWidget->textCursor();
-     this->m_lineInfo->setText(QString("%1:%2").
-                                arg(cur.blockNumber()+1,3).
-                                arg(cur.columnNumber()+1,3));
+     m_liteApp->editorManager()->updateLine(this,cur.blockNumber()+1,cur.columnNumber()+1);
 }
 
 void LiteEditor::gotoLine()
@@ -802,9 +799,11 @@ void LiteEditor::executeAction(const QString &id, QAction */*action*/)
     } else if (id == EA_REDO) {
         m_editorWidget->redo();
     } else if (id == EA_UNDO) {
-        m_editorWidget->redo();
+        m_editorWidget->undo();
     } else if (id == EA_SELECTALL) {
         m_editorWidget->selectAll();
+    } else if (id == EA_GOTOLINE) {
+        gotoLine();
     } else {
         m_liteApp->appendLog("LiteEditor",QString("undefine action %1").arg(id),true);
     }
@@ -816,6 +815,8 @@ void LiteEditor::onActive()
     undoAvailable(m_undoAvailable);
     redoAvailable(m_redoAvailable);
     copyAvailable(m_copyAvailable);
+    m_liteApp->editorManager()->setActionEnable(this,EA_GOTOLINE,true);
+    editPositionChanged();
 }
 
 void LiteEditor::undoAvailable(bool b)
