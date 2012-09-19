@@ -119,6 +119,8 @@ LiteApp::LiteApp()
     createMenus();
     createToolBars();
 
+    m_editorManager->createActions();
+
     m_logOutput = new TextOutput;
     //m_outputManager->addOutuput(m_logOutput,tr("Console"));
     m_logAct = m_toolWindowManager->addToolWindow(Qt::BottomDockWidgetArea,m_logOutput,"eventlog",tr("Event Log"),true);
