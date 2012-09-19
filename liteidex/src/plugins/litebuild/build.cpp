@@ -154,6 +154,8 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, const QString &fileName)
     return Build::loadBuild(manager,&file,fileName);
 }
 
+static int build_ver = 1;
+
 bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QString &fileName)
 {
     QXmlStreamReader reader(dev);
@@ -170,10 +172,13 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
         case QXmlStreamReader::StartElement:
             attrs = reader.attributes();
             if (reader.name() == "mime-type" && build == 0) {
-                build = new Build;
-                build->setType(attrs.value("type").toString());
-                build->setId(attrs.value("id").toString());
-                build->setWork(attrs.value("work").toString());
+                int ver = attrs.value("ver").toString().toInt();
+                if (ver >= build_ver) {
+                    build = new Build;
+                    build->setType(attrs.value("type").toString());
+                    build->setId(attrs.value("id").toString());
+                    build->setWork(attrs.value("work").toString());
+                }
             } else if (reader.name() == "lookup" && lookup == 0) {
                 lookup = new BuildLookup;
                 lookup->setMimeType(attrs.value("mime-type").toString());

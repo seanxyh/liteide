@@ -269,9 +269,16 @@ void LiteDebug::startDebug()
     QString workDir = m_liteBuild->envValue(build,buildDebug->work());
     QString cmd = m_liteBuild->envValue(build,buildDebug->cmd());
     QString args = m_liteBuild->envValue(build,buildDebug->args());
-    QString target = FileUtil::lookPath(cmd,m_envManager->currentEnvironment(),true);
+    //QString target = FileUtil::lookPath(cmd,m_envManager->currentEnvironment(),true);
+    QString target = cmd;
+    if (!QFileInfo(target).exists()) {
+        target = FileUtil::lookPathInDir(cmd,m_envManager->currentEnvironment(),workDir);
+    }
 
-    qDebug() << cmd << args << target;
+    if (!QFileInfo(target).exists()) {
+        m_liteApp->appendLog("litebuild",QString("no find target %1").arg(cmd),true);
+        return;
+    }
 
     m_debugger->setInitBreakTable(m_fileBpMap);
     m_debugger->setEnvironment(m_envManager->currentEnvironment().toStringList());
