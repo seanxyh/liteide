@@ -53,7 +53,8 @@ SOURCES += main.cpp\
     tooldockwidget.cpp \
     rotationtoolbutton.cpp \
     toolwindowmanager.cpp \
-    folderproject.cpp
+    folderproject.cpp \
+    folderprojectfactory.cpp
 
 HEADERS  += mainwindow.h \
     liteapp.h \
@@ -77,7 +78,8 @@ HEADERS  += mainwindow.h \
     tooldockwidget.h \
     rotationtoolbutton.h \
     toolwindowmanager.h \
-    folderproject.h
+    folderproject.h \
+    folderprojectfactory.h
 
 FORMS += \
     aboutdialog.ui \

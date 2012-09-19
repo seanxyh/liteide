@@ -42,6 +42,7 @@ public:
     virtual QList<BuildLookup*> lookupList() const;
     virtual QList<BuildConfig*> configList() const;
     virtual QList<BuildCustom*> customList() const;
+    virtual QList<BuildDebug*>  debugList() const;
     virtual BuildAction *findAction(const QString &id);
 public:
     void setType(const QString &mimeType);
@@ -51,6 +52,7 @@ public:
     void appendLookup(BuildLookup *lookup);
     void appendConfig(BuildConfig *config);
     void appendCustom(BuildCustom *custom);
+    void appendDebug(BuildDebug *debug);
 public:
     static bool loadBuild(LiteApi::IBuildManager *manager, const QString &fileName);
     static bool loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QString &fileName);
@@ -62,6 +64,7 @@ protected:
     QList<BuildLookup*> m_lookupList;
     QList<BuildConfig*> m_configList;
     QList<BuildCustom*> m_customList;
+    QList<BuildDebug*> m_debugList;
     QMap<BuildAction*,QString> m_actionCmdMap;
     QMap<BuildAction*,QString> m_actionArgMap;
 };

@@ -61,7 +61,11 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
 {
     m_manager->initWithApp(app);
 
-    m_toolBar =  m_liteApp->actionManager()->insertToolBar("toolbar/litedebug",tr("Debug ToolBar"),"toolbar/nav");
+    m_toolBar =  m_liteApp->actionManager()->loadToolBar("toolbar/build");
+    if (!m_toolBar) {
+        m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/build",tr("Debug ToolBar"),"toolbar/nav");
+    }
+
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_toolBar->toggleViewAction());
 
     m_output = new TextOutput;
@@ -112,19 +116,9 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_insertBreakAct->setShortcut(QKeySequence(Qt::Key_F9));
     m_insertBreakAct->setToolTip(tr("Insert/Remove Breakpoint (F9)"));
 
+    m_toolBar->addSeparator();
     m_toolBar->addAction(m_startDebugAct);
-    //m_toolBar->addAction(m_stopDebugAct);
-    //m_toolBar->addSeparator();
     m_toolBar->addAction(m_insertBreakAct);
-    /*
-    m_toolBar->addSeparator();
-    m_toolBar->addAction(m_showLineAct);
-    m_toolBar->addAction(m_stepIntoAct);
-    m_toolBar->addAction(m_stepOverAct);
-    m_toolBar->addAction(m_stepOutAct);
-    m_toolBar->addAction(m_runToLineAct);
-    m_toolBar->addSeparator();
-    */
 
     widgetToolBar->addAction(m_startDebugAct);
     widgetToolBar->addAction(m_stopDebugAct);

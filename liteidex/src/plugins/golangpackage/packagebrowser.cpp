@@ -254,11 +254,14 @@ bool PackageBrowser::loadPackageProjectHelper(QModelIndex index)
     }
     QDir dir(json.toMap().value("Dir").toString());
     if (dir.exists()) {
+        m_liteApp->fileManager()->openFolderProject(dir.path());
+        /*
         PackageProject *proj = new PackageProject(m_liteApp);
         proj->setJson(json.toMap());
         proj->setPath(dir.path());
         m_liteApp->projectManager()->setCurrentProject(proj);;
         m_liteApp->fileManager()->addRecentFile(dir.path(),"gopkg");
+        */
         return true;
     }
     return false;

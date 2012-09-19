@@ -135,6 +135,25 @@ public:
     virtual QStringList findAllFilesByMimeType(const QString &dir, const QString &type, int deep = 0) const = 0;
 };
 
+inline QString mimeHead(const QString &mimeType)
+{
+    int find = mimeType.indexOf('/');
+    if (find == -1) {
+        return mimeType;
+    }
+    return mimeType.left(find);
+}
+
+inline bool mimeIsText(const QString &mimeType)
+{
+    return mimeHead(mimeType) == "text";
+}
+
+inline bool mimeIsFolder(const QString &mimeType)
+{
+    return mimeHead(mimeType) == "folder";
+}
+
 class IFile : public QObject
 {
     Q_OBJECT
@@ -181,6 +200,7 @@ public:
     virtual IEditor *createEditor(const QString &contents, const QString &_mimeType) = 0;
     virtual IEditor *createEditor(const QString &fileName) = 0;
     virtual IProject *openProject(const QString &fileName) = 0;
+    virtual IProject *openFolderProject(const QString &folder) = 0;
     virtual IProject *openProjectScheme(const QString &fileName, const QString &scheme) = 0;
     // recent
     virtual QStringList schemeList() const = 0;

@@ -76,7 +76,11 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
         m_manager->load(m_liteApp->resourcePath()+"/litebuild");
         m_liteApp->extension()->addObject("LiteApi.IBuildManager",m_manager);
     }    
-    m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/litebuild",tr("Build ToolBar"));
+    m_bProjectBuild = false;
+    m_toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/build");
+    if (!m_toolBar) {
+        m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/build",tr("Build ToolBar"));
+    }
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_toolBar->toggleViewAction());
 
     m_liteideModel = new QStandardItemModel(0,2,this);
@@ -92,6 +96,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_customModel->setHeaderData(1,Qt::Horizontal,tr("Value"));
 
     m_configAct = new QAction(QIcon("icon:litebuild/images/config.png"),tr("BuildConfig"),this);
+    m_toolBar->addSeparator();
     m_toolBar->addAction(m_configAct);
 
     m_process = new ProcessEx(this);
@@ -275,16 +280,23 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
     m_buildFilePath.clear();
     m_projectInfo.clear();
     m_targetInfo.clear();
+    m_bProjectBuild = false;
     if (project) {
         connect(project,SIGNAL(reloaded()),this,SLOT(reloadProject()));
         loadProjectInfo(project->filePath());
         m_targetInfo = project->targetInfo();
         m_buildFilePath = project->filePath();
         LiteApi::IBuild *build = findProjectBuild(project);
-        setProjectBuild(build);
+        if (build) {
+            m_bProjectBuild = true;
+        }
+        setCurrentBuild(build);
     } else {
         LiteApi::IBuild *build = findProjectBuildByEditor(m_liteApp->editorManager()->currentEditor());
-        setProjectBuild(build);
+        if (build) {
+            m_bProjectBuild = true;
+        }
+        setCurrentBuild(build);
     }
 }
 
@@ -431,14 +443,16 @@ void LiteBuild::initAction(QAction *act, LiteApi::IBuild *build, LiteApi::BuildA
     connect(act,SIGNAL(triggered()),this,SLOT(buildAction()));
 }
 
-void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
+void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
 {
     if (m_build == build) {
+        /*
         if (build) {
             m_output->appendTag0(QString("{build id=\"%1\" file=\"%2\"}\n").
                               arg(build->id()).
                               arg(m_buildFilePath));
         }
+        */
         return;
     }
     //update buildconfig
@@ -472,9 +486,11 @@ void LiteBuild::setProjectBuild(LiteApi::IBuild *build)
                                      << new QStandardItem(value));
             //m_configMap.insert(name,value);
         }
+        /*
         m_output->appendTag0(QString("{build id=\"%1\" file=\"%2\"}\n").
                           arg(build->id()).
                           arg(m_buildFilePath));
+        */
     }
 
     m_build = build;
@@ -675,10 +691,16 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
         return;
     }
     loadEditorInfo(editor->filePath());
+    if (!m_bProjectBuild) {
+        IBuild *build = m_manager->findBuild(editor->mimeType());
+        setCurrentBuild(build);
+    }
+    /*
     if (!m_liteApp->projectManager()->currentProject()) {
         LiteApi::IBuild *build = findProjectBuildByEditor(editor);
         setProjectBuild(build);
     }
+    */
 }
 
 void LiteBuild::extOutput(const QByteArray &data, bool /*bError*/)

@@ -107,7 +107,9 @@ void WelcomeBrowser::openUrl(const QUrl &url)
         m_liteApp->fileManager()->openProject(url.path());
     } else if (url.scheme() == "file") {
         m_liteApp->fileManager()->openEditor(url.path());
-    } else if (url.scheme() == "doc") {
+    } else if (url.scheme() == "folder") {
+        m_liteApp->fileManager()->openFolderProject(url.path());
+    }else if (url.scheme() == "doc") {
         LiteApi::ILiteDoc *doc = LiteApi::findExtensionObject<LiteApi::ILiteDoc*>(m_liteApp,"LiteApi.ILiteDoc");
         if (doc) {
             doc->openUrl(url.path());
@@ -124,10 +126,6 @@ void WelcomeBrowser::openUrl(const QUrl &url)
         if (browser) {
             m_liteApp->editorManager()->activeBrowser(browser);
         }
-    } else if (url.scheme() == "opengopkg") {
-        m_liteApp->projectManager()->openSchemeDialog("gopkg");
-    } else {
-        m_liteApp->fileManager()->openProjectScheme(url.path(),url.scheme());
     }
 }
 

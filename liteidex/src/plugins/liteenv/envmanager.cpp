@@ -207,7 +207,7 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
     }
     loadEnvFiles(m_liteApp->resourcePath()+"/liteenv");
 
-    m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/liteenv",tr("Environment ToolBar"));
+    m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/build",tr("Environment ToolBar"));
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_toolBar->toggleViewAction());
 
     m_envCmb = new QComboBox;
