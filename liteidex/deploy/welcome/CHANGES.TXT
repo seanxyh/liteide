@@ -8,8 +8,9 @@
  * GolangDoc : deply filter index
  * GolangAst : classview for folder
  * Outline : alltime expand
- * FileBrowser : sync editor file to folder
- * FileBrowser : add go command line edit (Ctrl+Q)
+ * FileBrowser : rename to FileSystem
+ * FileSystem : sync editor file to folder
+ * FileSystem : add go command line edit (Ctrl+Q)
 ==== 2012.9.14 Ver x12.5 ====
  * LiteApp : move dock style, change to idea style tool windows.
  * LiteApp : double click editor and maximized or restore editor
