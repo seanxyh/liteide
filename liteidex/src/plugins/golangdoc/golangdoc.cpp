@@ -84,7 +84,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_findResultListView->setEditTriggers(0);
     m_findResultListView->setModel(m_findFilterModel);
 
-    m_findEdit = new Utils::FilterLineEdit;
+    m_findEdit = new Utils::FilterLineEdit(200);
     m_golangApi = new GolangApi(this);
     //m_findEdit->setEditable(true);
     //m_findEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);

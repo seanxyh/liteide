@@ -28,12 +28,14 @@
 **************************************************************************/
 
 #include "filterlineedit.h"
+#include <QTimer>
 
 namespace Utils {
 
-FilterLineEdit::FilterLineEdit(QWidget *parent) :
+FilterLineEdit::FilterLineEdit(int dly, QWidget *parent) :
    FancyLineEdit(parent),
-   m_lastFilterText(text())
+   m_lastFilterText(text()),
+    m_dlytimer(dly)
 {
     // KDE has custom icons for this. Notice that icon namings are counter intuitive
     // If these icons are not avaiable we use the freedesktop standard name before
@@ -49,6 +51,9 @@ FilterLineEdit::FilterLineEdit(QWidget *parent) :
     setPlaceholderText(tr("Filter"));
     setButtonToolTip(Right, tr("Clear text"));
     setAutoHideButton(Right, true);
+    m_timer = new QTimer(this);
+    m_timer->setSingleShot(true);
+    connect(m_timer,SIGNAL(timeout()),this,SLOT(dlyTextChanged()));
     connect(this, SIGNAL(rightButtonClicked()), this, SLOT(clear()));
     connect(this, SIGNAL(textChanged(QString)), this, SLOT(slotTextChanged()));
 }
@@ -58,9 +63,17 @@ void FilterLineEdit::slotTextChanged()
     const QString newlyTypedText = text();
     if (newlyTypedText != m_lastFilterText) {
         m_lastFilterText = newlyTypedText;
-        emit filterChanged(m_lastFilterText);
+        if (m_dlytimer == 0) {
+            emit filterChanged(m_lastFilterText);
+        } else {
+            m_timer->start(m_dlytimer);
+        }
     }
 }
 
+void FilterLineEdit::dlyTextChanged()
+{
+    emit filterChanged(m_lastFilterText);
+}
 
 } // namespace Utils
