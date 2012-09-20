@@ -66,6 +66,9 @@ ModelProjectImpl::ModelProjectImpl(LiteApi::IApplication *app)
 
 ModelProjectImpl::~ModelProjectImpl()
 {
+    if (m_widget) {
+        delete m_widget;
+    }
    // m_liteApp->dockManager()->removeDock(m_widget);
 }
 

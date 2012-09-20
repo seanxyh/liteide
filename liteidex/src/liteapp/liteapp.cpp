@@ -491,7 +491,11 @@ void LiteApp::loadSession(const QString &name)
     QStringList fileList = m_settings->value(session+"_alleditor").toStringList();
 
     if (!projectName.isEmpty()) {
-        m_fileManager->openProjectScheme(projectName,scheme);
+        if (scheme.isEmpty()) {
+            m_fileManager->openProject(projectName);
+        } else {
+            m_fileManager->openProjectScheme(projectName,scheme);
+        }
     } else {
         m_projectManager->closeProject();
     }
