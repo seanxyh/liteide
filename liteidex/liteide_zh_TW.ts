@@ -156,23 +156,29 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
     </message>
     <message>
         <location filename="src/liteapp/actionmanager.cpp" line="59"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">編輯</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/actionmanager.cpp" line="60"/>
+        <source>F&amp;ind</source>
+        <oldsource>&amp;Find</oldsource>
+        <translation type="unfinished">搜尋(&amp;I)</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/actionmanager.cpp" line="61"/>
         <source>&amp;View</source>
         <translation>檢視(&amp;V)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/actionmanager.cpp" line="62"/>
+        <location filename="src/liteapp/actionmanager.cpp" line="64"/>
         <source>&amp;Help</source>
         <translation>說明(&amp;H)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/actionmanager.cpp" line="64"/>
+        <location filename="src/liteapp/actionmanager.cpp" line="66"/>
         <source>Standard ToolBar</source>
         <translation>標準工具列</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/actionmanager.cpp" line="65"/>
-        <source>Navigation ToolBar</source>
-        <translation>導航工具列</translation>
     </message>
 </context>
 <context>
@@ -319,39 +325,91 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>EditorManager</name>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="77"/>
-        <source>Navigation</source>
+        <location filename="src/liteapp/editormanager.cpp" line="124"/>
+        <source>Undo</source>
+        <translation type="unfinished">復原</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="127"/>
+        <source>Redo</source>
+        <translation type="unfinished">重做</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="130"/>
+        <source>Cut</source>
+        <translation type="unfinished">剪下</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="133"/>
+        <source>Copy</source>
+        <translation type="unfinished">複製</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="136"/>
+        <source>Paste</source>
+        <oldsource>paste</oldsource>
+        <translation type="unfinished">貼上</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="139"/>
+        <source>Select All</source>
+        <translation type="unfinished">全部選擇</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="142"/>
+        <source>Goto Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="78"/>
+        <location filename="src/liteapp/editormanager.cpp" line="149"/>
+        <source>&amp;Edit</source>
+        <oldsource>Edit</oldsource>
+        <translation type="unfinished">編輯</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="172"/>
         <source>GoBack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="82"/>
+        <location filename="src/liteapp/editormanager.cpp" line="176"/>
         <source>GoForward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="214"/>
+        <location filename="src/liteapp/editormanager.cpp" line="209"/>
+        <source>File is writable</source>
+        <translation type="unfinished">文件可寫入</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="339"/>
         <source>%1 is modified.</source>
         <translation>%1 已更改.</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="215"/>
+        <location filename="src/liteapp/editormanager.cpp" line="340"/>
         <source>Save Modify</source>
         <translation>儲存修改內容</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="284"/>
+        <location filename="src/liteapp/editormanager.cpp" line="409"/>
         <source>All Files (*)</source>
         <translation>所有文件(*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="286"/>
+        <location filename="src/liteapp/editormanager.cpp" line="411"/>
         <source>Save As</source>
         <translation>另存爲</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="478"/>
+        <source>File Is ReadOnly</source>
+        <translation type="unfinished">文件為唯讀</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="481"/>
+        <source>File Is Writable</source>
+        <translation type="unfinished">文件可寫入</translation>
     </message>
 </context>
 <context>
@@ -401,16 +459,16 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
     </message>
     <message>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="178"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="421"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="427"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="432"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="431"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="437"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="442"/>
         <source>Rename File</source>
         <translation>文件更名</translation>
     </message>
     <message>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="179"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="446"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="451"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="456"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="461"/>
         <source>Remove File</source>
         <translation>刪除文件</translation>
     </message>
@@ -426,16 +484,16 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
     </message>
     <message>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="183"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="487"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="496"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="501"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="497"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="506"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="511"/>
         <source>Rename Folder</source>
         <translation>目錄更名</translation>
     </message>
     <message>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="184"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="515"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="520"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="525"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="530"/>
         <source>Remove Folder</source>
         <translation>刪除目錄</translation>
     </message>
@@ -455,82 +513,86 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <translation>查看GODOC</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="242"/>
-        <source>File Browser</source>
-        <oldsource>File Browser Pane</oldsource>
-        <translation>文件瀏覽</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="380"/>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="390"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="400"/>
         <source>Create File</source>
         <translation>建立文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="421"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="431"/>
         <source>File Name</source>
         <translation>文件名稱</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="381"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="391"/>
         <source>The filename is exists!</source>
         <translation>文件名稱已存在!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="391"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="191"/>
+        <source>Load Folder Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="248"/>
+        <source>File System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="401"/>
         <source>Failed to create the file!</source>
         <translation>建立文件失敗!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="428"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="433"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="438"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="443"/>
         <source>Failed to rename the file!</source>
         <translation>重命名文件失敗!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="447"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="457"/>
         <source>Confirm remove the file and continue</source>
         <translation>請確認是否刪除文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="452"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="462"/>
         <source>Failed to remove the file!</source>
         <translation>刪除文件失敗!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="470"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="473"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="480"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="483"/>
         <source>Create Folder</source>
         <translation>建立目錄</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="487"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="497"/>
         <source>Folder Name</source>
         <translation>目錄名稱</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="471"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="481"/>
         <source>The folder name is exists!</source>
         <translation>目錄名稱已存在!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="474"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="484"/>
         <source>Failed to create the folder!</source>
         <translation>建立目錄失敗!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="497"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="502"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="507"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="512"/>
         <source>Failed to rename the folder!</source>
         <translation>重命名目錄失敗!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="516"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="526"/>
         <source>Confirm remove the foler and continue</source>
         <translation>請確認是否刪除目錄</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="521"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="531"/>
         <source>Failed to remove the folder!</source>
         <translation>刪除目錄失敗!</translation>
     </message>
@@ -611,19 +673,19 @@ Do you want to load?</source>
         <translation>開啟專案</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="572"/>
+        <location filename="src/liteapp/filemanager.cpp" line="583"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
         <translation>%1
 文件已經被刪除，要儲存文件還是關閉編輯器?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="573"/>
+        <location filename="src/liteapp/filemanager.cpp" line="584"/>
         <source>LiteIDE X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="591"/>
+        <location filename="src/liteapp/filemanager.cpp" line="602"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation>%1
@@ -633,58 +695,58 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>FileSearch</name>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="205"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="206"/>
         <source>Match word</source>
         <translation type="unfinished">全詞匹配</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="206"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="207"/>
         <source>Match case</source>
         <translation type="unfinished">區分大小寫</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="207"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="208"/>
         <source>Regular expression</source>
         <translation type="unfinished">使用正則表達式</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="208"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="209"/>
         <source>Look in subdirs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="215"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="229"/>
         <source>Search for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="217"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="231"/>
         <source>Options:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="223"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="237"/>
         <source>Browser</source>
         <translation type="unfinished">瀏覽</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="224"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="238"/>
         <source>Current</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="241"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="255"/>
         <source>Filter:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="246"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="218"/>
         <location filename="src/plugins/litefind/filesearch.cpp" line="263"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="247"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="219"/>
         <source>Cancel</source>
         <translation type="unfinished">取消</translation>
     </message>
@@ -859,68 +921,68 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>FindEditor</name>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="58"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="57"/>
         <source>Match word</source>
         <translation>全詞匹配</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="59"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="58"/>
         <source>Match case</source>
         <translation>區分大小寫</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="60"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="59"/>
         <source>Regular expression</source>
         <translation>使用正則表達式</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="61"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="60"/>
         <source>Wrap around</source>
         <translation>搜尋到結尾時從頭開始</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="70"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="69"/>
         <source>Find Next</source>
         <translation>查找下一個</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="71"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="70"/>
         <source>Find Prev</source>
         <translation>查找上一個</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="72"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="71"/>
         <source>Replace</source>
         <translation>取代</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="73"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="72"/>
         <source>Switch Replace</source>
         <translation>切換至取代</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="74"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="73"/>
         <source>Hide</source>
         <translation>隱藏</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="75"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="74"/>
         <source>Hide Find</source>
         <translation>隱藏搜尋</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="78"/>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="160"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="77"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="159"/>
         <source>Ready</source>
         <translation>已完成</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="97"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="96"/>
         <source>Find What:</source>
         <translation>查找:</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="103"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="102"/>
         <source>Find Option:</source>
         <translation>選項:</translation>
     </message>
@@ -933,12 +995,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangAst</name>
     <message>
-        <location filename="src/plugins/golangast/golangast.cpp" line="60"/>
+        <location filename="src/plugins/golangast/golangast.cpp" line="59"/>
         <source>No outline available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangast/golangast.cpp" line="74"/>
+        <location filename="src/plugins/golangast/golangast.cpp" line="73"/>
         <source>Class View</source>
         <translation type="unfinished"></translation>
     </message>
@@ -946,7 +1008,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangCodePlugin</name>
     <message>
-        <location filename="src/plugins/golangcode/golangcodeplugin.cpp" line="62"/>
+        <location filename="src/plugins/golangcode/golangcodeplugin.cpp" line="61"/>
         <source>Toggle Comment Selection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -954,12 +1016,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangDoc</name>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="124"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="123"/>
         <source>Golang Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="127"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="126"/>
         <source>Golang Document Browser</source>
         <oldsource>Golang Document Browser Page</oldsource>
         <translation>GO文檔瀏覽</translation>
@@ -979,7 +1041,8 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="26"/>
-        <source>Use diff (gofmt -d)</source>
+        <source>Use diff (gofmt -d), need find diff in PATH</source>
+        <oldsource>Use diff (gofmt -d)</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -987,11 +1050,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <source>When the editor is saved automatically gofmt</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="42"/>
+        <source>Process TimeOut( &gt; 50ms ):</source>
+        <oldsource>Process TimeOut( &gt; 10ms ):</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GolangFmtPlugin</name>
     <message>
-        <location filename="src/plugins/golangfmt/golangfmtplugin.cpp" line="89"/>
+        <location filename="src/plugins/golangfmt/golangfmtplugin.cpp" line="92"/>
         <source>gofmt</source>
         <translation></translation>
     </message>
@@ -999,27 +1068,27 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GoplayBrowser</name>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="145"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="144"/>
         <source>Go Playground</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="243"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="242"/>
         <source>Load File</source>
         <translation>讀取文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="243"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="242"/>
         <source>Items</source>
         <translation>文件列表</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="259"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="258"/>
         <source>Save File</source>
         <translation>儲存文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="259"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="258"/>
         <source>New FileName:</source>
         <translation>新文件名:</translation>
     </message>
@@ -1027,78 +1096,78 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteApp</name>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="337"/>
+        <location filename="src/liteapp/liteapp.cpp" line="341"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="124"/>
+        <location filename="src/liteapp/liteapp.cpp" line="126"/>
         <source>Event Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="339"/>
+        <location filename="src/liteapp/liteapp.cpp" line="343"/>
         <source>Open File</source>
         <translation type="unfinished">開啟文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="341"/>
+        <location filename="src/liteapp/liteapp.cpp" line="345"/>
         <source>Open Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="342"/>
+        <location filename="src/liteapp/liteapp.cpp" line="346"/>
         <source>Close</source>
         <translation>關閉</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="344"/>
+        <location filename="src/liteapp/liteapp.cpp" line="348"/>
         <source>Close All</source>
         <translation>關閉所有項目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="345"/>
+        <location filename="src/liteapp/liteapp.cpp" line="349"/>
         <source>Open Project</source>
         <translation>開啟專案</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="346"/>
+        <location filename="src/liteapp/liteapp.cpp" line="350"/>
         <source>Save Project</source>
         <translation>儲存專案</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="347"/>
+        <location filename="src/liteapp/liteapp.cpp" line="351"/>
         <source>Close Project</source>
         <translation>關閉專案</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="348"/>
+        <location filename="src/liteapp/liteapp.cpp" line="352"/>
         <source>Save</source>
         <translation>儲存</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="350"/>
+        <location filename="src/liteapp/liteapp.cpp" line="354"/>
         <source>Save As...</source>
         <translation>另存爲...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="352"/>
+        <location filename="src/liteapp/liteapp.cpp" line="356"/>
         <source>Save All</source>
         <oldsource>Save As</oldsource>
         <translation>儲存所有項目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="354"/>
+        <location filename="src/liteapp/liteapp.cpp" line="358"/>
         <source>Exit</source>
         <translation>離開</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="357"/>
+        <location filename="src/liteapp/liteapp.cpp" line="361"/>
         <source>About LiteIDE...</source>
         <translation>關於LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="358"/>
+        <location filename="src/liteapp/liteapp.cpp" line="362"/>
         <source>About Plugins...</source>
         <translation>關於插件...</translation>
     </message>
@@ -1161,42 +1230,51 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteBuild</name>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="78"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="82"/>
         <source>Build ToolBar</source>
         <translation>編譯工具列</translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="82"/>
         <location filename="src/plugins/litebuild/litebuild.cpp" line="86"/>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="90"/>
+        <source>&amp;Build</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="92"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="96"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="100"/>
         <source>Name</source>
         <translation>名稱</translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="83"/>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="87"/>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="91"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="93"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="97"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="101"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="93"/>
-        <source>BuildConfig</source>
-        <oldsource>Config</oldsource>
-        <translation>編譯設定</translation>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="103"/>
+        <source>Config</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="100"/>
-        <source>Stop</source>
-        <translation type="unfinished">停止</translation>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="104"/>
+        <source>Build Config</source>
+        <translation type="unfinished">建置設定</translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="102"/>
-        <source>Clear</source>
-        <translation type="unfinished">清除</translation>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="112"/>
+        <source>Stop Action</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuild.cpp" line="111"/>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="114"/>
+        <source>Clear All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/litebuild.cpp" line="129"/>
         <source>Build Output</source>
         <oldsource>Build</oldsource>
         <translation>編譯輸出</translation>
@@ -1218,110 +1296,110 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteDebug</name>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="89"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="92"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="100"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="103"/>
         <source>StepOver</source>
         <translation>下一行(不進入函式)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="96"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="99"/>
         <source>StepInto</source>
         <translation>下一步(進入函式)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="65"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="66"/>
         <source>Debug ToolBar</source>
         <translation>除錯工具列</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="72"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="75"/>
         <source>Clear</source>
         <translation type="unfinished">清除</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="85"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="88"/>
         <source>Go</source>
         <translation>GO</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="87"/>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="172"/>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="431"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="90"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="165"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="445"/>
         <source>Start Debugging (F5)</source>
         <translation>開始除錯 (F5)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="91"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="94"/>
         <source>Stop Debugger (Shift+F5)</source>
         <translation>停止除錯 (Shift+F5)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="93"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="96"/>
         <source>ShowLine</source>
         <translation>顯示當前行</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="94"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="97"/>
         <source>Show Current Line</source>
         <translation>顯示當前行</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="98"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="101"/>
         <source>Step Info (F11)</source>
         <translation>下一個語句 (F11)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="102"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="105"/>
         <source>Step Over (F10)</source>
         <translation>下一行 (F10)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="104"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="107"/>
         <source>StepOut</source>
         <translation>跳出當前函式</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="106"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="109"/>
         <source>Step Out (Shift+F11)</source>
         <translation>跳出當前函式 (Shift+F11)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="108"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="111"/>
         <source>RunToLine</source>
         <translation>執行到到當前行</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="110"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="113"/>
         <source>Run to Line (Ctrl+F10)</source>
         <translation>執行到當前行 (Ctrl+F10)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="112"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="115"/>
         <source>BreakPoint</source>
         <translation>中斷點</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="114"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="117"/>
         <source>Insert/Remove Breakpoint (F9)</source>
         <translation>插入/刪除 中斷點 (F9)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="169"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="162"/>
         <source>Debug Output</source>
         <oldsource>Debug</oldsource>
         <translation>除錯輸出</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="415"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="429"/>
         <source>Continue (F5)</source>
         <translation>繼續 (F5)</translation>
     </message>
     <message>
-        <location filename="src/plugins/litedebug/litedebug.cpp" line="140"/>
+        <location filename="src/plugins/litedebug/litedebug.cpp" line="133"/>
         <source>&amp;Debug</source>
         <translation>除錯(&amp;D)</translation>
     </message>
@@ -1329,7 +1407,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteDebugPlugin</name>
     <message>
-        <location filename="src/plugins/litedebug/litedebugplugin.cpp" line="72"/>
+        <location filename="src/plugins/litedebug/litedebugplugin.cpp" line="71"/>
         <source>Debug Window</source>
         <oldsource>Debug</oldsource>
         <translation>除錯視窗</translation>
@@ -1338,7 +1416,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteDoc</name>
     <message>
-        <location filename="src/plugins/welcome/litedoc.cpp" line="58"/>
+        <location filename="src/plugins/welcome/litedoc.cpp" line="57"/>
         <source>LiteIDE Document Browser</source>
         <oldsource>LiteIDE Document Browser Page</oldsource>
         <translation>IDE文件瀏覽</translation>
@@ -1347,151 +1425,95 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteEditor</name>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="185"/>
-        <source>Undo</source>
-        <translation>復原</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="188"/>
-        <source>Redo</source>
-        <translation>重做</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="191"/>
-        <source>Cut</source>
-        <translation>剪下</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="194"/>
-        <source>Copy</source>
-        <translation>複製</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="197"/>
-        <source>Paste</source>
-        <translation>貼上</translation>
-    </message>
-    <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="200"/>
-        <source>Select All</source>
-        <translation type="unfinished">全部選擇</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="203"/>
-        <source>File is writable</source>
-        <translation>文件可寫入</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="204"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="669"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="625"/>
         <source>Export HTML</source>
         <translation>匯出HTML文檔</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="206"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="696"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="202"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="652"/>
         <source>Export PDF</source>
         <translation>匯出PDF文檔</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="207"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="720"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="203"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="676"/>
         <source>Print Document</source>
         <translation>列印文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="208"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="204"/>
         <source>Print Preview Document</source>
         <translation>預覽列印</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="210"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="206"/>
         <source>Goto Previous Block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="212"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="208"/>
         <source>Goto Next block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="215"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="211"/>
         <source>Select Block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="218"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="214"/>
         <source>Goto Match Brace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="221"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="217"/>
         <source>Fold</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="223"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="219"/>
         <source>Unfold</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="225"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="221"/>
         <source>Fold All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="226"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="222"/>
         <source>Unfold All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="233"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="766"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="720"/>
         <source>Goto Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="236"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="231"/>
         <source>Duplicate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="320"/>
-        <source>editor</source>
-        <translation>編輯器</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="332"/>
-        <source>Goto Line (Ctrl+G)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="475"/>
-        <source>File Is ReadOnly</source>
-        <translation>文件為唯讀</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="478"/>
-        <source>File Is Writable</source>
-        <translation>文件可寫入</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="677"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="633"/>
         <source>Can not write file %1</source>
         <translation>無法寫入文件 %1</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="678"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="634"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="737"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="693"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation>是否取消對文件 %1 的修改並重新載入?</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="766"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="720"/>
         <source>Line: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1655,17 +1677,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteTabWidget</name>
     <message>
-        <location filename="src/liteapp/litetabwidget.cpp" line="68"/>
+        <location filename="src/liteapp/litetabwidget.cpp" line="69"/>
         <source>Close Page</source>
         <translation>關閉當前頁</translation>
     </message>
     <message>
-        <location filename="src/liteapp/litetabwidget.cpp" line="70"/>
+        <location filename="src/liteapp/litetabwidget.cpp" line="71"/>
         <source>List Page</source>
         <translation>項目列表</translation>
     </message>
     <message>
-        <location filename="src/liteapp/litetabwidget.cpp" line="72"/>
+        <location filename="src/liteapp/litetabwidget.cpp" line="73"/>
         <source>Add Page</source>
         <translation>添加項目</translation>
     </message>
@@ -1849,12 +1871,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="162"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="166"/>
         <source>Not find go in PATH...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="167"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="171"/>
         <source>Loading go package ...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1963,17 +1985,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>ProjectManager</name>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="107"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="82"/>
         <source>Projects</source>
         <translation>專案</translation>
     </message>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="127"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="97"/>
         <source>Project &lt;%1&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/projectmanager.cpp" line="151"/>
+        <location filename="src/liteapp/projectmanager.cpp" line="121"/>
         <source>Import Directory &lt;%1&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1981,68 +2003,68 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>ReplaceEditor</name>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="54"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="53"/>
         <source>Find Next</source>
         <translation>查找下一個</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="55"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="54"/>
         <source>Replace</source>
         <translation>取代</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="56"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="55"/>
         <source>Replace All</source>
         <translation>全部取代</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="57"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="56"/>
         <source>Hide</source>
         <translation>隱藏</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="58"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="57"/>
         <source>Hide Replace</source>
         <translation>隱藏取代</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="60"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="59"/>
         <source>Match whole word only</source>
         <translation>全詞匹配</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="61"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="60"/>
         <source>Match case</source>
         <translation>區分大小寫</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="62"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="61"/>
         <source>Regular expression</source>
         <translation>使用正則表達式</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="63"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="62"/>
         <source>Wrap around</source>
         <translation>搜尋到結尾時從頭開始</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="72"/>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="163"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="71"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="162"/>
         <source>Ready</source>
         <translation>已完成</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="91"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="90"/>
         <source>Find What:</source>
         <translation>搜尋:</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="95"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="94"/>
         <source>Replace With:</source>
         <translation>取代為:</translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="99"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="98"/>
         <source>Find Option:</source>
         <translation>選項:</translation>
     </message>
@@ -2187,19 +2209,19 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <name>ToolMainWindow</name>
     <message>
         <location filename="src/liteapp/toolmainwindow.cpp" line="239"/>
-        <source>-</source>
+        <source>HideSideBar</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Utils::FilterLineEdit</name>
     <message>
-        <location filename="src/3rdparty/qtc_editutil/filterlineedit.cpp" line="49"/>
+        <location filename="src/3rdparty/qtc_editutil/filterlineedit.cpp" line="51"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/3rdparty/qtc_editutil/filterlineedit.cpp" line="50"/>
+        <location filename="src/3rdparty/qtc_editutil/filterlineedit.cpp" line="52"/>
         <source>Clear text</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2207,7 +2229,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>WelcomeBrowser</name>
     <message>
-        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="179"/>
+        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="176"/>
         <source>Welcome</source>
         <oldsource>Welcome Page</oldsource>
         <translation>起始頁</translation>
@@ -2230,31 +2252,23 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/welcome/welcomewidget.ui" line="32"/>
-        <source>NewFile</source>
-        <translation>新建文件</translation>
+        <source>New</source>
+        <oldsource>NewFile</oldsource>
+        <translation type="unfinished">新建文件</translation>
     </message>
     <message>
         <location filename="src/plugins/welcome/welcomewidget.ui" line="39"/>
-        <source>OpenFile</source>
-        <translation>開啟文件</translation>
+        <source>Open File</source>
+        <oldsource>OpenFile</oldsource>
+        <translation type="unfinished">開啟文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="62"/>
-        <source>OpenEditor</source>
-        <translation>開啟編輯器</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="69"/>
-        <source>OpenProject</source>
-        <translation>開啟專案</translation>
-    </message>
-    <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="76"/>
-        <source>Import GOPKG</source>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="46"/>
+        <source>Open Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="96"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="66"/>
         <source>Options</source>
         <translation>選項</translation>
     </message>

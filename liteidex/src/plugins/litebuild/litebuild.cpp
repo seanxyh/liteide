@@ -832,6 +832,33 @@ void LiteBuild::stopAction()
     }
 }
 
+void LiteBuild::executeCommand(const QString &cmd1, const QStringList &args, const QString &workDir)
+{
+    m_outputAct->setChecked(true);
+    if (m_process->isRuning()) {
+        m_output->append("\nError,action process is runing, stop action first!\n",Qt::red);
+        return;
+    }
+    QProcessEnvironment sysenv = LiteApi::getGoEnvironment(m_liteApp);
+    QString cmd = cmd1;
+    m_output->setReadOnly(false);
+    m_process->setEnvironment(sysenv.toStringList());
+    m_process->setUserData(0,cmd);
+    m_process->setUserData(1,args);
+    m_process->setUserData(2,"utf-8");
+
+    QString shell = FileUtil::lookPathInDir(cmd,sysenv,workDir);
+    if (!shell.isEmpty()) {
+        cmd = shell;
+    }
+
+    m_process->setWorkingDirectory(workDir);
+    m_output->appendTag0(QString("<action id=\"shell\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
+                         .arg(cmd).arg(args.join(" ")).arg(workDir));
+    m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args.join(" ")));
+    m_process->start(cmd,args);
+}
+
 void LiteBuild::buildAction()
 {
     m_outputAct->setChecked(true);

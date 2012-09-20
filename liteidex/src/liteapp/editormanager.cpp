@@ -133,7 +133,7 @@ void EditorManager::createActions()
     QAction *copy = new QAction(QIcon("icon:images/copy.png"),tr("Copy"),this);
     copy->setShortcut(QKeySequence::Copy);
 
-    QAction *paste = new QAction(QIcon("icon:images/paste.png"),tr("paste"),this);
+    QAction *paste = new QAction(QIcon("icon:images/paste.png"),tr("Paste"),this);
     paste->setShortcut(QKeySequence::Paste);
 
     QAction *selectAll = new QAction(tr("Select All"),this);
@@ -146,7 +146,7 @@ void EditorManager::createActions()
 
     m_editMenu = m_liteApp->actionManager()->loadMenu("menu/edit");
     if (!m_editMenu) {
-        m_editMenu = m_liteApp->actionManager()->insertMenu("menu/edit",tr("Edit"));
+        m_editMenu = m_liteApp->actionManager()->insertMenu("menu/edit",tr("&Edit"));
     }
 
     addAction(EA_UNDO,undo);

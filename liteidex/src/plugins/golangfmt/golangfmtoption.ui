@@ -39,7 +39,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Process TimeOut( &gt; 10ms ):</string>
+           <string>Process TimeOut( &gt; 50ms ):</string>
           </property>
          </widget>
         </item>

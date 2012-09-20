@@ -29,21 +29,21 @@
      <item>
       <widget class="QPushButton" name="newFileButton">
        <property name="text">
-        <string>NewFile</string>
+        <string>New</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="openFileButton">
        <property name="text">
-        <string>OpenFile</string>
+        <string>Open File</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="openFolderButton">
        <property name="text">
-        <string>OpenFolder</string>
+        <string>Open Folder</string>
        </property>
       </widget>
      </item>
