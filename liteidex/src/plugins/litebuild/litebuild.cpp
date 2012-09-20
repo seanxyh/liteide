@@ -754,6 +754,27 @@ void LiteBuild::currentEditorChanged(LiteApi::IEditor *editor)
     if (!m_bProjectBuild) {
         IBuild *build = m_manager->findBuild(editor->mimeType());
         setCurrentBuild(build);
+        if (build) {
+            /*
+            m.insert("TARGETNAME",target);
+            m.insert("TARGETPATH",QFileInfo(QDir(info.path()),target).filePath());
+            m.insert("TARGETDIR",info.path());
+            m.insert("WORKDIR",info.path());
+            */
+            QFileInfo info(editor->filePath());
+            m_buildFilePath = info.path();
+            m_targetInfo.clear();;
+            QList<BuildDebug*> debugs = build->debugList();
+            if (!debugs.isEmpty()) {
+                BuildDebug *debug = debugs.first();
+                QString targetName = this->envValue(build,debug->cmd());
+                QString workDir = this->envValue(build,debug->work());
+                m_targetInfo.insert("TARGETNAME",targetName);
+                m_targetInfo.insert("TARGETPATH",QFileInfo(QDir(workDir),targetName).filePath());
+                m_targetInfo.insert("TARGETDIR",workDir);
+                m_targetInfo.insert("WORKDIR",workDir);
+            }
+        }
     }
     /*
     if (!m_liteApp->projectManager()->currentProject()) {

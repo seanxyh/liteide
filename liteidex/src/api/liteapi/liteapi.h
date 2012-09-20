@@ -561,7 +561,7 @@ class IPlugin : public IObject
 public:
     IPlugin() : m_info(new PluginInfo)
     {
-        m_info->setVer("x12.5");
+        m_info->setVer("x13");
     }
     virtual ~IPlugin()
     {
@@ -591,7 +591,7 @@ protected:
 
 } //namespace LiteApi
 
-Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/12.5")
+Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/x13")
 
 
 #endif //__LITEAPI_H__

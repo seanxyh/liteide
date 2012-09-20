@@ -129,7 +129,7 @@ void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save)
     if (!error.isEmpty()) {
         QString data = codec->toUnicode(error);
         data.replace("<standard input>",fileName);
-        m_liteApp->appendLog("gofmt",data,true);
+        m_liteApp->appendLog("gofmt error\n",data,true);
         //goto error line
         QRegExp rep("([\\w\\d_\\\\/\\.]+):(\\d+):");
 

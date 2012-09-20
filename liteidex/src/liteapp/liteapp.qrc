@@ -38,15 +38,13 @@
         <file>images/closetool.png</file>
         <file>images/movemenu.png</file>
         <file>images/openfolder.png</file>
-        <file>images/goback.png</file>
-        <file>images/goforward.png</file>
         <file>images/hidesidebar.png</file>
         <file>images/copy.png</file>
         <file>images/cut.png</file>
         <file>images/paste.png</file>
-        <file>images/redo.png</file>
-        <file>images/undo.png</file>
         <file>images/lock.png</file>
         <file>images/unlock.png</file>
+        <file>images/backward.png</file>
+        <file>images/forward.png</file>
     </qresource>
 </RCC>

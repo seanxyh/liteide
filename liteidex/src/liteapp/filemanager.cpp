@@ -396,7 +396,7 @@ IProject *FileManager::openProjectScheme(const QString &_fileName, const QString
 
 QString FileManager::schemeKey(const QString &scheme) const
 {
-    return QString("RecentFiles/%1").arg(scheme);
+    return QString("Recent1/%1").arg(scheme);
 }
 
 QStringList FileManager::recentFiles(const QString &scheme) const
