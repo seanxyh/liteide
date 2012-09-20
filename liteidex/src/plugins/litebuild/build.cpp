@@ -179,12 +179,12 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                     build->setId(attrs.value("id").toString());
                     build->setWork(attrs.value("work").toString());
                 }
-            } else if (reader.name() == "lookup" && lookup == 0) {
+            } else if (reader.name() == "lookup" && lookup == 0 && build != 0) {
                 lookup = new BuildLookup;
                 lookup->setMimeType(attrs.value("mime-type").toString());
                 lookup->setFile(attrs.value("file").toString());
                 lookup->setTop(attrs.value("top").toString());
-            } else if (reader.name() == "action" && act == 0) {
+            } else if (reader.name() == "action" && act == 0 && build != 0) {
                 act = new BuildAction;
                 act->setId(attrs.value("id").toString());
                 act->setMenu(attrs.value("menu").toString());
@@ -212,17 +212,17 @@ bool Build::loadBuild(LiteApi::IBuildManager *manager, QIODevice *dev, const QSt
                 if (!separator.isEmpty()) {
                     act->setSeparator(true);
                 }
-            } else if (reader.name() == "config" && config == 0) {
+            } else if (reader.name() == "config" && config == 0 && build != 0) {
                 config = new BuildConfig;
                 config->setId(attrs.value("id").toString());
                 config->setName(attrs.value("name").toString());
                 config->setValue(attrs.value("value").toString());
-            } else if (reader.name() == "custom" && custom == 0) {
+            } else if (reader.name() == "custom" && custom == 0 && build != 0) {
                 custom = new BuildCustom;
                 custom->setId(attrs.value("id").toString());
                 custom->setName(attrs.value("name").toString());
                 custom->setValue(attrs.value("value").toString());
-            } else if (reader.name() == "debug" && debug == 0) {
+            } else if (reader.name() == "debug" && debug == 0 && build != 0) {
                 debug = new BuildDebug;
                 debug->setId(attrs.value("id").toString());
                 debug->setCmd(attrs.value("cmd").toString());

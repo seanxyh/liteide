@@ -72,7 +72,7 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
         return false;
     }
 
-    QMenu *menu = m_liteApp->actionManager()->insertMenu("find",tr("F&ind"),"help");
+    QMenu *menu = m_liteApp->actionManager()->insertMenu("menu/find",tr("F&ind"),"menu/help");
     if (!menu) {
         return false;
     }

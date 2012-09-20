@@ -28,7 +28,7 @@
 #include "golangfmtoptionfactory.h"
 #include "fileutil/fileutil.h"
 
-#include <QToolBar>
+#include <QMenu>
 #include <QAction>
 #include <QToolButton>
 #include <QFileInfo>
@@ -79,19 +79,23 @@ void GolangFmtPlugin::editorCreated(LiteApi::IEditor *editor)
     if (editor->mimeType() != "text/x-gosrc") {
         return;
     }
-    QToolBar *toolBar = LiteApi::findExtensionObject<QToolBar*>(editor,"LiteApi.QToolBar");
-    if (!toolBar) {
+    LiteApi::ITextEditor *textEditor = LiteApi::getTextEditor(editor);
+    if (!textEditor) {
+        return;
+    }
+    QMenu *menu = textEditor->contextMenu();
+    if (!menu) {
         return;
     }
     if (m_fmt == 0) {
         m_fmt = new GolangFmt(m_liteApp,this);
         m_gofmtAct = new QAction(QIcon("icon:golangfmt/images/gofmt.png"),tr("gofmt"),this);
-        m_gofmtAct->setShortcut(QKeySequence("SHIFT+F7"));
-        m_gofmtAct->setToolTip("gofmt(Shift+F7)");
+        m_gofmtAct->setShortcut(QKeySequence("Shift+F7"));
         connect(m_gofmtAct,SIGNAL(triggered()),m_fmt,SLOT(gofmt()));
     }
-    toolBar->addSeparator();
-    toolBar->addAction(m_gofmtAct);
+    textEditor->widget()->addAction(m_gofmtAct);
+    menu->addSeparator();
+    menu->addAction(m_gofmtAct);
 }
 
 Q_EXPORT_PLUGIN(GolangFmtPlugin)

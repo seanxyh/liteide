@@ -130,7 +130,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     widgetToolBar->addAction(m_stepOutAct);
     widgetToolBar->addAction(m_runToLineAct);
 
-    QMenu *menu = m_liteApp->actionManager()->insertMenu("Debug",tr("&Debug"),"help");
+    QMenu *menu = m_liteApp->actionManager()->insertMenu("menu/debug",tr("&Debug"),"menu/help");
     if (menu) {
         menu->addAction(m_startDebugAct);
         menu->addAction(m_stopDebugAct);

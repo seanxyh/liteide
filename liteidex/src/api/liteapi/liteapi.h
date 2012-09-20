@@ -265,11 +265,15 @@ public:
     virtual void gotoLine(int line, int column, bool center = false) = 0;
     virtual QString textCodec() const = 0;
     virtual void setTextCodec(const QString &codec) = 0;
+    virtual QMenu *contextMenu() const = 0;
 };
 
 inline ITextEditor *getTextEditor(IEditor *editor)
 {
-    return findExtensionObject<ITextEditor*>(editor->extension(),"LiteApi.ITextEditor");
+    if (editor && editor->extension()) {
+        return findExtensionObject<ITextEditor*>(editor->extension(),"LiteApi.ITextEditor");
+    }
+    return 0;
 }
 
 class IEditorManager : public IManager
