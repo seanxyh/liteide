@@ -49,7 +49,7 @@ AstWidget::AstWidget(LiteApi::IApplication *app, QWidget *parent) :
 {
     QVBoxLayout *layout = new QVBoxLayout;
     m_tree = new SymbolTreeView;
-    m_filterEdit = new Utils::FilterLineEdit;
+    m_filterEdit = new Utils::FilterLineEdit(200);
 
     m_model = new QStandardItemModel(this);
     proxyModel = new QSortFilterProxyModel(this);

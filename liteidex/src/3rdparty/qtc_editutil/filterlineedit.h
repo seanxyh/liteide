@@ -40,16 +40,19 @@ class FilterLineEdit : public FancyLineEdit
 {
     Q_OBJECT
 public:
-    explicit FilterLineEdit(QWidget *parent = 0);
+    explicit FilterLineEdit(int dly,QWidget *parent = 0);
 
 signals:
     void filterChanged(const QString &);
 
 private slots:
     void slotTextChanged();
+    void dlyTextChanged();
 
 private:
     QString m_lastFilterText;
+    int m_dlytimer;
+    QTimer  *m_timer;
 };
 
 } // namespace Utils
