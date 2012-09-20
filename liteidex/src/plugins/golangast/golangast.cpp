@@ -118,7 +118,16 @@ QIcon GolangAst::iconFromTagEnum(LiteApi::ASTTAG_ENUM tag, bool pub) const
 void GolangAst::astProjectEnable(bool b)
 {
     if (b) {
-        loadProject(m_liteApp->projectManager()->currentProject());
+        //loadProject(m_liteApp->projectManager()->currentProject());
+        LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+        if (!editor) {
+            return;
+        }
+        QString fileName = editor->filePath();
+        if (!fileName.isEmpty()) {
+            QFileInfo info(fileName);
+            loadProjectPath(info.path());
+        }
     }
 }
 
@@ -144,6 +153,7 @@ void GolangAst::setEnable(bool b)
 
 void GolangAst::projectChanged(LiteApi::IProject *project)
 {
+    return;
     if (project) {
         m_projectAstWidget->clear();
     }
@@ -159,8 +169,55 @@ void GolangAst::projectReloaded()
     loadProject(project);
 }
 
+void GolangAst::loadProjectPath(const QString &path)
+{
+    if (m_projectAstWidget->isHidden()) {
+        return;
+    }
+    m_updateFileNames.clear();
+    m_updateFilePaths.clear();
+    QDir dir(path);
+    if (!dir.exists()) {
+        return;
+    }
+    foreach (QFileInfo info, dir.entryInfoList(QStringList()<<"*.go",QDir::Files)) {
+        m_updateFileNames.append(info.fileName());
+        m_updateFilePaths.append(info.filePath());
+    }
+    m_process->setWorkingDirectory(m_workPath);
+    m_projectAstWidget->setWorkPath(m_workPath);
+    updateAst();
+    /*
+    if (project) {
+        foreach(QString file, project->fileNameList()) {
+            if (QFileInfo(file).suffix() == "go") {
+                m_updateFileNames.append(file);
+            }
+        }
+        foreach(QString file, project->filePathList()) {
+            QFileInfo info(file);
+            if (info.suffix() == "go") {
+                m_updateFilePaths.append(info.filePath());
+            }
+        }
+        QFileInfo info(project->filePath());
+        if (info.isDir()) {
+            m_workPath = info.filePath();
+        } else {
+            m_workPath = info.path();
+        }
+        m_process->setWorkingDirectory(m_workPath);
+        m_projectAstWidget->setWorkPath(m_workPath);
+        updateAst();
+    } else {
+        m_projectAstWidget->clear();
+    }
+    */
+}
+
 void GolangAst::loadProject(LiteApi::IProject *project)
 {
+    return;
     m_updateFileNames.clear();
     m_updateFilePaths.clear();
     if (project) {
@@ -231,7 +288,7 @@ void GolangAst::editorChanged(LiteApi::IEditor *editor)
     } else {
         m_stackedWidget->setCurrentWidget(m_blankWidget);
     }
-    if (editor) {
+    if (editor) {        
         QString fileName = editor->filePath();
         if (!fileName.isEmpty()) {
             QFileInfo info(fileName);
@@ -243,6 +300,10 @@ void GolangAst::editorChanged(LiteApi::IEditor *editor)
             }
         }
         updateAstFile();
+        if (!fileName.isEmpty()) {
+            QFileInfo info(fileName);
+            loadProjectPath(info.path());
+        }
     }
 }
 
