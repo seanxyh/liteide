@@ -49,6 +49,7 @@ public:
     void setEnable(bool b);
     void updateModel(const QByteArray &data);
     void loadProject(LiteApi::IProject *project);
+    void loadProjectPath(const QString &path);
 public slots:
     void astProjectEnable(bool);
     void astFileEnable(bool);
