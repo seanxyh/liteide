@@ -37,7 +37,7 @@ class AstWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AstWidget(LiteApi::IApplication *app, QWidget *parent = 0);
+    explicit AstWidget(bool outline, LiteApi::IApplication *app, QWidget *parent = 0);
 public:
     void clear();
     void updateModel(const QByteArray &data);
@@ -56,6 +56,7 @@ public slots:
 signals:
     void doubleClicked(QModelIndex);
 protected:
+    bool                m_bOutline;
     SymbolTreeView     *m_tree;
     Utils::FilterLineEdit *m_filterEdit;
     QStandardItemModel *m_model;

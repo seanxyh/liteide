@@ -43,8 +43,9 @@
 //lite_memory_check_end
 
 
-AstWidget::AstWidget(LiteApi::IApplication *app, QWidget *parent) :
+AstWidget::AstWidget(bool outline, LiteApi::IApplication *app, QWidget *parent) :
     QWidget(parent),
+    m_bOutline(outline),
     m_liteApp(app)
 {
     QVBoxLayout *layout = new QVBoxLayout;
@@ -134,7 +135,9 @@ bool AstWidget::filterModel(QString filter, QModelIndex parent, QModelIndex &fir
             m_tree->expand(index);
             b = true;
         } else {
-            m_tree->collapse(index);
+            if (!m_bOutline) {
+                m_tree->collapse(index);
+            }
         }
     }
     return b;
@@ -144,7 +147,8 @@ void AstWidget::filterChanged(QString filter)
 {
     if (filter.isEmpty()) {
         clearFilter(m_tree->rootIndex());
-        m_tree->expandToDepth(0);
+        if (!m_bOutline)
+            m_tree->expandToDepth(0);
     } else {
         QModelIndex first;
         filterModel(filter,m_tree->rootIndex(),first);
@@ -310,6 +314,9 @@ void AstWidget::updateModel(const QByteArray &data)
     if (!text.isEmpty()) {
         this->filterChanged(text);
     } else {
-        m_tree->loadState(proxyModel,&state);
+         m_tree->loadState(proxyModel,&state);
+    }
+    if (m_bOutline) {
+        m_tree->expandAll();
     }
 }

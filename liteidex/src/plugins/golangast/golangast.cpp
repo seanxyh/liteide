@@ -62,7 +62,7 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     m_stackedWidget = new QStackedWidget;
     m_stackedWidget->addWidget(m_blankWidget);
 
-    m_projectAstWidget = new AstWidget(m_liteApp);
+    m_projectAstWidget = new AstWidget(false,m_liteApp);
 
     m_process = new QProcess(this);
     m_timer = new QTimer(this);
@@ -257,7 +257,7 @@ void GolangAst::editorCreated(LiteApi::IEditor *editor)
         if (!fileName.isEmpty()) {
             QFileInfo info(fileName);
             if (info.suffix() == "go") {
-                AstWidget *w = new AstWidget(m_liteApp);
+                AstWidget *w = new AstWidget(true,m_liteApp);
                 w->setWorkPath(info.absolutePath());
                 connect(w,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedTree(QModelIndex)));
                 m_stackedWidget->addWidget(w);
