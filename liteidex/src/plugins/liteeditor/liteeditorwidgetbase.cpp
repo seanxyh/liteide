@@ -94,7 +94,7 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     setLayoutDirection(Qt::LeftToRight);
     viewport()->setMouseTracking(true);
     m_lineNumbersVisible = true;
-    m_marksVisible = true;
+    m_marksVisible = false;
     m_codeFoldingVisible = true;
     m_lastSaveRevision = 0;
     m_extraAreaSelectionNumber = -1;
@@ -306,7 +306,7 @@ int LiteEditorWidgetBase::extraAreaWidth()
         int markWidth = fm.lineSpacing();
         space += markWidth;
     } else {
-        space += 2;
+        space += 3;
     }
     if (m_codeFoldingVisible) {
         space += foldBoxWidth(fm);
@@ -319,7 +319,9 @@ void LiteEditorWidgetBase::drawFoldingMarker(QPainter *painter, const QPalette &
                                        const QRect &rect,
                                        bool expanded) const
 {
+    painter->setPen(QPen(m_extraForeground,1,Qt::DotLine));
     painter->drawRect(rect);
+    painter->setPen(QPen(m_extraForeground,1));
     QPoint c = rect.center();
     painter->drawLine(rect.left(),c.y(),rect.right(),c.y());
     if (!expanded) {
@@ -424,10 +426,10 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
                 bool drawBox = nextBlockUserData
                                && TextEditor::BaseTextDocumentLayout::foldingIndent(block) < nextBlockUserData->foldingIndent();
 
-                int boxWidth = foldBoxWidth(fm)-1;
+                int boxWidth = foldBoxWidth(fm)+1;
                 if (drawBox) {
                     bool expanded = nextBlock.isVisible();
-                    QRect box(extraAreaWidth, top + (fm.lineSpacing()-boxWidth)/2,
+                    QRect box(extraAreaWidth-2, top + (fm.lineSpacing()-boxWidth)/2,
                               boxWidth,boxWidth);
                     /*
                     if (!expanded) {
@@ -455,6 +457,11 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
             painter.restore();
         }
 
+        if (/*m_marksVisible &&*/ m_editorMark) {
+            m_editorMark->paint(&painter,blockNumber,0,top,fmLineSpacing-0.5,fmLineSpacing-1);
+        }
+
+
         if (m_lineNumbersVisible) {
             painter.setPen(QPen(m_extraForeground,2));//pal.color(QPalette::BrightText));
             const QString &number = QString::number(blockNumber + 1);
@@ -475,10 +482,6 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
                 painter.restore();
             painter.setPen(QPen(m_extraForeground,1));//pal.color(QPalette::BrightText));
         }
-        if (m_marksVisible && m_editorMark) {
-            m_editorMark->paint(&painter,blockNumber,0,top,fmLineSpacing-0.5,fmLineSpacing-1);
-        }
-
         block = nextVisibleBlock;
         blockNumber = nextVisibleBlockNumber;
     }

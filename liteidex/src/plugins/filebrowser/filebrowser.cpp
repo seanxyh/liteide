@@ -94,6 +94,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_widget = new QWidget;
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(0);
+    mainLayout->setSpacing(0);
 
     m_fileModel = new QFileSystemModel(this);
     m_fileModel->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
@@ -303,8 +304,12 @@ void FileBrowser::currentEditorChanged(LiteApi::IEditor *editor)
     if (fileName.isEmpty()) {
         return;
     }
-    QString path = QFileInfo(fileName).filePath();
-    QModelIndex index = m_fileModel->index(path);
+    QFileInfo info(fileName);
+
+    addFolderToRoot(info.path());
+
+    //QString path = QFileInfo(fileName).filePath();
+    QModelIndex index = m_fileModel->index(fileName);
     if (!index.isValid()) {
         return;
     }
