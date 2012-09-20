@@ -530,6 +530,7 @@ void LiteEditor::applyOption(QString id)
         font.setStyleStrategy(QFont::NoAntialias);
     }
     m_editorWidget->setFont(font);
+    m_editorWidget->extraArea()->setFont(font);
     m_editorWidget->setTabWidth(4);
 
     QString style = m_liteApp->settings()->value("editor/style","default.xml").toString();
