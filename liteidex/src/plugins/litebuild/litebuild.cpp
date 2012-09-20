@@ -81,6 +81,11 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     if (!m_toolBar) {
         m_toolBar = m_liteApp->actionManager()->insertToolBar("toolbar/build",tr("Build ToolBar"));
     }
+    m_buildMenu = m_liteApp->actionManager()->loadMenu("menu/build");
+    if (!m_buildMenu) {
+        m_buildMenu = m_liteApp->actionManager()->insertMenu("menu/build",tr("&Build"),"menu/help");
+    }
+
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_toolBar->toggleViewAction());
 
     m_liteideModel = new QStandardItemModel(0,2,this);
@@ -95,7 +100,8 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_customModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
     m_customModel->setHeaderData(1,Qt::Horizontal,tr("Value"));
 
-    m_configAct = new QAction(QIcon("icon:litebuild/images/config.png"),tr("BuildConfig"),this);
+    m_configAct = new QAction(QIcon("icon:litebuild/images/config.png"),tr("Config"),this);
+    m_configAct->setToolTip(tr("Build Config"));
     m_toolBar->addSeparator();
     m_toolBar->addAction(m_configAct);
 
@@ -103,13 +109,19 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_output = new TextOutput;
     m_output->setMaxLine(1024);
 
-    QAction *stopAct = new QAction(tr("Stop"),this);
+    QAction *stopAct = new QAction(tr("Stop Action"),this);
     stopAct->setIcon(QIcon("icon:litebuild/images/stopaction.png"));
-    QAction *clearAct = new QAction(tr("Clear"),this);
+    QAction *clearAct = new QAction(tr("Clear All"),this);
     clearAct->setIcon(QIcon("icon:images/cleanoutput.png"));
 
     connect(stopAct,SIGNAL(triggered()),this,SLOT(stopAction()));
     connect(clearAct,SIGNAL(triggered()),m_output,SLOT(clear()));
+
+    m_buildMenu->addAction(m_configAct);
+    m_buildMenu->addSeparator();
+    m_buildMenu->addAction(stopAct);
+    m_buildMenu->addAction(clearAct);
+    m_buildMenu->addSeparator();
 
     //m_liteApp->outputManager()->addOutuput(m_output,tr("Build Output"));
     m_outputAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::BottomDockWidgetArea,
@@ -135,6 +147,22 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
 
 LiteBuild::~LiteBuild()
 {
+    foreach(QMenu *menu , m_idMenuMap.values()) {
+        delete menu;
+    }
+    m_idMenuMap.clear();
+
+    foreach(QAction *act, m_actions) {
+        m_toolBar->removeAction(act);
+        delete act;
+    }
+    m_actions.clear();
+    foreach(QAction *act, m_buildMenuActions) {
+        m_buildMenu->removeAction(act);
+        delete act;
+    }
+    m_buildMenuActions.clear();
+
     m_liteApp->actionManager()->removeToolBar(m_toolBar);
     delete m_output;
 }
@@ -516,7 +544,9 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
 
     m_outputRegex.clear();
 
-    qDeleteAll(m_idMenuMap);
+    foreach(QMenu *menu , m_idMenuMap.values()) {
+        delete menu;
+    }
     m_idMenuMap.clear();
 
     foreach(QAction *act, m_actions) {
@@ -524,6 +554,11 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
         delete act;
     }
     m_actions.clear();
+    foreach(QAction *act, m_buildMenuActions) {
+        m_buildMenu->removeAction(act);
+        delete act;
+    }
+    m_buildMenuActions.clear();
 
     if (!m_build) {
         return;
@@ -539,6 +574,13 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
     }
 
     foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
+        if (ba->isSeparator()) {
+            m_buildMenuActions.append(m_buildMenu->addSeparator());
+        } else {
+            QAction *act = m_buildMenu->addAction(ba->id());
+            initAction(act,build,ba);
+            m_buildMenuActions.append(act);
+        }
         if (ba->menu().isEmpty()) {
             continue;
         }

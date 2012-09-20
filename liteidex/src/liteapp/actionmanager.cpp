@@ -54,13 +54,14 @@ bool ActionManager::initWithApp(IApplication *app)
         return false;
     }
 
-    insertMenu("file",tr("&File"));
-    insertMenu("edit",tr("&Edit"));
-    insertMenu("recent",tr("&Recent"));
-    m_viewMenu = insertMenu("view",tr("&View"));
+    insertMenu("menu/file",tr("&File"));
+    insertMenu("menu/edit",tr("&Edit"));
+    insertMenu("menu/find",tr("&Find"));
+    m_viewMenu = insertMenu("menu/view",tr("&View"));
     m_baseToolBarAct = m_viewMenu->addSeparator();
     m_basePaneAct = m_viewMenu->addSeparator();
-    insertMenu("help",tr("&Help"));
+    insertMenu("menu/help",tr("&Help"));
+    insertMenu("menu/recent",tr("&Recent"));
 
     QToolBar *stdToolBar = insertToolBar("toolbar/std",tr("Standard ToolBar"));
 

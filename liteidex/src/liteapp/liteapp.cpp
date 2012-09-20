@@ -379,9 +379,9 @@ void LiteApp::createActions()
 
 void LiteApp::createMenus()
 {
-    m_fileMenu = m_actionManager->loadMenu("file");
-    m_viewMenu = m_actionManager->loadMenu("view");    
-    m_helpMenu = m_actionManager->loadMenu("help");
+    m_fileMenu = m_actionManager->loadMenu("menu/file");
+    m_viewMenu = m_actionManager->loadMenu("menu/view");
+    m_helpMenu = m_actionManager->loadMenu("menu/help");
 
     m_fileMenu->addAction(m_newAct);
     m_fileMenu->addAction(m_openFileAct);

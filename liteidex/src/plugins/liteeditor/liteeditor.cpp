@@ -738,6 +738,11 @@ void LiteEditor::setTextCodec(const QString &codec)
     }
 }
 
+QMenu *LiteEditor::contextMenu() const
+{
+    return m_contextMenu;
+}
+
 QByteArray LiteEditor::saveState() const
 {
     return m_editorWidget->saveState();

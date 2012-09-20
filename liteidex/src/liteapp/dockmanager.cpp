@@ -73,7 +73,7 @@ void DockManager::removeDock(QWidget *widget)
 {
     QDockWidget *dock = m_widgetDockMap.value(widget);
     if (dock) {
-        QMenu *menu = m_liteApp->actionManager()->loadMenu("view");
+        QMenu *menu = m_liteApp->actionManager()->loadMenu("menu/view");
         if (menu) {
             menu->removeAction(dock->toggleViewAction());
         }

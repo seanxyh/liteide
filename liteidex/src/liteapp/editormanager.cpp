@@ -144,9 +144,9 @@ void EditorManager::createActions()
 
     QAction *selectCodec = new QAction(tr("Select Codec"),this);
 
-    m_editMenu = m_liteApp->actionManager()->loadMenu("edit");
+    m_editMenu = m_liteApp->actionManager()->loadMenu("menu/edit");
     if (!m_editMenu) {
-        m_editMenu = m_liteApp->actionManager()->insertMenu("edit",tr("Edit"));
+        m_editMenu = m_liteApp->actionManager()->insertMenu("menu/edit",tr("Edit"));
     }
 
     addAction(EA_UNDO,undo);

@@ -82,6 +82,8 @@ protected:
     LiteApi::IBuild *m_build;
     LiteApi::IEnvManager *m_envManager;
     QToolBar    *m_toolBar;
+    QMenu       *m_buildMenu;
+    QList<QAction*> m_buildMenuActions;
     QAction     *m_configAct;
     QStandardItemModel *m_liteideModel;
     QStandardItemModel *m_configModel;

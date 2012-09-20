@@ -49,6 +49,7 @@ public slots:
     void applyOption(QString);
 protected:
     void fmtEditor(LiteApi::IEditor*,bool);
+    void syncfmtEditor(LiteApi::IEditor *, bool);
     LiteApi::IApplication *m_liteApp;
     ProcessEx *m_process;
     LiteApi::IEnvManager *m_envManager;
@@ -57,6 +58,7 @@ protected:
     QByteArray m_errData;
     bool m_diff;
     bool m_autofmt;
+    int  m_timeout;
 };
 
 #endif // GOLANGFMT_H

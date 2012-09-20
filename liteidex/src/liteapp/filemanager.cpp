@@ -65,7 +65,7 @@ bool FileManager::initWithApp(IApplication *app)
 
     m_maxRecentFiles = m_liteApp->settings()->value("LiteApp/MaxRecentFiles",16).toInt();
     m_newFileDialog = 0;
-    m_recentMenu = m_liteApp->actionManager()->loadMenu("recent");
+    m_recentMenu = m_liteApp->actionManager()->loadMenu("menu/recent");
     QAction *cleanAct = new QAction(tr("Clean All"),this);
     m_recentSeparator = m_recentMenu->addSeparator();
     m_recentMenu->addAction(cleanAct);

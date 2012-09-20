@@ -51,7 +51,8 @@ GolangFmt::GolangFmt(LiteApi::IApplication *app,QObject *parent) :
     QObject(parent),
     m_liteApp(app),
     m_diff(true),
-    m_autofmt(true)
+    m_autofmt(true),
+    m_timeout(500)
 {
     m_process = new ProcessEx(this);
     connect(m_process,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(fmtOutput(QByteArray,bool)));
@@ -77,6 +78,103 @@ void GolangFmt::applyOption(QString id)
     m_autofmt = m_liteApp->settings()->value("golangfmt/autofmt",true).toBool();
     if (!m_diff) {
         m_autofmt = false;
+    }
+    m_timeout = m_liteApp->settings()->value("golangfmt/timeout",500).toInt();
+}
+
+void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save)
+{
+    LiteApi::ITextEditor *textEditor = LiteApi::getTextEditor(editor);
+    if (!textEditor) {
+        return;
+    }
+    QString fileName = editor->filePath();
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFileInfo info(fileName);
+    if (info.suffix() != "go") {
+        return;
+    }
+
+    QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(editor,"LiteApi.QPlainTextEdit");
+    if (!ed) {
+        return;
+    }
+
+    QString text = ed->toPlainText();
+    if (text.isEmpty()) {
+        return;
+    }
+    QStringList args;
+    if (m_diff) {
+        args << "-d";
+    }
+    QProcess process;
+    process.setEnvironment(LiteApi::getCurrentEnvironment(m_liteApp).toStringList());
+    process.start(m_gofmtCmd,args);
+    if (!process.waitForStarted(500)) {
+        m_liteApp->appendLog("gofmt","wait start timeout",true);
+        return;
+    }
+    process.write(text.toUtf8());
+    process.closeWriteChannel();
+    if (!process.waitForFinished(500)) {
+        m_liteApp->appendLog("gofmt","wait finish timeout",true);
+        return;
+    }
+    QTextCodec *codec = QTextCodec::codecForName("utf-8");
+    QByteArray error = process.readAllStandardError();
+    if (!error.isEmpty()) {
+        QString data = codec->toUnicode(error);
+        data.replace("<standard input>",fileName);
+        m_liteApp->appendLog("gofmt",data,true);
+        //goto error line
+        QRegExp rep("([\\w\\d_\\\\/\\.]+):(\\d+):");
+
+        int index = rep.indexIn(data);
+        if (index < 0)
+            return;
+        QStringList capList = rep.capturedTexts();
+
+        if (capList.count() < 3)
+            return;
+        //QString fileName = capList[1];
+        QString fileLine = capList[2];
+
+        bool ok = false;
+        int line = fileLine.toInt(&ok);
+        if (!ok)
+            return;
+        textEditor->gotoLine(line,0,true);
+        return;
+    }
+    QByteArray data = process.readAllStandardOutput();
+    int vpos = -1;
+    QScrollBar *bar = ed->verticalScrollBar();
+    if (bar) {
+        vpos = bar->sliderPosition();
+    }
+    QTextCursor cur = ed->textCursor();
+    int pos = cur.position();
+    cur.beginEditBlock();
+    if (m_diff) {
+        loadDiff(cur,codec->toUnicode(data));
+    } else {
+        cur.select(QTextCursor::Document);
+        cur.removeSelectedText();
+        cur.insertText(codec->toUnicode(data));
+    }
+    cur.setPosition(pos);
+    cur.endEditBlock();
+
+    ed->setTextCursor(cur);
+    if (vpos != -1) {
+        bar->setSliderPosition(vpos);
+    }
+    if (save) {
+        m_liteApp->editorManager()->saveEditor(editor,false);
     }
 }
 
@@ -127,7 +225,8 @@ void GolangFmt::editorAboutToSave(LiteApi::IEditor* editor)
     if (!m_autofmt) {
         return;
     }
-    fmtEditor(editor,true);
+    //fmtEditor(editor,true);
+    syncfmtEditor(editor,true);
 }
 
 void GolangFmt::currentEnvChanged(LiteApi::IEnv*)
@@ -152,7 +251,8 @@ void GolangFmt::gofmt()
     if (!editor) {
         return;
     }
-    fmtEditor(editor,false);
+    //fmtEditor(editor,false);
+    syncfmtEditor(editor,false);
 }
 
 void GolangFmt::fmtStarted()
