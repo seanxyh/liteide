@@ -36,6 +36,7 @@ class QSortFilterProxyModel;
 class QFileInfo;
 class QDir;
 class QMenu;
+class QLineEdit;
 
 class FileBrowser : public QObject
 {
@@ -71,6 +72,9 @@ protected slots:
     void setFolderToRoot();
     void cdUp();
     void viewGodoc();
+    void loadFolderProject();
+    void commandReturn();
+    void requestCommand();
 protected:
     QFileInfo contextFileInfo() const;
     QDir contextDir() const;
@@ -84,11 +88,13 @@ protected:
     QFileSystemModel        *m_fileModel;
     QComboBox   *m_filterCombo;
     QComboBox   *m_rootCombo;
+    QLineEdit   *m_commandEdit;
     QToolBar    *m_filterToolBar;
     QToolBar    *m_rootToolBar;
     QAction *m_syncAct;
 protected:
     QModelIndex m_contextIndex;
+    QAction *m_toolWindowAct;
     QMenu   *m_fileMenu;
     QMenu   *m_folderMenu;
     QMenu   *m_rootMenu;
@@ -106,6 +112,7 @@ protected:
     QAction *m_setRootAct;
     QAction *m_openExplorerAct;
     QAction *m_viewGodocAct;
+    QAction *m_loadFolderAct;
 };
 
 #endif // FILEBROWSER_H

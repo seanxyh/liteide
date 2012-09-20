@@ -45,7 +45,7 @@ GolangFmtOption::GolangFmtOption(LiteApi::IApplication *app,QObject *parent) :
 
     bool diff = m_liteApp->settings()->value("golangfmt/diff",true).toBool();
     bool autofmt = m_liteApp->settings()->value("golangfmt/autofmt",true).toBool();
-    int timeout = m_liteApp->settings()->value("golangfmt/timeout",500).toInt();
+    int timeout = m_liteApp->settings()->value("golangfmt/timeout",600).toInt();
     if (!diff) {
         autofmt = false;
     }
@@ -88,8 +88,8 @@ void GolangFmtOption::apply()
     m_liteApp->settings()->setValue("golangfmt/diff",diff);
     m_liteApp->settings()->setValue("golangfmt/autofmt",autofmt);
     int timeout = ui->timeoutLineEdit->text().toInt();
-    if (timeout <= 10) {
-        timeout = 500;
+    if (timeout < 50) {
+        timeout = 600;
     }
     ui->timeoutLineEdit->setText(QString("%1").arg(timeout));
     m_liteApp->settings()->setValue("golangfmt/timeout",timeout);

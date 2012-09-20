@@ -1,7 +1,6 @@
 ==== 2012.9.20 Ver x13 ====
  * LiteApp : any folder, any file to build
- * LiteApp : update tool window style
- * LiteApp : editor toolbar and status
+ * LiteApp : update window style, add editor toolbar and status
  * LiteEditor : remove editor toolbar 
  * LiteEditor : extra use editor font
  * LiteBuild : new build toolbar and menu
@@ -10,6 +9,7 @@
  * GolangAst : classview for folder
  * Outline : alltime expand
  * FileBrowser : sync editor file to folder
+ * FileBrowser : add go command line edit (Ctrl+Q)
 ==== 2012.9.14 Ver x12.5 ====
  * LiteApp : move dock style, change to idea style tool windows.
  * LiteApp : double click editor and maximized or restore editor

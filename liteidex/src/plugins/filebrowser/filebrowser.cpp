@@ -28,6 +28,7 @@
 #include "createdirdialog.h"
 #include "golangdocapi/golangdocapi.h"
 #include "liteenvapi/liteenvapi.h"
+#include "litebuildapi/litebuildapi.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -47,6 +48,8 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QDialogButtonBox>
+#include <QLineEdit>
+#include <QLabel>
 #include <QDebug>
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -160,10 +163,23 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     for (int i = 1; i < count; i++) {
         m_treeView->setColumnHidden(i,true);
     }
+    QHBoxLayout *cmdLayout = new QHBoxLayout;
+    cmdLayout->setMargin(0);
+    QLabel *label = new QLabel("Exec:");
+    label->setToolTip("Execute\tCtrl+Q");
+    QAction *q = new QAction(this);
+    q->setShortcut(QKeySequence("Ctrl+Q"));
+    m_liteApp->mainWindow()->addAction(q);
+    connect(q,SIGNAL(triggered()),this,SLOT(requestCommand()));
+    cmdLayout->addWidget(label);
+    m_commandEdit = new QLineEdit;
+    m_commandEdit->setText("go ");
+    cmdLayout->addWidget(m_commandEdit);
 
     mainLayout->addWidget(m_filterToolBar);
     mainLayout->addWidget(m_rootToolBar);
     mainLayout->addWidget(m_treeView);
+    mainLayout->addLayout(cmdLayout);
     m_widget->setLayout(mainLayout);
 
     //create menu
@@ -188,6 +204,8 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     m_viewGodocAct = new QAction(tr("View Godoc Here"),this);
 
+    m_loadFolderAct = new QAction(tr("Load Folder Project"),this);
+
     m_fileMenu->addAction(m_openFileAct);
     m_fileMenu->addAction(m_openEditorAct);
     m_fileMenu->addSeparator();
@@ -196,6 +214,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileMenu->addAction(m_renameFileAct);
     m_fileMenu->addAction(m_removeFileAct);
     m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_loadFolderAct);
     m_fileMenu->addAction(m_viewGodocAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_openShellAct);
@@ -209,6 +228,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_folderMenu->addAction(m_renameFolderAct);
     m_folderMenu->addAction(m_removeFolderAct);
     m_folderMenu->addSeparator();
+    m_folderMenu->addAction(m_loadFolderAct);
     m_folderMenu->addAction(m_viewGodocAct);
     m_folderMenu->addSeparator();
     m_folderMenu->addAction(m_openShellAct);
@@ -237,22 +257,23 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_cdupAct,SIGNAL(triggered()),this,SLOT(cdUp()));
     connect(m_openExplorerAct,SIGNAL(triggered()),this,SLOT(openExplorer()));
     connect(m_viewGodocAct,SIGNAL(triggered()),this,SLOT(viewGodoc()));
-
+    connect(m_loadFolderAct,SIGNAL(triggered()),this,SLOT(loadFolderProject()));
 
     //QDockWidget *dock = m_liteApp->dockManager()->addDock(m_widget,tr("File Browser"));
     //connect(dock,SIGNAL(visibilityChanged(bool)),this,SLOT(visibilityChanged(bool)));
-    QAction *act = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"filebrowser",tr("File Browser"),true);
-    connect(act,SIGNAL(toggled(bool)),this,SLOT(visibilityChanged(bool)));
+    m_toolWindowAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"filesystem",tr("File System"),true);
+    connect(m_toolWindowAct,SIGNAL(toggled(bool)),this,SLOT(visibilityChanged(bool)));
     connect(m_treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedTreeView(QModelIndex)));
     connect(m_filterCombo,SIGNAL(activated(QString)),this,SLOT(activatedFilter(QString)));
     connect(m_rootCombo,SIGNAL(activated(QString)),this,SLOT(activatedRoot(QString)));
     connect(m_syncAct,SIGNAL(triggered(bool)),this,SLOT(syncFileModel(bool)));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(treeViewContextMenuRequested(QPoint)));
+    connect(m_commandEdit,SIGNAL(returnPressed()),this,SLOT(commandReturn()));
 
     QString root = m_liteApp->settings()->value("FileBrowser/root",m_fileModel->myComputer().toString()).toString();
     addFolderToRoot(root);
-    bool b = m_liteApp->settings()->value("FileBrowser/sync").toBool();
+    bool b = m_liteApp->settings()->value("FileBrowser/sync",true).toBool();
     if (b) {
         m_syncAct->toggle();
     }
@@ -590,6 +611,12 @@ void FileBrowser::viewGodoc()
     }
 }
 
+void FileBrowser::loadFolderProject()
+{
+    QDir dir = contextDir();
+    m_liteApp->fileManager()->openFolderProject(dir.path());
+}
+
 void FileBrowser::openShell()
 {
     QDir dir = contextDir();    
@@ -642,4 +669,27 @@ void FileBrowser::cdUp()
     if (!dir.path().isEmpty() && dir.cdUp()) {
         addFolderToRoot(dir.path());
     }
+}
+
+void FileBrowser::commandReturn()
+{
+    QString text = m_commandEdit->text();
+    if (text.isEmpty()) {
+        return;
+    }
+    m_commandEdit->selectAll();
+    QStringList args = text.split(" ",QString::SkipEmptyParts);
+    LiteApi::ILiteBuild *build = LiteApi::getLiteBuild(m_liteApp);
+    if (!build) {
+        return;
+    }
+    QString cmd = args.takeFirst();
+    build->executeCommand(cmd,args,m_fileModel->rootPath());
+}
+
+void FileBrowser::requestCommand()
+{
+    m_toolWindowAct->setChecked(true);
+    m_commandEdit->setFocus();
+    m_commandEdit->selectAll();
 }
