@@ -5,4 +5,4 @@ INFO = new golang go1 command project
 TYPE = project
 FILES = main.go doc.go
 OPEN = main.go
-SCHEME=gopkg
+SCHEME=folder

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
-	<mime-type type="text/x-gopro" id="gopro" work="$(PROJECT_DIR)">
+	<mime-type type="text/x-gopro" id="gopro" work="$(PROJECT_DIR)" ver="1">
 		<config id="GoproMake" name="GOPROMAKE" value="$(LITEAPPDIR)/gopromake"/>
 		<config id="GoExec" name="GOEXEC" value="$(LITEAPPDIR)/goexec"/>
 		<config id="ErrRegex" name="ERRREGEX" value="([\w\d_\\/\.]+):(\d+):"/>	
