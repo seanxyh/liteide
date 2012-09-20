@@ -142,7 +142,7 @@ void EditorManager::createActions()
     QAction *gotoLine = new QAction(tr("Goto Line"),this);
     gotoLine->setShortcut(QKeySequence("Ctrl+G"));
 
-    QAction *selectCodec = new QAction(tr("Select Codec"),this);
+    QAction *selectCodec = new QAction(this);//tr("Select Codec"),this);
 
     m_editMenu = m_liteApp->actionManager()->loadMenu("menu/edit");
     if (!m_editMenu) {
@@ -158,7 +158,7 @@ void EditorManager::createActions()
     addAction(EA_SEPARATOR,0);
     addAction(EA_SELECTALL,selectAll);
     addAction(EA_GOTOLINE,gotoLine);
-    addAction(EA_SELECTCODEC,selectCodec);
+    //addAction(EA_SELECTCODEC,selectCodec);
 
     QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/std");
     toolBar->addSeparator();
@@ -202,6 +202,7 @@ void EditorManager::createActions()
     m_codecInfo = new QToolButton;
     m_codecInfo->setDefaultAction(selectCodec);
     m_codecInfo->setText("UTF-8");
+    selectCodec->setEnabled(false);
     right->addSeparator();
     right->addWidget(m_codecInfo);
 

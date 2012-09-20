@@ -55,13 +55,13 @@ bool ActionManager::initWithApp(IApplication *app)
     }
 
     insertMenu("menu/file",tr("&File"));
+    insertMenu("menu/recent",tr("&Recent"));
     insertMenu("menu/edit",tr("&Edit"));
     insertMenu("menu/find",tr("&Find"));
     m_viewMenu = insertMenu("menu/view",tr("&View"));
     m_baseToolBarAct = m_viewMenu->addSeparator();
     m_basePaneAct = m_viewMenu->addSeparator();
     insertMenu("menu/help",tr("&Help"));
-    insertMenu("menu/recent",tr("&Recent"));
 
     QToolBar *stdToolBar = insertToolBar("toolbar/std",tr("Standard ToolBar"));
 

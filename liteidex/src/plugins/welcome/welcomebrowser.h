@@ -47,7 +47,7 @@ public:
 public slots:
     void openUrl(const QUrl &url);
     void loadData();
-    void openGopkgDialog();
+    void openFolder();
 protected:
     LiteApi::IApplication *m_liteApp;
     Extension   *m_extension;

@@ -57,9 +57,9 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
 
     connect(ui->newFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(newFile()));
     connect(ui->openFileButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openFiles()));
-    connect(ui->openProjectButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openProjects()));
-    connect(ui->openGopkgButton,SIGNAL(clicked()),this,SLOT(openGopkgDialog()));
-    connect(ui->openEditorButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openEditors()));
+//    connect(ui->openProjectButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openProjects()));
+    connect(ui->openFolderButton,SIGNAL(clicked()),this,SLOT(openFolder()));
+//    connect(ui->openEditorButton,SIGNAL(clicked()),m_liteApp->fileManager(),SLOT(openEditors()));
     connect(ui->optionsButton,SIGNAL(clicked()),m_liteApp->optionManager(),SLOT(exec()));
     connect(ui->textBrowser,SIGNAL(anchorClicked(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_liteApp->fileManager(),SIGNAL(recentFilesChanged(QString)),this,SLOT(loadData()));
@@ -87,9 +87,9 @@ WelcomeBrowser::~WelcomeBrowser()
     }
 }
 
-void WelcomeBrowser::openGopkgDialog()
+void WelcomeBrowser::openFolder()
 {
-    m_liteApp->projectManager()->openSchemeDialog("gopkg");
+    m_liteApp->fileManager()->openFolder();
 }
 
 LiteApi::IExtension *WelcomeBrowser::extension()
