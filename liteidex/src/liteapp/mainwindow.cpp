@@ -105,8 +105,14 @@ void MainWindow::dropEvent(QDropEvent *event)
         return;
     foreach (QUrl url, urls) {
         QString fileName = url.toLocalFile();
-        if (!fileName.isEmpty()) {
+        if (fileName.isEmpty()) {
+            return;
+        }
+        QFileInfo info(fileName);
+        if (info.isFile()) {
             m_liteApp->fileManager()->openFile(fileName);
+        } else if(info.isDir()) {
+            m_liteApp->fileManager()->openFolderProject(info.path());
         }
     }
 }
