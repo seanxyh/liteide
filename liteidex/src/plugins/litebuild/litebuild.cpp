@@ -805,11 +805,11 @@ void LiteBuild::extFinish(bool error,int exitCode, QString msg)
     m_output->setReadOnly(true);
 
     if (error) {
-        m_output->appendTag1(QString("> error %1.\n").arg(msg));
+        m_output->appendTag0(QString("error %1.\n").arg(msg));
     } else {
-        m_output->appendTag1(QString("> exit code %1, %2.\n").arg(exitCode).arg(msg));
+        m_output->appendTag0(QString("exit code %1, %2.\n").arg(exitCode).arg(msg));
     }
-    m_output->appendTag0(QString("</action>\n"));
+    //m_output->appendTag0(QString("</action>\n"));
 
     if (!error && exitCode == 0) {
         QStringList task = m_process->userData(ID_TASKLIST).toStringList();
@@ -853,9 +853,9 @@ void LiteBuild::executeCommand(const QString &cmd1, const QStringList &args, con
     }
 
     m_process->setWorkingDirectory(workDir);
-    m_output->appendTag0(QString("<action id=\"shell\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
-                         .arg(cmd).arg(args.join(" ")).arg(workDir));
-    m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args.join(" ")));
+    m_output->appendTag0(QString("%1 %2\n")
+                         .arg(cmd).arg(args.join(" ")));
+    //m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args.join(" ")));
     m_process->start(cmd,args);
 }
 
@@ -975,20 +975,25 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
     m_process->setEnvironment(sysenv.toStringList());
     if (!ba->output()) {
         bool b = QProcess::startDetached(cmd,arguments,m_workDir);
-        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
-                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
-        m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
-        m_output->appendTag1(QString("> Start process %1\n").arg(b?"success":"false"));
-        m_output->appendTag0(QString("</action>\n"));
+//        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
+//                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
+        m_output->appendTag0(QString("%1 %2\n")
+                             .arg(QDir::cleanPath(cmd)).arg(args));
+        //m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
+        m_output->appendTag0(QString("Start process %1\n").arg(b?"success":"false"));
+        //m_output->appendTag0(QString("</action>\n"));
     } else {
         m_process->setUserData(0,cmd);
         m_process->setUserData(1,args);
         m_process->setUserData(2,codec);
 
         m_process->setWorkingDirectory(m_workDir);        
-        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
-                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
-        m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
+//        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
+//                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
+//        m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
+        m_output->appendTag0(QString("%1 %2\n")
+                             .arg(QDir::cleanPath(cmd)).arg(args));
+        //m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_process->start(cmd,arguments);
     }
 }
