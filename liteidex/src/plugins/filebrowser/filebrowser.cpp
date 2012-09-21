@@ -131,7 +131,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_rootToolBar = new QToolBar(m_widget);
     m_rootToolBar->setIconSize(QSize(16,16));
 
-    m_cdupAct = new QAction(QIcon("icon:filebrowser/images/cdup.png"),tr("open to parent"),this);
+    m_cdupAct = new QAction(QIcon("icon:filebrowser/images/cdup.png"),tr("Open to Parent"),this);
 
     m_rootCombo = new QComboBox;
     m_rootCombo->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
@@ -239,6 +239,8 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_rootMenu->addAction(m_newFileAct);
     m_rootMenu->addAction(m_newFileWizardAct);
     m_rootMenu->addAction(m_newFolderAct);
+    m_rootMenu->addSeparator();
+    m_rootMenu->addAction(m_loadFolderAct);
     m_rootMenu->addSeparator();
     m_rootMenu->addAction(m_openShellAct);
     m_rootMenu->addAction(m_openExplorerAct);

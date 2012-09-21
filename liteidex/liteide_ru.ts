@@ -428,171 +428,171 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>FileBrowser</name>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="112"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="115"/>
         <source>Synchronize with editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="131"/>
-        <source>open to parent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="174"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="190"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="175"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="191"/>
         <source>Open Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="176"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="192"/>
         <source>New File</source>
         <translation>Новый файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="177"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="193"/>
         <source>New File Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="178"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="431"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="437"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="442"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="194"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="450"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="456"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="461"/>
         <source>Rename File</source>
         <translation>Переименовать файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="179"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="456"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="461"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="195"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="475"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="480"/>
         <source>Remove File</source>
         <translation>Удалить файл</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="181"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="197"/>
         <source>Set Folder To Root</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="182"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="198"/>
         <source>New Folder</source>
         <translation>Новая папка</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="183"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="497"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="506"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="511"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="199"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="516"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="525"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="530"/>
         <source>Rename Folder</source>
         <translation>Переименовать папку</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="184"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="525"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="530"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="200"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="544"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="549"/>
         <source>Remove Folder</source>
         <translation>Удалить папку</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="186"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="202"/>
         <source>Open Terminal Here</source>
         <translation>Открыть терминал в этой папке</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="187"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="203"/>
         <source>Open Explorer Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="189"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="205"/>
         <source>View Godoc Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="390"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="400"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="409"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="419"/>
         <source>Create File</source>
         <translation>Создание файла</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="431"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="450"/>
         <source>File Name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="391"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="410"/>
         <source>The filename is exists!</source>
         <translation>Файл уже существует!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="191"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="134"/>
+        <source>Open to Parent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="207"/>
         <source>Load Folder Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="248"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="266"/>
         <source>File System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="401"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="420"/>
         <source>Failed to create the file!</source>
         <translation>Ошибка при создании файла!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="438"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="443"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="457"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="462"/>
         <source>Failed to rename the file!</source>
         <translation>Ошибка при переименовании файла!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="457"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="476"/>
         <source>Confirm remove the file and continue</source>
         <translation>Подтвердите удаление файла для продолжения</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="462"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="481"/>
         <source>Failed to remove the file!</source>
         <translation>Ошибка при удалении файла!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="480"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="483"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="499"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="502"/>
         <source>Create Folder</source>
         <translation>Создание папки</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="497"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="516"/>
         <source>Folder Name</source>
         <translation>Имя папки</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="481"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="500"/>
         <source>The folder name is exists!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="484"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="503"/>
         <source>Failed to create the folder!</source>
         <translation>Ошибка при создании папки!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="507"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="512"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="526"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="531"/>
         <source>Failed to rename the folder!</source>
         <translation>Ошибка при переименовании папки!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="526"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="545"/>
         <source>Confirm remove the foler and continue</source>
         <translation>Подтвердите удаление папки для продолжения</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="531"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="550"/>
         <source>Failed to remove the folder!</source>
         <translation>Ошибка при удалении папки!</translation>
     </message>
