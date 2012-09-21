@@ -853,8 +853,8 @@ void LiteBuild::executeCommand(const QString &cmd1, const QStringList &args, con
     }
 
     m_process->setWorkingDirectory(workDir);
-    m_output->appendTag0(QString("%1 %2\n")
-                         .arg(cmd).arg(args.join(" ")));
+    m_output->appendTag0(QString("%1 %2 [%3]\n")
+                         .arg(cmd).arg(args.join(" ")).arg(workDir));
     //m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args.join(" ")));
     m_process->start(cmd,args);
 }
@@ -977,8 +977,8 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
         bool b = QProcess::startDetached(cmd,arguments,m_workDir);
 //        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
 //                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
-        m_output->appendTag0(QString("%1 %2\n")
-                             .arg(QDir::cleanPath(cmd)).arg(args));
+        m_output->appendTag0(QString("%1 %2 [%3]\n")
+                             .arg(QDir::cleanPath(cmd)).arg(args).arg(m_workDir));
         //m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_output->appendTag0(QString("Start process %1\n").arg(b?"success":"false"));
         //m_output->appendTag0(QString("</action>\n"));
@@ -991,8 +991,8 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
 //        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
 //                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
 //        m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
-        m_output->appendTag0(QString("%1 %2\n")
-                             .arg(QDir::cleanPath(cmd)).arg(args));
+        m_output->appendTag0(QString("%1 %2 [%3]\n")
+                             .arg(QDir::cleanPath(cmd)).arg(args).arg(m_workDir));
         //m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_process->start(cmd,arguments);
     }
