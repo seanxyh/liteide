@@ -29,6 +29,7 @@
 #include "golangdocapi/golangdocapi.h"
 #include "liteenvapi/liteenvapi.h"
 #include "litebuildapi/litebuildapi.h"
+#include "fileutil/fileutil.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -308,6 +309,15 @@ void FileBrowser::doubleClickedTreeView(QModelIndex proxyIndex)
     QString fileName = m_fileModel->filePath(index);
     if (fileName.isEmpty()) {
         return;
+    }
+    QFileInfo info(fileName);
+    QString cmd = FileUtil::lookPathInDir(info.fileName(),LiteApi::getCurrentEnvironment(m_liteApp),info.path());
+    if (cmd == fileName) {
+        LiteApi::ILiteBuild *build = LiteApi::getLiteBuild(m_liteApp);
+        if (build) {
+            build->executeCommand(info.fileName(),QStringList(),info.path());
+            return;
+        }
     }
     m_liteApp->fileManager()->openFile(fileName);
 }

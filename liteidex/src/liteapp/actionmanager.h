@@ -30,6 +30,7 @@
 
 using namespace LiteApi;
 
+
 class ActionManager : public IActionManager
 {
     Q_OBJECT
