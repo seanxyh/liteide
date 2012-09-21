@@ -1,9 +1,10 @@
-==== 2012.9.20 Ver x13 ====
+==== 2012.9.21 Ver x13 ====
  * LiteApp : any folder, any file to build
  * LiteApp : update window style, add editor toolbar and status
  * LiteEditor : remove editor toolbar 
  * LiteEditor : extra use editor font
  * LiteBuild : new build toolbar and menu
+ * LiteBuild : clean action tags
  * GolangFmt : sync execute gofmt
  * GolangDoc : deply filter index
  * GolangAst : classview for folder
@@ -11,7 +12,9 @@
  * FileBrowser : rename to FileSystem
  * FileSystem : sync editor file to folder
  * FileSystem : add go command line edit (Ctrl+Q)
-==== 2012.9.14 Ver x12.5 ====
+ * FileSystem : double click execute file and execute on build output
+ * Windows : include diff bin
+ === 2012.9.14 Ver x12.5 ====
  * LiteApp : move dock style, change to idea style tool windows.
  * LiteApp : double click editor and maximized or restore editor
  * LiteApp : esc key to hide bottom tool windows
