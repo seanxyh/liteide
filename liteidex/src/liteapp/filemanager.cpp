@@ -480,7 +480,7 @@ void FileManager::openRecentFile()
 QStringList FileManager::schemeList() const
 {
     QStringList list;
-    m_liteApp->settings()->beginGroup("RecentFiles");
+    m_liteApp->settings()->beginGroup("Recent1");
     foreach (QString key, m_liteApp->settings()->childKeys() ) {
         list.append(key);
     }
