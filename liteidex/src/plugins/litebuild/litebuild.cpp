@@ -335,8 +335,10 @@ void LiteBuild::currentProjectChanged(LiteApi::IProject *project)
         LiteApi::IBuild *build = findProjectBuild(project);
         if (build) {
             m_bProjectBuild = true;
+            setCurrentBuild(build);
+        } else {
+            currentEditorChanged(m_liteApp->editorManager()->currentEditor());
         }
-        setCurrentBuild(build);
     } else {
         LiteApi::IBuild *build = findProjectBuildByEditor(m_liteApp->editorManager()->currentEditor());
         if (build) {
