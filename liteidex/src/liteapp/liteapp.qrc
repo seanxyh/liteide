@@ -44,7 +44,5 @@
         <file>images/paste.png</file>
         <file>images/lock.png</file>
         <file>images/unlock.png</file>
-        <file>images/backward.png</file>
-        <file>images/forward.png</file>
     </qresource>
 </RCC>

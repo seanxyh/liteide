@@ -167,9 +167,9 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     QHBoxLayout *cmdLayout = new QHBoxLayout;
     cmdLayout->setMargin(0);
     QLabel *label = new QLabel("Exec:");
-    label->setToolTip("Execute\tCtrl+Q");
+    label->setToolTip("Execute\tCtrl+`");
     QAction *q = new QAction(this);
-    q->setShortcut(QKeySequence("Ctrl+Q"));
+    q->setShortcut(QKeySequence("Ctrl+`"));
     m_liteApp->mainWindow()->addAction(q);
     connect(q,SIGNAL(triggered()),this,SLOT(requestCommand()));
     cmdLayout->addWidget(label);
@@ -276,9 +276,9 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     QString root = m_liteApp->settings()->value("FileBrowser/root",m_fileModel->myComputer().toString()).toString();
     addFolderToRoot(root);
-    bool b = m_liteApp->settings()->value("FileBrowser/sync",true).toBool();
+    bool b = m_liteApp->settings()->value("FileBrowser/synceditor",true).toBool();
     if (b) {
-        m_syncAct->toggle();
+        m_syncAct->setChecked(true);
     }
 }
 
@@ -286,7 +286,7 @@ FileBrowser::~FileBrowser()
 {
     QString root = m_rootCombo->currentText();
     m_liteApp->settings()->setValue("FileBrowser/root",root);
-    m_liteApp->settings()->setValue("FileBrowser/sync",m_syncAct->isChecked());
+    m_liteApp->settings()->setValue("FileBrowser/synceditor",m_syncAct->isChecked());
     delete m_fileMenu;
     delete m_folderMenu;
     delete m_rootMenu;

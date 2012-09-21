@@ -573,13 +573,108 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
                                  << new QStandardItem(i.value()));
     }
 
+    QMap<QString,QAction*> idActionMap;
+    foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
+        QAction *act = 0;
+        if (ba->isSeparator()) {
+            act = m_buildMenu->addSeparator();
+        } else {
+            act = m_buildMenu->addAction(ba->id());
+            initAction(act,build,ba);
+        }
+        idActionMap.insert(ba->id(),act);
+        m_buildMenuActions.append(act);
+        if (!ba->menu().isEmpty()) {
+            QMenu *menu = m_idMenuMap.value(ba->menu());
+            if (!menu) {
+                menu = new QMenu;
+                m_idMenuMap.insert(ba->menu(),menu);
+                QAction *idAct = idActionMap.value(ba->menu());
+                if (idAct) {
+                    menu->addAction(idAct);
+                }
+            }
+            menu->addAction(act);
+        }
+    }
+    foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
+        if (ba->isSeparator()) {
+            m_actions.append(m_toolBar->addSeparator());
+        }
+        if (!ba->menu().isEmpty()) {
+            continue;
+        }
+        QMenu *menu = m_idMenuMap.value(ba->id());
+        if (menu) {
+            m_actions.append(m_toolBar->addSeparator());
+            QAction *self = idActionMap.value(ba->id());
+            QToolButton *btn = new QToolButton;
+            btn->setMenu(menu);
+            btn->setPopupMode(QToolButton::MenuButtonPopup);
+            QAction *act = m_toolBar->addWidget(btn);
+            btn->setDefaultAction(self);
+            m_actions.append(act);
+        } else {
+            m_toolBar->addAction(idActionMap.value(ba->id()));
+            m_actions.append(idActionMap.value(ba->id()));
+        }
+    }
+    /*
+        if (ba->isSeparator()) {
+            m_actions.append(m_toolBar->addSeparator());
+            continue;
+        }
+        if (!ba->menu().isEmpty()) {
+            continue;
+        }
+        QAction *act = 0;
+        QMenu *menu = m_idMenuMap.value(ba->id());
+        if (menu) {
+            m_actions.append(m_toolBar->addSeparator());
+            QAction *self = menu->addAction(ba->id());
+            initAction(self,build,ba);
+            menu->insertAction(menu->actions().first(),self);
+            QToolButton *btn = new QToolButton;
+            btn->setMenu(menu);
+            btn->setPopupMode(QToolButton::MenuButtonPopup);
+            act = m_toolBar->addWidget(btn);
+            btn->setDefaultAction(act);
+            act->setText(ba->id());
+        } else {
+            act = m_toolBar->addAction(ba->id());
+        }
+        initAction(act,build,ba);
+        m_actions.append(act);
+    }
+    */
+    /*
+        if (ba->isSeparator()) {
+            m_buildMenuActions.append(m_buildMenu->addSeparator());
+        } else {
+            //QAction *act = m_buildMenu->addAction(ba->id());
+            //initAction(act,build,ba);
+            //m_buildMenuActions.append(act);
+        }
+        if (ba->menu().isEmpty()) {
+            continue;
+        }
+        QMenu *menu = m_idMenuMap.value(ba->menu());
+        if (!menu) {
+            menu = new QMenu;
+            m_idMenuMap.insert(ba->menu(),menu);
+        }
+        QAction *act = menu->addAction(ba->id());
+        initAction(act,build,ba);
+    }
+    */
+    /*
     foreach(LiteApi::BuildAction *ba,m_build->actionList()) {
         if (ba->isSeparator()) {
             m_buildMenuActions.append(m_buildMenu->addSeparator());
         } else {
-            QAction *act = m_buildMenu->addAction(ba->id());
-            initAction(act,build,ba);
-            m_buildMenuActions.append(act);
+            //QAction *act = m_buildMenu->addAction(ba->id());
+            //initAction(act,build,ba);
+            //m_buildMenuActions.append(act);
         }
         if (ba->menu().isEmpty()) {
             continue;
@@ -620,6 +715,7 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
         initAction(act,build,ba);
         m_actions.append(act);
     }
+    */
 }
 
 void LiteBuild::loadEditorInfo(const QString &filePath)

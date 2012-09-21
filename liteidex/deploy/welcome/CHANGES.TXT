@@ -11,7 +11,7 @@
  * Outline : alltime expand
  * FileBrowser : rename to FileSystem
  * FileSystem : sync editor file to folder
- * FileSystem : add go command line edit (Ctrl+Q)
+ * FileSystem : add go command line edit (Ctrl+`)
  * FileSystem : double click execute file and execute on build output
  * Windows : include diff bin
  === 2012.9.14 Ver x12.5 ====
