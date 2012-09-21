@@ -427,171 +427,175 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>FileBrowser</name>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="112"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="115"/>
         <source>Synchronize with editor</source>
         <translation>エディタと同期</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="131"/>
         <source>open to parent</source>
-        <translation>親を開く</translation>
+        <translation type="obsolete">親を開く</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="174"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="190"/>
         <source>Open File</source>
         <translation>ファイルを開く</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="175"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="191"/>
         <source>Open Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="176"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="192"/>
         <source>New File</source>
         <translation>新しいファイル</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="177"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="193"/>
         <source>New File Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="178"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="431"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="437"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="442"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="194"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="450"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="456"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="461"/>
         <source>Rename File</source>
         <translation>ファイル名を変更</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="179"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="456"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="461"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="195"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="475"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="480"/>
         <source>Remove File</source>
         <translation>ファイルを削除</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="181"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="197"/>
         <source>Set Folder To Root</source>
         <translation>フォルダをルートへ設定</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="182"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="198"/>
         <source>New Folder</source>
         <translation>新しいフォルダ</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="183"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="497"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="506"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="511"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="199"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="516"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="525"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="530"/>
         <source>Rename Folder</source>
         <translation>フォルダ名を変更</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="184"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="525"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="530"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="200"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="544"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="549"/>
         <source>Remove Folder</source>
         <translation>フォルダを削除</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="186"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="202"/>
         <source>Open Terminal Here</source>
         <translation>ここでターミナルを開く</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="187"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="203"/>
         <source>Open Explorer Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="189"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="205"/>
         <source>View Godoc Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="390"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="400"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="409"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="419"/>
         <source>Create File</source>
         <translation>ファイルを作成</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="431"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="450"/>
         <source>File Name</source>
         <translation>ファイル名</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="391"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="410"/>
         <source>The filename is exists!</source>
         <translation>このファイル名は存在します!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="191"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="134"/>
+        <source>Open to Parent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="207"/>
         <source>Load Folder Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="248"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="266"/>
         <source>File System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="401"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="420"/>
         <source>Failed to create the file!</source>
         <translation>ファイルの作成に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="438"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="443"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="457"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="462"/>
         <source>Failed to rename the file!</source>
         <translation>ファイル名の変更に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="457"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="476"/>
         <source>Confirm remove the file and continue</source>
         <translation>ファイル削除の続行を確認</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="462"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="481"/>
         <source>Failed to remove the file!</source>
         <translation>ファイルの削除に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="480"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="483"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="499"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="502"/>
         <source>Create Folder</source>
         <translation>フォルダを作成</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="497"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="516"/>
         <source>Folder Name</source>
         <translation>フォルダ名</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="481"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="500"/>
         <source>The folder name is exists!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="484"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="503"/>
         <source>Failed to create the folder!</source>
         <translation>フォルダの作成に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="507"/>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="512"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="526"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="531"/>
         <source>Failed to rename the folder!</source>
         <translation>フォルダ名の変更に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="526"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="545"/>
         <source>Confirm remove the foler and continue</source>
         <translation>フォルダ削除の続行を確認</translation>
     </message>
     <message>
-        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="531"/>
+        <location filename="src/plugins/filebrowser/filebrowser.cpp" line="550"/>
         <source>Failed to remove the folder!</source>
         <translation>フォルダの削除に失敗しました!</translation>
     </message>
