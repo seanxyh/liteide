@@ -46,6 +46,7 @@ public slots:
     void loadDebugInfo(const QString &id);
     void saveDebugInfo(const QString &id);
     void addWatch();
+    void addLocalWatch();
     void removeWatch();
     void removeAllWatchAct();
     void watchViewContextMenu(QPoint);
@@ -70,6 +71,7 @@ protected:
     TerminalEdit *m_debugLogEdit;
     QMenu      *m_watchMenu;
     QAction    *m_addWatchAct;
+    QAction    *m_addLocalWatchAct;
     QAction    *m_removeWatchAct;
     QAction     *m_removeAllWatchAct;
     QMap<QString,QString> m_watchMap;

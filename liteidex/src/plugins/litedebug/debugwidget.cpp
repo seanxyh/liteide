@@ -93,10 +93,12 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     m_widget->setLayout(layout);
 
     m_watchMenu = new QMenu(m_widget);
-    m_addWatchAct = new QAction(tr("Add Watch"),this);
+    m_addWatchAct = new QAction(tr("Add Global Watch"),this);
+    m_addLocalWatchAct = new QAction(tr("Add Local Watch"),this);
     m_removeWatchAct = new QAction(tr("Remove Watch"),this);
     m_removeAllWatchAct = new QAction(tr("Remove All Watch"),this);
     m_watchMenu->addAction(m_addWatchAct);
+    m_watchMenu->addAction(m_addLocalWatchAct);
     m_watchMenu->addSeparator();
     m_watchMenu->addAction(m_removeWatchAct);
     m_watchMenu->addAction(m_removeAllWatchAct);
@@ -105,6 +107,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
     connect(m_varsView,SIGNAL(expanded(QModelIndex)),this,SLOT(expandedVarsView(QModelIndex)));
     connect(m_watchView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(watchViewContextMenu(QPoint)));
     connect(m_addWatchAct,SIGNAL(triggered()),this,SLOT(addWatch()));
+    connect(m_addLocalWatchAct,SIGNAL(triggered()),this,SLOT(addLocalWatch()));
     connect(m_removeWatchAct,SIGNAL(triggered()),this,SLOT(removeWatch()));
     connect(m_removeAllWatchAct,SIGNAL(triggered()),this,SLOT(removeAllWatchAct()));
 }
@@ -249,12 +252,21 @@ void DebugWidget::saveDebugInfo(const QString &id)
 
 void DebugWidget::addWatch()
 {
-    QString text = QInputDialog::getText(this->m_widget,tr("Add Watch"),tr("Watch var:(example main.var os.Stdout)"));
+    QString text = QInputDialog::getText(this->m_widget,tr("Add Global Watch"),tr("Watch var:(example main.var os.Stdout)"));
     if (text.isEmpty()) {
         return;
     }
     if (text.indexOf(".") >= 0) {
         text = QString("\'%1'").arg(text);
+    }
+    m_debugger->createWatch(text,false,true);
+}
+
+void DebugWidget::addLocalWatch()
+{
+    QString text = QInputDialog::getText(this->m_widget,tr("Add Local Watch"),tr("Watch var:(example s1.str)"));
+    if (text.isEmpty()) {
+        return;
     }
     m_debugger->createWatch(text,false,true);
 }
@@ -269,8 +281,8 @@ void DebugWidget::removeWatch()
     if (!head.isValid()) {
         return;
     }
-    QString text = head.data(Qt::DisplayRole).toString();
-    m_debugger->removeWatch(text,true);
+    QString name = head.data(Qt::UserRole + 1).toString();
+    m_debugger->removeWatchByName(name,true);
 }
 
 void DebugWidget::removeAllWatchAct()

@@ -304,6 +304,23 @@ void GdbDebugeer::removeWatch(const QString &var, bool children)
     command(cmd);
 }
 
+void GdbDebugeer::removeWatchByName(const QString &name, bool children)
+{
+    QString var = m_varNameMap.key(name);
+    QStringList args;
+    args << "-var-delete";
+    if (children) {
+        args << "-c";
+    }
+    args << name;
+    GdbCmd cmd;
+    cmd.setCmd(args);
+    cmd.insert("var",var);
+    cmd.insert("name",name);
+    cmd.insert("children",children);
+    command(cmd);
+}
+
 void GdbDebugeer::expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type)
 {
     QStandardItem *parent = 0;
@@ -715,8 +732,8 @@ void GdbDebugeer::handleResultVarCreate(const GdbResponse &response, QMap<QStrin
     item->setData(name,VarNameRole);
     m_nameItemMap.insert(name,item);
     if (map.value("watchModel",false).toBool()) {
-        emit watchCreated(var,map.value("var").toString());
-        m_watchList.append(var);
+        emit watchCreated(name,map.value("var").toString());
+        m_watchList.append(name);
         m_watchModel->appendRow(QList<QStandardItem*>()
                                << item
                                << new QStandardItem(value)
@@ -829,15 +846,17 @@ void GdbDebugeer::handleResultVarDelete(const GdbResponse &response, QMap<QStrin
             i.remove();
         }
     }
+
+    QStandardItemModel *model = m_varsModel;
+    if (m_watchList.contains(name)) {
+        emit watchRemoved(name);
+        m_watchList.removeAll(name);
+        model = m_watchModel;
+        ndeleted = 1;
+    }
     if (ndeleted) {
         m_varNameMap.remove(var);
         m_nameItemMap.remove(name);
-    }
-    QStandardItemModel *model = m_varsModel;
-    if (m_watchList.contains(var)) {
-        emit watchRemoved(var);
-        m_watchList.removeAll(var);
-        model = m_watchModel;
     }
     for (int i = 0; i < model->rowCount(); i++) {
         QStandardItem *item = model->item(i,0);
