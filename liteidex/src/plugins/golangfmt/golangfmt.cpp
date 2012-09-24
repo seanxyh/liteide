@@ -82,19 +82,19 @@ void GolangFmt::applyOption(QString id)
     m_timeout = m_liteApp->settings()->value("golangfmt/timeout",500).toInt();
 }
 
-void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save)
+void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save, bool check)
 {
     LiteApi::ITextEditor *textEditor = LiteApi::getTextEditor(editor);
     if (!textEditor) {
         return;
     }
     QString fileName = editor->filePath();
-    if (fileName.isEmpty()) {
+    if (fileName.isEmpty() && check) {
         return;
     }
 
     QFileInfo info(fileName);
-    if (info.suffix() != "go") {
+    if (info.suffix() != "go" && check) {
         return;
     }
 

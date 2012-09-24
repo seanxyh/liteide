@@ -42,7 +42,7 @@ GolangPlayPlugin::GolangPlayPlugin()
     m_info->setId("plugin/GolangPlay");
     m_info->setName("GolangPlay");
     m_info->setAnchor("visualfc");
-    m_info->setVer("x11.2");
+    m_info->setVer("x13.1");
     m_info->setInfo("GolangPlay Plugin");
 }
 

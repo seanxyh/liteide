@@ -42,8 +42,12 @@ public:
     virtual QStringList dependPluginList() const;
 protected slots:
     void editorCreated(LiteApi::IEditor*);
+    void appLoaded();
+    void goplayFmt();
 protected:
     QAction   *m_gofmtAct;
+    QAction   *m_goplayAct;
+    LiteApi::IEditor *m_playEditor;
     QToolButton *m_fmtBtn;
     GolangFmt *m_fmt;
 };

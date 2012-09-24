@@ -47,9 +47,9 @@ public slots:
     void loadDiff(QTextCursor &cursor, const QString &diff);
     void editorAboutToSave(LiteApi::IEditor*);
     void applyOption(QString);
-protected:
     void fmtEditor(LiteApi::IEditor*,bool);
-    void syncfmtEditor(LiteApi::IEditor *, bool);
+    void syncfmtEditor(LiteApi::IEditor *, bool save, bool check = true);
+protected:
     LiteApi::IApplication *m_liteApp;
     ProcessEx *m_process;
     LiteApi::IEnvManager *m_envManager;

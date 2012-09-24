@@ -117,7 +117,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_insertBreakAct->setShortcut(QKeySequence(Qt::Key_F9));
     m_insertBreakAct->setToolTip(tr("Insert/Remove Breakpoint (F9)"));
 
-    m_removeAllBreakAct = new QAction("Remove All Break Points",this);
+    m_removeAllBreakAct = new QAction(tr("Remove All Break Points"),this);
 
     m_toolBar->addSeparator();
     m_toolBar->addAction(m_startDebugAct);
