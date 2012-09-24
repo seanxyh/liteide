@@ -80,6 +80,7 @@ public:
     virtual void removeBreakPoint(const QString &fileName, int line) = 0;
     virtual void createWatch(const QString &var, bool floating, bool watchModel = false) = 0;
     virtual void removeWatch(const QString &var, bool children) = 0;
+    virtual void removeWatchByName(const QString &name, bool children) = 0;
 signals:
     void debugStarted();
     void debugStoped();
