@@ -154,7 +154,9 @@ LiteBuild::~LiteBuild()
 
     foreach(QAction *act, m_actions) {
         m_toolBar->removeAction(act);
-        delete act;
+        if (act->menu()) {
+            delete act;
+        }
     }
     m_actions.clear();
     foreach(QAction *act, m_buildMenuActions) {
@@ -553,7 +555,9 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
 
     foreach(QAction *act, m_actions) {
         m_toolBar->removeAction(act);
-        delete act;
+        if (act->menu()) {
+            delete act;
+        }
     }
     m_actions.clear();
     foreach(QAction *act, m_buildMenuActions) {
