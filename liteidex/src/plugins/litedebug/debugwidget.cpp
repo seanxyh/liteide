@@ -174,7 +174,6 @@ void DebugWidget::setDebugger(LiteApi::IDebugger *debug)
     connect(m_debugger,SIGNAL(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)),this,SLOT(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)));
     connect(m_debugger,SIGNAL(watchCreated(QString,QString)),this,SLOT(watchCreated(QString,QString)));
     connect(m_debugger,SIGNAL(watchRemoved(QString)),this,SLOT(watchRemoved(QString)));
-    connect(m_debugger,SIGNAL(debugLoaded()),this,SLOT(debugLoaded()));
 }
 
 void DebugWidget::expandedVarsView(QModelIndex index)
@@ -227,6 +226,27 @@ void DebugWidget::watchViewContextMenu(QPoint pos)
     }
 }
 
+void DebugWidget::loadDebugInfo(const QString &id)
+{
+    m_watchMap.clear();
+    foreach(QString var, m_liteApp->settings()->value(id).toStringList()) {
+        if (var.indexOf(".") < 0) {
+            //local var
+            m_debugger->createWatch(var,true,false);
+        }
+        m_debugger->createWatch(var,false,true);
+    }
+}
+
+void DebugWidget::saveDebugInfo(const QString &id)
+{
+    QStringList vars;
+    foreach(QString var, m_watchMap.values()) {
+        vars.append(var);
+    }
+    m_liteApp->settings()->setValue(id,vars);
+}
+
 void DebugWidget::addWatch()
 {
     QString text = QInputDialog::getText(this->m_widget,tr("Add Watch"),tr("Watch var:(example main.var os.Stdout)"));
@@ -277,18 +297,5 @@ void DebugWidget::watchCreated(QString var,QString name)
 void DebugWidget::watchRemoved(QString var)
 {
     m_watchMap.remove(var);
-}
-
-void DebugWidget::debugLoaded()
-{
-    QStringList vars = m_watchMap.values();
-    m_watchMap.clear();
-    foreach(QString var, vars) {
-        if (var.indexOf(".") < 0) {
-            //local var
-            m_debugger->createWatch(var,true,false);
-        }
-        m_debugger->createWatch(var,false,true);
-    }
 }
 

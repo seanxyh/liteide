@@ -258,6 +258,7 @@ void LiteDebug::setDebugger(LiteApi::IDebugger *debug)
         connect(m_debugger,SIGNAL(debugStoped()),this,SLOT(debugStoped()));
         connect(m_debugger,SIGNAL(debugLog(LiteApi::DEBUG_LOG_TYPE,QString)),this,SLOT(debugLog(LiteApi::DEBUG_LOG_TYPE,QString)));
         connect(m_debugger,SIGNAL(setCurrentLine(QString,int)),this,SLOT(setCurrentLine(QString,int)));
+        connect(m_debugger,SIGNAL(debugLoaded()),this,SLOT(debugLoaded()));
     }
     m_dbgWidget->setDebugger(m_debugger);
 }
@@ -298,6 +299,7 @@ void LiteDebug::startDebug()
     m_dbgWidget->clearLog();
 
     QString targetFilepath = m_liteBuild->targetFilePath();
+    m_debugInfoId = targetFilepath;
     if (targetFilepath.isEmpty() || !QFile::exists(targetFilepath)) {
         m_liteApp->appendLog("litedebug",QString("not find execute target %1").arg(targetFilepath),true);
         return;
@@ -501,6 +503,13 @@ void LiteDebug::clearLastLine()
     m_lastLine.fileName.clear();
 }
 
+void LiteDebug::debugLoaded()
+{
+    if (!m_debugInfoId.isEmpty()) {
+        m_dbgWidget->loadDebugInfo(m_debugInfoId);
+    }
+}
+
 void LiteDebug::debugStarted()
 {
     m_startDebugAct->setToolTip(tr("Continue (F5)"));
@@ -529,6 +538,8 @@ void LiteDebug::debugStoped()
     clearLastLine();
     m_output->setReadOnly(true);
     //m_liteApp->outputManager()->setCurrentOutput(m_output);
+    if (!m_debugInfoId.isEmpty())
+        m_dbgWidget->saveDebugInfo(m_debugInfoId);
     m_widget->hide();
     emit debugVisible(false);
 }
