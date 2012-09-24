@@ -72,6 +72,7 @@ public slots:
     void enterAppInputText(QString);
 protected slots:
     void setDebugger(LiteApi::IDebugger*);
+    void debugLoaded();
     void debugLog(LiteApi::DEBUG_LOG_TYPE type, const QString &log);
     void debugStarted();
     void debugStoped();
@@ -97,6 +98,7 @@ protected:
     QAction *m_runToLineAct;
     QAction *m_insertBreakAct;
     QAction *m_removeAllBreakAct;
+    QString  m_debugInfoId;
     CurrentLine m_lastLine;
     QMultiMap<QString,int> m_fileBpMap;
 };

@@ -43,6 +43,8 @@ public:
     virtual ~DebugWidget();
     virtual QWidget *widget();
 public slots:
+    void loadDebugInfo(const QString &id);
+    void saveDebugInfo(const QString &id);
     void addWatch();
     void removeWatch();
     void removeAllWatchAct();
@@ -53,7 +55,6 @@ public slots:
     void clearLog();
     void expandedVarsView(QModelIndex);
     void setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &index, bool expanded);
-    void debugLoaded();
     void watchCreated(QString,QString);
     void watchRemoved(QString);
 protected:
