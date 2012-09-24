@@ -712,6 +712,7 @@ void GdbDebugeer::handleResultVarCreate(const GdbResponse &response, QMap<QStrin
     item->setData(name,VarNameRole);
     m_nameItemMap.insert(name,item);
     if (map.value("watchModel",false).toBool()) {
+        emit watchCreated(var,map.value("var").toString());
         m_watchList.append(var);
         m_watchModel->appendRow(QList<QStandardItem*>()
                                << item
@@ -831,6 +832,7 @@ void GdbDebugeer::handleResultVarDelete(const GdbResponse &response, QMap<QStrin
     }
     QStandardItemModel *model = m_varsModel;
     if (m_watchList.contains(var)) {
+        emit watchRemoved(var);
         m_watchList.removeAll(var);
         model = m_watchModel;
     }
@@ -1030,6 +1032,7 @@ void GdbDebugeer::initGdb()
     command("-break-insert main.main");
 
     command("-exec-run");
+    debugLoaded();
 }
 
 void GdbDebugeer::updateWatch()
