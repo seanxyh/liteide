@@ -172,6 +172,9 @@ void DebugWidget::setDebugger(LiteApi::IDebugger *debug)
     setResizeView(m_statckView);
     setResizeView(m_libraryView);
     connect(m_debugger,SIGNAL(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)),this,SLOT(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)));
+    connect(m_debugger,SIGNAL(watchCreated(QString,QString)),this,SLOT(watchCreated(QString,QString)));
+    connect(m_debugger,SIGNAL(watchRemoved(QString)),this,SLOT(watchRemoved(QString)));
+    connect(m_debugger,SIGNAL(debugLoaded()),this,SLOT(debugLoaded()));
 }
 
 void DebugWidget::expandedVarsView(QModelIndex index)
@@ -230,9 +233,6 @@ void DebugWidget::addWatch()
     if (text.isEmpty()) {
         return;
     }
-//    if (text.indexOf(".") < 0) {
-//        text = "main."+text;
-//    }
     if (text.indexOf(".") >= 0) {
         text = QString("\'%1'").arg(text);
     }
@@ -266,3 +266,29 @@ void DebugWidget::removeAllWatchAct()
         m_debugger->removeWatch(var,true);
     }
 }
+
+void DebugWidget::watchCreated(QString var,QString name)
+{
+    if (!m_watchMap.keys().contains(var)) {
+        m_watchMap.insert(var,name);
+    }
+}
+
+void DebugWidget::watchRemoved(QString var)
+{
+    m_watchMap.remove(var);
+}
+
+void DebugWidget::debugLoaded()
+{
+    QStringList vars = m_watchMap.values();
+    m_watchMap.clear();
+    foreach(QString var, vars) {
+        if (var.indexOf(".") < 0) {
+            //local var
+            m_debugger->createWatch(var,true,false);
+        }
+        m_debugger->createWatch(var,false,true);
+    }
+}
+

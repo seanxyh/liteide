@@ -53,6 +53,9 @@ public slots:
     void clearLog();
     void expandedVarsView(QModelIndex);
     void setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &index, bool expanded);
+    void debugLoaded();
+    void watchCreated(QString,QString);
+    void watchRemoved(QString);
 protected:
     LiteApi::IApplication *m_liteApp;
     QWidget *m_widget;
@@ -68,6 +71,7 @@ protected:
     QAction    *m_addWatchAct;
     QAction    *m_removeWatchAct;
     QAction     *m_removeAllWatchAct;
+    QMap<QString,QString> m_watchMap;
 };
 
 #endif // DEBUGWIDGET_H
