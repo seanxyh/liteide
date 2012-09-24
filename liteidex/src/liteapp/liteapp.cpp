@@ -545,13 +545,12 @@ void LiteApp::saveSession(const QString &name)
 
 void LiteApp::dbclickLogOutput(QTextCursor cur)
 {
-    QRegExp rep("([\\w\\d_\\\\/\\.]+):(\\d+):(\\d*)");
-
-    int index = rep.indexIn(cur.block().text());
+    QRegExp rep("(\\w?\\:?[\\w\\d\\_\\-\\\\/\\.]+):(\\d+):");
+    int index = rep.indexIn(cur.block().text().trimmed());
     if (index < 0)
         return;
     QStringList capList = rep.capturedTexts();
-    qDebug() << capList;
+
     if (capList.count() < 3)
         return;
     QString fileName = capList[1];
