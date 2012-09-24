@@ -28,7 +28,8 @@
 #include "debugwidget.h"
 #include "fileutil/fileutil.h"
 
-
+#include <QDir>
+#include <QFileInfo>
 #include <QLayout>
 #include <QMenu>
 #include <QToolBar>
@@ -154,6 +155,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     connect(m_insertBreakAct,SIGNAL(triggered()),this,SLOT(toggleBreakPoint()));
     connect(m_showLineAct,SIGNAL(triggered()),this,SLOT(showLine()));
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
+    connect(m_liteApp->editorManager(),SIGNAL(editorAboutToClose(LiteApi::IEditor*)),this,SLOT(editorAboutToClose(LiteApi::IEditor*)));
     connect(m_output,SIGNAL(enterText(QString)),this,SLOT(enterAppInputText(QString)));
 
     m_liteApp->extension()->addObject("LiteApi.IDebugManager",m_manager);
@@ -199,13 +201,35 @@ void LiteDebug::editorCreated(LiteApi::IEditor *editor)
     if (!editorMark) {
         return;
     }
-    QList<int> bpList = m_fileBpMap.values(editor->filePath());
-    foreach (int line, bpList) {
-        editorMark->addMark(line,LiteApi::BreakPointMark);
+    bool ok;
+    m_fileBpMap.remove(editor->filePath());
+    foreach(QString bp, m_liteApp->settings()->value(QString("bp_%1").arg(editor->filePath())).toStringList()) {
+        int i = bp.toInt(&ok);
+        if (ok) {
+            editorMark->addMark(i,LiteApi::BreakPointMark);
+            m_fileBpMap.insert(editor->filePath(),i);
+        }
     }
     if (m_lastLine.fileName == editor->filePath()) {
         editorMark->addMark(m_lastLine.line,LiteApi::CurrentLineMark);
     }
+}
+
+void LiteDebug::editorAboutToClose(LiteApi::IEditor *editor)
+{
+    if (!editor) {
+        return;
+    }
+    LiteApi::IEditorMark *editorMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
+    if (!editorMark) {
+        return;
+    }
+    QList<int> bpList = editorMark->markList(LiteApi::BreakPointMark);
+    QStringList save;
+    foreach(int bp, bpList) {
+        save.append(QString("%1").arg(bp));
+    }
+    m_liteApp->settings()->setValue(QString("bp_%1").arg(editor->filePath()),save);
 }
 
 QWidget *LiteDebug::widget()
@@ -273,6 +297,22 @@ void LiteDebug::startDebug()
     if (index != -1) {
         target = targetFilepath.right(targetFilepath.length()-index);
     }
+    QDir dir(workDir);
+    foreach (QFileInfo info, dir.entryInfoList(QStringList() << "*.go",QDir::Files)) {
+        bool ok = false;
+        if (m_liteApp->editorManager()->findEditor(info.filePath(),true)) {
+            continue;
+        }
+        m_fileBpMap.remove(info.filePath());
+        foreach(QString bp,m_liteApp->settings()->value(QString("bp_%1").arg(info.filePath())).toStringList()) {
+            int i = bp.toInt(&ok);
+            if (ok && i >= 0) {
+                m_fileBpMap.insert(info.filePath(),i);
+            }
+        }
+        qDebug() << m_fileBpMap.value(info.filePath());
+    }
+
     /*
     LiteApi::IBuild *build = m_liteBuild->buildManager()->currentBuild();
     QList<LiteApi::BuildDebug*> debugList = build->debugList();
