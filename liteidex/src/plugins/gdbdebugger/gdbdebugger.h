@@ -137,7 +137,7 @@ public:
     virtual void removeBreakPoint(const QString &fileName, int line);
 public:
     virtual void command(const GdbCmd &cmd);
-    virtual void createWatch(const QString &var, bool floating);
+    virtual void createWatch(const QString &var, bool floating, bool watchModel = false);
     virtual void removeWatch(const QString &var, bool children);
 protected:
     void command_helper(const GdbCmd &cmd, bool emitOut);
@@ -181,11 +181,13 @@ protected:
     QProcess *m_process;
     QStandardItemModel *m_asyncModel;
     QStandardItemModel *m_varsModel;
+    QStandardItemModel *m_watchModel;
     QStandardItemModel *m_framesModel;
     QStandardItemModel *m_libraryModel;
     QStandardItem   *m_asyncItem;
     QMap<int,QVariant> m_tokenCookieMap;
     QMap<QString,QString> m_varNameMap;
+    QList<QString> m_watchList;
     QMap<QString,QStandardItem*> m_nameItemMap;
     QSet<QStandardItem*> m_varChangedItemList;
     QString m_gdbFilePath;
