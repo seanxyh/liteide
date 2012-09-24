@@ -344,6 +344,9 @@ bool EditorManager::closeEditor(IEditor *editor)
             cur->save();
         }
     }
+    if (!cur->filePath().isEmpty()) {
+        m_liteApp->settings()->setValue(QString("state_%1").arg(cur->filePath()),cur->saveState());
+    }
     emit editorAboutToClose(cur);
     int index = m_editorTabWidget->indexOf(cur->widget());
     m_editorTabWidget->removeTab(index);
@@ -556,6 +559,10 @@ IEditor *EditorManager::openEditor(const QString &fileName, const QString &mimeT
         }
     }
     if (editor) {
+        ITextEditor *textEditor = getTextEditor(editor);
+        if (textEditor) {
+            textEditor->restoreState(m_liteApp->settings()->value(QString("state_%1").arg(editor->filePath())).toByteArray());
+        }
         addEditor(editor);
     }
     return editor;

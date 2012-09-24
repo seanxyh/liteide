@@ -68,6 +68,7 @@ public slots:
     void stepOut();
     void showLine();
     void toggleBreakPoint();
+    void removeAllBreakPoints();
     void enterAppInputText(QString);
 protected slots:
     void setDebugger(LiteApi::IDebugger*);
@@ -95,6 +96,7 @@ protected:
     QAction *m_stepOutAct;
     QAction *m_runToLineAct;
     QAction *m_insertBreakAct;
+    QAction *m_removeAllBreakAct;
     CurrentLine m_lastLine;
     QMultiMap<QString,int> m_fileBpMap;
 };

@@ -113,9 +113,11 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     m_runToLineAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_F10));
     m_runToLineAct->setToolTip(tr("Run to Line (Ctrl+F10)"));
 
-    m_insertBreakAct = new QAction(QIcon("icon:litedebug/images/insertbreak.png"),tr("BreakPoint"),this);
+    m_insertBreakAct = new QAction(QIcon("icon:litedebug/images/insertbreak.png"),tr("Insert/Remove BreakPoint"),this);
     m_insertBreakAct->setShortcut(QKeySequence(Qt::Key_F9));
     m_insertBreakAct->setToolTip(tr("Insert/Remove Breakpoint (F9)"));
+
+    m_removeAllBreakAct = new QAction("Remove All Break Points",this);
 
     m_toolBar->addSeparator();
     m_toolBar->addAction(m_startDebugAct);
@@ -153,6 +155,7 @@ LiteDebug::LiteDebug(LiteApi::IApplication *app, QObject *parent) :
     connect(m_stepIntoAct,SIGNAL(triggered()),this,SLOT(stepInto()));
     connect(m_stepOutAct,SIGNAL(triggered()),this,SLOT(stepOut()));
     connect(m_insertBreakAct,SIGNAL(triggered()),this,SLOT(toggleBreakPoint()));
+    connect(m_removeAllBreakAct,SIGNAL(triggered()),this,SLOT(removeAllBreakPoints()));
     connect(m_showLineAct,SIGNAL(triggered()),this,SLOT(showLine()));
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_liteApp->editorManager(),SIGNAL(editorAboutToClose(LiteApi::IEditor*)),this,SLOT(editorAboutToClose(LiteApi::IEditor*)));
@@ -197,20 +200,30 @@ void LiteDebug::editorCreated(LiteApi::IEditor *editor)
     if (!editor) {
         return;
     }
+
     LiteApi::IEditorMark *editorMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
     if (!editorMark) {
         return;
     }
+
+    QMenu *menu = LiteApi::findExtensionObject<QMenu*>(editor,"LiteApi.ContextMenu");
+    if (menu) {
+        menu->addSeparator();
+        menu->addAction(m_insertBreakAct);
+        menu->addAction(m_removeAllBreakAct);
+    }
+
+    QString filePath = editor->filePath();
     bool ok;
-    m_fileBpMap.remove(editor->filePath());
-    foreach(QString bp, m_liteApp->settings()->value(QString("bp_%1").arg(editor->filePath())).toStringList()) {
+    m_fileBpMap.remove(filePath);
+    foreach(QString bp, m_liteApp->settings()->value(QString("bp_%1").arg(filePath)).toStringList()) {
         int i = bp.toInt(&ok);
         if (ok) {
             editorMark->addMark(i,LiteApi::BreakPointMark);
-            m_fileBpMap.insert(editor->filePath(),i);
+            m_fileBpMap.insert(filePath,i);
         }
     }
-    if (m_lastLine.fileName == editor->filePath()) {
+    if (m_lastLine.fileName == filePath) {
         editorMark->addMark(m_lastLine.line,LiteApi::CurrentLineMark);
     }
 }
@@ -299,18 +312,18 @@ void LiteDebug::startDebug()
     }
     QDir dir(workDir);
     foreach (QFileInfo info, dir.entryInfoList(QStringList() << "*.go",QDir::Files)) {
+        QString filePath = info.filePath();
         bool ok = false;
-        if (m_liteApp->editorManager()->findEditor(info.filePath(),true)) {
+        if (m_liteApp->editorManager()->findEditor(filePath,true)) {
             continue;
         }
-        m_fileBpMap.remove(info.filePath());
-        foreach(QString bp,m_liteApp->settings()->value(QString("bp_%1").arg(info.filePath())).toStringList()) {
+        m_fileBpMap.remove(filePath);
+        foreach(QString bp,m_liteApp->settings()->value(QString("bp_%1").arg(filePath)).toStringList()) {
             int i = bp.toInt(&ok);
             if (ok && i >= 0) {
-                m_fileBpMap.insert(info.filePath(),i);
+                m_fileBpMap.insert(filePath,i);
             }
         }
-        qDebug() << m_fileBpMap.value(info.filePath());
     }
 
     /*
@@ -411,6 +424,30 @@ void LiteDebug::showLine()
         LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
         if (textEditor) {
             textEditor->gotoLine(m_lastLine.line,0,true);
+        }
+    }
+}
+
+void LiteDebug::removeAllBreakPoints()
+{
+    LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+    if (!editor) {
+        return;
+    }
+    LiteApi::IEditorMark *editorMark = LiteApi::findExtensionObject<LiteApi::IEditorMark*>(editor,"LiteApi.IEditorMark");
+    if (!editorMark) {
+        return;
+    }
+    LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
+    if (!textEditor) {
+        return;
+    }
+    QString filePath = textEditor->filePath();
+    foreach(int line, editorMark->markList(LiteApi::BreakPointMark)) {
+        editorMark->removeMark(line,LiteApi::BreakPointMark);
+        m_fileBpMap.remove(filePath,line);
+        if (m_debugger && m_debugger->isRunning()) {
+            m_debugger->removeBreakPoint(filePath,line);
         }
     }
 }
