@@ -112,7 +112,7 @@ void MainWindow::dropEvent(QDropEvent *event)
         if (info.isFile()) {
             m_liteApp->fileManager()->openFile(fileName);
         } else if(info.isDir()) {
-            m_liteApp->fileManager()->openFolderProject(info.path());
+            m_liteApp->fileManager()->openFolderProject(info.filePath());
         }
     }
 }
