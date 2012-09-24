@@ -66,10 +66,17 @@ GoplayBrowser::GoplayBrowser(LiteApi::IApplication *app, QObject *parent)
     m_dataPath = dir.path()+"/goplay";
 
     m_playFile = QFileInfo(dir,"goplay.go").filePath();
+    QFile file(m_playFile);
+    if (file.open(QFile::WriteOnly|QIODevice::Text)) {
+        file.write(data.toUtf8());
+        file.close();
+    }
 
     m_widget = new QWidget;
 
     m_editor = m_liteApp->fileManager()->createEditor(data,"text/x-gosrc");
+    m_editor->open(m_playFile,"text/x-gosrc");
+
     QToolBar *toolBar = LiteApi::findExtensionObject<QToolBar*>(m_editor,"LiteApi.QToolBar");
     if (toolBar) {
         toolBar->hide();
@@ -125,7 +132,8 @@ GoplayBrowser::GoplayBrowser(LiteApi::IApplication *app, QObject *parent)
     connect(m_process,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(runOutput(QByteArray,bool)));
     connect(m_process,SIGNAL(extFinish(bool,int,QString)),this,SLOT(runFinish(bool,int,QString)));
 
-    m_liteApp->extension()->addObject("LiteApi.GoplayBrowser",this);
+    m_liteApp->extension()->addObject("LiteApi.Goplay",this);
+    m_liteApp->extension()->addObject("LiteApi.Goplay.IEditor",m_editor);
 }
 
 GoplayBrowser::~GoplayBrowser()

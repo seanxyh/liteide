@@ -5,9 +5,10 @@
  * LiteDebug : watch vars load /save by project
  * LiteDebug : breakpoint load /save by file
  * LiteDebug : add remove all breakpoint action
- * LiteDebug : add / remove watch point
+ * LiteDebug : add / remove global or local watch point
  * LiteEditor : optimization editor mark
  * LiteEditor : enable drop text
+ * GolangPlay : enable gofmt
 ==== 2012.9.21 Ver x13 ====
  * LiteApp : any folder, any file to build
  * LiteApp : update window style, add editor toolbar and status
