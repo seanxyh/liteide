@@ -28,17 +28,30 @@
 
 #include "liteapi/liteapi.h"
 #include "liteeditorapi/liteeditorapi.h"
+#include "qtc_texteditor/basetextdocumentlayout.h"
+#include "liteeditor.h"
+
+class LiteTextMark : public TextEditor::ITextMark
+{
+    Q_OBJECT
+public:
+    LiteTextMark(int type, QObject *parent = 0);
+    int type() const { return m_type; }
+protected:
+    int m_type;
+};
 
 class LiteEditorMarkTypeManager : public LiteApi::IEditorMarkTypeManager
 {
     Q_OBJECT
 public:
     LiteEditorMarkTypeManager(QObject *parent = 0);
+    virtual ~LiteEditorMarkTypeManager();
     virtual void registerMark(int type, const QIcon &icon);
     virtual QList<int> markTypeList() const;
-    virtual QIcon markIcon(int type) const;
+    virtual LiteTextMark *mark(int type) const;
 protected:
-    QMap<int,QIcon> m_typeIconMap;
+    QMap<int,LiteTextMark*> m_typeMarkMap;
 };
 
 typedef QMap<int,QList<int> > MarkTypesMap;
@@ -47,14 +60,15 @@ class LiteEditorMark : public LiteApi::IEditorMark
 {
     Q_OBJECT
 public:
-    explicit LiteEditorMark(LiteApi::IEditorMarkTypeManager *manager, QObject *parent = 0);
+    explicit LiteEditorMark(LiteEditorMarkTypeManager *manager, QTextDocument *document, QObject *parent);
     virtual void addMark(int line, int type);
     virtual void removeMark(int line, int type);
-    virtual QList<int> markLineList() const;
+    virtual QList<int> markList(int type) const;
     virtual QList<int> lineTypeList(int line) const;
-    virtual void paint(QPainter *painter, int blockNumber, int x, int y, int w, int h) const;
 protected:
-    LiteApi::IEditorMarkTypeManager *m_manager;
+    LiteEditorMarkTypeManager *m_manager;
+    QTextDocument *m_document;
+    QMap<int,TextEditor::ITextMark*> m_typeMarkMap;
     MarkTypesMap m_lineMarkTypesMap;
 };
 

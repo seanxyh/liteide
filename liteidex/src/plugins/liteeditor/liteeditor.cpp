@@ -471,7 +471,7 @@ LiteApi::IFile *LiteEditor::file()
 
 int LiteEditor::line() const
 {
-    return m_editorWidget->textCursor().blockNumber()+1;
+    return m_editorWidget->textCursor().blockNumber();
 }
 
 int LiteEditor::column() const
@@ -722,7 +722,7 @@ void LiteEditor::gotoLine()
     if (!ok) {
         return;
     }
-    this->gotoLine(v,0,true);
+    this->gotoLine(v-1,0,true);
 }
 
 QString LiteEditor::textCodec() const

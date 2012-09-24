@@ -147,7 +147,7 @@ void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save)
         int line = fileLine.toInt(&ok);
         if (!ok)
             return;
-        textEditor->gotoLine(line,0,true);
+        textEditor->gotoLine(line-1,0,true);
         return;
     }
     QByteArray data = process.readAllStandardOutput();

@@ -429,5 +429,5 @@ void GolangAst::doubleClickedTree(QModelIndex index)
     if (!textEditor) {
         return;
     }
-    textEditor->gotoLine(item->line(),item->col(),true);
+    textEditor->gotoLine(item->line()-1,item->col(),true);
 }

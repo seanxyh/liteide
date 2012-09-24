@@ -1174,7 +1174,7 @@ void LiteBuild::dbclickBuildOutput(const QTextCursor &cur)
         editor->widget()->setFocus();
         LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
         if (textEditor) {
-            textEditor->gotoLine(line,0,true);
+            textEditor->gotoLine(line-1,0,true);
         }
     }
 }

@@ -545,13 +545,13 @@ void LiteApp::saveSession(const QString &name)
 
 void LiteApp::dbclickLogOutput(QTextCursor cur)
 {
-    QRegExp rep("([\\w\\d_\\\\/\\.]+):(\\d+):");
+    QRegExp rep("([\\w\\d_\\\\/\\.]+):(\\d+):(\\d*)");
 
     int index = rep.indexIn(cur.block().text());
     if (index < 0)
         return;
     QStringList capList = rep.capturedTexts();
-
+    qDebug() << capList;
     if (capList.count() < 3)
         return;
     QString fileName = capList[1];
@@ -567,7 +567,7 @@ void LiteApp::dbclickLogOutput(QTextCursor cur)
         editor->widget()->setFocus();
         LiteApi::ITextEditor *textEditor = LiteApi::findExtensionObject<LiteApi::ITextEditor*>(editor,"LiteApi.ITextEditor");
         if (textEditor) {
-            textEditor->gotoLine(line,0,true);
+            textEditor->gotoLine(line-1,0,true);
         }
     }
 }
