@@ -58,6 +58,7 @@ signals:
 public slots:
     void appLoaded();
     void editorCreated(LiteApi::IEditor*);
+    void editorAboutToClose(LiteApi::IEditor*);
     void startDebug();
     void continueRun();
     void runToLine();
