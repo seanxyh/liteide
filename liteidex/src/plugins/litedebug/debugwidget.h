@@ -44,7 +44,9 @@ public:
     virtual QWidget *widget();
 public slots:
     void addWatch();
-    void varsViewContextMenu(QPoint);
+    void removeWatch();
+    void removeAllWatchAct();
+    void watchViewContextMenu(QPoint);
     void setDebugger(LiteApi::IDebugger *debug);
     void enterText(const QString &cmd);
     void appendLog(const QString &log);
@@ -58,11 +60,14 @@ protected:
     QTabWidget *m_tabWidget;
     QTreeView *m_asyncView;
     QTreeView *m_varsView;
+    QTreeView *m_watchView;
     QTreeView *m_statckView;
     QTreeView *m_libraryView;
     TerminalEdit *m_debugLogEdit;
-    QMenu      *m_varsMenu;
+    QMenu      *m_watchMenu;
     QAction    *m_addWatchAct;
+    QAction    *m_removeWatchAct;
+    QAction     *m_removeAllWatchAct;
 };
 
 #endif // DEBUGWIDGET_H

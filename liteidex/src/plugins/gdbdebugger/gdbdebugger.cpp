@@ -105,6 +105,11 @@ GdbDebugeer::GdbDebugeer(LiteApi::IApplication *app, QObject *parent) :
     m_varsModel->setHeaderData(1,Qt::Horizontal,"Value");
     m_varsModel->setHeaderData(2,Qt::Horizontal,"Type");
 
+    m_watchModel = new QStandardItemModel(0,3,this);
+    m_watchModel->setHeaderData(0,Qt::Horizontal,"Name");
+    m_watchModel->setHeaderData(1,Qt::Horizontal,"Value");
+    m_watchModel->setHeaderData(2,Qt::Horizontal,"Type");
+
     m_framesModel = new QStandardItemModel(0,5,this);
     m_framesModel->setHeaderData(0,Qt::Horizontal,"Level");
     m_framesModel->setHeaderData(1,Qt::Horizontal,"Address");
@@ -149,7 +154,9 @@ QAbstractItemModel *GdbDebugeer::debugModel(LiteApi::DEBUG_MODEL_TYPE type)
         return m_asyncModel;
     } else if (type == LiteApi::VARS_MODEL) {
         return m_varsModel;
-    } else if (type == LiteApi::CALLSTACK_MODEL) {
+    } else if (type == LiteApi::WATCHES_MODEL) {
+        return m_watchModel;
+    }else if (type == LiteApi::CALLSTACK_MODEL) {
         return m_framesModel;
     } else if (type == LiteApi::LIBRARY_MODEL) {
         return m_libraryModel;
@@ -259,7 +266,7 @@ void GdbDebugeer::runToLine(const QString &fileName, int line)
     command("-exec-continue");
 }
 
-void GdbDebugeer::createWatch(const QString &var, bool floating)
+void GdbDebugeer::createWatch(const QString &var, bool floating, bool watchModel)
 {
     GdbCmd cmd;
     QStringList args;
@@ -273,6 +280,9 @@ void GdbDebugeer::createWatch(const QString &var, bool floating)
     args << var;
     cmd.setCmd(args);
     cmd.insert("var",var);
+    if (watchModel) {
+        cmd.insert("watchModel",true);
+    }
     command(cmd);
 }
 
@@ -295,19 +305,25 @@ void GdbDebugeer::removeWatch(const QString &var, bool children)
 
 void GdbDebugeer::expandItem(QModelIndex index, LiteApi::DEBUG_MODEL_TYPE type)
 {
+    QStandardItem *parent = 0;
     if (type == LiteApi::VARS_MODEL) {
-        QStandardItem *parent =  m_varsModel->itemFromIndex(index);
-        if (parent->data(VarExpanded).toInt() == 1) {
-            return;
-        }
-        parent->setData(1,VarExpanded);
-        for (int i = 0; i < parent->rowCount(); i++) {
-            QStandardItem *item = parent->child(i);
-            QString name = item->data(VarNameRole).toString();
-            int num = item->data(VarNumChildRole).toInt();
-            if (num > 0) {
-                updateVarListChildren(name);
-            }
+        parent = m_varsModel->itemFromIndex(index);
+    } else if (type == LiteApi::WATCHES_MODEL) {
+        parent = m_watchModel->itemFromIndex(index);
+    }
+    if (!parent) {
+        return;
+    }
+    if (parent->data(VarExpanded).toInt() == 1) {
+        return;
+    }
+    parent->setData(1,VarExpanded);
+    for (int i = 0; i < parent->rowCount(); i++) {
+        QStandardItem *item = parent->child(i);
+        QString name = item->data(VarNameRole).toString();
+        int num = item->data(VarNumChildRole).toInt();
+        if (num > 0) {
+            updateVarListChildren(name);
         }
     }
 }
@@ -665,7 +681,7 @@ void GdbDebugeer::handleResultStackListVariables(const GdbResponse &response, QM
             if (child.isValid()) {
                 QString var = child.findChild("name").data();
                 if (!m_varNameMap.contains(var)) {
-                    createWatch(var,true);
+                    createWatch(var,true,false);
                 }
             }
         }
@@ -695,11 +711,20 @@ void GdbDebugeer::handleResultVarCreate(const GdbResponse &response, QMap<QStrin
     QStandardItem *item = new QStandardItem(var);
     item->setData(name,VarNameRole);
     m_nameItemMap.insert(name,item);
-    m_varsModel->appendRow(QList<QStandardItem*>()
-                           << item
-                           << new QStandardItem(value)
-                           << new QStandardItem(type)
-                           );
+    if (map.value("watchModel",false).toBool()) {
+        m_watchList.append(var);
+        m_watchModel->appendRow(QList<QStandardItem*>()
+                               << item
+                               << new QStandardItem(value)
+                               << new QStandardItem(type)
+                               );
+    } else {
+        m_varsModel->appendRow(QList<QStandardItem*>()
+                               << item
+                               << new QStandardItem(value)
+                               << new QStandardItem(type)
+                               );
+    }
     int num = numchild.toInt();
     item->setData(num,VarNumChildRole);
     if (num > 0 ){
@@ -804,15 +829,20 @@ void GdbDebugeer::handleResultVarDelete(const GdbResponse &response, QMap<QStrin
         m_varNameMap.remove(var);
         m_nameItemMap.remove(name);
     }
-    for (int i = 0; i < m_varsModel->rowCount(); i++) {
-        QStandardItem *item = m_varsModel->item(i,0);
+    QStandardItemModel *model = m_varsModel;
+    if (m_watchList.contains(var)) {
+        m_watchList.removeAll(var);
+        model = m_watchModel;
+    }
+    for (int i = 0; i < model->rowCount(); i++) {
+        QStandardItem *item = model->item(i,0);
         if (item->data() == name) {
             if (ndeleted) {
-                m_varsModel->removeRow(i);
+                model->removeRow(i);
             } else {
                 item->removeRows(0,item->rowCount());
                 item->setData(0,VarExpanded);
-                emit setExpand(LiteApi::VARS_MODEL,m_varsModel->indexFromItem(item),false);
+                emit setExpand(LiteApi::VARS_MODEL,model->indexFromItem(item),false);
             }
             break;
         }
@@ -836,7 +866,7 @@ void GdbDebugeer::handleResultVarUpdateValue(const GdbResponse &response, QMap<Q
     if (parent) {
         v = parent->child(item->row(),1);
     } else {
-        v = m_varsModel->item(item->row(),1);
+        v = item->model()->item(item->row(),1);
     }
     if (v) {
         v->setData(value,Qt::DisplayRole);
@@ -862,7 +892,7 @@ void GdbDebugeer::handleResultVarUpdateType(const GdbResponse &response, QMap<QS
     if (parent) {
         v = parent->child(item->row(),2);
     } else {
-        v = m_varsModel->item(item->row(),2);
+        v = item->model()->item(item->row(),2);
     }
     if (v) {
         v->setData(type,Qt::DisplayRole);
@@ -947,6 +977,7 @@ void GdbDebugeer::clear()
     m_token = 10000000;
     m_handleState.clear();
     m_varNameMap.clear();
+    m_watchList.clear();
     m_nameItemMap.clear();
     m_tokenCookieMap.clear();
     m_varChangedItemList.clear();
@@ -956,6 +987,7 @@ void GdbDebugeer::clear()
     m_framesModel->removeRows(0,m_framesModel->rowCount());
     m_libraryModel->removeRows(0,m_libraryModel->rowCount());
     m_varsModel->removeRows(0,m_varsModel->rowCount());
+    m_watchModel->removeRows(0,m_watchModel->rowCount());
 }
 
 void GdbDebugeer::initGdb()

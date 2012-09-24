@@ -78,7 +78,7 @@ public:
     virtual void setInitBreakTable(const QMultiMap<QString,int> &bks) = 0;
     virtual void insertBreakPoint(const QString &fileName, int line) = 0;
     virtual void removeBreakPoint(const QString &fileName, int line) = 0;
-    virtual void createWatch(const QString &var, bool floating) = 0;
+    virtual void createWatch(const QString &var, bool floating, bool watchModel = false) = 0;
     virtual void removeWatch(const QString &var, bool children) = 0;
 signals:
     void debugStarted();

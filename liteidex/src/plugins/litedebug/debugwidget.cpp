@@ -60,6 +60,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_asyncView = new QTreeView;
     m_varsView = new QTreeView;
+    m_watchView = new QTreeView;
     m_statckView = new QTreeView;
     m_libraryView = new QTreeView;
 
@@ -67,6 +68,9 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_varsView->setEditTriggers(0);
     m_varsView->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    m_watchView->setEditTriggers(0);
+    m_watchView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     m_statckView->setEditTriggers(0);
     m_libraryView->setEditTriggers(0);
@@ -77,6 +81,7 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_tabWidget->addTab(m_asyncView,tr("AsyncRecord"));
     m_tabWidget->addTab(m_varsView,tr("Variables"));
+    m_tabWidget->addTab(m_watchView,tr("Watch"));
     m_tabWidget->addTab(m_statckView,tr("CallStack"));
     m_tabWidget->addTab(m_libraryView,tr("Library"));
     m_tabWidget->addTab(m_debugLogEdit,tr("Console"));
@@ -87,14 +92,21 @@ DebugWidget::DebugWidget(LiteApi::IApplication *app, QObject *parent) :
 
     m_widget->setLayout(layout);
 
-    m_varsMenu = new QMenu(m_widget);
+    m_watchMenu = new QMenu(m_widget);
     m_addWatchAct = new QAction(tr("Add Watch"),this);
-    m_varsMenu->addAction(m_addWatchAct);
+    m_removeWatchAct = new QAction(tr("Remove Watch"),this);
+    m_removeAllWatchAct = new QAction(tr("Remove All Watch"),this);
+    m_watchMenu->addAction(m_addWatchAct);
+    m_watchMenu->addSeparator();
+    m_watchMenu->addAction(m_removeWatchAct);
+    m_watchMenu->addAction(m_removeAllWatchAct);
 
     connect(m_debugLogEdit,SIGNAL(enterText(QString)),this,SLOT(enterText(QString)));
     connect(m_varsView,SIGNAL(expanded(QModelIndex)),this,SLOT(expandedVarsView(QModelIndex)));
-    connect(m_varsView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(varsViewContextMenu(QPoint)));
+    connect(m_watchView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(watchViewContextMenu(QPoint)));
     connect(m_addWatchAct,SIGNAL(triggered()),this,SLOT(addWatch()));
+    connect(m_removeWatchAct,SIGNAL(triggered()),this,SLOT(removeWatch()));
+    connect(m_removeAllWatchAct,SIGNAL(triggered()),this,SLOT(removeAllWatchAct()));
 }
 
 DebugWidget::~DebugWidget()
@@ -151,10 +163,12 @@ void DebugWidget::setDebugger(LiteApi::IDebugger *debug)
     }
     m_asyncView->setModel(debug->debugModel(LiteApi::ASYNC_MODEL));
     m_varsView->setModel(debug->debugModel(LiteApi::VARS_MODEL));
+    m_watchView->setModel(debug->debugModel(LiteApi::WATCHES_MODEL));
     m_statckView->setModel(debug->debugModel(LiteApi::CALLSTACK_MODEL));
     m_libraryView->setModel(debug->debugModel(LiteApi::LIBRARY_MODEL));
     setResizeView(m_asyncView);
     setResizeView(m_varsView);
+    setResizeView(m_watchView);
     setResizeView(m_statckView);
     setResizeView(m_libraryView);
     connect(m_debugger,SIGNAL(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)),this,SLOT(setExpand(LiteApi::DEBUG_MODEL_TYPE,QModelIndex,bool)));
@@ -201,12 +215,12 @@ void DebugWidget::setExpand(LiteApi::DEBUG_MODEL_TYPE type, const QModelIndex &i
     }
 }
 
-void DebugWidget::varsViewContextMenu(QPoint pos)
+void DebugWidget::watchViewContextMenu(QPoint pos)
 {
-    QMenu *contextMenu = m_varsMenu;
+    QMenu *contextMenu = m_watchMenu;
 
     if (contextMenu && contextMenu->actions().count() > 0) {
-        contextMenu->popup(m_varsView->mapToGlobal(pos));
+        contextMenu->popup(m_watchView->mapToGlobal(pos));
     }
 }
 
@@ -219,5 +233,36 @@ void DebugWidget::addWatch()
 //    if (text.indexOf(".") < 0) {
 //        text = "main."+text;
 //    }
-    m_debugger->createWatch(QString("\'%1\'").arg(text),false);
+    if (text.indexOf(".") >= 0) {
+        text = QString("\'%1'").arg(text);
+    }
+    m_debugger->createWatch(text,false,true);
+}
+
+void DebugWidget::removeWatch()
+{
+    QModelIndex index = m_watchView->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+    QModelIndex head = m_watchView->model()->index(index.row(),0);
+    if (!head.isValid()) {
+        return;
+    }
+    QString text = head.data(Qt::DisplayRole).toString();
+    m_debugger->removeWatch(text,true);
+}
+
+void DebugWidget::removeAllWatchAct()
+{
+    QStringList watchList;
+    for (int i = 0; i < m_watchView->model()->rowCount(); i++) {
+        QModelIndex index = m_watchView->model()->index(i,0);
+        if (index.isValid()) {
+            watchList << index.data(Qt::DisplayRole).toString();
+        }
+    }
+    foreach(QString var, watchList) {
+        m_debugger->removeWatch(var,true);
+    }
 }
