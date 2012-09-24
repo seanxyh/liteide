@@ -457,11 +457,9 @@ void LiteEditorWidgetBase::extraAreaPaintEvent(QPaintEvent *e)
             painter.restore();
         }
 
-        if (/*m_marksVisible &&*/ m_editorMark) {
-            m_editorMark->paint(&painter,blockNumber,0,top,fmLineSpacing-0.5,fmLineSpacing-1);
-        }
-
-
+//        if (/*m_marksVisible &&*/ m_editorMark) {
+//            m_editorMark->paint(&painter,blockNumber,0,top,fmLineSpacing-0.5,fmLineSpacing-1);
+//        }
         if (m_lineNumbersVisible) {
             painter.setPen(QPen(m_extraForeground,2));//pal.color(QPalette::BrightText));
             const QString &number = QString::number(blockNumber + 1);
@@ -718,7 +716,7 @@ void LiteEditorWidgetBase::maybeSelectLine()
 void LiteEditorWidgetBase::gotoLine(int line, int column, bool center)
 {
     m_lastCursorChangeWasInteresting = false;
-    const int blockNumber = line - 1;
+    const int blockNumber = line;
     const QTextBlock &block = document()->findBlockByNumber(blockNumber);
     if (block.isValid()) {
         QTextCursor cursor(block);

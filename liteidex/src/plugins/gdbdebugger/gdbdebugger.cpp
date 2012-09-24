@@ -256,6 +256,7 @@ void GdbDebugeer::stepOut()
 
 void GdbDebugeer::runToLine(const QString &fileName, int line)
 {
+    line++;
     GdbCmd cmd;
     QStringList args;
     args << "-break-insert";
@@ -335,6 +336,7 @@ void GdbDebugeer::setInitBreakTable(const QMultiMap<QString,int> &bks)
 
 void GdbDebugeer::insertBreakPoint(const QString &fileName, int line)
 {
+    line++;
     QString location = QString("%1:%2").arg(fileName).arg(line);
     if (m_locationBkMap.contains(location)) {
         return;
@@ -351,6 +353,7 @@ void GdbDebugeer::insertBreakPoint(const QString &fileName, int line)
 
 void GdbDebugeer::removeBreakPoint(const QString &fileName, int line)
 {
+    line++;
     QString location = QString("%1:%2").arg(fileName).arg(line);
     QString number = m_locationBkMap.key(location);
     if (number.isEmpty()) {
@@ -586,14 +589,14 @@ void GdbDebugeer::handleStopped(const GdbMiValue &result)
         QString file = frame.findChild("file").data();
         QString line = frame.findChild("line").data();
         if (!fullname.isEmpty()) {
-            emit setCurrentLine(fullname,line.toInt());
+            emit setCurrentLine(fullname,line.toInt()-1);
         } else if (!file.isEmpty()) {
             //fix go build bug, not find fullname
             //file="C:/Users/ADMINI~1/AppData/Local/Temp/2/bindist308287094/go/src/pkg/fmt/print.go"
             int i = file.indexOf("/go/src/pkg");
             if (i > 0) {
                 QString fullname = LiteApi::getGoroot(m_liteApp)+file.right(file.length()-i-3);
-                emit setCurrentLine(fullname,line.toInt());
+                emit setCurrentLine(fullname,line.toInt()-1);
             }
         }
     }

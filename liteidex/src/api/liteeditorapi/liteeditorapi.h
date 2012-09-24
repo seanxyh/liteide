@@ -80,7 +80,6 @@ public:
     IEditorMarkTypeManager(QObject *parent = 0) : IManager(parent) {}
     virtual void registerMark(int type, const QIcon &icon) = 0;
     virtual QList<int> markTypeList() const = 0;
-    virtual QIcon markIcon(int type) const = 0;
 };
 
 class IEditorMark : public QObject
@@ -90,9 +89,8 @@ public:
     IEditorMark(QObject *parent) : QObject(parent) {}
     virtual void addMark(int line, int type) = 0;
     virtual void removeMark(int line, int type) = 0;
-    virtual QList<int> markLineList() const = 0;
+    virtual QList<int> markList(int type) const = 0;
     virtual QList<int> lineTypeList(int line) const = 0;
-    virtual void paint(QPainter *painter, int blockNumber, int x, int y, int w, int h) const = 0;
 signals:
     void markChanged();
 };

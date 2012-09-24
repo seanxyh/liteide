@@ -326,7 +326,7 @@ void LiteDebug::runToLine()
         return;
     }
     QString fileName = QFileInfo(filePath).fileName();
-    m_debugger->runToLine(fileName,textEditor->line());
+    m_debugger->runToLine(fileName,textEditor->line()+1);
 }
 
 void LiteDebug::stopDebug()
@@ -457,7 +457,7 @@ void LiteDebug::debugStoped()
 }
 
 void LiteDebug::setCurrentLine(const QString &fileName, int line)
-{
+{ 
     bool center = true;
     if (m_lastLine.fileName == fileName) {
         center = false;

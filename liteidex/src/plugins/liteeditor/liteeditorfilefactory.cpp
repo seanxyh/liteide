@@ -105,7 +105,7 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
     m_liteApp->editorManager()->cutForwardNavigationHistory();
     m_liteApp->editorManager()->addNavigationHistory();
     LiteEditor *editor = new LiteEditor(m_liteApp);
-    editor->setEditorMark(new LiteEditorMark(m_markTypeManager,editor));
+    editor->setEditorMark(new LiteEditorMark(m_markTypeManager,editor->editorWidget()->document(),editor));
     if (!editor->open(fileName,mimeType)) {
         delete editor;
         return 0;
@@ -116,7 +116,7 @@ LiteApi::IEditor *LiteEditorFileFactory::open(const QString &fileName, const QSt
 LiteApi::IEditor *LiteEditorFileFactory::create(const QString &contents, const QString &mimeType)
 {
     LiteEditor *editor = new LiteEditor(m_liteApp);
-    editor->setEditorMark(new LiteEditorMark(m_markTypeManager,editor));
+    editor->setEditorMark(new LiteEditorMark(m_markTypeManager,editor->editorWidget()->document(),editor));
     if (!editor->createNew(contents,mimeType)) {
         delete editor;
         return 0;
