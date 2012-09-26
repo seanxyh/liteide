@@ -107,6 +107,7 @@ void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save, bool check)
     if (text.isEmpty()) {
         return;
     }
+
     QStringList args;
     if (m_diff) {
         args << "-d";
@@ -151,13 +152,16 @@ void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save, bool check)
         return;
     }
     QByteArray data = process.readAllStandardOutput();
+    /*
     int vpos = -1;
     QScrollBar *bar = ed->verticalScrollBar();
     if (bar) {
         vpos = bar->sliderPosition();
     }
+    */
     QTextCursor cur = ed->textCursor();
     int pos = cur.position();
+    QByteArray state = editor->saveState();
     cur.beginEditBlock();
     if (m_diff) {
         loadDiff(cur,codec->toUnicode(data));
@@ -166,13 +170,15 @@ void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save, bool check)
         cur.removeSelectedText();
         cur.insertText(codec->toUnicode(data));
     }
-    cur.setPosition(pos);
     cur.endEditBlock();
-
+    cur.setPosition(pos);
+    editor->restoreState(state);
     ed->setTextCursor(cur);
-    if (vpos != -1) {
-        bar->setSliderPosition(vpos);
-    }
+
+    //ed->setTextCursor(cur);
+    //if (vpos != -1) {
+    //    bar->setSliderPosition(vpos);
+    //}
     if (save) {
         m_liteApp->editorManager()->saveEditor(editor,false);
     }
