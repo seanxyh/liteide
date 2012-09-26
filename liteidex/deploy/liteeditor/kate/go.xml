@@ -66,6 +66,7 @@
     </list>
     <list name="functions">
       <item> append </item>
+	  <item> delete </item>
       <item> cap </item>
       <item> close </item>
       <item> complex </item>

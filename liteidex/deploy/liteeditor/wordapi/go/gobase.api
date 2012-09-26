@@ -45,6 +45,7 @@ uint16
 uint32
 uint64
 append
+delete
 cap
 close
 closed
