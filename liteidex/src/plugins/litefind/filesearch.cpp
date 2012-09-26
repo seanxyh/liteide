@@ -311,7 +311,7 @@ void FileSearch::setVisible(bool b)
 {
     if (b) {
         LiteApi::IProject *proj = m_liteApp->projectManager()->currentProject();
-        if (proj) {
+        if (proj && !LiteApi::mimeIsFolder(proj->mimeType())) {
             QFileInfo info(proj->filePath());
             if (info.isDir())
                 m_findPathCombo->setEditText(info.filePath());
@@ -334,6 +334,10 @@ void FileSearch::setVisible(bool b)
             }
             if (!text.isEmpty()) {
                 this->m_findCombo->setEditText(text);
+            }
+            if (editor && !editor->filePath().isEmpty()) {
+                QFileInfo info(editor->filePath());
+                m_findPathCombo->setEditText(info.path());
             }
         }
     }
@@ -379,12 +383,12 @@ void FileSearch::findStarted()
 void FileSearch::currentDir()
 {
     LiteApi::IProject *proj = m_liteApp->projectManager()->currentProject();
-    if (proj) {
+    if (proj && !LiteApi::mimeIsFolder(proj->mimeType())) {
         QFileInfo info(proj->filePath());
         if (info.isDir()) {
             m_findPathCombo->setEditText(info.filePath());
         } else {
-            m_findCombo->setEditText(info.path());
+            m_findPathCombo->setEditText(info.path());
         }
     } else {
         LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
