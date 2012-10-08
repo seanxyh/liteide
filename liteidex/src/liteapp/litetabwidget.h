@@ -63,7 +63,7 @@ signals:
 public slots:
     void setCurrentWidget(QWidget *w);
     void setCurrentIndex(int index);
-protected slots:
+public slots:
     void closeCurrentTab();
     void selectListActGroup(QAction*);
     void tabCurrentChanged(int);
