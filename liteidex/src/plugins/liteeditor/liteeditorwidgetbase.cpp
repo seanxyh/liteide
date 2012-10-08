@@ -619,7 +619,7 @@ QByteArray LiteEditorWidgetBase::saveState() const
     stream << horizontalScrollBar()->value();
     int line, column;
     convertPosition(document(),textCursor().position(), &line, &column);
-    stream << line;
+    stream << line-1;
     stream << column;
 
     // store code folding state
