@@ -58,6 +58,11 @@ QProcessEnvironment& Env::environment()
     return m_env;
 }
 
+QStringList Env::orgEnvLines() const
+{
+    return m_orgEnvLines;
+}
+
 void Env::reload()
 {
     if (m_filePath.isEmpty()) {
@@ -67,13 +72,14 @@ void Env::reload()
     if (!f.open(QIODevice::ReadOnly)) {
         return;
     }
-    m_env = loadEnv(&f);
+    loadEnvFile(&f);
     f.close();
 }
 
-QProcessEnvironment Env::loadEnv(QIODevice *dev)
+void Env::loadEnvFile(QIODevice *dev)
 {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    m_orgEnvLines.clear();
 #ifdef Q_OS_WIN
     QRegExp rx("\\%([\\w]+)\\%");
 #else
@@ -88,6 +94,7 @@ QProcessEnvironment Env::loadEnv(QIODevice *dev)
         if (pos == -1) {
             continue;
         }
+        m_orgEnvLines.append(line);
         QString key = line.left(pos).trimmed();
         QString value = line.right(line.length()-pos-1).trimmed();
         QStringList cap0;
@@ -105,7 +112,7 @@ QProcessEnvironment Env::loadEnv(QIODevice *dev)
         }
         env.insert(key,value);
     }
-    return env;
+    m_env = env;
 }
 
 void Env::loadEnv(EnvManager *manager, const QString &filePath)
@@ -118,7 +125,7 @@ void Env::loadEnv(EnvManager *manager, const QString &filePath)
     Env *env = new Env(manager);
     env->m_filePath = filePath;
     env->m_id = QFileInfo(filePath).baseName();
-    env->m_env = loadEnv(&f);
+    env->loadEnvFile(&f);
     f.close();
     manager->addEnv(env);
 }

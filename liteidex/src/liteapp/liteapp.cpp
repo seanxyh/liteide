@@ -278,6 +278,7 @@ QList<IPlugin*> LiteApp::pluginList() const
 
 void LiteApp::appendLog(const QString &model, const QString &log, bool error)
 {
+    m_logOutput->updateExistsTextColor();
     QDateTime dt = QDateTime::currentDateTime();
     QString text = dt.toString("hh:mm:ss");
     text += QLatin1Char(' ');

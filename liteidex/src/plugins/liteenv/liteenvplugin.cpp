@@ -41,7 +41,7 @@ LiteEnvPlugin::LiteEnvPlugin()
     m_info->setId("plugin/LiteEnv");
     m_info->setName("LiteEnv");
     m_info->setAnchor("visualfc");
-    m_info->setVer("x6");
+    m_info->setVer("x13.2");
     m_info->setInfo("LiteIDE Environment Plugin");
 }
 
