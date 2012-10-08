@@ -11,6 +11,7 @@ include(../../utils/processex/processex.pri)
 include(../../utils/htmlutil/htmlutil.pri)
 include(../../utils/golangapi/golangapi.pri)
 include(../../3rdparty/qtc_editutil/qtc_editutil.pri)
+include(../../3rdparty/qjson/qjson.pri)
 
 DEFINES += GOLANGDOC_LIBRARY
 
