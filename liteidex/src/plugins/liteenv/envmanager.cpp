@@ -29,8 +29,10 @@
 #include <QFileInfo>
 #include <QRegExp>
 #include <QToolBar>
+#include <QMenu>
 #include <QComboBox>
 #include <QLabel>
+#include <QAction>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -51,6 +53,11 @@ Env::Env(QObject *parent) :
 QString Env::id() const
 {
     return m_id;
+}
+
+QString Env::filePath() const
+{
+    return m_filePath;
 }
 
 QProcessEnvironment& Env::environment()
@@ -220,11 +227,16 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
     m_envCmb = new QComboBox;
     m_envCmb->setToolTip(tr("Environment"));
 
-   // m_toolBar->addWidget(new QLabel(tr("Env:")));
-    //QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/std");
     m_toolBar->addWidget(m_envCmb);
-    //toolBar->addSeparator();
-    //toolBar->addWidget(m_envCmb);
+    QAction *editAct = new QAction(QIcon("icon:liteenv/images/setenv.png"),tr("Edit Environment"),this);
+    m_toolBar->addAction(editAct);
+
+    QMenu *buildMenu = m_liteApp->actionManager()->loadMenu("menu/build");
+    if (!buildMenu) {
+        buildMenu = m_liteApp->actionManager()->insertMenu("menu/build",tr("&Build"),"menu/help");
+        buildMenu->addAction(editAct);
+        buildMenu->addSeparator();
+    }
 
     foreach (LiteApi::IEnv *env, m_envList) {
         m_envCmb->addItem(env->id());
@@ -238,7 +250,8 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
     }
 
     connect(m_envCmb,SIGNAL(activated(QString)),this,SLOT(envActivated(QString)));
-
+    connect(editAct,SIGNAL(triggered()),this,SLOT(editCurrentEnv()));
+    connect(m_liteApp->editorManager(),SIGNAL(editorSaved(LiteApi::IEditor*)),this,SLOT(editorSaved(LiteApi::IEditor*)));
     return true;
 }
 
@@ -262,4 +275,24 @@ void EnvManager::envActivated(QString id)
 {
     LiteApi::IEnv *env = findEnv(id);
     setCurrentEnv(env);
+}
+
+void EnvManager::editCurrentEnv()
+{
+    if (!m_curEnv) {
+        return;
+    }
+    m_liteApp->fileManager()->openEditor(m_curEnv->filePath(),true);
+}
+
+void EnvManager::editorSaved(LiteApi::IEditor *editor)
+{
+    LiteApi::ITextEditor *ed = LiteApi::getTextEditor(editor);
+    if (!ed) {
+        return;
+    }
+    if (m_curEnv->filePath() == ed->filePath()) {
+        m_curEnv->reload();
+        currentEnvChanged(m_curEnv);
+    }
 }

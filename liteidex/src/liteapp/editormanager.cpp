@@ -366,7 +366,8 @@ bool EditorManager::closeEditor(IEditor *editor)
         if (ret == QMessageBox::Cancel) {
             return false;
         } else if (ret == QMessageBox::Save) {
-            cur->save();
+            //cur->save();
+            saveEditor(cur);
         }
     }
     if (!cur->filePath().isEmpty()) {

@@ -19,3 +19,6 @@ HEADERS += liteenvplugin.h\
 
 FORMS += \
     liteenvoption.ui
+
+RESOURCES += \
+    liteenv.qrc
