@@ -963,6 +963,7 @@ void LiteEditorWidgetBase::keyPressEvent(QKeyEvent *e)
     }
     m_lastBraces = false;
     QChar mr;
+    QString mrList = " ";
     switch (e->key()) {
         case '{':
             if (m_autoBraces0)
@@ -982,7 +983,7 @@ void LiteEditorWidgetBase::keyPressEvent(QKeyEvent *e)
             break;
         case '\"':
             if (m_autoBraces4)
-                mr = '\"';
+                mr = '\"', mrList += "()[]{}";
             break;
     }
     if (!mr.isNull()) {
@@ -990,7 +991,7 @@ void LiteEditorWidgetBase::keyPressEvent(QKeyEvent *e)
         QTextCursor cursor = textCursor();
         int pos = cursor.positionInBlock();
         QString text = cursor.block().text();
-        if (pos == text.length() || text.at(pos).isSpace()) {
+        if (pos == text.length() || mrList.contains(text.at(pos))) {
             cursor.beginEditBlock();
             pos = cursor.position();
             cursor.insertText(mr);
