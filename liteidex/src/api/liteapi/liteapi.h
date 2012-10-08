@@ -592,7 +592,7 @@ protected:
 
 } //namespace LiteApi
 
-Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/x13")
+Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/x13.2")
 
 
 #endif //__LITEAPI_H__

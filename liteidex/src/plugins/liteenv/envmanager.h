@@ -38,6 +38,7 @@ public:
     Env(QObject *parent = 0);
 public:
     virtual QString id() const;
+    virtual QString filePath() const;
     virtual QProcessEnvironment& environment();
     virtual QStringList orgEnvLines() const;
     virtual void reload();
@@ -66,6 +67,8 @@ public:
     virtual QProcessEnvironment currentEnvironment() const;
 protected slots:
     void envActivated(QString);
+    void editCurrentEnv();
+    void editorSaved(LiteApi::IEditor*);
 public:
     void setCurrentEnv(LiteApi::IEnv *env);
     void addEnv(LiteApi::IEnv *build);

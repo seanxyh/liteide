@@ -39,6 +39,7 @@ public:
     IEnv(QObject *parent = 0): QObject(parent) {}
     virtual ~IEnv() {}
     virtual QString id() const = 0;
+    virtual QString filePath() const = 0;
     virtual QStringList orgEnvLines() const = 0;
     virtual QProcessEnvironment& environment() = 0;
     virtual void reload() = 0;
