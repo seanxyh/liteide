@@ -48,6 +48,7 @@ AstWidget::AstWidget(bool outline, LiteApi::IApplication *app, QWidget *parent) 
     m_bOutline(outline),
     m_liteApp(app)
 {
+    m_bFirst = true;
     QVBoxLayout *layout = new QVBoxLayout;
     m_tree = new SymbolTreeView;
     m_filterEdit = new Utils::FilterLineEdit(200);
@@ -135,9 +136,9 @@ bool AstWidget::filterModel(QString filter, QModelIndex parent, QModelIndex &fir
             m_tree->expand(index);
             b = true;
         } else {
-            if (!m_bOutline) {
-                m_tree->collapse(index);
-            }
+            //if (!m_bOutline) {
+            m_tree->collapse(index);
+            //}
         }
     }
     return b;
@@ -147,8 +148,16 @@ void AstWidget::filterChanged(QString filter)
 {
     if (filter.isEmpty()) {
         clearFilter(m_tree->rootIndex());
-        if (!m_bOutline)
-            m_tree->expandToDepth(0);
+        //m_tree->expandToDepth(0);
+        for(int i = 0; i < proxyModel->rowCount(); i++) {
+            QModelIndex index = proxyModel->index(i,0);
+            m_tree->expand(index);
+            if (m_bOutline) {
+                for (int j = 0; j < proxyModel->rowCount(index);j++) {
+                    m_tree->expand(proxyModel->index(j,0,index));
+                }
+            }
+        }
     } else {
         QModelIndex first;
         filterModel(filter,m_tree->rootIndex(),first);
@@ -310,13 +319,21 @@ void AstWidget::updateModel(const QByteArray &data)
     }
 
     //load state
-    QString text = m_filterEdit->text();
+    m_tree->loadState(proxyModel,&state);
+
+    if (m_bOutline && m_bFirst) {
+        //m_tree->expandToDepth(1);
+        for(int i = 0; i < proxyModel->rowCount(); i++) {
+            QModelIndex index = proxyModel->index(i,0);
+            m_tree->expand(index);
+            for (int j = 0; j < proxyModel->rowCount(index);j++) {
+                m_tree->expand(proxyModel->index(j,0,index));
+            }
+        }
+        m_bFirst = false;
+    }
+    QString text = m_filterEdit->text().trimmed();
     if (!text.isEmpty()) {
         this->filterChanged(text);
-    } else {
-         m_tree->loadState(proxyModel,&state);
-    }
-    if (m_bOutline) {
-        m_tree->expandAll();
     }
 }

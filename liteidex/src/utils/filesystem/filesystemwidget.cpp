@@ -58,8 +58,6 @@
 //lite_memory_check_end
 #endif
 
-
-
 FileSystemWidget::FileSystemWidget(LiteApi::IApplication *app, QWidget *parent) :
     QWidget(parent),
     m_liteApp(app)

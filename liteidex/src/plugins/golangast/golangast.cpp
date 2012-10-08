@@ -71,7 +71,7 @@ GolangAst::GolangAst(LiteApi::IApplication *app, QObject *parent) :
     m_timerFile = new QTimer(this);
 
     QAction *projAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::RightDockWidgetArea,m_projectAstWidget,"classview",tr("Class View"),false);
-    QAction *fileAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::RightDockWidgetArea,m_stackedWidget,"outline","Outline",false);
+    QAction *fileAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::RightDockWidgetArea,m_stackedWidget,"outline",tr("Outline"),false);
     connect(projAct,SIGNAL(toggled(bool)),this,SLOT(astProjectEnable(bool)));
     connect(fileAct,SIGNAL(toggled(bool)),this,SLOT(astFileEnable(bool)));
 
