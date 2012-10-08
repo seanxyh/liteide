@@ -31,8 +31,9 @@
 struct SymbolTreeState
 {
     QList<QStringList> expands;
-    QStringList top;
     QStringList cur;
+    int         vbar;
+    int         hbar;
 };
 
 class SymbolTreeView : public QTreeView

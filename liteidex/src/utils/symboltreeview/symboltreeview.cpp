@@ -26,6 +26,7 @@
 #include "symboltreeview.h"
 #include <QHeaderView>
 #include <QFocusEvent>
+#include <QScrollBar>
 #include <QAbstractItemModel>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -168,8 +169,10 @@ void SymbolTreeView::saveState(SymbolTreeState *state)
     while (i.hasNext()) {
         state->expands.append(stringListFromIndex(i.next()));
     }
-    state->top = stringListFromIndex(this->topViewIndex());
     state->cur = stringListFromIndex(this->currentIndex());
+    state->vbar = verticalScrollBar()->value();
+    state->hbar = horizontalScrollBar()->value();
+
 }
 
 void SymbolTreeView::loadState(QAbstractItemModel *model,SymbolTreeState *state)
@@ -191,8 +194,6 @@ void SymbolTreeView::loadState(QAbstractItemModel *model,SymbolTreeState *state)
         this->setCurrentIndex(curIndex);
     }
 
-    QModelIndex topIndex = indexFromStringList(model,state->top);
-    if (topIndex.isValid()) {
-        this->scrollTo(topIndex, QTreeView::PositionAtTop);
-    }
+    verticalScrollBar()->setValue(state->vbar);
+    horizontalScrollBar()->setValue(state->hbar);
 }

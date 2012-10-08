@@ -33,6 +33,7 @@
 class GolangAstItem;
 class QStandardItemModel;
 class QSortFilterProxyModel;
+
 class AstWidget : public QWidget
 {
     Q_OBJECT
@@ -57,6 +58,7 @@ signals:
     void doubleClicked(QModelIndex);
 protected:
     bool                m_bOutline;
+    bool                m_bFirst;
     SymbolTreeView     *m_tree;
     Utils::FilterLineEdit *m_filterEdit;
     QStandardItemModel *m_model;

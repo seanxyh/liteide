@@ -231,12 +231,12 @@ bool EnvManager::initWithApp(LiteApi::IApplication *app)
     QAction *editAct = new QAction(QIcon("icon:liteenv/images/setenv.png"),tr("Edit Environment"),this);
     m_toolBar->addAction(editAct);
 
-    QMenu *buildMenu = m_liteApp->actionManager()->loadMenu("menu/build");
-    if (!buildMenu) {
-        buildMenu = m_liteApp->actionManager()->insertMenu("menu/build",tr("&Build"),"menu/help");
-        buildMenu->addAction(editAct);
-        buildMenu->addSeparator();
-    }
+//    QMenu *buildMenu = m_liteApp->actionManager()->loadMenu("menu/build");
+//    if (!buildMenu) {
+//        buildMenu = m_liteApp->actionManager()->insertMenu("menu/build",tr("&Build"),"menu/help");
+//        buildMenu->addAction(editAct);
+//        buildMenu->addSeparator();
+//    }
 
     foreach (LiteApi::IEnv *env, m_envList) {
         m_envCmb->addItem(env->id());
