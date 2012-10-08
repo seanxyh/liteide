@@ -159,9 +159,9 @@ void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save, bool check)
         vpos = bar->sliderPosition();
     }
     */
-    QTextCursor cur = ed->textCursor();
-    int pos = cur.position();
     QByteArray state = editor->saveState();
+    QTextCursor cur = ed->textCursor();
+    //int pos = cur.position();
     cur.beginEditBlock();
     if (m_diff) {
         loadDiff(cur,codec->toUnicode(data));
@@ -170,10 +170,10 @@ void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save, bool check)
         cur.removeSelectedText();
         cur.insertText(codec->toUnicode(data));
     }
+    //cur.setPosition(pos);
     cur.endEditBlock();
-    cur.setPosition(pos);
-    editor->restoreState(state);
     ed->setTextCursor(cur);
+    editor->restoreState(state);
 
     //ed->setTextCursor(cur);
     //if (vpos != -1) {
