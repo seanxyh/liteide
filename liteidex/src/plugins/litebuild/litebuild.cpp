@@ -1119,6 +1119,9 @@ void LiteBuild::enterTextBuildOutput(QString text)
 
 void LiteBuild::dbclickBuildOutput(const QTextCursor &cur)
 {
+    if (m_outputRegex.isEmpty()) {
+        m_outputRegex = "([\\w\\d_\\\\/\\.]+):(\\d+):";
+    }
     QRegExp rep(m_outputRegex);//"([\\w\\d:_\\\\/\\.]+):(\\d+)");
 
     int index = rep.indexIn(cur.block().text());
