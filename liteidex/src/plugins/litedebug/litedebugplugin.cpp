@@ -73,7 +73,7 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
     connect(m_viewDebug,SIGNAL(triggered(bool)),m_liteDebug->widget(),SLOT(setVisible(bool)));
     connect(m_liteDebug,SIGNAL(debugVisible(bool)),m_viewDebug,SLOT(setChecked(bool)));
 
-    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuToolBarPos,m_viewDebug);
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuLastPos,m_viewDebug);
 
     return true;
 }

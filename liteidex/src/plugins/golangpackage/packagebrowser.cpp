@@ -80,11 +80,13 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileMenu = new QMenu;
 
     m_reloadAct = new QAction(tr("Reload All"),this);
-    m_setupGopathAct = new QAction(tr("Setup GOPATH"),this);
+    m_setupGopathAct = new QAction(QIcon("icon:images/gopath.png"),tr("Setup GOPATH"),this);
     m_godocAct = new QAction(tr("View Package Document"),this);
     m_editPackageAct = new QAction(tr("Load Package Project"),this);
     m_openSrcAct = new QAction(tr("Open Source File"),this);
     m_copyNameAct = new QAction(tr("Copy Name To Clipboard"),this);
+
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuLastPos,m_setupGopathAct);
 
     m_rootMenu->addAction(m_reloadAct);
     m_rootMenu->addAction(m_setupGopathAct);
@@ -115,13 +117,13 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     connect(m_openSrcAct,SIGNAL(triggered()),this,SLOT(doubleClicked()));
     connect(m_copyNameAct,SIGNAL(triggered()),this,SLOT(copyPackageName()));
 
-    QAction *act = new QAction(QIcon("icon:images/gopath.png"),tr("GOPATH Setup"),this);
-    connect(act,SIGNAL(triggered()),this,SLOT(setupGopath()));
+    //QAction *act = new QAction(QIcon("icon:images/gopath.png"),tr("GOPATH Setup"),this);
+    //connect(act,SIGNAL(triggered()),this,SLOT(setupGopath()));
 
     QToolBar *toolBar = m_liteApp->actionManager()->loadToolBar("toolbar/std");
     if (toolBar) {
         toolBar->addSeparator();
-        toolBar->addAction(act);
+        toolBar->addAction(m_setupGopathAct);
     }
 
     LiteApi::IEnvManager *env = LiteApi::getEnvManager(m_liteApp);

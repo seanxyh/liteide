@@ -55,7 +55,7 @@ bool GolangPlayPlugin::initWithApp(LiteApi::IApplication *app)
     GoplayBrowser *gopaly = new GoplayBrowser(app,this);
     QAction *act = m_liteApp->editorManager()->registerBrowser(gopaly);
     act->setIcon(QIcon("icon:images/gopher.png"));
-    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuEditPagePos,act);
+    m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuBrowserPos,act);
     return true;
 }
 

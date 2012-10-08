@@ -475,7 +475,8 @@ enum VIEWMENU_ACTION_POS
 {
     ViewMenuToolBarPos = 1,
     ViewMenuToolWindowPos,
-    ViewMenuEditPagePos
+    ViewMenuBrowserPos,
+    ViewMenuLastPos
 };
 
 class IActionManager : public IManager
