@@ -51,8 +51,8 @@ public:
     virtual QMap<QString,QString> liteideEnvMap() const;
     virtual QString envValue(LiteApi::IBuild *build, const QString &value);
     virtual LiteApi::IBuildManager *buildManager() const;
-    virtual void appendOutput(const QString &str, const QBrush &brush, bool active);
-    virtual void executeCommand(const QString &cmd, const QStringList &args, const QString &workDir);
+    virtual void appendOutput(const QString &str, const QBrush &brush, bool active, bool updateExistsTextColor = true);
+    virtual void executeCommand(const QString &cmd, const QStringList &args, const QString &workDir,bool updateExistsTextColor = true);
     QMap<QString,QString> buildEnvMap(LiteApi::IBuild *build, const QString &buildFilePath) const;
 public:
     QString envToValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);

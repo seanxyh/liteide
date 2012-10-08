@@ -172,6 +172,16 @@ QString DocumentBrowser::mimeType() const
     return m_mimeType;
 }
 
+void DocumentBrowser::executeAction(const QString &id, QAction *action)
+{
+
+}
+
+void DocumentBrowser::onActive()
+{
+}
+
+
 void DocumentBrowser::setName(const QString &t)
 {
     m_name = t;

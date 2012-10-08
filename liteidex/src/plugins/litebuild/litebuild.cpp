@@ -230,8 +230,11 @@ LiteApi::IBuildManager *LiteBuild::buildManager() const
     return m_manager;
 }
 
-void LiteBuild::appendOutput(const QString &str, const QBrush &brush, bool active)
+void LiteBuild::appendOutput(const QString &str, const QBrush &brush, bool active, bool updateExistsTextColor)
 {
+    if (updateExistsTextColor) {
+        m_output->updateExistsTextColor();
+    }
     if (active) {
         m_outputAct->setChecked(true);
     }
@@ -275,6 +278,14 @@ void LiteBuild::config()
 void LiteBuild::currentEnvChanged(LiteApi::IEnv*)
 {
     m_process->setEnvironment(m_envManager->currentEnvironment().toStringList());
+    LiteApi::IEnv *env = m_envManager->currentEnv();
+    if (!env) {
+        return;
+    }
+    m_output->updateExistsTextColor();
+    m_output->appendTag0(QString("Current environment change id \"%1\"\n").arg(env->id()));
+    m_output->append(m_envManager->currentEnv()->orgEnvLines().join("\n")+"\n",Qt::black);
+    this->executeCommand("go",QStringList()<<"env",LiteApi::getGoroot(m_liteApp),false);
 }
 
 void LiteBuild::loadProjectInfo(const QString &filePath)
@@ -934,8 +945,11 @@ void LiteBuild::stopAction()
     }
 }
 
-void LiteBuild::executeCommand(const QString &cmd1, const QStringList &args, const QString &workDir)
+void LiteBuild::executeCommand(const QString &cmd1, const QStringList &args, const QString &workDir, bool updateExistsTextColor)
 {
+    if (updateExistsTextColor) {
+        m_output->updateExistsTextColor();
+    }
     m_outputAct->setChecked(true);
     if (m_process->isRuning()) {
         m_output->append("\nError,action process is runing, stop action first!\n",Qt::red);

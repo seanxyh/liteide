@@ -39,12 +39,14 @@ public:
 public:
     virtual QString id() const;
     virtual QProcessEnvironment& environment();
+    virtual QStringList orgEnvLines() const;
     virtual void reload();
 public:
-    static QProcessEnvironment loadEnv(QIODevice *dev);
+    void loadEnvFile(QIODevice *dev);
     static void loadEnv(EnvManager *manager, const QString &filePath);
 protected:
     QString m_filePath;
+    QStringList m_orgEnvLines;
     QString m_id;
     QProcessEnvironment m_env;
 };
