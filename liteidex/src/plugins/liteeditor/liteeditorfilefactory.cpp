@@ -142,7 +142,15 @@ LiteApi::IEditor *LiteEditorFileFactory::setupEditor(LiteEditor *editor, const Q
         if (wordApi && wordApi->loadApi()) {
             QIcon icon("icon:liteeditor/images/keyword.png");
             QIcon exp("icon:liteeditor/images/findword.png");
-            wordCompleter->appendItems(wordApi->wordList(),"keyword","",icon,false);
+            QIcon func("icon:liteeditor/images/func.png");
+            foreach(QString item, wordApi->wordList()) {
+                int pos = item.indexOf("(");
+                if (pos != -1) {
+                    wordCompleter->appendItemEx(item.left(pos).trimmed(),"func","func"+item.right(item.length()-pos),func,false);
+                } else {
+                    wordCompleter->appendItemEx(item,"keyword",QString(""),icon,false);
+                }
+            }
             wordCompleter->appendItems(wordApi->expList(),"","",exp,false);
             wordCompleter->completer()->model()->sort(0);
         }
