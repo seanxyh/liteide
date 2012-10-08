@@ -122,7 +122,7 @@ void WelcomeBrowser::openUrl(const QUrl &url)
             doc->activeBrowser();
         }
     } else if (url.scheme() == "goplay") {
-        LiteApi::IEditor *browser = LiteApi::findExtensionObject<LiteApi::IEditor*>(m_liteApp,"LiteApi.GoplayBrowser");
+        LiteApi::IEditor *browser = LiteApi::findExtensionObject<LiteApi::IEditor*>(m_liteApp,"LiteApi.Goplay");
         if (browser) {
             m_liteApp->editorManager()->activeBrowser(browser);
         }
@@ -141,7 +141,9 @@ void WelcomeBrowser::loadData()
 
     QStringList list;
     foreach (QString scheme, m_liteApp->fileManager()->schemeList()) {
-        list.append(QString("<h3><i>recent %1</i></h3>").arg(scheme));
+        QString s = scheme.left(1).toUpper()+scheme.right(scheme.length()-1);
+        list.append(QString("<h3><i>Recent %1</i></h3>").arg(s));
+        list.append("<table border=\"0\"><tr><td>");
         list.append("<ul>");
         QStringList recentProjects = m_liteApp->fileManager()->recentFiles(scheme);
         int count = 0;
@@ -157,6 +159,7 @@ void WelcomeBrowser::loadData()
             }
         }
         list.append("</ul>");
+        list.append("</td></tr></table>");
     }
 
     data.replace("{recent_sessions}",sessionList.join("\n"));

@@ -43,7 +43,7 @@ WelcomePlugin::WelcomePlugin() : m_welcome(0)
     m_info->setId("plugin/welcome");
     m_info->setName("Welcome");
     m_info->setAnchor("visualfc");
-    m_info->setVer("x11.3");
+    m_info->setVer("x13.2");
     m_info->setInfo("LiteIDE Welcome Plugin");
 }
 
