@@ -104,6 +104,7 @@ protected:
     QString m_godocCmd;
     QString m_findCmd;
     QStringList m_targetList;
+    QMap<QString,QString> m_pathFileMap;
 };
 
 #endif // GOLANGDOC_H

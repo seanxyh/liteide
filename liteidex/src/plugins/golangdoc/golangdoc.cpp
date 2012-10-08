@@ -30,6 +30,7 @@
 #include "htmlutil/htmlutil.h"
 #include "golangapi/golangapi.h"
 #include "documentbrowser/documentbrowser.h"
+#include "qjson/include/QJson/Parser"
 
 #include <QListView>
 #include <QStringListModel>
@@ -236,6 +237,32 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
     m_findProcess->setEnvironment(env.toStringList());
     m_godocProcess->setEnvironment(env.toStringList());
     this->loadApi();
+    m_pathFileMap.clear();
+    QDir dir(goroot);
+    if (dir.exists() && dir.cd("doc")) {
+        foreach(QFileInfo info, dir.entryInfoList(QStringList()<<"*.html",QDir::Files)) {
+            QFile f(info.filePath());
+            if (f.open(QFile::ReadOnly)) {
+                QByteArray line = f.read(1024);
+                int start = line.indexOf("<!--");
+                if (start == 0 ) {
+                    int end = line.indexOf("-->");
+                    if (end > start) {
+                        QByteArray jsonData = line.mid(start+4,end-start-4);
+                        QJson::Parser parser;
+                        bool ok = false;
+                        QVariant json = parser.parse(jsonData, &ok).toMap();
+                        if (ok) {
+                            QVariantMap jsonMap = json.toMap();
+                            if (jsonMap.contains("Path")) {
+                                m_pathFileMap.insert(jsonMap.value("Path").toString(),info.filePath());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void GolangDoc::activeBrowser()
@@ -557,7 +584,10 @@ QUrl GolangDoc::parserUrl(const QUrl &_url)
         return url;
     }
     if (url.isRelative() && !url.path().isEmpty()) {
-        if (url.path().compare("/src/pkg/") == 0 || url.path().compare("/pkg/") == 0) {
+        if (m_pathFileMap.contains(url.path())) {
+            url.setScheme("file");
+            url.setPath(m_pathFileMap.value(url.path()));
+        } else if (url.path().compare("/src/pkg/") == 0 || url.path().compare("/pkg/") == 0) {
             url.setScheme("list");
             url.setPath("pkg");
         } else if (url.path().compare("/src/cmd/") == 0  || url.path().compare("/cmd/") == 0){
