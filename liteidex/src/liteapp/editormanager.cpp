@@ -85,6 +85,20 @@ bool EditorManager::initWithApp(IApplication *app)
     m_editorTabWidget->installEventFilter(this);
     m_editorTabWidget->tabBar()->installEventFilter(this);
 
+    m_tabContextMenu = new QMenu;
+    m_tabContextIndex = -1;
+    QAction *closeAct = new QAction(tr("Close"),this);
+    QAction *closeOthersAct = new QAction(tr("Close Others"),this);
+    QAction *closeAllAct = new QAction(tr("Close All"),this);
+
+    m_tabContextMenu->addAction(closeAct);
+    m_tabContextMenu->addAction(closeOthersAct);
+    m_tabContextMenu->addAction(closeAllAct);
+
+    connect(closeAct,SIGNAL(triggered()),this,SLOT(tabContextClose()));
+    connect(closeOthersAct,SIGNAL(triggered()),this,SLOT(tabContextCloseOthers()));
+    connect(closeAllAct,SIGNAL(triggered()),this,SLOT(tabContextCloseAll()));
+
     return true;
 }
 
@@ -296,7 +310,18 @@ bool EditorManager::eventFilter(QObject *target, QEvent *event)
             return true;
         }
     } else if (event->type() == QEvent::MouseButtonDblClick && target == m_editorTabWidget->tabBar()) {
-        emit doubleClickedTab();
+        QMouseEvent *ev = (QMouseEvent*)event;
+        if (ev->button() == Qt::LeftButton) {
+            emit doubleClickedTab();
+        }
+    } else if (event->type() == QEvent::MouseButtonPress && target == m_editorTabWidget->tabBar()) {
+        QMouseEvent *ev = (QMouseEvent*)event;
+        if (ev->button() == Qt::RightButton) {
+            m_tabContextIndex = m_editorTabWidget->tabBar()->tabAt(ev->pos());
+            if (m_tabContextIndex >= 0) {
+                m_tabContextMenu->popup(ev->globalPos());
+            }
+        }
     }
     return IEditorManager::eventFilter(target,event);
 }
@@ -741,4 +766,35 @@ void EditorManager::updateLine(IEditor *editor, int line, int col)
     if (m_currentEditor == editor) {
         m_lineInfo->setText(QString("%1:%2").arg(line).arg(col));
     }
+}
+
+void EditorManager::tabContextClose()
+{
+    if (m_tabContextIndex < 0) {
+        return;
+    }
+    editorTabCloseRequested(m_tabContextIndex);
+}
+
+void EditorManager::tabContextCloseOthers()
+{
+    if (m_tabContextIndex < 0) {
+        return;
+    }
+    QList<IEditor*> closeList;
+    for (int i = 0; i < m_editorTabWidget->tabBar()->count(); i++) {
+        if (i != m_tabContextIndex) {
+            QWidget *w = m_editorTabWidget->widget(i);
+            IEditor *ed = m_widgetEditorMap.value(w,0);
+            closeList << ed;
+        }
+    }
+    foreach(IEditor *ed, closeList ) {
+        closeEditor(ed);
+    }
+}
+
+void EditorManager::tabContextCloseAll()
+{
+    closeAllEditors();
 }

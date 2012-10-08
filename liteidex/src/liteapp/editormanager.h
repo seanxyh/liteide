@@ -78,6 +78,9 @@ public slots:
     virtual bool saveAllEditors();
     virtual bool closeEditor(IEditor *editor = 0);
     virtual bool closeAllEditors(bool autoSaveAll = false);
+    void tabContextClose();
+    void tabContextCloseOthers();
+    void tabContextCloseAll();
     void goBack();
     void goForward();
     void updateNavigatorActions();
@@ -103,6 +106,8 @@ protected:
     QAction     *m_goBackAct;
     QAction     *m_goForwardAct;
     QMenu       *m_editMenu;
+    QMenu       *m_tabContextMenu;
+    int          m_tabContextIndex;
     QMap<QString,QAction*> m_idActionMap;
     QToolButton *m_lineInfo;
     QToolButton *m_codecInfo;
