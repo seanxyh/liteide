@@ -58,19 +58,27 @@ void TextOutput::append(const QString &text,const QBrush &foreground)
     TerminalEdit::append(text,&f);
 }
 
-void TextOutput::appendTag0(const QString &text)
+void TextOutput::appendTag0(const QString &text, bool error)
 {
     QTextCharFormat f = m_fmt;
     f.setFontWeight(QFont::Bold);
-    f.setForeground(Qt::darkBlue);
+    if (error) {
+        f.setForeground(Qt::red);
+    } else {
+        f.setForeground(Qt::darkBlue);
+    }
     TerminalEdit::append(text,&f);
 }
 
-void TextOutput::appendTag1(const QString &text)
+void TextOutput::appendTag1(const QString &text, bool error)
 {
     QTextCharFormat f = m_fmt;
     f.setFontWeight(QFont::Bold);
-    f.setForeground(Qt::black);
+    if (error) {
+        f.setForeground(Qt::red);
+    } else {
+        f.setForeground(Qt::black);
+    }
     TerminalEdit::append(text,&f);
 }
 
