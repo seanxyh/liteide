@@ -965,7 +965,7 @@ void LiteBuild::executeCommand(const QString &cmd1, const QStringList &args, con
 
     QString shell = FileUtil::lookPathInDir(cmd,sysenv,workDir);
     if (shell.isEmpty()) {
-        shell = FileUtil::lookPath(cmd,sysenv,true);
+        shell = FileUtil::lookPath(cmd,sysenv,false);
     }
     if (!shell.isEmpty()) {
         cmd = shell;
