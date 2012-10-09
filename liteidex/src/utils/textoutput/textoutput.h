@@ -35,8 +35,8 @@ public:
     explicit TextOutput(bool readOnly = true, QWidget *parent = 0);
     void append(const QString &text);
     void append(const QString &text,const QBrush &foreground);
-    void appendTag0(const QString &text);
-    void appendTag1(const QString &text);
+    void appendTag0(const QString &text, bool error = false);
+    void appendTag1(const QString &text, bool error = false);
     void updateExistsTextColor(const QBrush &foreground = Qt::gray);
     void setMaxLine(int max);
 protected:

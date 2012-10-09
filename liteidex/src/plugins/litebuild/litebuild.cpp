@@ -918,7 +918,7 @@ void LiteBuild::extFinish(bool error,int exitCode, QString msg)
     m_output->setReadOnly(true);
 
     if (error) {
-        m_output->appendTag0(QString("error %1.\n").arg(msg));
+        m_output->appendTag0(QString("error %1.\n").arg(msg),true);
     } else {
         m_output->appendTag0(QString("exit code %1, %2.\n").arg(exitCode).arg(msg));
     }

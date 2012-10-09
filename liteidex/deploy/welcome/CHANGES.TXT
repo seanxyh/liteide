@@ -10,6 +10,7 @@
  * LiteBuild : update gosrc.xml
  * LiteBuild : fix double click goto line regexp 
  * LiteBuild : show enviroment go env
+ * LiteBuild : execute error use red font
  * LiteEditor : go wordapi update, keyword types and funcs
  * LiteEditor : code compelter func auto append ()
  * FileSystem : fix execute find path
