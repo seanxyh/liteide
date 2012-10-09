@@ -401,7 +401,7 @@ bool EditorManager::saveEditor(IEditor *editor, bool emitAboutSave)
         cur = m_currentEditor;
     }
 
-    if (cur) {
+    if (cur && cur->isModified()) {
         if (emitAboutSave) {
             emit editorAboutToSave(cur);
         }
