@@ -39,6 +39,7 @@
 #include <QTextDocumentFragment>
 #include <QMimeData>
 #include <QMenu>
+#include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -156,14 +157,15 @@ void LiteEditorWidget::keyPressEvent(QKeyEvent *e)
     static QString eow("~!@#$%^&*()+{}|:\"<>?,/;'[]\\-="); // end of word
     bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
     QString completionPrefix = textUnderCursor(textCursor());    
-
+    if (completionPrefix.isEmpty() && e->key() == '.') {
+        completionPrefix = ".";
+    }
     if (!isShortcut && (hasModifier || e->text().isEmpty()||
                         ( completionPrefix.length() < m_completionPrefixMin && completionPrefix.right(1) != ".")
                         || eow.contains(e->text().right(1)))) {
         m_completer->popup()->hide();
         return;
     }
-
     emit completionPrefixChanged(completionPrefix);
 
     if (completionPrefix != m_completer->completionPrefix()) {

@@ -48,8 +48,6 @@ protected:
     QSet<QString>   m_wordSet;
     QIcon           m_icon;
     bool            m_bSearchSeparator;
-    QRegExp         m_reg;
-    QRegExp         m_reg2;
 };
 
 #endif // LITEWORDCOMPLETER_H

@@ -129,10 +129,15 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     if (m_gocodeCmd.isEmpty()) {
         return;
     }
-    m_lastPrefix = pre;
-    if (pre.right(1) != ".") {
+    m_lastPrefix = m_prefix;
+
+    int last = pre.lastIndexOf(".");
+    if (last < 0) {
         return;
     }
+
+    m_prefix = pre.left(last+1);
+    qDebug() << m_prefix;
 
     QString src = cur.document()->toPlainText();
     src = src.replace("\r\n","\n");
@@ -140,7 +145,6 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     QStringList args;
     args << "-in" << "" << "-f" << "csv" << "autocomplete" << m_fileName << QString::number(m_writeData.length());
     m_writeData = src.toUtf8();
-    m_prefix = pre;
 
     m_process->start(m_gocodeCmd,args);
 }
@@ -161,15 +165,18 @@ void GolangCode::started()
     m_writeData.clear();
 }
 
-void GolangCode::finished(int,QProcess::ExitStatus)
+void GolangCode::finished(int code,QProcess::ExitStatus)
 {
+    if (code != 0) {
+        return;
+    }
     if (m_prefix.isEmpty()) {
         return;
     }
 
     if (m_prefix != m_lastPrefix) {
-        m_prefix.clear();
-        return;
+     //   m_prefix.clear();
+     //   return;
     }
 
     QString read = m_process->readAllStandardOutput();
@@ -180,6 +187,8 @@ void GolangCode::finished(int,QProcess::ExitStatus)
     //var,,Args,,[]string
     int n = 0;
     QIcon icon;
+
+    m_completer->clearItemChilds(m_prefix);
 
     foreach (QString s, all) {
         QStringList word = s.split(",,");
@@ -207,6 +216,7 @@ void GolangCode::finished(int,QProcess::ExitStatus)
         if (m_golangAst) {
             icon = m_golangAst->iconFromTagEnum(tag,true);
         }
+
         if (m_completer->appendItemEx(m_prefix+word.at(1),kind,info,icon,true)) {
             n++;
         }
