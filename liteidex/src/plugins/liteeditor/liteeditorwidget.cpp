@@ -91,7 +91,7 @@ QString LiteEditorWidget::textUnderCursor(QTextCursor tc) const
         return QString();
     }
     //int index = text.lastIndexOf(QRegExp("\\b[a-zA-Z_][a-zA-Z0-9_\.]+"));
-    static QRegExp reg("[a-zA-Z_]+[a-zA-Z0-9_\\.]*$");
+    static QRegExp reg("[a-zA-Z_\\.]+[a-zA-Z0-9_\\.]*$");
     int index = reg.indexIn(text);
     if (index < 0) {
         return QString();
@@ -157,9 +157,10 @@ void LiteEditorWidget::keyPressEvent(QKeyEvent *e)
     static QString eow("~!@#$%^&*()+{}|:\"<>?,/;'[]\\-="); // end of word
     bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
     QString completionPrefix = textUnderCursor(textCursor());    
-    if (completionPrefix.isEmpty() && e->key() == '.') {
-        completionPrefix = ".";
+    if (completionPrefix.startsWith(".")) {
+        completionPrefix.insert(0,'@');
     }
+    qDebug() << completionPrefix;
     if (!isShortcut && (hasModifier || e->text().isEmpty()||
                         ( completionPrefix.length() < m_completionPrefixMin && completionPrefix.right(1) != ".")
                         || eow.contains(e->text().right(1)))) {
@@ -177,6 +178,11 @@ void LiteEditorWidget::keyPressEvent(QKeyEvent *e)
         m_completer->popup()->hide();
         return;
     }
+    if (completionPrefix == "@.") {
+        m_completer->popup()->hide();
+        return;
+    }
+
 
     QRect cr = cursorRect();
     cr.setWidth(m_completer->popup()->sizeHintForColumn(0)

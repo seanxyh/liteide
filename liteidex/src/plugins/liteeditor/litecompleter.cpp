@@ -219,13 +219,18 @@ void LiteCompleter::clearItemChilds(const QString &name)
     }
     if (item) {
         QModelIndex index = m_model->indexFromItem(item);
-        m_model->removeRows(0,m_model->rowCount(index),index);
+        m_model->removeRows(0,m_model->rowCount(index),index);        
     }
 }
 
 bool LiteCompleter::appendItemEx(const QString &name,const QString &kind, const QString &info, const QIcon &icon, bool temp)
 {
     QStringList words = name.split(m_completer->separator(),QString::SkipEmptyParts);
+
+    if (name.startsWith('.')) {
+        words.insert(0,"@");
+    }
+
     WordItem *root = 0;
     WordItem *item = 0;
     bool bnew = false;    
@@ -266,6 +271,10 @@ void LiteCompleter::completionPrefixChanged(QString prefix)
     }
     if (m_completer->widget() != m_editor) {
         return;
+    }
+    if (prefix.startsWith('.')) {
+        prefix.insert(0,'@');
+        this->clearItemChilds("@");
     }
     emit prefixChanged(m_editor->textCursor(),prefix);
 }
