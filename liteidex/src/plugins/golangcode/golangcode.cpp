@@ -130,14 +130,14 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
         return;
     }
     m_lastPrefix = m_prefix;
-
+    qDebug() << "test->"<< pre;
     int last = pre.lastIndexOf(".");
     if (last < 0) {
         return;
     }
 
     m_prefix = pre.left(last+1);
-    qDebug() << m_prefix;
+    qDebug() << "test"<< m_prefix;
 
     QString src = cur.document()->toPlainText();
     src = src.replace("\r\n","\n");
@@ -216,7 +216,7 @@ void GolangCode::finished(int code,QProcess::ExitStatus)
         if (m_golangAst) {
             icon = m_golangAst->iconFromTagEnum(tag,true);
         }
-
+        qDebug() << m_prefix+word.at(1);
         if (m_completer->appendItemEx(m_prefix+word.at(1),kind,info,icon,true)) {
             n++;
         }

@@ -74,7 +74,6 @@ QStringList TreeModelCompleter::splitPath(const QString &path) const
     if (sep.isNull()) {
         return QCompleter::splitPath(path);
     }
-
     return path.split(sep);
 }
 //! [3]
