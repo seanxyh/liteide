@@ -56,6 +56,7 @@ GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
         currentEnvChanged(m_envManager->currentEnv());
     }
     m_golangAst = LiteApi::findExtensionObject<LiteApi::IGolangAst*>(m_liteApp,"LiteApi.IGolangAst");
+    connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
 }
 
 GolangCode::~GolangCode()
@@ -93,6 +94,20 @@ void GolangCode::currentEnvChanged(LiteApi::IEnv*)
     m_gocodeCmd = gocode;
 }
 
+void GolangCode::currentEditorChanged(LiteApi::IEditor *editor)
+{
+    LiteApi::ITextEditor *ed = LiteApi::getTextEditor(editor);
+    if (!ed) {
+        return;
+    }
+    QString filePath = ed->filePath();
+    if (filePath.isEmpty()) {
+        return;
+    }
+    m_fileName = QFileInfo(filePath).fileName();
+    m_process->setWorkingDirectory(QFileInfo(filePath).path());
+}
+
 void GolangCode::setCompleter(LiteApi::ICompleter *completer)
 {
     if (m_completer) {
@@ -121,7 +136,7 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     src = src.replace("\r\n","\n");
     m_writeData = src.left(cur.position()).toUtf8();
     QStringList args;
-    args << "-in" << "" << "-f" << "csv" << "autocomplete" << QString::number(m_writeData.length());
+    args << "-in" << "" << "-f" << "csv" << "autocomplete" << m_fileName << QString::number(m_writeData.length());
     m_writeData = src.toUtf8();
     m_prefix = pre;
 

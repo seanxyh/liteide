@@ -41,6 +41,7 @@ public:
     ~GolangCode();
     void setCompleter(LiteApi::ICompleter *completer);
 public slots:
+    void currentEditorChanged(LiteApi::IEditor*);
     void currentEnvChanged(LiteApi::IEnv*);
     void prefixChanged(QTextCursor,QString);
     void wordCompleted(QString,QString);
@@ -51,6 +52,7 @@ protected:
     LiteApi::ICompleter   *m_completer;
     QString     m_prefix;
     QString     m_lastPrefix;
+    QString     m_fileName;
     QProcess   *m_process;
     QByteArray  m_writeData;
     LiteApi::IEnvManager *m_envManager;
