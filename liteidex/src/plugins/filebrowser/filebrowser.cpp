@@ -167,7 +167,7 @@ FileBrowser::FileBrowser(LiteApi::IApplication *app, QObject *parent) :
     QHBoxLayout *cmdLayout = new QHBoxLayout;
     cmdLayout->setMargin(0);
     QLabel *label = new QLabel("Exec:");
-    label->setToolTip("Execute\tCtrl+`|Ctrl+`");
+    label->setToolTip("Execute\tCtrl+`, Alt+`");
     QAction *q = new QAction(this);
     q->setShortcuts(QList<QKeySequence>()
                     << QKeySequence("Ctrl+`")

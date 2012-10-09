@@ -1,6 +1,7 @@
 ==== 2012.10.9 Ver x13.2 ====
  * LiteApp : add editor tab context menu
  * LiteApp : update view menu
+ * LiteApp : fix check modify and save
  * GolangFmt : fix fmt editor style restore
  * GolangDoc : fix go/doc/*.html parser meta "Path="
  * GolangAst : fix update model style restore
