@@ -285,7 +285,17 @@ void LiteBuild::currentEnvChanged(LiteApi::IEnv*)
     m_output->updateExistsTextColor();
     m_output->appendTag0(QString("Current environment change id \"%1\"\n").arg(env->id()));
     m_output->append(m_envManager->currentEnv()->orgEnvLines().join("\n")+"\n",Qt::black);
-    this->executeCommand("go",QStringList()<<"env",LiteApi::getGoroot(m_liteApp),false);
+    QString goroot = LiteApi::getGoroot(m_liteApp);
+    if (goroot.isEmpty()) {
+        m_output->appendTag0(QString("not find environment GOROOT\n"),true);
+        return;
+    }
+    QDir dir(goroot);
+    if (!dir.exists()) {
+        m_output->appendTag0(QString("GOROOT %1 not exists\n").arg(goroot),true);
+        return;
+    }
+    this->executeCommand(QFileInfo(dir,"bin/go").filePath(),QStringList()<<"env",LiteApi::getGoroot(m_liteApp),false);
 }
 
 void LiteBuild::loadProjectInfo(const QString &filePath)
