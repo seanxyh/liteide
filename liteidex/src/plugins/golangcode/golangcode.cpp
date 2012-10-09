@@ -115,6 +115,7 @@ void GolangCode::setCompleter(LiteApi::ICompleter *completer)
     }
     m_completer = completer;
     if (m_completer) {
+        m_completer->setSearchSeparator(false);
         connect(m_completer,SIGNAL(prefixChanged(QTextCursor,QString)),this,SLOT(prefixChanged(QTextCursor,QString)));
         connect(m_completer,SIGNAL(wordCompleted(QString,QString)),this,SLOT(wordCompleted(QString,QString)));
     }
@@ -132,6 +133,7 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
     if (pre.right(1) != ".") {
         return;
     }
+
     QString src = cur.document()->toPlainText();
     src = src.replace("\r\n","\n");
     m_writeData = src.left(cur.position()).toUtf8();
@@ -178,6 +180,7 @@ void GolangCode::finished(int,QProcess::ExitStatus)
     //var,,Args,,[]string
     int n = 0;
     QIcon icon;
+
     foreach (QString s, all) {
         QStringList word = s.split(",,");
         if (word.count() != 3) {

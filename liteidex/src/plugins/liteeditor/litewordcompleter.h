@@ -29,6 +29,7 @@
 #include "litecompleter.h"
 #include <QHash>
 #include <QSet>
+#include <QRegExp>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -38,12 +39,17 @@ class LiteWordCompleter : public LiteCompleter
     Q_OBJECT
 public:
     explicit LiteWordCompleter(QObject *parent = 0);
+    virtual void setSearchSeparator(bool b);
+    virtual bool searchSeparator() const;
 public slots:
     virtual void completionPrefixChanged(QString);
 protected:
     virtual QString textUnderCursor(QTextCursor tc) const;
     QSet<QString>   m_wordSet;
     QIcon           m_icon;
+    bool            m_bSearchSeparator;
+    QRegExp         m_reg;
+    QRegExp         m_reg2;
 };
 
 #endif // LITEWORDCOMPLETER_H

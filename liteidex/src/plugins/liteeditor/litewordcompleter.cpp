@@ -44,9 +44,23 @@
 
 
 LiteWordCompleter::LiteWordCompleter(QObject *parent) :
-    LiteCompleter(parent),m_icon(QIcon("icon:liteeditor/images/findword.png"))
+    LiteCompleter(parent),
+    m_icon(QIcon("icon:liteeditor/images/findword.png")),
+    m_reg("[a-zA-Z_]+[a-zA-Z0-9_@]*$"),
+    m_reg2("[a-zA-Z_]+[a-zA-Z0-9_@]*$")
 {
     m_completer->setSeparator(".");
+    m_bSearchSeparator = true;
+}
+
+void LiteWordCompleter::setSearchSeparator(bool b)
+{
+    m_bSearchSeparator = b;
+}
+
+bool LiteWordCompleter::searchSeparator() const
+{
+    return m_bSearchSeparator;
 }
 
 QString LiteWordCompleter::textUnderCursor(QTextCursor tc) const
@@ -55,12 +69,18 @@ QString LiteWordCompleter::textUnderCursor(QTextCursor tc) const
     if (text.isEmpty()) {
         return QString();
     }
-    static QRegExp reg("[a-zA-Z_]+[a-zA-Z0-9_\\.@]*$");
-    int index = reg.indexIn(text);
-    if (index < 0) {
-        return QString();
+    if (m_bSearchSeparator) {
+        int index = m_reg.indexIn(text);
+        if (index >= 0) {
+            return text.right(m_reg.matchedLength());
+        }
+    } else {
+        int index = m_reg2.indexIn(text);
+        if (index >= 0) {
+            return text.right(m_reg2.matchedLength());
+        }
     }
-    return text.right(reg.matchedLength());
+    return QString();
 }
 
 void LiteWordCompleter::completionPrefixChanged(QString prefix)
