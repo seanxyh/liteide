@@ -12,6 +12,7 @@
  * LiteBuild : show enviroment go env
  * LiteEditor : go wordapi update, keyword types and funcs
  * LiteEditor : code compelter func auto append ()
+ * FileSystem : fix execute find path
  * LiteFind : fix current directory 
 ==== 2012.9.24 Ver x13.1 ====
  * LiteBuild : fix build load crash.
