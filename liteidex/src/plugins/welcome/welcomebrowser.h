@@ -46,6 +46,7 @@ public:
     virtual QString mimeType() const;
 public slots:
     void openUrl(const QUrl &url);
+    void highlightedUrl(const QUrl &url);
     void loadData();
     void openFolder();
 protected:
