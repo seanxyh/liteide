@@ -138,8 +138,23 @@ void LiteCompleter::clear()
     m_model->clear();
 }
 
+static void clearTempIndex(QStandardItemModel *model, QModelIndex parent) {
+    int i = model->rowCount(parent);
+    while (i--) {
+        QModelIndex index = model->index(i,0,parent);
+        if (index.data(WordItem::TempRole).toBool() == true) {
+            qDebug() << "remove" << index.data(WordItem::InfoRole);
+            model->removeRow(i,parent);
+        } else {
+            clearTempIndex(model,index);
+        }
+    }
+}
+
 void LiteCompleter::clearTemp()
 {
+    clearTempIndex(m_model,QModelIndex());
+    /*
     int i = m_model->rowCount();
     while (i--) {
         QModelIndex index = m_model->index(i,0);
@@ -147,6 +162,7 @@ void LiteCompleter::clearTemp()
             m_model->removeRow(i);
         }
     }
+    */
 }
 
 void LiteCompleter::show()
@@ -181,6 +197,30 @@ bool LiteCompleter::appendItem(const QString &name, const QIcon &icon, bool temp
         //arg = text.right(text.length()-pos).trimmed();
     }
     return this->appendItemEx(func,"","",icon,temp);
+}
+
+void LiteCompleter::clearItemChilds(const QString &name)
+{
+    QStringList words = name.split(m_completer->separator(),QString::SkipEmptyParts);
+    WordItem *root = 0;
+    WordItem *item = 0;
+    foreach (QString word, words) {
+        item = 0;
+        QModelIndex parent = m_model->indexFromItem(root);
+        int count = m_model->rowCount(parent);
+        while(count--) {
+            QModelIndex index = m_model->index(count,0,parent);
+            if (index.data(WordItem::NameRole).toString() == word) {
+                item = static_cast<WordItem*>(m_model->itemFromIndex(index));
+                break;
+            }
+        }
+        root = item;
+    }
+    if (item) {
+        QModelIndex index = m_model->indexFromItem(item);
+        m_model->removeRows(0,m_model->rowCount(index),index);
+    }
 }
 
 bool LiteCompleter::appendItemEx(const QString &name,const QString &kind, const QString &info, const QIcon &icon, bool temp)
