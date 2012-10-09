@@ -964,6 +964,9 @@ void LiteBuild::executeCommand(const QString &cmd1, const QStringList &args, con
     m_process->setUserData(2,"utf-8");
 
     QString shell = FileUtil::lookPathInDir(cmd,sysenv,workDir);
+    if (shell.isEmpty()) {
+        shell = FileUtil::lookPath(cmd,sysenv,true);
+    }
     if (!shell.isEmpty()) {
         cmd = shell;
     }
