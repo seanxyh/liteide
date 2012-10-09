@@ -63,6 +63,7 @@ WelcomeBrowser::WelcomeBrowser(LiteApi::IApplication *app, QObject *parent)
     connect(ui->optionsButton,SIGNAL(clicked()),m_liteApp->optionManager(),SLOT(exec()));
     connect(ui->textBrowser,SIGNAL(anchorClicked(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_liteApp->fileManager(),SIGNAL(recentFilesChanged(QString)),this,SLOT(loadData()));
+    connect(ui->textBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlightedUrl(QUrl)));
 
     ui->textBrowser->setSearchPaths(QStringList() << m_liteApp->resourcePath()+"/welcome");
     ui->textBrowser->setOpenLinks(false);
@@ -95,6 +96,11 @@ void WelcomeBrowser::openFolder()
 LiteApi::IExtension *WelcomeBrowser::extension()
 {
     return m_extension;
+}
+
+void WelcomeBrowser::highlightedUrl(const QUrl &url)
+{
+    ui->statusLabel->setText(url.toString());
 }
 
 void WelcomeBrowser::openUrl(const QUrl &url)

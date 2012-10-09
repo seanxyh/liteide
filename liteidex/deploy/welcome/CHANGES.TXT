@@ -1,3 +1,17 @@
+==== 2012.10.9 Ver x13.2 ====
+ * LiteApp : add editor tab context menu
+ * LiteApp : update view menu
+ * GolangFmt : fix fmt editor style restore
+ * GolangDoc : fix go/doc/*.html parser meta "Path="
+ * GolangAst : fix update model style restore
+ * Welcome : update page
+ * LiteEnv : edit enviroment action
+ * LiteBuild : update gosrc.xml
+ * LiteBuild : fix double click goto line regexp 
+ * LiteBuild : show enviroment go env
+ * LiteEditor : go wordapi update, keyword types and funcs
+ * LiteEditor : code compelter func auto append ()
+ * LiteFind : fix current directory 
 ==== 2012.9.24 Ver x13.1 ====
  * LiteBuild : fix build load crash.
  * LiteApp : fix double click error output regexp
