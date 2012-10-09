@@ -67,6 +67,8 @@ public:
     virtual void clearTemp() = 0;
     virtual void clear() = 0;
     virtual void show() = 0;
+    virtual void setSearchSeparator(bool b) = 0;
+    virtual bool searchSeparator() const = 0;
 signals:
     void prefixChanged(QTextCursor,QString);
     void wordCompleted(const QString &func, const QString &args);
