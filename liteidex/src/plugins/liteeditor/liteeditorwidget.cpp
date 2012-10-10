@@ -152,7 +152,9 @@ void LiteEditorWidget::keyPressEvent(QKeyEvent *e)
         m_completer->popup()->hide();
         return;
     }
-
+    if (e->key() == Qt::Key_Tab || e->key() == Qt::Key_Backtab) {
+        return;
+    }
     //static QString eow("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
     static QString eow("~!@#$%^&*()+{}|:\"<>?,/;'[]\\-="); // end of word
     bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
