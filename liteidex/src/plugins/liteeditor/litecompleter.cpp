@@ -275,6 +275,7 @@ void LiteCompleter::insertCompletion(QModelIndex index)
 
     QString text = index.data(WordItem::NameRole).toString();
     QString kind = index.data(WordItem::KindRole).toString();
+    QString info = index.data(WordItem::InfoRole).toString();
     QString prefix = m_completer->completionPrefix();
     //IsAbs r.URL.
     int pos = prefix.lastIndexOf(m_completer->separator());
@@ -300,7 +301,9 @@ void LiteCompleter::insertCompletion(QModelIndex index)
     if (kind == "func") {
         extra += "()";
         tc.insertText(extra);
-        tc.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,1);
+        if (!info.startsWith("func()")) {
+            tc.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,1);
+        }
     } else {
         tc.insertText(extra);
     }
