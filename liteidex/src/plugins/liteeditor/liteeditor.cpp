@@ -215,6 +215,11 @@ void LiteEditor::createActions()
     m_gotoMatchBraceAct = new QAction(tr("Goto Match Brace"),this);
     m_gotoMatchBraceAct->setShortcut(QKeySequence("Ctrl+E"));
 
+    QAction *selectNextParamAct = new QAction(tr("Select Next Param"),this);
+    selectNextParamAct->setShortcut(QKeySequence("Ctrl+P"));
+    m_widget->addAction(selectNextParamAct);
+    connect(selectNextParamAct,SIGNAL(triggered()),this,SLOT(selectNextParam()));
+
     m_foldAct = new QAction(tr("Fold"),this);
     m_foldAct->setShortcut(QKeySequence("Ctrl+<"));
     m_unfoldAct = new QAction(tr("Unfold"),this);
@@ -787,6 +792,7 @@ void LiteEditor::onActive()
     undoAvailable(m_undoAvailable);
     redoAvailable(m_redoAvailable);
     copyAvailable(m_copyAvailable);
+    m_liteApp->editorManager()->setActionEnable(this,EA_SELECTALL,true);
     m_liteApp->editorManager()->setActionEnable(this,EA_GOTOLINE,true);
     m_liteApp->editorManager()->setActionEnable(this,EA_SELECTCODEC,true);
     editPositionChanged();
@@ -809,4 +815,24 @@ void LiteEditor::copyAvailable(bool b)
     m_copyAvailable = b;
     m_liteApp->editorManager()->setActionEnable(this,EA_COPY,b);
     m_liteApp->editorManager()->setActionEnable(this,EA_CUT,b);
+}
+
+void LiteEditor::selectNextParam()
+{
+    QTextCursor cur = m_editorWidget->textCursor();
+    int pos = cur.position();
+    if (cur.hasSelection()) {
+        pos = cur.selectionEnd();
+    }
+    QTextBlock block = cur.block();
+    int offset = pos-block.position();
+    QRegExp reg("[\\,\\(\\)\\.\\s](\\s*)([\"\'\\w]+)");
+    int index = reg.indexIn(block.text().mid(offset));
+    if (index >= 0) {
+        //qDebug() << reg.capturedTexts();
+        int start = block.position()+offset+index+1+reg.cap(1).length();
+        cur.setPosition(start);
+        cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,reg.cap(2).length());
+        m_editorWidget->setTextCursor(cur);
+    }
 }

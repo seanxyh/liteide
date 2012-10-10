@@ -123,8 +123,7 @@ void GolangCode::setCompleter(LiteApi::ICompleter *completer)
 
 void GolangCode::prefixChanged(QTextCursor cur,QString pre)
 {
-    int last = pre.lastIndexOf(".");
-    if (last < 0) {
+    if (!pre.endsWith(".")) {
         return;
     }
 
@@ -135,7 +134,7 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
         return;
     }
 
-    m_prefix = pre.left(last+1);
+    m_prefix = pre;
     m_lastPrefix = m_prefix;
 
     m_completer->clearItemChilds(m_prefix);
