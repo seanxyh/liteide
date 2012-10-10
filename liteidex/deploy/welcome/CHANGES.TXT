@@ -12,6 +12,8 @@
  * LiteBuild : fix double click goto line regexp 
  * LiteBuild : show enviroment go env
  * LiteBuild : execute error use red font
+ * LiteEditor : color theme set currnet line background
+ * LiteEditor : add color theme darktango.xml(Dumitru Ungureanu)
  * LiteEditor : go wordapi update, keyword types and funcs
  * LiteEditor : code compelter func auto append ()
  * LiteEditor : fix tab indent

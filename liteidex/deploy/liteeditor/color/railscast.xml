@@ -16,4 +16,5 @@
   <style name="InactiveSelection" foreground="#000000" background="darkslateblue"/>
   <style name="DataType" foreground="white" /> 
   <style name="VisualWhitespace" foreground="#c0c0c0"/>
+  <style name="CurrentLine" background="#000000"/>
 </style-scheme>
