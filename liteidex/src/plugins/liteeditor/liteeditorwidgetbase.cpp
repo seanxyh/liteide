@@ -1089,15 +1089,39 @@ void LiteEditorWidgetBase::indentText(QTextCursor cur,bool bIndent)
     } else {
         QTextBlock block = doc->findBlock(cur.selectionStart());
         QTextBlock end = doc->findBlock(cur.selectionEnd());
-        if (!cur.atBlockStart()) {
-            end = end.next();
+        if (end.position() == cur.selectionEnd()) {
+            end = end.previous();
         }
+        if (block == end && cur.selectionStart() != block.position() ) {
+            cur.removeSelectedText();
+            //indentCursor(cur,bIndent);
+            if (bIndent) {
+                cur.insertText("\t");
+            }
+            goto end;
+        }
+        bool bResetPos = bIndent && cur.selectionStart() == block.position();
+        bool bStart = cur.position() == cur.selectionStart();
+        int startPos = cur.selectionStart();
+
         do {
             indentBlock(block,bIndent);
             block = block.next();
-        } while (block.isValid() && block != end);
+        } while (block.isValid() && block.position() <= end.position());
+        int endPos = cur.selectionEnd();
+        if (bResetPos) {
+            if (bStart) {
+                cur.setPosition(endPos);
+                cur.movePosition(QTextCursor::Left,QTextCursor::KeepAnchor,endPos-startPos);
+            } else {
+                cur.setPosition(startPos);
+                cur.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,endPos-startPos);
+            }
+        }
     }
+end:
     cur.endEditBlock();
+    setTextCursor(cur);
 }
 
 void LiteEditorWidgetBase::indentEnter(QTextCursor cur)
