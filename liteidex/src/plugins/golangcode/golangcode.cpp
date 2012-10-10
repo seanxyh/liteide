@@ -123,21 +123,23 @@ void GolangCode::setCompleter(LiteApi::ICompleter *completer)
 
 void GolangCode::prefixChanged(QTextCursor cur,QString pre)
 {
+    int last = pre.lastIndexOf(".");
+    if (last < 0) {
+        return;
+    }
+
     if (m_process->state() == QProcess::Running) {
         return;
     }
     if (m_gocodeCmd.isEmpty()) {
         return;
     }
-    m_lastPrefix = m_prefix;
-    qDebug() << "test->"<< pre;
-    int last = pre.lastIndexOf(".");
-    if (last < 0) {
-        return;
-    }
+
 
     m_prefix = pre.left(last+1);
-    qDebug() << "test"<< m_prefix;
+    m_lastPrefix = m_prefix;
+
+    m_completer->clearItemChilds(m_prefix);
 
     QString src = cur.document()->toPlainText();
     src = src.replace("\r\n","\n");
@@ -175,8 +177,8 @@ void GolangCode::finished(int code,QProcess::ExitStatus)
     }
 
     if (m_prefix != m_lastPrefix) {
-     //   m_prefix.clear();
-     //   return;
+        m_prefix.clear();
+        return;
     }
 
     QString read = m_process->readAllStandardOutput();
@@ -188,11 +190,12 @@ void GolangCode::finished(int code,QProcess::ExitStatus)
     int n = 0;
     QIcon icon;
 
-    m_completer->clearItemChilds(m_prefix);
-
     foreach (QString s, all) {
         QStringList word = s.split(",,");
         if (word.count() != 3) {
+            continue;
+        }
+        if (word.at(0) == "PANIC") {
             continue;
         }
         LiteApi::ASTTAG_ENUM tag = LiteApi::TagNone;
@@ -216,7 +219,7 @@ void GolangCode::finished(int code,QProcess::ExitStatus)
         if (m_golangAst) {
             icon = m_golangAst->iconFromTagEnum(tag,true);
         }
-        qDebug() << m_prefix+word.at(1);
+
         if (m_completer->appendItemEx(m_prefix+word.at(1),kind,info,icon,true)) {
             n++;
         }
