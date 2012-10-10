@@ -160,6 +160,7 @@ void LiteCompleter::show()
     if (!m_editor) {
         return;
     }
+    m_completer->model()->sort(0);
     m_completer->popup()->setCurrentIndex(m_completer->completionModel()->index(0, 0));
     QRect cr = m_editor->cursorRect();
     cr.setWidth(m_completer->popup()->sizeHintForColumn(0)
