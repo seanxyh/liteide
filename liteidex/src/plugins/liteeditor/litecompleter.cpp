@@ -290,7 +290,6 @@ void LiteCompleter::insertCompletion(QModelIndex index)
     if (m_completer->caseSensitivity() == Qt::CaseSensitive) {
         extra = text.right(text.length()-length);
         wordText = prefix+extra;
-        emit wordCompleted(prefix+extra,index.data(WordItem::InfoRole).toString());
     } else {
         while (length--) {
             tc.deletePreviousChar();

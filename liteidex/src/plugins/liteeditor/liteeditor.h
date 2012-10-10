@@ -110,6 +110,7 @@ public slots:
     void undoAvailable(bool);
     void redoAvailable(bool);
     void copyAvailable(bool);
+    void selectNextParam();
 public:
     void findCodecs();
     ColorStyleScheme    *m_colorStyleScheme;
