@@ -114,7 +114,7 @@ void GolangCode::setCompleter(LiteApi::ICompleter *completer)
         disconnect(m_completer,0,this,0);
     }
     m_completer = completer;
-    if (m_completer) {
+    if (m_completer && !m_gocodeCmd.isEmpty()) {
         m_completer->setSearchSeparator(false);
         connect(m_completer,SIGNAL(prefixChanged(QTextCursor,QString)),this,SLOT(prefixChanged(QTextCursor,QString)));
         connect(m_completer,SIGNAL(wordCompleted(QString,QString)),this,SLOT(wordCompleted(QString,QString)));

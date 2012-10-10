@@ -90,6 +90,7 @@ LiteEditorWidgetBase::LiteEditorWidgetBase(QWidget *parent)
     m_extraArea = new TextEditExtraArea(this);
     m_extraForeground = QColor(Qt::darkCyan);
     m_extraBackground = m_extraArea->palette().color(QPalette::Background);
+    m_CurrentLineBackground = QColor(180,200,200,128);
 
     setLayoutDirection(Qt::LeftToRight);
     viewport()->setMouseTracking(true);
@@ -208,9 +209,8 @@ void LiteEditorWidgetBase::highlightCurrentLine()
     QList<QTextEdit::ExtraSelection> extraSelections;
     if (!isReadOnly()) {
         QTextEdit::ExtraSelection selection;
-        QColor lineColor = QColor(180,200,200,128);
 
-        selection.format.setBackground(lineColor);
+        selection.format.setBackground(m_CurrentLineBackground);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
         selection.cursor = textCursor();
 
@@ -270,6 +270,15 @@ static int foldBoxWidth(const QFontMetrics &fm)
 QWidget* LiteEditorWidgetBase::extraArea()
 {
     return m_extraArea;
+}
+
+void LiteEditorWidgetBase::setCurrentLineColor(const QColor &background)
+{
+    if (background.isValid()) {
+        m_CurrentLineBackground = background;
+    } else {
+        m_CurrentLineBackground = QColor(180,200,200,128);
+    }
 }
 
 void LiteEditorWidgetBase::setExtraColor(const QColor &foreground,const QColor &background)
