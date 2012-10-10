@@ -143,7 +143,6 @@ static void clearTempIndex(QStandardItemModel *model, QModelIndex parent) {
     while (i--) {
         QModelIndex index = model->index(i,0,parent);
         if (index.data(WordItem::TempRole).toBool() == true) {
-            qDebug() << "remove" << index.data(WordItem::InfoRole);
             model->removeRow(i,parent);
         } else {
             clearTempIndex(model,index);
@@ -154,15 +153,6 @@ static void clearTempIndex(QStandardItemModel *model, QModelIndex parent) {
 void LiteCompleter::clearTemp()
 {
     clearTempIndex(m_model,QModelIndex());
-    /*
-    int i = m_model->rowCount();
-    while (i--) {
-        QModelIndex index = m_model->index(i,0);
-        if (index.data(WordItem::TempRole).toBool() == true) {
-            m_model->removeRow(i);
-        }
-    }
-    */
 }
 
 void LiteCompleter::show()
@@ -227,10 +217,6 @@ bool LiteCompleter::appendItemEx(const QString &name,const QString &kind, const 
 {
     QStringList words = name.split(m_completer->separator(),QString::SkipEmptyParts);
 
-    if (name.startsWith('.')) {
-        words.insert(0,"@");
-    }
-
     WordItem *root = 0;
     WordItem *item = 0;
     bool bnew = false;    
@@ -272,10 +258,7 @@ void LiteCompleter::completionPrefixChanged(QString prefix)
     if (m_completer->widget() != m_editor) {
         return;
     }
-    if (prefix.startsWith('.')) {
-        prefix.insert(0,'@');
-        this->clearItemChilds("@");
-    }
+
     emit prefixChanged(m_editor->textCursor(),prefix);
 }
 

@@ -160,7 +160,7 @@ void LiteEditorWidget::keyPressEvent(QKeyEvent *e)
     if (completionPrefix.startsWith(".")) {
         completionPrefix.insert(0,'@');
     }
-    qDebug() << completionPrefix;
+
     if (!isShortcut && (hasModifier || e->text().isEmpty()||
                         ( completionPrefix.length() < m_completionPrefixMin && completionPrefix.right(1) != ".")
                         || eow.contains(e->text().right(1)))) {
@@ -178,11 +178,6 @@ void LiteEditorWidget::keyPressEvent(QKeyEvent *e)
         m_completer->popup()->hide();
         return;
     }
-    if (completionPrefix == "@.") {
-        m_completer->popup()->hide();
-        return;
-    }
-
 
     QRect cr = cursorRect();
     cr.setWidth(m_completer->popup()->sizeHintForColumn(0)
