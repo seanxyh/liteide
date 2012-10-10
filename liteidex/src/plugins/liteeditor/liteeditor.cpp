@@ -550,8 +550,12 @@ void LiteEditor::applyOption(QString id)
             const ColorStyle *style = m_colorStyleScheme->findStyle("Text");
             const ColorStyle *selection = m_colorStyleScheme->findStyle("Selection");
             const ColorStyle *inactiveSelection = m_colorStyleScheme->findStyle("InactiveSelection");
+            const ColorStyle *currentLine = m_colorStyleScheme->findStyle("CurrentLine");
             if (extra) {
                 m_editorWidget->setExtraColor(extra->foregound(),extra->background());
+            }
+            if (currentLine) {
+                m_editorWidget->setCurrentLineColor(currentLine->background());
             }
             if (style || selection || inactiveSelection) {
                 QPalette p = m_defPalette;//m_editorWidget->palette();
