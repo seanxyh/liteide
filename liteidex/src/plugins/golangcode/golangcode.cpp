@@ -135,7 +135,6 @@ void GolangCode::prefixChanged(QTextCursor cur,QString pre)
         return;
     }
 
-
     m_prefix = pre.left(last+1);
     m_lastPrefix = m_prefix;
 
