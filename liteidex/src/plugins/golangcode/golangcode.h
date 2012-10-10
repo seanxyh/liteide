@@ -50,6 +50,7 @@ public slots:
 protected:
     LiteApi::IApplication *m_liteApp;
     LiteApi::ICompleter   *m_completer;
+    QString     m_preWord;
     QString     m_prefix;
     QString     m_lastPrefix;
     QString     m_fileName;

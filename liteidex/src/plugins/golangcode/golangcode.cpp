@@ -123,21 +123,28 @@ void GolangCode::setCompleter(LiteApi::ICompleter *completer)
 
 void GolangCode::prefixChanged(QTextCursor cur,QString pre)
 {
-    if (!pre.endsWith(".")) {
+    if (m_gocodeCmd.isEmpty()) {
         return;
     }
 
     if (m_process->state() == QProcess::Running) {
         return;
     }
-    if (m_gocodeCmd.isEmpty()) {
+
+    if (pre.endsWith('.')) {
+        m_preWord = pre;
+    } else if (pre.length() == 1) {
+        m_preWord.clear();
+    } else {
         return;
     }
 
     m_prefix = pre;
     m_lastPrefix = m_prefix;
 
-    m_completer->clearItemChilds(m_prefix);
+    if (!m_preWord.isEmpty()) {
+        m_completer->clearItemChilds(m_prefix);
+    }
 
     QString src = cur.document()->toPlainText();
     src = src.replace("\r\n","\n");
@@ -199,7 +206,9 @@ void GolangCode::finished(int code,QProcess::ExitStatus)
         LiteApi::ASTTAG_ENUM tag = LiteApi::TagNone;
         QString kind = word.at(0);
         QString info = word.at(2);
-        if (kind == "func") {
+        if (kind == "package") {
+            tag = LiteApi::TagPackage;
+        } else if (kind == "func") {
             tag = LiteApi::TagFunc;
         } else if (kind == "var") {
             tag = LiteApi::TagValue;
@@ -214,18 +223,17 @@ void GolangCode::finished(int code,QProcess::ExitStatus)
                 tag = LiteApi::TagType;
             }
         }
+
         if (m_golangAst) {
             icon = m_golangAst->iconFromTagEnum(tag,true);
         }
 
-        if (m_completer->appendItemEx(m_prefix+word.at(1),kind,info,icon,true)) {
-            n++;
-        }
+        m_completer->appendItemEx(m_preWord+word.at(1),kind,info,icon,true);
+        n++;
     }
 
     m_prefix.clear();
     if (n >= 1) {
-        m_completer->completer()->model()->sort(0);
         m_completer->show();
     }
 }
