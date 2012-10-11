@@ -443,7 +443,7 @@ void FileSystemWidget::openPathIndex(const QModelIndex &index)
         if (cmd == node->path()) {
             LiteApi::ILiteBuild *build = LiteApi::getLiteBuild(m_liteApp);
             if (build) {
-                build->executeCommand(info.fileName(),QStringList(),info.path());
+                build->executeCommand(info.fileName(),QString(),info.path());
                 return;
             }
         }

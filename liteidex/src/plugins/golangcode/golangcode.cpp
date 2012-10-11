@@ -94,13 +94,13 @@ void GolangCode::currentEnvChanged(LiteApi::IEnv*)
     if (gocode.isEmpty()) {
         gocode = FileUtil::lookPath("gocode",env,true);
     }
-    if (!FileUtil::compareFile(m_gocodeCmd,gocode)) {
-        if (!m_gocodeCmd.isEmpty()) {
-            m_process->start(m_gocodeCmd,QStringList() << "close");
-            m_process->waitForFinished(200);
-            m_bLoad = false;
-        }
-    }
+//    if (!FileUtil::compareFile(m_gocodeCmd,gocode)) {
+//        if (!m_gocodeCmd.isEmpty()) {
+//            m_process->start(m_gocodeCmd,QStringList() << "close");
+//            m_process->waitForFinished(200);
+//            m_bLoad = false;
+//        }
+//    }
     m_process->setProcessEnvironment(env);
     m_gocodeCmd = gocode;
     if (m_gocodeCmd.isEmpty()) {
