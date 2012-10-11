@@ -295,6 +295,11 @@ void LiteApp::appendLog(const QString &model, const QString &log, bool error)
     }
 }
 
+void LiteApp::sendBroadcast(const QString &module, const QString &id, const QVariant &param)
+{
+    emit broadcast(module,id,param);
+}
+
 void LiteApp::loadPlugins()
 {
     m_pluginManager->loadPlugins(m_pluginPath);

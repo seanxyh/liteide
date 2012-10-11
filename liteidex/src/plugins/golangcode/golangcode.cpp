@@ -57,22 +57,33 @@ GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
     }
     m_golangAst = LiteApi::findExtensionObject<LiteApi::IGolangAst*>(m_liteApp,"LiteApi.IGolangAst");
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
+    connect(m_liteApp,SIGNAL(broadcast(QString,QString,QVariant)),this,SLOT(broadcast(QString,QString,QVariant)));
+}
+
+void GolangCode::broadcast(QString module,QString id,QVariant)
+{
+    if (module == "golangpackage" && id == "reloadgopath") {
+        close();
+    }
 }
 
 GolangCode::~GolangCode()
 {
-    if (!m_gocodeCmd.isEmpty()) {
-        m_liteApp->settings()->setValue("golangcode/cmd",m_gocodeCmd);
-        if (m_bLoad) {
-            m_process->start(m_gocodeCmd,QStringList() << "close");
-            m_process->waitForFinished(200);
-        }
-    }
+    close();
     delete m_process;
 }
 
-void GolangCode::currentEnvChanged(LiteApi::IEnv*)
+void GolangCode::close()
 {
+    if (!m_gocodeCmd.isEmpty()) {
+        m_liteApp->settings()->setValue("golangcode/cmd",m_gocodeCmd);
+        m_process->start(m_gocodeCmd,QStringList() << "close");
+        m_process->waitForFinished(200);
+    }
+}
+
+void GolangCode::currentEnvChanged(LiteApi::IEnv*)
+{    
     QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);
     QString goroot = env.value("GOROOT");
     QString gobin = env.value("GOBIN");
@@ -92,6 +103,12 @@ void GolangCode::currentEnvChanged(LiteApi::IEnv*)
     }
     m_process->setProcessEnvironment(env);
     m_gocodeCmd = gocode;
+    if (m_gocodeCmd.isEmpty()) {
+         m_liteApp->appendLog("golangcode","no find gocode",true);
+    } else {
+         m_liteApp->appendLog("golangcode",QString("find gocode %1").arg(m_gocodeCmd));
+    }
+    close();
 }
 
 void GolangCode::currentEditorChanged(LiteApi::IEditor *editor)

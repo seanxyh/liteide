@@ -114,23 +114,6 @@ install_name_tool -change \
   liteide/LiteIDE.app/Contents/PlugIns/$deploy_file   
 }
 
-echo "install_name_tool" $deploy_file
-install_name_tool -change \
- $QTLIBPATH/QtCore.framework/Versions/4/QtCore \
- @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore \
- liteide/LiteIDE.app/Contents/MacOS/LiteIDE
-
-install_name_tool -change \
- $QTLIBPATH/QtGui.framework/Versions/4/QtGui \
- @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui \
-  liteide/LiteIDE.app/Contents/MacOS/LiteIDE
-
-install_name_tool -change \
- $QTLIBPATH/QtXml.framework/Versions/4/QtXml \
- @executable_path/../Frameworks/QtXml.framework/Versions/4/QtXml \
-  liteide/LiteIDE.app/Contents/MacOS/LiteIDE
-
-
 export deploy_file=libgolangast.dylib
 process_file
 
@@ -151,7 +134,6 @@ process_file
 
 export deploy_file=libwelcome.dylib
 process_file2
-
 
 export deploy_file=libgolangcode.dylib
 process_file
@@ -179,4 +161,3 @@ process_file
 
 export deploy_file=libgolangpackage.dylib
 process_file
-

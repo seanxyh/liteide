@@ -499,8 +499,6 @@ class IPlugin;
 class IApplication : public IObject
 {
     Q_OBJECT
-signals:
-    void loaded();
 public:
     virtual ~IApplication() {}
     virtual IProjectManager *projectManager() = 0;
@@ -529,6 +527,10 @@ public:
     virtual void saveState() = 0;
 
     virtual void appendLog(const QString &model, const QString &log, bool error = false) = 0;
+    virtual void sendBroadcast(const QString &module, const QString &id, const QVariant &param = QVariant()) = 0;
+signals:
+    void loaded();
+    void broadcast(QString,QString,QVariant);
 };
 
 class PluginInfo
