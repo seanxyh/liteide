@@ -40,6 +40,7 @@ public:
     explicit GolangCode(LiteApi::IApplication *app, QObject *parent = 0);
     ~GolangCode();
     void setCompleter(LiteApi::ICompleter *completer);
+    void close();
 public slots:
     void currentEditorChanged(LiteApi::IEditor*);
     void currentEnvChanged(LiteApi::IEnv*);
@@ -47,6 +48,7 @@ public slots:
     void wordCompleted(QString,QString);
     void started();
     void finished(int,QProcess::ExitStatus);
+    void broadcast(QString,QString,QVariant);
 protected:
     LiteApi::IApplication *m_liteApp;
     LiteApi::ICompleter   *m_completer;

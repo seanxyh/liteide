@@ -191,8 +191,9 @@ void PackageBrowser::setupGopath()
     dlg->setSysPathList(m_goTool->sysGopath());
     dlg->setLitePathList(m_goTool->liteGopath());
     if (dlg->exec() == QDialog::Accepted) {
-        m_goTool->setLiteGopath(dlg->litePathList());
+        m_goTool->setLiteGopath(dlg->litePathList());        
         reloadAll();
+        m_liteApp->sendBroadcast("golangpackage","reloadgopath");
     }
 }
 
