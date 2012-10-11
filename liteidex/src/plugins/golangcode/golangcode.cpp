@@ -61,26 +61,25 @@ GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
 void GolangCode::broadcast(QString module,QString id,QVariant)
 {
     if (module == "golangpackage" && id == "reloadgopath") {
-        close();
+        resetGocode();
     }
 }
 
 GolangCode::~GolangCode()
 {
-    close();
-    if (m_process->state() != QProcess::NotRunning) {
-        if (!m_process->waitForFinished(200)) {
-            m_process->kill();
-        }
+    if (!m_gocodeCmd.isEmpty()) {
+        m_process->start(m_gocodeCmd,QStringList() << "close");
+        m_process->waitForFinished();
     }
     delete m_process;
 }
 
-void GolangCode::close()
+void GolangCode::resetGocode()
 {
     if (!m_gocodeCmd.isEmpty()) {
         m_process->start(m_gocodeCmd,QStringList() << "close");
-        m_process->waitForStarted(100);
+        m_process->waitForFinished();
+        m_process->start(m_gocodeCmd);
     }
 }
 
@@ -110,7 +109,7 @@ void GolangCode::currentEnvChanged(LiteApi::IEnv*)
     } else {
          m_liteApp->appendLog("golangcode",QString("find gocode %1").arg(m_gocodeCmd));
     }
-    close();
+    resetGocode();
 }
 
 void GolangCode::currentEditorChanged(LiteApi::IEditor *editor)
