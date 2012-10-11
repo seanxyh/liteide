@@ -1,3 +1,9 @@
+==== 2012.10.11 Ver x13.3 ====
+ * GolangCode : auto restart gocode if liteide GOPATH changed
+ * LiteBuild : fix build config custom view
+ * LiteBuild : BUILDARGS / INSTALLARGS support set 
+               example -gcflags "-N -l" for debug
+			   example -ldflags "-s" for release
 ==== 2012.10.10 Ver x13.2 ====
  * GolangCode : the best support for gocode
  * LiteApp : add editor tab context menu
