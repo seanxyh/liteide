@@ -51,6 +51,7 @@ public:
     QStringList varList() const { return d->varList; }
     QStringList methodList() const { return d->methodList; }
     void appendMethod(const QString &value) { d->methodList.append(value); }
+    void appendVar(const QString &value) { d->varList.append(value); }
 private:
      QSharedDataPointer<TypeData> d;
 };
@@ -102,7 +103,14 @@ public:
             d->typeMap.insert(value,Type());
         }
     }
-    void appendTypeMethod(const QString &value, const QString method) {
+    void appendTypeVar(const QString &value, const QString &var) {
+        QMap<QString,Type>::iterator it = d->typeMap.find(value);
+        if (it == d->typeMap.end()) {
+            it = d->typeMap.insert(value,Type());
+        }
+        it->appendVar(var);
+    }
+    void appendTypeMethod(const QString &value, const QString &method) {
         QMap<QString,Type>::iterator it = d->typeMap.find(value);
         if (it == d->typeMap.end()) {
             it = d->typeMap.insert(value,Type());
