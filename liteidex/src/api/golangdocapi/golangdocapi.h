@@ -46,7 +46,8 @@ enum FindApiFlag {
     TypeApi = 0x008,
     FuncApi = 0x0010,
     MethodApi = 0x020,
-    AllGolangApi = PkgApi | ConstApi | VarApi | TypeApi | FuncApi | MethodApi
+    TypeVarApi = 0x040,
+    AllGolangApi = PkgApi | ConstApi | VarApi | TypeApi | FuncApi | MethodApi | TypeVarApi
 };
 
 class IGolangApi : public QObject

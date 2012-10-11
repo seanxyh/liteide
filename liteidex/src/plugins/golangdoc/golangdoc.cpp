@@ -753,6 +753,29 @@ void GolangDoc::doubleClickListView(QModelIndex index)
     QString text = m_findResultModel->data(src,Qt::DisplayRole).toString();
     if (!text.isEmpty()){
         activeBrowser();
+        if (text.endsWith("()")) {
+            text = text.left(text.length()-2);
+        } else if (text.endsWith("@")) {
+            //var
+            int i = text.lastIndexOf(".");
+            if (i != -1) {
+                text = text.left(i);
+            }
+            text += "#variables";
+            //text.
+        } else if (text.endsWith("$")) {
+            //filter
+            int i = text.lastIndexOf(".");
+            if (i != -1) {
+                text = text.left(i);
+            }
+        } else if (text.endsWith("*")){
+            int i = text.lastIndexOf(".");
+            if (i != -1) {
+                text = text.left(i);
+            }
+            text += "#constants";
+        }
         int n = text.indexOf(".");
         if (n >= 0) {
             text.replace(n,1,"#");

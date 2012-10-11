@@ -27,6 +27,7 @@
 #include <QFile>
 #include <QSet>
 #include <QRegExp>
+#include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -56,7 +57,9 @@ bool GolangApi::load(const QString &fileName)
 bool GolangApi::loadStream(QTextStream *stream)
 {
     pkgMap.clear();
+    //pkg go/ast, type File struct, Unresolved []*Ident
     QRegExp reg("^pkg\\s([\\w\\/]+)(\\s\\(([\\w-]+)\\))?,\\s(\\w+)(\\s\\(\\*?([\\w\\-]+)\\))?\\s(\\w+)");
+    QRegExp reg2("^(\\w+),\\s+(\\w+)");
     while (!stream->atEnd()) {
         QString line = stream->readLine().trimmed();
         // 1 pkgname
@@ -68,6 +71,12 @@ bool GolangApi::loadStream(QTextStream *stream)
         // 7 value
         int pos = reg.indexIn(line);
         if (pos != -1) {
+            QString typeVar;
+            int next = reg2.indexIn(line.right(line.length()-reg.cap().length()).trimmed());
+            if (next != -1) {
+                typeVar = reg2.cap(2);
+            }
+
             //qDebug() << reg.cap() << reg.captureCount();
             QString pkg = reg.cap(1);            
             //QString sys = reg.cap(3);
@@ -91,7 +100,11 @@ bool GolangApi::loadStream(QTextStream *stream)
                 it->appendTypeMethod(method_type,value);
             } else if (flag == "type") {
                 //typeList.append(tag);
-                it->insertType(value);
+                if (!typeVar.isEmpty()) {
+                    it->appendTypeVar(value,typeVar);
+                } else {
+                    it->insertType(value);
+                }
             } else if (flag == "var") {
                 //varList.append(tag);
                 it->appendVar(value);
@@ -114,17 +127,17 @@ QStringList GolangApi::all(int flag) const
         }
         if (flag &LiteApi::FuncApi) {
             foreach(QString v, pkg.funcList()) {
-                finds.append(pkgName+"."+v);
+                finds.append(pkgName+"."+v+"()");
             }
         }
         if (flag & LiteApi::ConstApi) {
             foreach(QString v, pkg.constList()) {
-                finds.append(pkgName+"."+v);
+                finds.append(pkgName+"."+v+"*");
             }
         }
         if (flag &LiteApi::VarApi) {
             foreach(QString v, pkg.varList()) {
-                finds.append(pkgName+"."+v);
+                finds.append(pkgName+"."+v+"@");
             }
         }
         if (flag & LiteApi::TypeApi) {
@@ -135,7 +148,12 @@ QStringList GolangApi::all(int flag) const
                 finds.append(methodName);
                 if (flag &LiteApi::MethodApi) {
                     foreach(QString v, m.value().methodList()) {
-                        finds.append(methodName+"."+v);
+                        finds.append(methodName+"."+v+"()");
+                    }
+                }
+                if (flag &LiteApi::TypeVarApi) {
+                    foreach(QString v, m.value().varList()) {
+                        finds.append(methodName+"."+v+"$");
                     }
                 }
             }
