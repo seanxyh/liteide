@@ -137,6 +137,7 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
 
 PackageBrowser::~PackageBrowser()
 {
+    delete m_goTool;
     delete m_rootMenu;
     delete m_pkgMenu;
     delete m_fileMenu;

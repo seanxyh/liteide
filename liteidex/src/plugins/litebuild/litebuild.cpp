@@ -256,6 +256,7 @@ void LiteBuild::config()
     if (!m_build) {
         return;
     }
+    setBuildConfig(m_build);
     BuildConfigDialog dlg;
     dlg.setBuild(m_build->id(),m_buildFilePath);
     dlg.setModel(m_liteideModel,m_configModel,m_customModel);
@@ -295,7 +296,7 @@ void LiteBuild::currentEnvChanged(LiteApi::IEnv*)
         m_output->appendTag0(QString("GOROOT %1 not exists\n").arg(goroot),true);
         return;
     }
-    this->executeCommand(QFileInfo(dir,"bin/go").filePath(),QStringList()<<"env",LiteApi::getGoroot(m_liteApp),false);
+    this->executeCommand(QFileInfo(dir,"bin/go").filePath(),"env",LiteApi::getGoroot(m_liteApp),false);
 }
 
 void LiteBuild::loadProjectInfo(const QString &filePath)
@@ -514,19 +515,8 @@ void LiteBuild::initAction(QAction *act, LiteApi::IBuild *build, LiteApi::BuildA
     connect(act,SIGNAL(triggered()),this,SLOT(buildAction()));
 }
 
-void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
+void LiteBuild::setBuildConfig(IBuild *build)
 {
-    if (m_build == build) {
-        /*
-        if (build) {
-            m_output->appendTag0(QString("{build id=\"%1\" file=\"%2\"}\n").
-                              arg(build->id()).
-                              arg(m_buildFilePath));
-        }
-        */
-        return;
-    }
-    //update buildconfig
     if (build) {
         m_configModel->removeRows(0,m_configModel->rowCount());
         m_customModel->removeRows(0,m_customModel->rowCount());
@@ -544,7 +534,6 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
             m_customModel->appendRow(QList<QStandardItem*>()
                                      << new QStandardItem(name)
                                      << new QStandardItem(value));
-            //m_customMap.insert(name,value);
         }
         foreach(LiteApi::BuildConfig *cf, build->configList()) {
             QString name = cf->name();
@@ -555,13 +544,15 @@ void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
             m_configModel->appendRow(QList<QStandardItem*>()
                                      << new QStandardItem(name)
                                      << new QStandardItem(value));
-            //m_configMap.insert(name,value);
         }
-        /*
-        m_output->appendTag0(QString("{build id=\"%1\" file=\"%2\"}\n").
-                          arg(build->id()).
-                          arg(m_buildFilePath));
-        */
+    }
+}
+
+void LiteBuild::setCurrentBuild(LiteApi::IBuild *build)
+{
+    //update buildconfig
+    if (m_build == build) {
+         return;
     }
 
     m_build = build;
@@ -955,7 +946,7 @@ void LiteBuild::stopAction()
     }
 }
 
-void LiteBuild::executeCommand(const QString &cmd1, const QStringList &args, const QString &workDir, bool updateExistsTextColor)
+void LiteBuild::executeCommand(const QString &cmd1, const QString &args, const QString &workDir, bool updateExistsTextColor)
 {
     if (updateExistsTextColor) {
         m_output->updateExistsTextColor();
@@ -983,9 +974,13 @@ void LiteBuild::executeCommand(const QString &cmd1, const QStringList &args, con
 
     m_process->setWorkingDirectory(workDir);
     m_output->appendTag0(QString("%1 %2 [%3]\n")
-                         .arg(cmd).arg(args.join(" ")).arg(workDir));
-    //m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args.join(" ")));
-    m_process->start(cmd,args);
+                         .arg(cmd).arg(args).arg(workDir));
+#ifdef Q_OS_WIN
+    m_process->setNativeArguments(args);
+    m_process->start(cmd);
+#else
+    m_process->start(cmd+" "+args);
+#endif
 }
 
 void LiteBuild::buildAction()
@@ -1095,35 +1090,31 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
         m_outputRegex = this->envToValue(ba->regex(),env,sysenv);
     }
 
-    QStringList arguments =  args.split(" ",QString::SkipEmptyParts);
     if (ba->output() && ba->readline()) {
         m_output->setReadOnly(false);
     } else {
         m_output->setReadOnly(true);
     }
     m_process->setEnvironment(sysenv.toStringList());
-    if (!ba->output()) {
-        bool b = QProcess::startDetached(cmd,arguments,m_workDir);
-//        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
-//                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
+    if (!ba->output()) {        
+        bool b = QProcess::startDetached(cmd,QStringList()<<args,m_workDir);
         m_output->appendTag0(QString("%1 %2 [%3]\n")
                              .arg(QDir::cleanPath(cmd)).arg(args).arg(m_workDir));
-        //m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_output->appendTag0(QString("Start process %1\n").arg(b?"success":"false"));
-        //m_output->appendTag0(QString("</action>\n"));
     } else {
         m_process->setUserData(0,cmd);
         m_process->setUserData(1,args);
         m_process->setUserData(2,codec);
 
         m_process->setWorkingDirectory(m_workDir);        
-//        m_output->appendTag0(QString("<action id=\"%1\" cmd=\"%2\" args=\"%3\" work=\"%4\">\n")
-//                             .arg(id).arg(ba->cmd()).arg(ba->args()).arg(m_workDir));
-//        m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
         m_output->appendTag0(QString("%1 %2 [%3]\n")
                              .arg(QDir::cleanPath(cmd)).arg(args).arg(m_workDir));
-        //m_output->appendTag1(QString("> %1 %2\n").arg(cmd).arg(args));
-        m_process->start(cmd,arguments);
+#ifdef Q_OS_WIN
+        m_process->setNativeArguments(args);
+        m_process->start(cmd);
+#else
+        m_process->start(cmd + " " + args);
+#endif
     }
 }
 
