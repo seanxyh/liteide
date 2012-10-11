@@ -242,12 +242,22 @@ void DocumentBrowser::scrollToAnchor(const QString &text)
     const HistoryEntry &historyEntry = createHistoryEntry();
 
     m_url.setFragment(text);
+
     if (text.isEmpty()) {
         m_textBrowser->horizontalScrollBar()->setValue(0);
         m_textBrowser->verticalScrollBar()->setValue(0);
     } else {
         m_textBrowser->scrollToAnchor(text);
     }
+
+    int index = m_urlComboBox->findText(m_url.toString());
+    if (index == -1) {
+        m_urlComboBox->addItem(m_url.toString());
+        index = m_urlComboBox->count()-1;
+    }
+    m_urlComboBox->setCurrentIndex(index);
+
+    return;
 
     if (!m_backwardStack.isEmpty() && m_url == m_backwardStack.top().url)
     {
@@ -277,10 +287,12 @@ void DocumentBrowser::scrollToAnchor(const QString &text)
 void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data,bool html)
 {
     const HistoryEntry &historyEntry = createHistoryEntry();
-    if (html) {
-        m_textBrowser->setHtml(data);
-    } else {
-        m_textBrowser->setText(data);
+    if (!data.isEmpty()) {
+        if (html) {
+            m_textBrowser->setHtml(data);
+        } else {
+            m_textBrowser->setText(data);
+        }
     }
     m_url = url;
     if (!url.fragment().isEmpty()) {
