@@ -114,7 +114,7 @@ void GoTool::kill()
 {
     if (m_process->state() != QProcess::NotRunning) {
         if (!m_process->waitForFinished(200)) {
-            m_process->terminate();
+            m_process->kill();
         }
     }
 }

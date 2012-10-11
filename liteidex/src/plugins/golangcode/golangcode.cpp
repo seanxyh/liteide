@@ -48,8 +48,6 @@ GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
     connect(m_process,SIGNAL(started()),this,SLOT(started()));
     connect(m_process,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
 
-    m_gocodeCmd = m_liteApp->settings()->value("golangcode/cmd").toString();
-    m_bLoad = false;
     m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
     if (m_envManager) {
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
@@ -70,15 +68,19 @@ void GolangCode::broadcast(QString module,QString id,QVariant)
 GolangCode::~GolangCode()
 {
     close();
+    if (m_process->state() != QProcess::NotRunning) {
+        if (!m_process->waitForFinished(200)) {
+            m_process->kill();
+        }
+    }
     delete m_process;
 }
 
 void GolangCode::close()
 {
     if (!m_gocodeCmd.isEmpty()) {
-        m_liteApp->settings()->setValue("golangcode/cmd",m_gocodeCmd);
         m_process->start(m_gocodeCmd,QStringList() << "close");
-        m_process->waitForFinished(200);
+        m_process->waitForStarted(100);
     }
 }
 
@@ -180,8 +182,8 @@ void GolangCode::wordCompleted(QString,QString)
 
 void GolangCode::started()
 {
-    m_bLoad = true;
     if (m_writeData.isEmpty()) {
+        m_process->closeWriteChannel();
         return;
     }
     m_process->write(m_writeData);

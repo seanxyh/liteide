@@ -61,7 +61,6 @@ protected:
     LiteApi::IEnvManager *m_envManager;
     LiteApi::IGolangAst *m_golangAst;
     QString     m_gocodeCmd;
-    bool        m_bLoad;
 };
 
 #endif // GOLANGCODE_H
