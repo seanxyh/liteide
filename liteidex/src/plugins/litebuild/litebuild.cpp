@@ -1097,7 +1097,7 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
     }
     m_process->setEnvironment(sysenv.toStringList());
     if (!ba->output()) {        
-        bool b = QProcess::startDetached(cmd,QStringList()<<args,m_workDir);
+        bool b = QProcess::startDetached(cmd,args.split(" "),m_workDir);
         m_output->appendTag0(QString("%1 %2 [%3]\n")
                              .arg(QDir::cleanPath(cmd)).arg(args).arg(m_workDir));
         m_output->appendTag0(QString("Start process %1\n").arg(b?"success":"false"));
