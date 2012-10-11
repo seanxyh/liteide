@@ -1,4 +1,5 @@
 ==== 2012.10.11 Ver x13.3 ====
+ * LiteEditor : add find godoc action (F1)
  * GolangCode : auto restart gocode if liteide GOPATH changed
  * LiteBuild : fix build config custom view
  * LiteBuild : BUILDARGS / INSTALLARGS support set 
