@@ -317,7 +317,7 @@ void FileBrowser::doubleClickedTreeView(QModelIndex proxyIndex)
     if (cmd == fileName) {
         LiteApi::ILiteBuild *build = LiteApi::getLiteBuild(m_liteApp);
         if (build) {
-            build->executeCommand(info.fileName(),QStringList(),info.path());
+            build->executeCommand(info.fileName(),QString(),info.path());
             return;
         }
     }
@@ -692,13 +692,18 @@ void FileBrowser::commandReturn()
         return;
     }
     m_commandEdit->selectAll();
-    QStringList args = text.split(" ",QString::SkipEmptyParts);
+    QString cmd = text;
+    QString args;
+    int find = text.indexOf(" ");
+    if (find != -1) {
+        cmd = text.left(find);
+        args = text.right(text.length()-find-1);
+    }
     LiteApi::ILiteBuild *build = LiteApi::getLiteBuild(m_liteApp);
     if (!build) {
         return;
     }
-    QString cmd = args.takeFirst();
-    build->executeCommand(cmd,args,m_fileModel->rootPath());
+    build->executeCommand(cmd.trimmed(),args.trimmed(),m_fileModel->rootPath());
 }
 
 void FileBrowser::requestCommand()

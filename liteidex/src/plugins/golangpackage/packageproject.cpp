@@ -100,8 +100,7 @@ PackageProject::~PackageProject()
         delete m_reloadTimer;
     }
     if (m_goTool) {
-        m_goTool->kill();
-        delete m_goTool;
+         delete m_goTool;
     }
     if (m_contextMenu) {
         delete m_contextMenu;

@@ -28,6 +28,7 @@
 #include "fileutil/fileutil.h"
 #include <QProcess>
 #include <QDir>
+#include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -112,8 +113,9 @@ bool GoTool::isRuning() const
 void GoTool::kill()
 {
     if (m_process->state() != QProcess::NotRunning) {
-        m_process->waitForFinished(100);
-        m_process->kill();
+        if (!m_process->waitForFinished(200)) {
+            m_process->terminate();
+        }
     }
 }
 

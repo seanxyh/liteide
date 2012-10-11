@@ -52,12 +52,13 @@ public:
     virtual QString envValue(LiteApi::IBuild *build, const QString &value);
     virtual LiteApi::IBuildManager *buildManager() const;
     virtual void appendOutput(const QString &str, const QBrush &brush, bool active, bool updateExistsTextColor = true);
-    virtual void executeCommand(const QString &cmd, const QStringList &args, const QString &workDir,bool updateExistsTextColor = true);
+    virtual void executeCommand(const QString &cmd, const QString &args, const QString &workDir,bool updateExistsTextColor = true);
     QMap<QString,QString> buildEnvMap(LiteApi::IBuild *build, const QString &buildFilePath) const;
 public:
     QString envToValue(const QString &value,QMap<QString,QString> &liteEnv,const QProcessEnvironment &env);
     void initAction(QAction *act, LiteApi::IBuild *build, LiteApi::BuildAction *ba);
     void setCurrentBuild(LiteApi::IBuild *build);
+    void setBuildConfig(LiteApi::IBuild *build);
     void loadProjectInfo(const QString &filePath);
     void loadEditorInfo(const QString &filePath);
     LiteApi::IBuild *findProjectBuildByEditor(LiteApi::IEditor *editor);
