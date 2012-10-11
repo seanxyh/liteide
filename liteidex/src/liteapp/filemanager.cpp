@@ -217,13 +217,12 @@ void FileManager::openFiles()
 
 void FileManager::openFolder()
 {
-    static QString initPath = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
-    QString folder = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(),
-           tr("Open Package Folder"), initPath);
+     QString folder = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(),
+           tr("Open Package Folder"), m_initPath);
     if (!folder.isEmpty()) {
         QDir dir(folder);
         if (dir.cdUp()) {
-            initPath = dir.path();
+            m_initPath = dir.path();
         }
         this->openFolderProject(folder);
     }

@@ -181,8 +181,9 @@ void GoplayBrowser::run()
 void GoplayBrowser::stop()
 {
     if (m_process->isRuning()) {
-        m_process->waitForFinished(100);
-        m_process->kill();
+        if (!m_process->waitForFinished(100)) {
+            m_process->kill();
+        }
     }
 }
 
