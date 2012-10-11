@@ -56,6 +56,8 @@ public slots:
     virtual void openUrl(const QUrl &url);
     virtual void activeBrowser();
 public slots:
+    void editorFindDoc();
+    void editorCreated(LiteApi::IEditor *editor);
     void loadApi();
     void currentEnvChanged(LiteApi::IEnv*);
     void listCmd();
@@ -95,16 +97,14 @@ protected:
     QByteArray  m_godocData;
     QByteArray  m_findData;
     QString  m_templateData;
-    //QAction *m_listPkgAct;
-    //QAction *m_listCmdAct;
-    //QAction *m_findAct;
-    //QMenu *m_findMenu;
     LiteApi::IEnvManager *m_envManager;
     GolangApi  *m_golangApi;
     QString m_godocCmd;
     QString m_findCmd;
     QStringList m_targetList;
     QMap<QString,QString> m_pathFileMap;
+    QAction *m_toolAct;
+    QAction *m_findDocAct;
 };
 
 #endif // GOLANGDOC_H

@@ -87,24 +87,6 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     m_findEdit = new Utils::FilterLineEdit(200);
     m_golangApi = new GolangApi(this);
-    //m_findEdit->setEditable(true);
-    //m_findEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-    //m_findEdit->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
-
-    //m_findAct = new QAction(tr("Find"),this);
-    //m_listPkgAct = new QAction(tr("List \"src/pkg\""),this);
-    //m_listCmdAct = new QAction(tr("List \"src/cmd\""),this);
-
-    //m_findMenu = new QMenu(tr("Find"));
-    //m_findMenu->addAction(m_findAct);
-    //m_findMenu->addSeparator();
-    //m_findMenu->addAction(m_listPkgAct);
-    //m_findMenu->addAction(m_listCmdAct);
-
-    //QToolButton *findBtn = new QToolButton;
-    //findBtn->setPopupMode(QToolButton::MenuButtonPopup);
-    //findBtn->setDefaultAction(m_findAct);
-    //findBtn->setMenu(m_findMenu);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(1);
@@ -121,7 +103,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_widget->setLayout(mainLayout);
 
     //m_liteApp->dockManager()->addDock(m_widget,tr("Golang Document Find"),Qt::LeftDockWidgetArea);
-    m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"godocfind",tr("Golang Document"),true);
+    m_toolAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"godocfind",tr("Golang Document"),true);
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("Golang Document Browser"));
@@ -137,6 +119,10 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuBrowserPos,m_browserAct);
 
+    m_findDocAct = new QAction(tr("Find Godoc"),this);
+    m_findDocAct->setShortcut(QKeySequence::HelpContents);
+    connect(m_findDocAct,SIGNAL(triggered()),this,SLOT(editorFindDoc()));
+
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));    
     connect(m_godocFindComboBox,SIGNAL(activated(QString)),this,SLOT(godocFindPackage(QString)));
@@ -150,6 +136,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     //connect(m_findAct,SIGNAL(triggered()),this,SLOT(findPackage()));
     //connect(m_listPkgAct,SIGNAL(triggered()),this,SLOT(listPkg()));
     //connect(m_listCmdAct,SIGNAL(triggered()),this,SLOT(listCmd()));
+    connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
 
     m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
     if (m_envManager) {
@@ -186,6 +173,49 @@ GolangDoc::~GolangDoc()
     }
     //delete m_findMenu;
     delete m_widget;
+}
+
+void GolangDoc::editorFindDoc()
+{
+    LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+    LiteApi::ITextEditor *textEditor = LiteApi::getTextEditor(editor);
+    if (!textEditor) {
+        return;
+    }
+    QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(textEditor,"LiteApi.QPlainTextEdit");
+    if (!ed) {
+        return;
+    }
+    QTextCursor tc = ed->textCursor();
+    if (!tc.hasSelection()) {
+        tc.select(QTextCursor::WordUnderCursor);
+    }
+    QString text = tc.selectedText();
+    if (!text.isEmpty()) {
+        m_toolAct->setChecked(true);
+        m_findEdit->setText(text);
+    }
+}
+
+void GolangDoc::editorCreated(LiteApi::IEditor *editor)
+{
+    if (!editor) {
+        return;
+    }
+    if (editor->mimeType() != "text/x-gosrc") {
+        return;
+    }
+    LiteApi::ITextEditor *textEditor = LiteApi::getTextEditor(editor);
+    if (!textEditor) {
+        return;
+    }
+    QMenu *menu = textEditor->contextMenu();
+    if (!menu) {
+        return;
+    }
+    textEditor->widget()->addAction(m_findDocAct);
+    menu->addSeparator();
+    menu->addAction(m_findDocAct);
 }
 
 void GolangDoc::loadApi()
