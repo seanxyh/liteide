@@ -40,7 +40,7 @@ public:
     explicit GolangCode(LiteApi::IApplication *app, QObject *parent = 0);
     ~GolangCode();
     void setCompleter(LiteApi::ICompleter *completer);
-    void close();
+    void resetGocode();
 public slots:
     void currentEditorChanged(LiteApi::IEditor*);
     void currentEnvChanged(LiteApi::IEnv*);
