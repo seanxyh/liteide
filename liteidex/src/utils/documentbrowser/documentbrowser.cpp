@@ -255,7 +255,10 @@ void DocumentBrowser::scrollToAnchor(const QString &text)
         m_urlComboBox->addItem(m_url.toString());
         index = m_urlComboBox->count()-1;
     }
+    //m_urlComboBox->setCurrentIndex(index);
+    m_urlComboBox->signalsBlocked();
     m_urlComboBox->setCurrentIndex(index);
+    m_urlComboBox->blockSignals(true);
 
     return;
 
@@ -307,7 +310,9 @@ void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data,bool html)
         m_urlComboBox->addItem(m_url.toString());
         index = m_urlComboBox->count()-1;
     }
+    m_urlComboBox->signalsBlocked();
     m_urlComboBox->setCurrentIndex(index);
+    m_urlComboBox->blockSignals(true);
 
     if (!m_backwardStack.isEmpty() && url == m_backwardStack.top().url)
     {
