@@ -69,6 +69,7 @@ public slots:
     void godocOutput(QByteArray,bool);
     void godocFinish(bool,int,QString);
     void doubleClickListView(QModelIndex);
+    void findTag(const QString &tag);
     void highlighted(const QUrl &url);
 protected:
     QUrl parserUrl(const QUrl &url);

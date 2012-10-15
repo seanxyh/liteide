@@ -179,7 +179,11 @@ bool GolangApi::loadStream(QTextStream *stream)
                                 lastPkg->typeList.append(lastType);
                             }
                         }
-                        lastType->valueList.append(new Value(TypeVarApi,last.left(pos2),last.mid(pos2+1)));
+                        if (last.left(pos2) == "embedded") {
+                            lastType->embeddedList.append(last.mid(pos2+1));
+                        } else {
+                            lastType->valueList.append(new Value(TypeVarApi,last.left(pos2),last.mid(pos2+1)));
+                        }
                     }
                 } else if (exp.startsWith("interface {")) {
                     lastType = lastPkg->findType(typeName);
@@ -198,7 +202,7 @@ bool GolangApi::loadStream(QTextStream *stream)
                                 lastPkg->typeList.append(lastType);
                             }
                         }
-                        lastType->valueList.append(new Value(TypeMethodApi,last.left(pos2),last.mid(pos2+1)));
+                        lastType->valueList.append(new Value(TypeMethodApi,last.left(pos2),last.mid(pos2)));
                     }
                 } else {
                     lastType = lastPkg->findType(typeName);
@@ -289,40 +293,109 @@ QStringList GolangApi::all(int flag) const
                 }
             }
         }
-
-//        if (flag &LiteApi::FuncApi) {
-//            foreach(QString v, pkg.funcList()) {
-//                finds.append(pkgName+"."+v+"()");
-//            }
-//        }
-//        if (flag & LiteApi::ConstApi) {
-//            foreach(QString v, pkg.constList()) {
-//                finds.append(pkgName+"."+v+"*");
-//            }
-//        }
-//        if (flag &LiteApi::VarApi) {
-//            foreach(QString v, pkg.varList()) {
-//                finds.append(pkgName+"."+v+"@");
-//            }
-//        }
-//        if (flag & LiteApi::TypeApi) {
-//            QMapIterator<QString,Type> m(pkg.typeMap());
-//            while(m.hasNext()) {
-//                m.next();
-//                QString methodName = pkgName+"."+m.key();
-//                finds.append(methodName);
-//                if (flag &LiteApi::MethodApi) {
-//                    foreach(QString v, m.value().methodList()) {
-//                        finds.append(methodName+"."+v+"()");
-//                    }
-//                }
-//                if (flag &LiteApi::TypeVarApi) {
-//                    foreach(QString v, m.value().fieldList()) {
-//                        finds.append(methodName+"."+v+"$");
-//                    }
-//                }
-//            }
-//        }
     }
     return finds;
+}
+
+static QString findType(Package *pkg, const QString &typeName, const QString &v)
+{
+    Type *typ = pkg->findType(typeName);
+    if (typ) {
+        Value *value = typ->findValue(v);
+        if (value) {
+            if (value->typ == TypeVarApi) {
+                return pkg->name+"#"+typ->name;
+            } else if (value->typ == TypeMethodApi ){
+                return pkg->name+"#"+typ->name+"."+value->name;
+            }
+        } else {
+            foreach(QString embedded, typ->embeddedList) {
+                QString find = findType(pkg,embedded,v);
+                if (!find.isEmpty()) {
+                    return find;
+                }
+            }
+        }
+    }
+    return QString();
+}
+
+QString GolangApi::findDocUrl(const QString &tag) const
+{
+    int pos = tag.lastIndexOf("/");
+    if (pos == -1) {
+        return tag;
+    }
+    QString pkgName = tag.left(pos);
+    QStringList all = tag.mid(pos+1).split(".",QString::SkipEmptyParts);
+    if (all.size() >= 1) {
+        pkgName += "/"+all.at(0);
+        Package *pkg = m_pkgs.findPackage(pkgName);
+        if (pkg) {
+            if (all.size() == 1) {
+                return pkgName;
+            } else {
+                Type *typ = pkg->findType(all.at(1));
+                if (typ) {
+                    if (all.size() == 2) {
+                        return pkgName+"#"+typ->name;
+                    } else {
+                        return findType(pkg,typ->name,all.at(2));
+                    }
+                } else {
+                    Value *value = pkg->findValue(all.at(1));
+                    if (value) {
+                        if (value->typ == VarApi) {
+                            return pkgName+"#variables";
+                        } else if (value->typ == ConstApi) {
+                            if (value->exp.startsWith("ideal-") ||
+                                    value->exp == "uint16") {
+                                return pkgName+"#constants";
+                            } else {
+                                return pkgName+"#"+value->exp;
+                            }
+                        } else if (value->typ == FuncApi) {
+                            return pkgName+"#"+value->name;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return QString();
+}
+
+PkgApiEnum GolangApi::findExp(const QString &tag, QString &exp) const
+{
+    QStringList all = tag.split(".");
+    if (all.size() >= 1) {
+        Package *pkg = m_pkgs.findPackage(all.at(0));
+        if (pkg) {
+            if (all.size() == 1) {
+                exp = "package";
+                return pkg->typ;
+            } else {
+                Type *typ = pkg->findType(all.at(1));
+                if (typ) {
+                    if (all.size() == 2) {
+                        exp = typ->exp;
+                        return typ->typ;
+                    } else {
+                        Value *value = typ->findValue(all.at(2));
+                        if (value) {
+                            exp = value->exp;
+                            return value->typ;
+                        }
+                    }
+                } else {
+                    Value *value = pkg->findValue(all.at(1));
+                    if (value) {
+                        exp = value->exp;
+                        return value->typ;
+                    }
+                }
+            }
+        }
+    }
+    return NullApi;
 }
