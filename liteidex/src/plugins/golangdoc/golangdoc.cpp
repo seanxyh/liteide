@@ -741,6 +741,58 @@ void GolangDoc::openUrl(const QUrl &_url)
     }
 }
 
+void GolangDoc::findTag(const QString &tag)
+{
+    QString exp;
+    LiteApi::PkgApiEnum typ = m_golangApi->findExp(tag,exp);
+    if (typ == LiteApi::NullApi) {
+        return;
+    }
+    QString pkg = tag;
+    QString type;
+    QString field;
+    //archive/tar.Reader.Next
+    int pos = tag.lastIndexOf("/");
+    if (pos >= 0) {
+        pkg = tag.left(pos);
+        QStringList split = tag.mid(pos+1).split(".",QString::SkipEmptyParts);
+        if (split.size() >= 1) {
+            pkg += "/"+split.takeFirst();
+        }
+        if (split.size() >= 1) {
+            type = split.takeFirst();
+        }
+        if (split.size() >= 1) {
+            field = split.takeFirst();
+        }
+    }
+    QString text;
+    if (typ == LiteApi::VarApi) {
+        text = pkg+"#variables";
+    } else if (typ == LiteApi::ConstApi) {
+        if (exp.startsWith("ideal-") ||
+                exp == "uint16") {
+            text = pkg+"#constants";
+        } else {
+            text = pkg+"#"+exp;
+        }
+    } else if (typ == LiteApi::TypeVarApi) {
+        text = pkg+"#"+type;
+    } else {
+        text = pkg;
+        if (!type.isEmpty()) {
+            text += "#"+type;
+        }
+        if (!field.isEmpty()) {
+            text += "."+field;
+        }
+    }
+    qDebug() << text;
+    activeBrowser();
+    QUrl url(QString("pdoc:%1").arg(text));
+    openUrl(url);
+}
+
 void GolangDoc::doubleClickListView(QModelIndex index)
 {
     if (!index.isValid()) {
@@ -750,37 +802,46 @@ void GolangDoc::doubleClickListView(QModelIndex index)
     if (!src.isValid()) {
         return;
     }
-    QString text = m_findResultModel->data(src,Qt::DisplayRole).toString();
-    if (!text.isEmpty()){
+    QString tag = m_findResultModel->data(src,Qt::DisplayRole).toString();
+    if (!tag.isEmpty()){
         activeBrowser();
-        if (text.endsWith("()")) {
-            text = text.left(text.length()-2);
-        } else if (text.endsWith("@")) {
-            //var
-            int i = text.lastIndexOf(".");
-            if (i != -1) {
-                text = text.left(i);
-            }
-            text += "#variables";
-            //text.
-        } else if (text.endsWith("$")) {
-            //filter
-            int i = text.lastIndexOf(".");
-            if (i != -1) {
-                text = text.left(i);
-            }
-        } else if (text.endsWith("*")){
-            int i = text.lastIndexOf(".");
-            if (i != -1) {
-                text = text.left(i);
-            }
-            text += "#constants";
-        }
-        int n = text.indexOf(".");
-        if (n >= 0) {
-            text.replace(n,1,"#");
-        }
+        QString text = m_golangApi->findDocUrl(tag);
+        qDebug() << text;
         QUrl url(QString("pdoc:%1").arg(text));
         openUrl(url);
+        //QString exp;
+        //LiteApi::PkgApiEnum typ = m_golangApi->findExp(text,exp);
+        //qDebug() << typ << exp;
+        //findTag(text);
+        return;
+//        if (text.endsWith("()")) {
+//            text = text.left(text.length()-2);
+//        } else if (text.endsWith("@")) {
+//            //var
+//            int i = text.lastIndexOf(".");
+//            if (i != -1) {
+//                text = text.left(i);
+//            }
+//            text += "#variables";
+//            //text.
+//        } else if (text.endsWith("$")) {
+//            //filter
+//            int i = text.lastIndexOf(".");
+//            if (i != -1) {
+//                text = text.left(i);
+//            }
+//        } else if (text.endsWith("*")){
+//            int i = text.lastIndexOf(".");
+//            if (i != -1) {
+//                text = text.left(i);
+//            }
+//            text += "#constants";
+//        }
+//        int n = text.indexOf(".");
+//        if (n >= 0) {
+//            text.replace(n,1,"#");
+//        }
+        //QUrl url(QString("pdoc:%1").arg(text));
+        //openUrl(url);
     }
 }

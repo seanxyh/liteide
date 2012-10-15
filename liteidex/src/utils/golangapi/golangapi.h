@@ -39,7 +39,6 @@ public:
     Value(): typ(NullApi) {}
     Value(PkgApiEnum _typ, const QString &_name, const QString &_exp) :
         typ(_typ), name(_name), exp(_exp) {}
-    bool IsNull() const { return typ == NullApi; }
 public:
     PkgApiEnum typ;
     QString name;
@@ -70,15 +69,16 @@ public:
     PkgApiEnum    typ;
     QString     name;
     QString     exp;
+    QStringList     embeddedList;
     QList<Value*> valueList;
 };
 
 class Package
 {
 public:
-    Package() {}
+    Package() : typ(PkgApi) {}
     Package(const QString &_name) :
-        name(_name) {}
+        typ(PkgApi),name(_name) {}
     ~Package()  { clear(); }
     void clear() {
         qDeleteAll(valueList);
@@ -103,6 +103,7 @@ public:
         return 0;
     }
 public:
+    PkgApiEnum    typ;
     QString       name;
     QList<Value*> valueList;
     QList<Type*>  typeList;
@@ -259,6 +260,8 @@ public:
     bool load(const QString &fileName);
     bool loadStream(QTextStream *stream);
     virtual QStringList all(int flag) const;
+    virtual PkgApiEnum findExp(const QString &tag, QString &exp) const;
+    virtual QString findDocUrl(const QString &tag) const;
 protected:
     Packages m_pkgs;
 };
