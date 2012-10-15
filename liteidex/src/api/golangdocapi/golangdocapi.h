@@ -39,15 +39,19 @@ pdoc : show pkg doc
 
 namespace LiteApi {
 
-enum FindApiFlag {
+enum PkgApiEnum {
+    NullApi = 0,
     PkgApi = 0x0001,
     ConstApi = 0x0002,
     VarApi = 0x0004,
-    TypeApi = 0x008,
-    FuncApi = 0x0010,
-    MethodApi = 0x020,
-    TypeVarApi = 0x040,
-    AllGolangApi = PkgApi | ConstApi | VarApi | TypeApi | FuncApi | MethodApi | TypeVarApi
+    StructApi = 0x0008,
+    InterfaceApi = 0x0010,
+    TypeApi = 0x0020,
+    FuncApi = 0x0040,
+    TypeMethodApi = 0x0080,
+    TypeVarApi = 0x0100,
+    AllTypeApi = StructApi | InterfaceApi | TypeApi,
+    AllGolangApi = PkgApi | ConstApi | VarApi | StructApi | InterfaceApi | TypeApi | FuncApi | TypeMethodApi | TypeVarApi
 };
 
 class IGolangApi : public QObject
