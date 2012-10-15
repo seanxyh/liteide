@@ -79,6 +79,7 @@ void GolangCode::resetGocode()
     if (!m_gocodeCmd.isEmpty()) {
         m_process->start(m_gocodeCmd,QStringList() << "close");
         m_process->waitForFinished();
+        m_process->setEnvironment(LiteApi::getGoEnvironment(m_liteApp).toStringList());
         m_process->start(m_gocodeCmd);
     }
 }
