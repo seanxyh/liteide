@@ -760,6 +760,7 @@ EDITOR_TARGETATH
     m_editorInfo.insert("EDITOR_PATH",info.filePath());
     m_editorInfo.insert("EDITOR_DIR",info.path());
     m_editorInfo.insert("EDITOR_DIRNAME",QFileInfo(info.path()).fileName());
+    m_editorInfo.insert("EDITOR_DIRNAME_GO",QFileInfo(info.path()).fileName().replace(" ","_"));
     QString target = info.fileName();
     if (!info.suffix().isEmpty()) {
         target = target.left(target.length()-info.suffix().length()-1);
@@ -958,7 +959,7 @@ void LiteBuild::executeCommand(const QString &cmd1, const QString &args, const Q
         return;
     }
     QProcessEnvironment sysenv = LiteApi::getGoEnvironment(m_liteApp);
-    QString cmd = cmd1;
+    QString cmd = cmd1.trimmed();
     m_output->setReadOnly(false);
     m_process->setEnvironment(sysenv.toStringList());
     m_process->setUserData(0,cmd);
@@ -978,7 +979,11 @@ void LiteBuild::executeCommand(const QString &cmd1, const QString &args, const Q
                          .arg(cmd).arg(args).arg(workDir));
 #ifdef Q_OS_WIN
     m_process->setNativeArguments(args);
-    m_process->start(cmd);
+    if (cmd.indexOf(" ")) {
+        m_process->start("\""+cmd+"\"");
+    } else {
+        m_process->start(cmd);
+    }
 #else
     m_process->start(cmd+" "+args);
 #endif
@@ -1112,7 +1117,7 @@ void LiteBuild::execAction(const QString &mime, const QString &id)
                              .arg(QDir::cleanPath(cmd)).arg(args).arg(m_workDir));
 #ifdef Q_OS_WIN
         m_process->setNativeArguments(args);
-        m_process->start(cmd);
+        m_process->start("\""+cmd+"\"");
 #else
         m_process->start(cmd + " " + args);
 #endif
