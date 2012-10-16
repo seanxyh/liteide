@@ -276,6 +276,7 @@ QStringList GolangApi::all(int flag) const
     QStringList finds;
     foreach(Package *pkg, m_pkgs.pkgList) {
         finds.append(pkg->name);
+        finds.append(pkg->name+".");
         foreach(Value *value, pkg->valueList) {
             if (flag & value->typ) {
                 finds.append(pkg->name+"."+value->name);
@@ -318,6 +319,88 @@ static QStringList findType(Package *pkg, const QString &typeName, const QString
         }
     }
     return QStringList();
+}
+/*
+    NullApi = 0,
+    PkgApi = 0x0001,
+    ConstApi = 0x0002,
+    VarApi = 0x0004,
+    StructApi = 0x0008,
+    InterfaceApi = 0x0010,
+    TypeApi = 0x0020,
+    FuncApi = 0x0040,
+    TypeMethodApi = 0x0080,
+    TypeVarApi = 0x0100,
+*/
+
+static QString typeName(LiteApi::PkgApiEnum api) {
+    switch(api) {
+    case LiteApi::NullApi:
+        break;
+    case LiteApi::PkgApi:
+        return "package";
+    case LiteApi::ConstApi:
+        return "const";
+    case LiteApi::VarApi:
+        return "var";
+    case LiteApi::StructApi:
+        return "struct";
+    case LiteApi::InterfaceApi:
+        return "interface";
+    case LiteApi::TypeApi:
+        return "type";
+    case LiteApi::FuncApi:
+        return "func";
+    case LiteApi::TypeMethodApi:
+        return "method";
+    case LiteApi::TypeVarApi:
+        return "field";
+    }
+    return QString();
+}
+
+QString GolangApi::findDocInfo(const QString &tag) const
+{
+    int pos = tag.lastIndexOf("/");
+    QString pkgName = tag.left(pos+1);
+    QStringList all = tag.mid(pos+1).split(".",QString::SkipEmptyParts);
+    if (all.size() >= 1) {
+        pkgName += all.at(0);
+        Package *pkg = m_pkgs.findPackage(pkgName);
+        if (pkg) {
+            if (all.size() == 1) {
+                return "package "+pkgName;
+            } else {
+                Type *typ = pkg->findType(all.at(1));
+                if (typ) {
+                    if (all.size() == 2) {
+                        return QString("type %1 %2").arg(typ->name).arg(typeName(typ->typ));
+                    } else {
+                        Value *value = typ->findValue(all.at(2));
+                        if (value) {
+                            if (value->typ == TypeVarApi) {
+                                return  QString("field %1 %2").arg(value->name).arg(value->exp);
+                            } else if (value->typ == TypeMethodApi ){
+                                return  QString("method %1%2").arg(value->name).arg(value->exp);
+                            }
+                        }
+                    }
+                } else {
+                    Value *value = pkg->findValue(all.at(1));
+                    if (value) {
+                        if (value->typ == VarApi) {
+                            return QString("var %1 %2").arg(value->name).arg(value->exp);
+                        } else if (value->typ == ConstApi) {
+                            return QString("const %1 %2").arg(value->name).arg(value->exp);
+                        } else if (value->typ == FuncApi) {
+                            return QString("func %1%2").arg(value->name).arg(value->exp);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return QString();
 }
 
 QStringList GolangApi::findDocUrl(const QString &tag) const

@@ -262,6 +262,7 @@ public:
     virtual QStringList all(int flag) const;
     virtual PkgApiEnum findExp(const QString &tag, QString &exp) const;
     virtual QStringList findDocUrl(const QString &tag) const;
+    virtual QString findDocInfo(const QString &tag) const;
 protected:
     Packages m_pkgs;
 };
