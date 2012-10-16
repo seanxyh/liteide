@@ -86,6 +86,7 @@ public slots:
     void updateNavigatorActions();
     void updateCurrentPositionInNavigationHistory();
     void executeEditAction(QAction* action);
+    void moveToNewWindow();
 signals:
     void tabAddRequest();
     void doubleClickedTab();

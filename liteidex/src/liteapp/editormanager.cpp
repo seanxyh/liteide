@@ -90,15 +90,18 @@ bool EditorManager::initWithApp(IApplication *app)
     QAction *closeAct = new QAction(tr("Close"),this);
     QAction *closeOthersAct = new QAction(tr("Close Others"),this);
     QAction *closeAllAct = new QAction(tr("Close All"),this);
+    QAction *moveToAct = new QAction(tr("Move To New Window"),this);
 
     m_tabContextMenu->addAction(closeAct);
     m_tabContextMenu->addAction(closeOthersAct);
     m_tabContextMenu->addAction(closeAllAct);
+    m_tabContextMenu->addSeparator();
+    m_tabContextMenu->addAction(moveToAct);
 
     connect(closeAct,SIGNAL(triggered()),this,SLOT(tabContextClose()));
     connect(closeOthersAct,SIGNAL(triggered()),this,SLOT(tabContextCloseOthers()));
     connect(closeAllAct,SIGNAL(triggered()),this,SLOT(tabContextCloseAll()));
-
+    connect(moveToAct,SIGNAL(triggered()),this,SLOT(moveToNewWindow()));
     return true;
 }
 
@@ -798,4 +801,29 @@ void EditorManager::tabContextCloseOthers()
 void EditorManager::tabContextCloseAll()
 {
     closeAllEditors();
+}
+
+void EditorManager::moveToNewWindow()
+{
+    if (m_tabContextIndex < 0) {
+        return;
+    }
+    QWidget *w = m_editorTabWidget->widget(m_tabContextIndex);
+    IEditor *ed = m_widgetEditorMap.value(w,0);
+    if (!ed) {
+        return;
+    }
+    LiteApi::ITextEditor *editor = getTextEditor(ed);
+    if (!editor) {
+        return;
+    }
+    QString filePath = editor->filePath();
+    if (filePath.isEmpty()) {
+        return;
+    }
+    QProcess process;
+    if (process.startDetached(qApp->applicationFilePath(),
+                          QStringList() << "-no-session" << filePath)) {
+        this->closeEditor(ed);
+    }
 }

@@ -139,7 +139,7 @@ LiteApp::LiteApp()
     m_projectManager->addFactory(new FolderProjectFactory(this,this));
 }
 
-void LiteApp::load()
+void LiteApp::load(bool bUseSession)
 {
     loadMimeType();
     loadPlugins();
@@ -151,7 +151,7 @@ void LiteApp::load()
     appendLog("LiteApp","loaded");
     appendLog("LiteApp","Load Objects "+m_extension->objectMetaList().join(";"));
     bool b = m_settings->value("LiteApp/AutoLoadLastSession",true).toBool();
-    if (b) {
+    if (b && bUseSession) {
         loadSession("default");
     }
 }
