@@ -101,16 +101,45 @@ int  main(int argc, char *argv[])
     LiteApp *liteApp = new LiteApp;
     liteApp->setPluginPath(getPluginPath());
     liteApp->setResourcePath(resPath);
-    liteApp->load();
 
+    QStringList argList;
+    QStringList fileList;
     if (argc >= 2) {
         for (int i = 1; i < argc; i++) {
-            QString fileName = argv[i];
-            if (QFile::exists(fileName)) {
-                liteApp->fileManager()->openFile(fileName);
+            QString arg = argv[i];
+            if (arg.startsWith("-")) {
+                argList.append(arg);
+                continue;
+            } else {
+                fileList.append(arg);
             }
         }
     }
+    if (argList.contains("-no-session")) {
+        liteApp->load(false);
+    } else {
+        liteApp->load(true);
+    }
+    if (fileList.size() == 1) {
+        QString file = fileList.at(0);
+        QFileInfo f(file);
+        if (f.isFile()) {
+            liteApp->fileManager()->openFolderProject(f.path());
+            liteApp->fileManager()->openEditor(file);
+        } else if (f.isDir()) {
+            liteApp->fileManager()->openFolderProject(file);
+        }
+    } else {
+        foreach(QString file, fileList) {
+            QFileInfo f(file);
+            if (f.isFile()) {
+                liteApp->fileManager()->openEditor(file);
+            } else if (f.isDir()) {
+                liteApp->fileManager()->openFolderProject(file);
+            }
+        }
+    }
+
     int ret = app.exec();
     delete liteApp;
     return ret;
