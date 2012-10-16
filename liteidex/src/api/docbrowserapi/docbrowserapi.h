@@ -43,11 +43,13 @@ public:
     virtual QToolBar *toolBar() = 0;
     virtual QStatusBar *statusBar() = 0;
     virtual QComboBox *urlComboBox() = 0;
+    virtual QTextBrowser *textBrowser() = 0;
 signals:
     void highlighted(const QUrl &url);
     void requestUrl(const QUrl &url);
     void forwardAvailable(bool available);
     void backwardAvailable(bool available);
+    void documentLoaded();
 public slots:
     virtual void backward() = 0;
     virtual void forward() = 0;

@@ -71,6 +71,7 @@ public slots:
     void doubleClickListView(QModelIndex);
     void findTag(const QString &tag);
     void highlighted(const QUrl &url);
+    void documentLoaded();
 protected:
     QUrl parserUrl(const QUrl &url);
     void openUrlList(const QUrl &url);
@@ -106,6 +107,7 @@ protected:
     QMap<QString,QString> m_pathFileMap;
     QAction *m_toolAct;
     QAction *m_findDocAct;
+    QString m_docFind;
 };
 
 #endif // GOLANGDOC_H

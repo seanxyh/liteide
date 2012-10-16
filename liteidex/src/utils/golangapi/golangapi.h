@@ -261,7 +261,7 @@ public:
     bool loadStream(QTextStream *stream);
     virtual QStringList all(int flag) const;
     virtual PkgApiEnum findExp(const QString &tag, QString &exp) const;
-    virtual QString findDocUrl(const QString &tag) const;
+    virtual QStringList findDocUrl(const QString &tag) const;
 protected:
     Packages m_pkgs;
 };

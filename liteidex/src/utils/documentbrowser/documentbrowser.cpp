@@ -220,6 +220,7 @@ QUrl DocumentBrowser::resolveUrl(const QUrl &url) const
 void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data)
 {
     setUrlHtml(url,data,false);
+    emit documentLoaded();
 }
 
 QToolBar *DocumentBrowser::toolBar()
@@ -237,6 +238,11 @@ QComboBox *DocumentBrowser::urlComboBox()
     return m_urlComboBox;
 }
 
+QTextBrowser *DocumentBrowser::textBrowser()
+{
+    return m_textBrowser;
+}
+
 void DocumentBrowser::scrollToAnchor(const QString &text)
 {
     const HistoryEntry &historyEntry = createHistoryEntry();
@@ -250,21 +256,20 @@ void DocumentBrowser::scrollToAnchor(const QString &text)
         m_textBrowser->scrollToAnchor(text);
     }
 
+    m_urlComboBox->blockSignals(true);
     int index = m_urlComboBox->findText(m_url.toString());
     if (index == -1) {
         m_urlComboBox->addItem(m_url.toString());
         index = m_urlComboBox->count()-1;
     }
-    //m_urlComboBox->setCurrentIndex(index);
-    m_urlComboBox->signalsBlocked();
     m_urlComboBox->setCurrentIndex(index);
-    m_urlComboBox->blockSignals(true);
+    m_urlComboBox->blockSignals(false);
 
-    return;
+    emit documentLoaded();
 
     if (!m_backwardStack.isEmpty() && m_url == m_backwardStack.top().url)
     {
-        restoreHistoryEntry(m_backwardStack.top());
+        //restoreHistoryEntry(m_backwardStack.top());
         return;
     }
 
@@ -305,18 +310,18 @@ void DocumentBrowser::setUrlHtml(const QUrl &url,const QString &data,bool html)
         m_textBrowser->verticalScrollBar()->setValue(0);
     }
 
+    m_urlComboBox->blockSignals(true);
     int index = m_urlComboBox->findText(m_url.toString());
     if (index == -1) {
         m_urlComboBox->addItem(m_url.toString());
         index = m_urlComboBox->count()-1;
     }
-    m_urlComboBox->signalsBlocked();
     m_urlComboBox->setCurrentIndex(index);
-    m_urlComboBox->blockSignals(true);
+    m_urlComboBox->blockSignals(false);
 
     if (!m_backwardStack.isEmpty() && url == m_backwardStack.top().url)
     {
-        restoreHistoryEntry(m_backwardStack.top());
+    //    restoreHistoryEntry(m_backwardStack.top());
         return;
     }
 

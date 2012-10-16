@@ -54,8 +54,10 @@
 #include <QGroupBox>
 #include <QToolButton>
 #include <QTextCodec>
+#include <QTextCursor>
 #include <QDesktopServices>
 #include <QDomDocument>
+#include <QScrollBar>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -107,6 +109,12 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("Golang Document Browser"));
+
+    QPalette p = m_docBrowser->textBrowser()->palette();
+    p.setBrush(QPalette::Highlight,Qt::yellow);
+    //p.setColor(QPalette::HighlightedText,Qt::darkRed);
+    m_docBrowser->textBrowser()->setPalette(p);
+
     QStringList paths;
     paths << m_liteApp->resourcePath()+"/golangdoc";
     m_docBrowser->setSearchPaths(paths);
@@ -125,6 +133,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));    
+    connect(m_docBrowser,SIGNAL(documentLoaded()),this,SLOT(documentLoaded()));
     connect(m_godocFindComboBox,SIGNAL(activated(QString)),this,SLOT(godocFindPackage(QString)));
     connect(m_findEdit,SIGNAL(filterChanged(QString)),m_findFilterModel,SLOT(setFilterFixedString(QString)));
     //connect(m_findEdit,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
@@ -803,11 +812,33 @@ void GolangDoc::doubleClickListView(QModelIndex index)
     }
     QString tag = m_findResultModel->data(src,Qt::DisplayRole).toString();
     if (!tag.isEmpty()){
-        QString text = m_golangApi->findDocUrl(tag);
-        if (!text.isEmpty()) {
-            activeBrowser();
-            QUrl url(QString("pdoc:%1").arg(text));
-            openUrl(url);
+        QStringList urlList = m_golangApi->findDocUrl(tag);
+        if (!urlList.isEmpty()) {
+            if (urlList.size() >= 2) {
+                m_docFind = urlList.at(1);
+            } else {
+                m_docFind.clear();
+            }
+            QString text = urlList.at(0);
+            if (!text.isEmpty()) {
+                activeBrowser();
+                QUrl url(QString("pdoc:%1").arg(text));
+                openUrl(url);
+            }
         }
+    }
+}
+
+void GolangDoc::documentLoaded()
+{
+    if (!m_docFind.isEmpty()) {
+        QTextCursor from = m_docBrowser->textBrowser()->cursorForPosition(QPoint(0,0));
+        QTextDocument *doc = m_docBrowser->textBrowser()->document();
+        QTextCursor find = doc->find(m_docFind,from,QTextDocument::FindCaseSensitively | QTextDocument::FindWholeWords);
+
+        if (!find.isNull()) {
+            m_docBrowser->textBrowser()->setTextCursor(find);
+        }
+        m_docFind.clear();
     }
 }
