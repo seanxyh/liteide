@@ -335,6 +335,7 @@ void PackageBrowser::finished(int code,QProcess::ExitStatus)
             m_goTool->setProcessEnvironment(LiteApi::getGoEnvironment(m_liteApp));
             m_goTool->setWorkDir(work);
             m_goTool->start(QStringList() << "list" << "-e" << "-json" << "./...");
+            //m_goTool->start(QStringList() << "list" << "-f" << "{{.ImportPath}}" << "./...");
         } else {
             resetTree();
         }
