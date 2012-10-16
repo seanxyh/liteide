@@ -62,7 +62,7 @@ public:
 public:
     virtual QStringList all(int flag = AllGolangApi) const = 0;
     virtual PkgApiEnum findExp(const QString &tag, QString &exp) const = 0;
-    virtual QString findDocUrl(const QString &tag) const = 0;
+    virtual QStringList findDocUrl(const QString &tag) const = 0;
 };
 
 class IGolangDoc : public IObject

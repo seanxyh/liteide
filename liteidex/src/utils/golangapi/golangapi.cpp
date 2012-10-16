@@ -297,30 +297,30 @@ QStringList GolangApi::all(int flag) const
     return finds;
 }
 
-static QString findType(Package *pkg, const QString &typeName, const QString &v)
+static QStringList findType(Package *pkg, const QString &typeName, const QString &v)
 {
     Type *typ = pkg->findType(typeName);
     if (typ) {
         Value *value = typ->findValue(v);
         if (value) {
             if (value->typ == TypeVarApi) {
-                return pkg->name+"#"+typ->name;
+                return QStringList() << pkg->name+"#"+typ->name << value->name;
             } else if (value->typ == TypeMethodApi ){
-                return pkg->name+"#"+typ->name+"."+value->name;
+                return QStringList() << pkg->name+"#"+typ->name+"."+value->name << value->name;
             }
         } else {
             foreach(QString embedded, typ->embeddedList) {
-                QString find = findType(pkg,embedded,v);
+                QStringList find = findType(pkg,embedded,v);
                 if (!find.isEmpty()) {
                     return find;
                 }
             }
         }
     }
-    return QString();
+    return QStringList();
 }
 
-QString GolangApi::findDocUrl(const QString &tag) const
+QStringList GolangApi::findDocUrl(const QString &tag) const
 {
     int pos = tag.lastIndexOf("/");
     QString pkgName = tag.left(pos+1);
@@ -330,12 +330,12 @@ QString GolangApi::findDocUrl(const QString &tag) const
         Package *pkg = m_pkgs.findPackage(pkgName);
         if (pkg) {
             if (all.size() == 1) {
-                return pkgName;
+                return QStringList() << pkgName << pkgName;
             } else {
                 Type *typ = pkg->findType(all.at(1));
                 if (typ) {
                     if (all.size() == 2) {
-                        return pkgName+"#"+typ->name;
+                        return QStringList() << pkgName+"#"+typ->name << typ->name;
                     } else {
                         return findType(pkg,typ->name,all.at(2));
                     }
@@ -343,23 +343,23 @@ QString GolangApi::findDocUrl(const QString &tag) const
                     Value *value = pkg->findValue(all.at(1));
                     if (value) {
                         if (value->typ == VarApi) {
-                            return pkgName+"#variables";
+                            return QStringList() << pkgName+"#variables" << value->name;
                         } else if (value->typ == ConstApi) {
                             if (value->exp.startsWith("ideal-") ||
                                     value->exp == "uint16") {
-                                return pkgName+"#constants";
+                                return QStringList() << pkgName+"#constants" << value->name;
                             } else {
-                                return pkgName+"#"+value->exp;
+                                return QStringList() << pkgName+"#"+value->exp << value->name;
                             }
                         } else if (value->typ == FuncApi) {
-                            return pkgName+"#"+value->name;
+                            return QStringList() << pkgName+"#"+value->name << value->name;
                         }
                     }
                 }
             }
         }
     }
-    return QString();
+    return QStringList();
 }
 
 PkgApiEnum GolangApi::findExp(const QString &tag, QString &exp) const

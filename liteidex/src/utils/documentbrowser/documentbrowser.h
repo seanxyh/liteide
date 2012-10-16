@@ -61,6 +61,7 @@ public:
     virtual QToolBar *toolBar();
     virtual QStatusBar *statusBar();
     virtual QComboBox *urlComboBox();
+    virtual QTextBrowser *textBrowser();
 public slots:
     virtual void backward();
     virtual void forward();
