@@ -58,6 +58,7 @@
 #include <QDesktopServices>
 #include <QDomDocument>
 #include <QScrollBar>
+#include <QTextBlock>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -68,6 +69,11 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
+
+void ListViewEx::currentChanged(const QModelIndex &current, const QModelIndex &previous)
+{
+    emit currentIndexChanged(current);
+}
 
 
 GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
@@ -83,11 +89,15 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_findFilterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     m_findFilterModel->setSourceModel(m_findResultModel);
 
-    m_findResultListView = new QListView;
+    m_findResultListView = new ListViewEx;
     m_findResultListView->setEditTriggers(0);
     m_findResultListView->setModel(m_findFilterModel);
 
     m_findEdit = new Utils::FilterLineEdit(200);
+    m_tagInfo = new QLabel;
+    m_tagInfo->setWordWrap(true);
+    //m_tagInfo->setScaledContents(true);
+
     m_golangApi = new GolangApi(this);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -102,6 +112,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     mainLayout->addLayout(findLayout);
     mainLayout->addWidget(m_findResultListView);
+    mainLayout->addWidget(m_tagInfo);
     m_widget->setLayout(mainLayout);
 
     //m_liteApp->dockManager()->addDock(m_widget,tr("Golang Document Find"),Qt::LeftDockWidgetArea);
@@ -112,7 +123,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     QPalette p = m_docBrowser->textBrowser()->palette();
     p.setBrush(QPalette::Highlight,Qt::yellow);
-    //p.setColor(QPalette::HighlightedText,Qt::darkRed);
+    p.setColor(QPalette::HighlightedText,Qt::black);
     m_docBrowser->textBrowser()->setPalette(p);
 
     QStringList paths;
@@ -135,13 +146,15 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));    
     connect(m_docBrowser,SIGNAL(documentLoaded()),this,SLOT(documentLoaded()));
     connect(m_godocFindComboBox,SIGNAL(activated(QString)),this,SLOT(godocFindPackage(QString)));
-    connect(m_findEdit,SIGNAL(filterChanged(QString)),m_findFilterModel,SLOT(setFilterFixedString(QString)));
+    //connect(m_findEdit,SIGNAL(filterChanged(QString)),m_findFilterModel,setFilterFixedString(QString)));
+    connect(m_findEdit,SIGNAL(filterChanged(QString)),this,SLOT(filterTextChanged(QString)));//setFilterFixedString(QString)));
     //connect(m_findEdit,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
     connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
     connect(m_findProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
     connect(m_findProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(findFinish(bool,int,QString)));
     connect(m_findResultListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickListView(QModelIndex)));
+    connect(m_findResultListView,SIGNAL(currentIndexChanged(QModelIndex)),this,SLOT(currentIndexChanged(QModelIndex)));
     //connect(m_findAct,SIGNAL(triggered()),this,SLOT(findPackage()));
     //connect(m_listPkgAct,SIGNAL(triggered()),this,SLOT(listPkg()));
     //connect(m_listCmdAct,SIGNAL(triggered()),this,SLOT(listCmd()));
@@ -196,10 +209,19 @@ void GolangDoc::editorFindDoc()
         return;
     }
     QTextCursor tc = ed->textCursor();
+    QString text;
     if (!tc.hasSelection()) {
         tc.select(QTextCursor::WordUnderCursor);
+        text = tc.selectedText();
+        int pos = tc.selectionStart()-tc.block().position();
+        if (pos >= 1) {
+            if (tc.block().text().at(pos-1) == '.') {
+                text = "."+text;
+            }
+        }
+    } else {
+        text = tc.selectedText();
     }
-    QString text = tc.selectedText();
     if (!text.isEmpty()) {
         m_toolAct->setChecked(true);
         m_findEdit->setText(text);
@@ -829,6 +851,21 @@ void GolangDoc::doubleClickListView(QModelIndex index)
     }
 }
 
+void GolangDoc::currentIndexChanged(QModelIndex index)
+{
+    if (!index.isValid()) {
+        return;
+    }
+    QModelIndex src =  m_findFilterModel->mapToSource(index);
+    if (!src.isValid()) {
+        return;
+    }
+    QString tag = m_findResultModel->data(src,Qt::DisplayRole).toString();
+    if (!tag.isEmpty()){
+        m_tagInfo->setText(m_golangApi->findDocInfo(tag));
+    }
+}
+
 void GolangDoc::documentLoaded()
 {
     if (!m_docFind.isEmpty()) {
@@ -841,4 +878,10 @@ void GolangDoc::documentLoaded()
         }
         m_docFind.clear();
     }
+}
+
+void GolangDoc::filterTextChanged(QString str)
+{
+    m_findFilterModel->setFilterFixedString(str);
+    m_findResultListView->verticalScrollBar()->setValue(0);
 }

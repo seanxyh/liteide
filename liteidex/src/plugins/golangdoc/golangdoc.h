@@ -35,7 +35,9 @@
 
 #include <QUrl>
 #include <QModelIndex>
+#include <QListView>
 
+class QLabel;
 class QListView;
 class QLineEdit;
 class QStringListModel;
@@ -45,6 +47,15 @@ class ProcessEx;
 class DocumentBrowser;
 class QSortFilterProxyModel;
 class GolangApi;
+
+class ListViewEx : public QListView
+{
+Q_OBJECT
+public:
+    void currentChanged(const QModelIndex &current, const QModelIndex &previous);
+signals:
+    void currentIndexChanged(QModelIndex);
+};
 
 class GolangDoc : public LiteApi::IGolangDoc
 {
@@ -69,9 +80,11 @@ public slots:
     void godocOutput(QByteArray,bool);
     void godocFinish(bool,int,QString);
     void doubleClickListView(QModelIndex);
+    void currentIndexChanged(QModelIndex);
     void findTag(const QString &tag);
     void highlighted(const QUrl &url);
     void documentLoaded();
+    void filterTextChanged(QString);
 protected:
     QUrl parserUrl(const QUrl &url);
     void openUrlList(const QUrl &url);
@@ -90,8 +103,9 @@ protected:
     QComboBox *m_godocFindComboBox;
     QStringListModel *m_findResultModel;
     QSortFilterProxyModel *m_findFilterModel;
-    QListView *m_findResultListView;
+    ListViewEx *m_findResultListView;
     Utils::FilterLineEdit *m_findEdit;
+    QLabel     *m_tagInfo;
     ProcessEx  *m_findProcess;
     ProcessEx  *m_godocProcess;
     QAction *m_browserAct;
