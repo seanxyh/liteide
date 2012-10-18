@@ -48,7 +48,10 @@ var (
 )
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "usage: api [std|all|package...]\n")
+
+	fmt.Fprintf(os.Stderr, `usage: api [std|all|package...|local-dir]
+    local-dir : . or ./goapi
+`)
 	flag.PrintDefaults()
 }
 
@@ -80,8 +83,25 @@ func main() {
 	}
 
 	for _, pkg := range pkgs {
-		bp, err := build.Import(pkg, "", build.FindOnly)
-		if err == nil {
+		if build.IsLocalImport(pkg) {
+			wd, err := os.Getwd()
+			if err != nil {
+				log.Fatalln(err)
+				continue
+			}
+			dir := path.Clean(path.Join(wd, pkg))
+			bp, err := build.ImportDir(dir, 0)
+			if err != nil {
+				log.Fatalln(err)
+				continue
+			}
+			w.wantedPkg[bp.Name] = true
+			w.WalkPackage(bp.Name, bp.Dir)
+		} else {
+			bp, err := build.Import(pkg, "", build.FindOnly)
+			if err != nil {
+				log.Fatalln(err)
+			}
 			w.WalkPackage(pkg, bp.Dir)
 		}
 	}
