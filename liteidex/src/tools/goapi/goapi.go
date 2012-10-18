@@ -45,6 +45,7 @@ var (
 	allmethods = flag.Bool("e", false, "show all embedded methods")
 	alldecls   = flag.Bool("a", false, "extract documentation for all package-level declarations")
 	showpos    = flag.Bool("p", false, "show token pos tag")
+	separate   = flag.String("sep", ",", "set token separate string")
 )
 
 func usage() {
@@ -77,6 +78,7 @@ func main() {
 	}
 
 	w := NewWalker()
+	w.sep = *separate
 
 	for _, pkg := range pkgs {
 		w.wantedPkg[pkg] = true
@@ -92,7 +94,9 @@ func main() {
 			dir := path.Clean(path.Join(wd, pkg))
 			bp, err := build.ImportDir(dir, 0)
 			if err != nil {
-				log.Fatalln(err)
+				if *verbose {
+					log.Fatalln(err)
+				}
 				continue
 			}
 			w.wantedPkg[bp.Name] = true
@@ -100,7 +104,10 @@ func main() {
 		} else {
 			bp, err := build.Import(pkg, "", build.FindOnly)
 			if err != nil {
-				log.Fatalln(err)
+				if *verbose {
+					log.Println(err)
+				}
+				continue
 			}
 			w.WalkPackage(pkg, bp.Dir)
 		}
@@ -137,6 +144,7 @@ type Walker struct {
 	features        map[string]([]token.Pos) // set
 	lastConstType   string
 	curPackageName  string
+	sep             string
 	curPackage      *ast.Package
 	prevConstType   map[pkgSymbol]string
 	constDep        map[string]*constInfo // key's const identifier has type of future value const identifier
@@ -195,7 +203,7 @@ func postos(ps []token.Pos) (s []string) {
 func (w *Walker) Features() (fs []string) {
 	for f, ps := range w.features {
 		if *showpos {
-			fs = append(fs, f+"; "+strings.Join(postos(ps), ","))
+			fs = append(fs, f+w.sep+strings.Join(postos(ps), ","))
 		} else {
 			fs = append(fs, f)
 		}
@@ -315,7 +323,7 @@ func (w *Walker) WalkPackage(name string, dir string) {
 			if *showpos && w.wantedPkg[name] {
 				tf := w.fset.File(f.Pos())
 				if tf != nil {
-					fmt.Printf("pos %s,%s,%d,%d\n", name, filepath.Join(dir, file), tf.Base(), tf.Size())
+					fmt.Printf("pos %s%s%s%s%d:%d\n", name, w.sep, filepath.Join(dir, file), w.sep, tf.Base(), tf.Base()+tf.Size())
 				}
 			}
 		}
@@ -1210,7 +1218,7 @@ func (w *Walker) emitFeature(feature string, pos token.Pos) {
 			feature = feature[:more] + " ...more"
 		}
 	}
-	f := strings.Join(w.scope, ", ") + ", " + feature
+	f := strings.Join(w.scope, w.sep) + w.sep + feature
 
 	if _, dup := w.features[f]; dup {
 		w.features[f] = append(w.features[f], pos)
