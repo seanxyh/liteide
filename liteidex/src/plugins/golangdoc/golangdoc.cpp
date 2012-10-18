@@ -884,4 +884,7 @@ void GolangDoc::filterTextChanged(QString str)
 {
     m_findFilterModel->setFilterFixedString(str);
     m_findResultListView->verticalScrollBar()->setValue(0);
+    if (m_findFilterModel->rowCount() > 0) {
+        m_findResultListView->setCurrentIndex(m_findFilterModel->index(0,0));
+    }
 }

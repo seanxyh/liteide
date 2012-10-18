@@ -6,6 +6,8 @@ syntax: glob
 *.5
 *.pro.user
 *.orig
+.git
+.gitignore
 liteide-build-*
 liteidex/liteide
 build
