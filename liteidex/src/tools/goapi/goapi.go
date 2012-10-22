@@ -51,8 +51,7 @@ var (
 func usage() {
 
 	fmt.Fprintf(os.Stderr, `usage: api [std|all|package...|local-dir]
-    local-dir : . or ./goapi
-`)
+    local-dir : . or ./goapi`)
 	flag.PrintDefaults()
 }
 
@@ -136,6 +135,92 @@ type constInfo struct {
 	pos token.Pos
 }
 
+type Package struct {
+	dpkg             *doc.Package
+	apkg             *ast.Package
+	interfaceMethods map[string]([]method)
+	interfaces       map[string]*ast.InterfaceType //interface
+	structs          map[string]*ast.StructType    //struct
+	types            map[string]ast.Expr           //type
+}
+
+func NewPackage() *Package {
+	return &Package{
+		interfaceMethods: make(map[string]([]method)),
+		interfaces:       make(map[string]*ast.InterfaceType),
+		structs:          make(map[string]*ast.StructType),
+		types:            make(map[string]ast.Expr),
+	}
+}
+
+func (p *Package) findType(name string) ast.Expr {
+	for k, v := range p.interfaces {
+		if k == name {
+			return v
+		}
+	}
+	for k, v := range p.structs {
+		if k == name {
+			return v
+		}
+	}
+	for k, v := range p.types {
+		if k == name {
+			return v
+		}
+	}
+	return nil
+}
+
+func funcRetType(ft *ast.FuncType, index int) ast.Expr {
+	if ft.Results != nil && len(ft.Results.List) >= index+1 {
+		return ft.Results.List[index].Type
+	}
+	return nil
+}
+
+func findFunction(funcs []*doc.Func, name string) *ast.FuncType {
+	for _, f := range funcs {
+		if f.Name == name {
+			return f.Decl.Type
+		}
+	}
+	return nil
+}
+
+func (p *Package) findFunction(name string) *ast.FuncType {
+	return findFunction(p.dpkg.Funcs, name)
+}
+
+func (p *Package) findMethod(typ, name string) *ast.FuncType {
+	for k, v := range p.interfaceMethods {
+		if k == typ {
+			for _, m := range v {
+				if m.name == name {
+					return m.ft
+				}
+			}
+		}
+	}
+	for _, t := range p.dpkg.Types {
+		if t.Name == typ {
+			return findFunction(t.Methods, name)
+		}
+	}
+	return nil
+}
+
+func (p *Package) resolveName(name string) (ok bool) {
+	for _, v := range p.dpkg.Vars {
+		for _, vname := range v.Names {
+			if vname == name {
+				return true
+			}
+		}
+	}
+	return
+}
+
 type Walker struct {
 	context *build.Context
 	//	root            string
@@ -145,10 +230,11 @@ type Walker struct {
 	lastConstType   string
 	curPackageName  string
 	sep             string
-	curPackage      *ast.Package
+	curPackage      *Package
 	prevConstType   map[pkgSymbol]string
 	constDep        map[string]*constInfo // key's const identifier has type of future value const identifier
 	packageState    map[string]loadState
+	packageMap      map[string]*Package
 	interfaces      map[pkgSymbol]*ast.InterfaceType
 	functionTypes   map[pkgSymbol]string // symbol => return type
 	selectorFullPkg map[string]string    // "http" => "net/http", updated by imports
@@ -162,6 +248,7 @@ func NewWalker() *Walker {
 		packageState:    make(map[string]loadState),
 		interfaces:      make(map[pkgSymbol]*ast.InterfaceType),
 		functionTypes:   make(map[pkgSymbol]string),
+		packageMap:      make(map[string]*Package),
 		selectorFullPkg: make(map[string]string),
 		wantedPkg:       make(map[string]bool),
 		prevConstType:   make(map[pkgSymbol]string),
@@ -336,8 +423,10 @@ func (w *Walker) WalkPackage(name string, dir string) {
 	defer pop()
 
 	w.curPackageName = name
-	w.curPackage = apkg
 	w.constDep = map[string]*constInfo{}
+	w.curPackage = NewPackage()
+	w.curPackage.apkg = apkg
+	w.packageMap[name] = w.curPackage
 
 	for _, afile := range apkg.Files {
 		w.recordTypes(afile)
@@ -372,6 +461,7 @@ func (w *Walker) WalkPackage(name string, dir string) {
 	}
 
 	dpkg := doc.New(apkg, name, mode)
+	w.curPackage.dpkg = dpkg
 
 	for _, t := range dpkg.Types {
 		// Move funcs up to the top-level, not hiding in the Types.
@@ -420,9 +510,12 @@ func (w *Walker) recordTypes(file *ast.File) {
 						switch t := ts.Type.(type) {
 						case *ast.InterfaceType:
 							w.noteInterface(name, t)
+							w.curPackage.interfaces[name] = t
 						case *ast.StructType:
+							w.curPackage.structs[name] = t
 							w.functionTypes[pkgSymbol{w.curPackageName, name}] = name
 						default:
+							w.curPackage.types[name] = ts.Type
 							w.functionTypes[pkgSymbol{w.curPackageName, name}] = w.nodeString(ts.Type)
 						}
 					}
@@ -526,9 +619,15 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		if v.Name == "false" || v.Name == "true" {
 			return "bool", nil
 		}
-		if v.Name == "intSize" && w.curPackageName == "strconv" {
-			// Hack.
-			return "ideal-int", nil
+		if v.Obj != nil {
+			if vs, ok := v.Obj.Decl.(*ast.ValueSpec); ok {
+				if len(vs.Values) >= 1 {
+					typ, err := w.constValueType(vs.Values[0])
+					if err != nil {
+						return typ, err
+					}
+				}
+			}
 		}
 		if t, ok := w.prevConstType[pkgSymbol{w.curPackageName, v.Name}]; ok {
 			return t, nil
@@ -542,6 +641,9 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		left, err := w.constValueType(v.X)
 		if err != nil {
 			return "", err
+		}
+		if v.Op == token.SHL || v.Op == token.SHR {
+			return left, err
 		}
 		right, err := w.constValueType(v.Y)
 		if err != nil {
@@ -590,17 +692,6 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 //	int int8 int16 int32 int64 rune string
 //	uint uint8 uint16 uint32 uint64 uintptr
 
-func (w *Walker) isIdentifier(id string) bool {
-	switch id {
-	case "bool", "byte", "complex64", "complex128", "error", "float32", "float64",
-		"int", "int8", "int16", "int32", "int64", "rune", "string",
-		"uint", "uint8", "uint16", "uint32", "uint64", "uintptr",
-		"true", "false", "nil":
-		return true
-	}
-	return false
-}
-
 func (w *Walker) varValueType(vi interface{}) (string, error) {
 	switch v := vi.(type) {
 	case *ast.BasicLit:
@@ -624,49 +715,85 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 		//return "", errTODO
 		// assume it is not a method.
 		pkg, ok := w.selectorFullPkg[w.nodeString(v.X)]
-		if !ok {
-			//fix_code
-			funSym := pkgSymbol{w.curPackageName, v.Sel.Name}
+		if ok {
+			funSym := pkgSymbol{pkg, v.Sel.Name}
 			if retType, ok := w.functionTypes[funSym]; ok {
-				return retType, nil
+				if !ast.IsExported(retType) || pkg == w.curPackageName {
+					return retType, nil
+				}
+				return pkg + "." + retType, nil
 			}
-
-			//fix_code example reflect.Type
-			typ, err := w.varValueType(v.X)
-			if err == nil {
-				pkg := typ[:strings.Index(typ, ".")]
-				funSym = pkgSymbol{pkg, v.Sel.Name}
-				if retType, ok := w.functionTypes[funSym]; ok {
-					if w.isIdentifier(retType) || pkg == w.curPackageName {
-						return retType, nil
-					}
+			if retType, ok := w.prevConstType[funSym]; ok {
+				if !ast.IsExported(retType) || pkg == w.curPackageName {
+					return retType, nil
+				} else {
 					return pkg + "." + retType, nil
 				}
 			}
-			return "", fmt.Errorf("not a package1: %s", w.nodeString(v.X))
-		}
-		funSym := pkgSymbol{pkg, v.Sel.Name}
-		if retType, ok := w.functionTypes[funSym]; ok {
-			if w.isIdentifier(retType) || pkg == w.curPackageName {
-				return retType, nil
+		} else {
+			//fix_code
+			typ, err := w.varValueType(v.X)
+			if strings.HasPrefix(typ, "*") {
+				typ = typ[1:]
 			}
-			return pkg + "." + retType, nil
-		}
-		if retType, ok := w.prevConstType[funSym]; ok {
-			if w.isIdentifier(retType) || pkg == w.curPackageName {
-				return retType, nil
+			isLocal := w.curPackage.findType(typ)
+			if isLocal != nil {
+				//find local fuction
+				funSym := pkgSymbol{w.curPackageName, typ + "." + v.Sel.Name}
+				if retType, ok := w.functionTypes[funSym]; ok {
+					return retType, nil
+				}
+				if t, ok := isLocal.(*ast.StructType); ok {
+					for _, fi := range t.Fields.List {
+						for _, n := range fi.Names {
+							if n.Name == v.Sel.Name {
+								t, err := w.varValueType(fi.Type)
+								if err == nil {
+									return t, nil
+								}
+
+							}
+						}
+					}
+				}
 			} else {
-				return pkg + "." + retType, nil
+				//find other method			
+				pos := strings.LastIndex(typ, ".")
+				if err == nil && pos != -1 {
+					pkg := typ[:pos]
+					_, ok := w.packageState[pkg]
+					if ok == false {
+						pkg, ok = w.selectorFullPkg[typ[:pos]]
+					}
+					if ok {
+						p, ok := w.packageMap[pkg]
+						if ok {
+							fn := p.findMethod(typ[pos+1:], v.Sel.Name)
+							if fn != nil {
+								ret := funcRetType(fn, 0)
+								if ret != nil {
+									return w.nodeString(w.namelessType(ret)), nil
+								}
+							}
+						}
+					}
+				}
 			}
 		}
-		return "", fmt.Errorf("not a package2: %s", w.nodeString(v.X))
+		return "", fmt.Errorf("not a package: %s", w.nodeString(v.X))
 	case *ast.Ident:
+		switch v.Name {
+		case "true", "false":
+			return "bool", nil
+		case "byte", "ini":
+			return v.Name, nil
+		}
+		vt := w.curPackage.findType(v.Name)
+		if vt != nil {
+			return w.nodeString(vt), nil
+		}
 		node, _, ok := w.resolveName(v.Name)
 		if !ok {
-			//fix_code
-			if w.isIdentifier(v.Name) {
-				return v.Name, nil
-			}
 			return "", fmt.Errorf("unresolved identifier: %q", v.Name)
 		}
 		return w.varValueType(node)
@@ -753,7 +880,7 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 // resolveName finds a top-level node named name and returns the node
 // v and its type t, if known.
 func (w *Walker) resolveName(name string) (v interface{}, t interface{}, ok bool) {
-	for _, file := range w.curPackage.Files {
+	for _, file := range w.curPackage.apkg.Files {
 		for _, di := range file.Decls {
 			switch d := di.(type) {
 			case *ast.GenDecl:
@@ -982,6 +1109,7 @@ func (w *Walker) walkStructType(name string, t *ast.StructType) {
 type method struct {
 	name string // "Read"
 	sig  string // "([]byte) (int, error)", from funcSigString
+	ft   *ast.FuncType
 	pos  token.Pos
 }
 
@@ -1012,6 +1140,7 @@ func (w *Walker) interfaceMethods(pkg, iname string) (methods []method, complete
 					methods = append(methods, method{
 						name: mname.Name,
 						sig:  w.funcSigString(ft),
+						ft:   ft,
 						pos:  f.Pos(),
 					})
 				} else {
@@ -1024,7 +1153,19 @@ func (w *Walker) interfaceMethods(pkg, iname string) (methods []method, complete
 				methods = append(methods, method{
 					name: "Error",
 					sig:  "() string",
-					pos:  f.Pos(),
+					ft: &ast.FuncType{
+						Params: nil,
+						Results: &ast.FieldList{
+							List: []*ast.Field{
+								&ast.Field{
+									Type: &ast.Ident{
+										Name: "string",
+									},
+								},
+							},
+						},
+					},
+					pos: f.Pos(),
 				})
 				continue
 			}
@@ -1056,6 +1197,7 @@ func (w *Walker) walkInterfaceType(name string, t *ast.InterfaceType) {
 	methNames := []string{}
 	pop := w.pushScope("type " + name + " interface")
 	methods, complete := w.interfaceMethods(w.curPackageName, name)
+	w.packageMap[w.curPackageName].interfaceMethods[name] = methods
 	for _, m := range methods {
 		methNames = append(methNames, m.name)
 		w.emitFeature(fmt.Sprintf("%s%s", m.name, m.sig), m.pos)
@@ -1084,16 +1226,37 @@ func (w *Walker) walkInterfaceType(name string, t *ast.InterfaceType) {
 	}
 }
 
+func baseTypeName(x ast.Expr) (name string, imported bool) {
+	switch t := x.(type) {
+	case *ast.Ident:
+		return t.Name, false
+	case *ast.SelectorExpr:
+		if _, ok := t.X.(*ast.Ident); ok {
+			// only possible for qualified type names;
+			// assume type is imported
+			return t.Sel.Name, true
+		}
+	case *ast.StarExpr:
+		return baseTypeName(t.X)
+	}
+	return
+}
+
 func (w *Walker) peekFuncDecl(f *ast.FuncDecl) {
 	//fix_code
-	//	if f.Recv != nil {
-	//		return
-	//	}
+	var fname = f.Name.Name
+	if f.Recv != nil {
+		recvTypeName, imp := baseTypeName(f.Recv.List[0].Type)
+		if imp {
+			return
+		}
+		fname = recvTypeName + "." + f.Name.Name
+	}
 	// Record return type for later use.
 	//fix_code len >= 1
 	if f.Type.Results != nil && len(f.Type.Results.List) >= 1 {
 		retType := w.nodeString(w.namelessType(f.Type.Results.List[0].Type))
-		w.functionTypes[pkgSymbol{w.curPackageName, f.Name.Name}] = retType
+		w.functionTypes[pkgSymbol{w.curPackageName, fname}] = retType
 	}
 }
 
