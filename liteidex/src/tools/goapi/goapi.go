@@ -46,6 +46,8 @@ var (
 	alldecls   = flag.Bool("a", false, "extract documentation for all package-level declarations")
 	showpos    = flag.Bool("p", false, "show token pos tag")
 	separate   = flag.String("sep", ",", "set token separate string")
+	dep_parser = flag.Bool("dep", true, "check package import")
+	nooutput   = flag.Bool("n", false, "no output, check only")
 )
 
 type ss struct {
@@ -130,6 +132,10 @@ func main() {
 		}
 	}
 
+	if *nooutput {
+		return
+	}
+
 	for _, feature := range w.Features() {
 		fmt.Println(feature)
 	}
@@ -160,6 +166,9 @@ type Package struct {
 	interfaces       map[string]*ast.InterfaceType //interface
 	structs          map[string]*ast.StructType    //struct
 	types            map[string]ast.Expr           //type
+	functions        map[string]method             //function 
+	consts           map[string]string             //const => type
+	vars             map[string]string             //var => type
 }
 
 func NewPackage() *Package {
@@ -168,6 +177,9 @@ func NewPackage() *Package {
 		interfaces:       make(map[string]*ast.InterfaceType),
 		structs:          make(map[string]*ast.StructType),
 		types:            make(map[string]ast.Expr),
+		functions:        make(map[string]method),
+		consts:           make(map[string]string),
+		vars:             make(map[string]string),
 	}
 }
 
@@ -206,8 +218,24 @@ func findFunction(funcs []*doc.Func, name string) *ast.FuncType {
 	return nil
 }
 
-func (p *Package) findFunction(name string) *ast.FuncType {
-	return findFunction(p.dpkg.Funcs, name)
+func (p *Package) findFunctionType(name string) ast.Expr {
+	if fn, ok := p.functions[name]; ok {
+		return funcRetType(fn.ft, 0)
+	}
+	for k, v := range p.structs {
+		if k == name {
+			return &ast.Ident{
+				NamePos: v.Pos(),
+				Name:    name,
+			}
+		}
+	}
+	for k, v := range p.types {
+		if k == name {
+			return v
+		}
+	}
+	return nil
 }
 
 func (p *Package) findMethod(typ, name string) *ast.FuncType {
@@ -249,14 +277,12 @@ type Walker struct {
 	curPackageName  string
 	sep             string
 	curPackage      *Package
-	prevConstType   map[pkgSymbol]string
 	constDep        map[string]*constInfo // key's const identifier has type of future value const identifier
 	packageState    map[string]loadState
 	packageMap      map[string]*Package
 	interfaces      map[pkgSymbol]*ast.InterfaceType
-	functionTypes   map[pkgSymbol]string // symbol => return type
-	selectorFullPkg map[string]string    // "http" => "net/http", updated by imports
-	wantedPkg       map[string]bool      // packages requested on the command line
+	selectorFullPkg map[string]string // "http" => "net/http", updated by imports
+	wantedPkg       map[string]bool   // packages requested on the command line
 }
 
 func NewWalker() *Walker {
@@ -265,11 +291,9 @@ func NewWalker() *Walker {
 		features:        make(map[string]([]token.Pos)),
 		packageState:    make(map[string]loadState),
 		interfaces:      make(map[pkgSymbol]*ast.InterfaceType),
-		functionTypes:   make(map[pkgSymbol]string),
 		packageMap:      make(map[string]*Package),
 		selectorFullPkg: make(map[string]string),
 		wantedPkg:       make(map[string]bool),
-		prevConstType:   make(map[pkgSymbol]string),
 		//		root:            filepath.Join(build.Default.GOROOT, "src/pkg"),
 	}
 }
@@ -282,21 +306,6 @@ const (
 	loading
 	loaded
 )
-
-//fix_code
-// hardCodedConstantType is a hack until the type checker is sufficient for our needs.
-// Rather than litter the code with unnecessary type annotations, we'll hard-code
-// the cases we can't handle yet.
-//func (w *Walker) hardCodedConstantType(name string) (typ string, ok bool) {
-//	switch w.scope[0] {
-//	case "pkg syscall":
-//		switch name {
-//		case "darwinAMD64":
-//			return "bool", true
-//		}
-//	}
-//	return "", false
-//}
 
 func postos(ps []token.Pos) (s []string) {
 	for _, p := range ps {
@@ -393,6 +402,7 @@ func (w *Walker) WalkPackage(name string, dir string) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	for _, info := range infos {
 		if info.IsDir() {
 			continue
@@ -416,12 +426,15 @@ func (w *Walker) WalkPackage(name string, dir string) {
 				}
 				continue
 			}
+
 			apkg.Files[file] = f
-			for _, dep := range fileDeps(f) {
-				bp, err := build.Import(dep, "", build.FindOnly)
-				if err == nil {
-					if dep != name {
-						w.WalkPackage(dep, bp.Dir)
+			if *dep_parser {
+				for _, dep := range fileDeps(f) {
+					bp, err := build.Import(dep, "", build.FindOnly)
+					if err == nil {
+						if dep != name {
+							w.WalkPackage(dep, bp.Dir)
+						}
 					}
 				}
 			}
@@ -528,10 +541,8 @@ func (w *Walker) recordTypes(file *ast.File) {
 						w.curPackage.interfaces[name] = t
 					case *ast.StructType:
 						w.curPackage.structs[name] = t
-						w.functionTypes[pkgSymbol{w.curPackageName, name}] = name
 					default:
 						w.curPackage.types[name] = ts.Type
-						w.functionTypes[pkgSymbol{w.curPackageName, name}] = w.nodeString(ts.Type)
 					}
 				}
 			}
@@ -622,8 +633,10 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		if !ok {
 			return "", fmt.Errorf("unknown constant reference; unknown package in expression %s.%s", lhs, rhs)
 		}
-		if t, ok := w.prevConstType[pkgSymbol{pkg, rhs}]; ok {
-			return t, nil
+		if p, ok := w.packageMap[pkg]; ok {
+			if t, ok := p.consts[rhs]; ok {
+				return t, nil
+			}
 		}
 		return "", fmt.Errorf("unknown constant reference to %s.%s", lhs, rhs)
 	case *ast.Ident:
@@ -643,7 +656,7 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 				}
 			}
 		}
-		if t, ok := w.prevConstType[pkgSymbol{w.curPackageName, v.Name}]; ok {
+		if t, ok := w.curPackage.consts[v.Name]; ok {
 			return t, nil
 		}
 		return constDepPrefix + v.Name, nil
@@ -730,15 +743,20 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 		// assume it is not a method.
 		pkg, ok := w.selectorFullPkg[w.nodeString(v.X)]
 		if ok {
-			funSym := pkgSymbol{pkg, v.Sel.Name}
-			if retType, ok := w.functionTypes[funSym]; ok {
-				if !ast.IsExported(retType) || pkg == w.curPackageName {
+			p, ok := w.packageMap[pkg]
+			if !ok && *verbose {
+				return "", fmt.Errorf("not find package: %s", pkg)
+			}
+			typ := p.findFunctionType(v.Sel.Name)
+			if typ != nil {
+				retType := w.nodeString(w.namelessType(typ))
+				if !ast.IsExported(retType) {
 					return retType, nil
 				}
 				return pkg + "." + retType, nil
 			}
-			if retType, ok := w.prevConstType[funSym]; ok {
-				if !ast.IsExported(retType) || pkg == w.curPackageName {
+			if retType, ok := p.consts[v.Sel.Name]; ok {
+				if !ast.IsExported(retType) {
 					return retType, nil
 				} else {
 					return pkg + "." + retType, nil
@@ -754,10 +772,20 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 
 			if isLocal != nil {
 				//find local fuction
-				funSym := pkgSymbol{w.curPackageName, typ + "." + v.Sel.Name}
-				if retType, ok := w.functionTypes[funSym]; ok {
-					return retType, nil
+				typ := w.curPackage.findFunctionType(typ + "." + v.Sel.Name)
+				if typ != nil {
+					return w.nodeString(typ), nil
 				}
+				//				if fn, ok := w.curPackage.functions[typ+"."+v.Sel.Name]; ok {
+				//					ret := funcRetType(fn.ft, 0)
+				//					if ret != nil {
+				//						return w.nodeString(w.namelessType(ret)), nil
+				//					}
+				//				}
+				//				funSym := pkgSymbol{w.curPackageName, typ + "." + v.Sel.Name}
+				//				if retType, ok := w.functionTypes[funSym]; ok {
+				//					return retType, nil
+				//				}
 				if t, ok := isLocal.(*ast.StructType); ok {
 					for _, fi := range t.Fields.List {
 						for _, n := range fi.Names {
@@ -839,14 +867,25 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 	case *ast.ParenExpr:
 		return w.varValueType(v.X)
 	case *ast.CallExpr:
-		var funSym pkgSymbol
+		//		var funSym pkgSymbol
 		if selnode, ok := v.Fun.(*ast.SelectorExpr); ok {
 			return w.varValueType(selnode)
 		} else {
-			funSym = pkgSymbol{w.curPackageName, w.nodeString(v.Fun)}
-			if retType, ok := w.functionTypes[funSym]; ok {
-				return retType, nil
+			typ := w.curPackage.findFunctionType(w.nodeString(v.Fun))
+			if typ != nil {
+				return w.nodeString(typ), nil
 			}
+			//			if fn, ok := w.curPackage.functions[w.nodeString(v.Fun)]; ok {
+			//				ret := funcRetType(fn.ft, 0)
+			//				if ret != nil {
+			//					return w.nodeString(w.namelessType(ret)), nil
+			//				}
+			//			}
+			//			funSym = pkgSymbol{w.curPackageName, w.nodeString(v.Fun)}
+			//			if retType, ok := w.functionTypes[funSym]; ok {
+			//				log.Fatalln(retType)
+			//				return retType, nil
+			//			}
 		}
 		// maybe a function call; maybe a conversion.  Need to lookup type.
 		// TODO(bradfitz): this is a hack, but arguably most of this tool is,
@@ -950,17 +989,6 @@ func (w *Walker) walkConst(vs *ast.ValueSpec) {
 						log.Printf("unknown kind in const %q (%T): %v", ident.Name, vs.Values[0], err)
 					}
 					litType = "unknown-type"
-					//					if t, ok := w.hardCodedConstantType(ident.Name); ok {
-					//						litType = t
-					//						err = nil
-					//					} else {
-					//						//fix_code
-					//						litType = "unknown-type"
-					//						if *verbose {
-					//							log.Printf("unknown kind in const %q (%T): %v", ident.Name, vs.Values[0], err)
-					//						}
-					//						//log.Fatalf("unknown kind in const %q (%T): %v", ident.Name, vs.Values[0], err)
-					//					}
 				}
 			}
 		}
@@ -979,7 +1007,7 @@ func (w *Walker) walkConst(vs *ast.ValueSpec) {
 		}
 		w.lastConstType = litType
 
-		w.prevConstType[pkgSymbol{w.curPackageName, ident.Name}] = litType
+		w.curPackage.consts[ident.Name] = litType
 
 		if IsExported(ident.Name) {
 			w.emitFeature(fmt.Sprintf("const %s %s", ident, litType), ident.Pos())
@@ -993,7 +1021,7 @@ func (w *Walker) resolveConstantDeps() {
 		if dep, ok := w.constDep[ident]; ok {
 			return findConstType(dep.typ)
 		}
-		if t, ok := w.prevConstType[pkgSymbol{w.curPackageName, ident}]; ok {
+		if t, ok := w.curPackage.consts[ident]; ok {
 			return t
 		}
 		return ""
@@ -1048,6 +1076,7 @@ func (w *Walker) walkVar(vs *ast.ValueSpec) {
 				//	ident.Name, vs.Values[i], err, w.nodeString(vs.Values[i]))
 			}
 		}
+		w.curPackage.vars[ident.Name] = typ
 		w.emitFeature(fmt.Sprintf("var %s %s", ident, typ), ident.Pos())
 	}
 }
@@ -1133,6 +1162,7 @@ type method struct {
 	sig  string // "([]byte) (int, error)", from funcSigString
 	ft   *ast.FuncType
 	pos  token.Pos
+	recv ast.Expr
 }
 
 // interfaceMethods returns the expanded list of exported methods for an interface.
@@ -1267,18 +1297,24 @@ func baseTypeName(x ast.Expr) (name string, imported bool) {
 func (w *Walker) peekFuncDecl(f *ast.FuncDecl) {
 	//fix_code
 	var fname = f.Name.Name
+	var recv ast.Expr
 	if f.Recv != nil {
 		recvTypeName, imp := baseTypeName(f.Recv.List[0].Type)
 		if imp {
 			return
 		}
 		fname = recvTypeName + "." + f.Name.Name
+		recv = f.Recv.List[0].Type
 	}
 	// Record return type for later use.
-	//fix_code len >= 1
 	if f.Type.Results != nil && len(f.Type.Results.List) >= 1 {
-		retType := w.nodeString(w.namelessType(f.Type.Results.List[0].Type))
-		w.functionTypes[pkgSymbol{w.curPackageName, fname}] = retType
+		w.curPackage.functions[fname] = method{
+			name: fname,
+			sig:  w.funcSigString(f.Type),
+			ft:   f.Type,
+			pos:  f.Pos(),
+			recv: recv,
+		}
 	}
 }
 
