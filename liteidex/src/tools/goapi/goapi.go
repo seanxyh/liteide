@@ -744,7 +744,7 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 		pkg, ok := w.selectorFullPkg[w.nodeString(v.X)]
 		if ok {
 			p, ok := w.packageMap[pkg]
-			if !ok && *verbose {
+			if !ok {
 				return "", fmt.Errorf("not find package: %s", pkg)
 			}
 			typ := p.findFunctionType(v.Sel.Name)
