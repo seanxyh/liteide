@@ -48,6 +48,24 @@ var (
 	separate   = flag.String("sep", ",", "set token separate string")
 )
 
+type ss struct {
+}
+
+func (p *ss) test() (b map[int]string) {
+	return
+}
+
+func newss() *ss {
+	return &ss{}
+}
+
+var (
+	s0 ss
+	m0 = s0.test()
+	s1 = newss()
+	M1 = s1.test()
+)
+
 func usage() {
 
 	fmt.Fprintf(os.Stderr, `usage: api [std|all|package...|local-dir]
@@ -502,22 +520,18 @@ func (w *Walker) recordTypes(file *ast.File) {
 				for _, sp := range d.Specs {
 					ts := sp.(*ast.TypeSpec)
 					name := ts.Name.Name
-					if IsExported(name) {
-						//fix_code type M string, M("helllo")
-						//if it, ok := ts.Type.(*ast.InterfaceType); ok {
-						//	w.noteInterface(name, it)
-						//}
-						switch t := ts.Type.(type) {
-						case *ast.InterfaceType:
+					switch t := ts.Type.(type) {
+					case *ast.InterfaceType:
+						if IsExported(name) {
 							w.noteInterface(name, t)
-							w.curPackage.interfaces[name] = t
-						case *ast.StructType:
-							w.curPackage.structs[name] = t
-							w.functionTypes[pkgSymbol{w.curPackageName, name}] = name
-						default:
-							w.curPackage.types[name] = ts.Type
-							w.functionTypes[pkgSymbol{w.curPackageName, name}] = w.nodeString(ts.Type)
 						}
+						w.curPackage.interfaces[name] = t
+					case *ast.StructType:
+						w.curPackage.structs[name] = t
+						w.functionTypes[pkgSymbol{w.curPackageName, name}] = name
+					default:
+						w.curPackage.types[name] = ts.Type
+						w.functionTypes[pkgSymbol{w.curPackageName, name}] = w.nodeString(ts.Type)
 					}
 				}
 			}
@@ -623,7 +637,7 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 			if vs, ok := v.Obj.Decl.(*ast.ValueSpec); ok {
 				if len(vs.Values) >= 1 {
 					typ, err := w.constValueType(vs.Values[0])
-					if err != nil {
+					if err == nil {
 						return typ, err
 					}
 				}
@@ -737,6 +751,7 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 				typ = typ[1:]
 			}
 			isLocal := w.curPackage.findType(typ)
+
 			if isLocal != nil {
 				//find local fuction
 				funSym := pkgSymbol{w.curPackageName, typ + "." + v.Sel.Name}
@@ -785,8 +800,15 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 		switch v.Name {
 		case "true", "false":
 			return "bool", nil
-		case "byte", "ini":
+		case "byte", "int":
 			return v.Name, nil
+		}
+		if v.Obj != nil {
+			if vs, ok := v.Obj.Decl.(*ast.ValueSpec); ok {
+				if id, ok := vs.Type.(*ast.Ident); ok {
+					return id.Name, nil
+				}
+			}
 		}
 		vt := w.curPackage.findType(v.Name)
 		if vt != nil {
