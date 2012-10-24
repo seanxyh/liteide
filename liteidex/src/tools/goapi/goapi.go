@@ -37,6 +37,86 @@ import (
 	"strings"
 )
 
+var TT = make([]uint, 10)
+var TT2 = string("hello")
+
+type T []string
+
+var TT3 = T([]string{})
+
+var out = os.Stderr
+var out2 = os.ModeAppend
+var out3 = os.Args
+
+var MyArgs = flag.Args
+var MyArgs2 = flag.Args()
+
+type MyType build.Context
+
+var MyArgs4 = func() {}
+var MyArgs5 MyType
+var MyArgs6 = ast.NewIdent("ok")
+var MyArgs7 = MyArgs5.CgoEnabled
+var MyArgs8 = s0.test1()
+var MyArgs9 = s0.tag
+var MyArgs10 = build.Default.SrcDirs()[0]
+
+var MyArray = []build.Context{build.Default}
+var MyArgs11 = MyArray[0].SrcDirs()[0]
+var MyArgs12 = s0.con.Compiler
+
+var MyCh1 = make(chan int)
+var MyCh2 = make(chan<- int)
+var MyCh3 = make(<-chan int)
+
+var (
+	MyCh6        = "hello"
+	MyCh4, MyCh5 = func(int) (<-chan int, error) {
+		return make(chan int), errors.New("error")
+	}(10)
+	MyCh7 = MyCh5.Error()
+)
+
+//var MyArgs9 = build.Default.CgoEnabled
+
+const intSize = 32 << uint(^uint(0)>>63)
+const IntSize = intSize // number of bits in int, uint (32 or 64)
+type ss struct {
+	tag string
+	con build.Context
+}
+
+func (p *ss) test1() string {
+	return "hello"
+}
+
+func (p *ss) test2() (b []byte) {
+	return
+}
+
+func (p *ss) test3() (map[int]string, *ss) {
+	return nil, newss()
+}
+
+func newss() *ss {
+	return &ss{}
+}
+
+var (
+	s0     ss
+	s1     = &ss{}
+	s2     = newss()
+	V1     = s0.test1()
+	V2     = s1.test1()
+	V3     = s2.test2()
+	V4, V5 = s2.test3()
+	V6     = V5.test1()
+)
+
+func init() {
+	fmt.Println(MyArgs5.UseAllFiles)
+}
+
 // Flags
 var (
 	// TODO(bradfitz): once Go 1.1 comes out, allow the -c flag to take a comma-separated
@@ -48,24 +128,6 @@ var (
 	separate   = flag.String("sep", ",", "set token separate string")
 	dep_parser = flag.Bool("dep", true, "check package import")
 	nooutput   = flag.Bool("n", false, "no output, check only")
-)
-
-type ss struct {
-}
-
-func (p *ss) test() (b map[int]string) {
-	return
-}
-
-func newss() *ss {
-	return &ss{}
-}
-
-var (
-	s0 ss
-	m0 = s0.test()
-	s1 = newss()
-	M1 = s1.test()
 )
 
 func usage() {
@@ -218,9 +280,19 @@ func findFunction(funcs []*doc.Func, name string) *ast.FuncType {
 	return nil
 }
 
-func (p *Package) findFunctionType(name string) ast.Expr {
-	if fn, ok := p.functions[name]; ok {
-		return funcRetType(fn.ft, 0)
+func (p *Package) findSelectorType(name string) ast.Expr {
+	if t, ok := p.vars[name]; ok {
+		return &ast.Ident{
+			Name: t,
+		}
+	}
+	if t, ok := p.consts[name]; ok {
+		return &ast.Ident{
+			Name: t,
+		}
+	}
+	if t, ok := p.functions[name]; ok {
+		return t.ft
 	}
 	for k, v := range p.structs {
 		if k == name {
@@ -233,6 +305,30 @@ func (p *Package) findFunctionType(name string) ast.Expr {
 	for k, v := range p.types {
 		if k == name {
 			return v
+		}
+	}
+	return nil
+}
+
+func (p *Package) findCallType(name string, index int) ast.Expr {
+	if fn, ok := p.functions[name]; ok {
+		return funcRetType(fn.ft, index)
+	}
+	for k, v := range p.structs {
+		if k == name {
+			return &ast.Ident{
+				NamePos: v.Pos(),
+				Name:    name,
+			}
+		}
+	}
+	for k, v := range p.types {
+		if k == name {
+			return v
+			return &ast.Ident{
+				NamePos: v.Pos(),
+				Name:    name,
+			}
 		}
 	}
 	return nil
@@ -421,9 +517,6 @@ func (w *Walker) WalkPackage(name string, dir string) {
 				continue
 			}
 			if f.Name.Name != sname {
-				if *verbose {
-					log.Printf("not current package %s, file %s: %s", name, file, f.Name.Name)
-				}
 				continue
 			}
 
@@ -610,7 +703,75 @@ var varType = map[token.Token]string{
 	token.IMAG:   "complex128",
 }
 
+var builtinTypes = []string{
+	"bool", "byte", "complex64", "complex128", "error", "float32", "float64",
+	"int", "int8", "int16", "int32", "int64", "rune", "string",
+	"uint", "uint8", "uint16", "uint32", "uint64", "uintptr",
+}
+
+func isBuiltinType(typ string) bool {
+	for _, v := range builtinTypes {
+		if v == typ {
+			return true
+		}
+	}
+	return false
+}
+
+func constTypePriority(typ string) int {
+	switch typ {
+	case "complex128":
+		return 100
+	case "ideal-imag":
+		return 99
+	case "complex64":
+		return 98
+	case "float64":
+		return 97
+	case "ideal-float":
+		return 96
+	case "float32":
+		return 95
+	case "int64":
+		return 94
+	case "int", "uint", "uintptr":
+		return 93
+	case "ideal-int":
+		return 92
+	case "int16", "uint16", "int8", "uint8", "byte":
+		return 91
+	case "ideal-char":
+		return 90
+	}
+	return 101
+}
+
 var errTODO = errors.New("TODO")
+
+func (w *Walker) constRealType(typ string) string {
+	pos := strings.Index(typ, ".")
+	if pos >= 0 {
+		pkg := typ[:pos]
+		if pkg == "C" {
+			return "int"
+		}
+		typ = typ[pos+1:]
+		if name, ok := w.selectorFullPkg[pkg]; ok {
+			if p, ok := w.packageMap[name]; ok {
+				ret := p.findType(typ)
+				if ret != nil {
+					return w.nodeString(w.namelessType(ret))
+				}
+			}
+		}
+	} else {
+		ret := w.curPackage.findType(typ)
+		if ret != nil {
+			return w.nodeString(w.namelessType(ret))
+		}
+	}
+	return typ
+}
 
 func (w *Walker) constValueType(vi interface{}) (string, error) {
 	switch v := vi.(type) {
@@ -634,8 +795,8 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 			return "", fmt.Errorf("unknown constant reference; unknown package in expression %s.%s", lhs, rhs)
 		}
 		if p, ok := w.packageMap[pkg]; ok {
-			if t, ok := p.consts[rhs]; ok {
-				return t, nil
+			if ret, ok := p.consts[rhs]; ok {
+				return pkgRetType(lhs, ret), nil
 			}
 		}
 		return "", fmt.Errorf("unknown constant reference to %s.%s", lhs, rhs)
@@ -646,23 +807,15 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		if v.Name == "false" || v.Name == "true" {
 			return "bool", nil
 		}
-		if v.Obj != nil {
-			if vs, ok := v.Obj.Decl.(*ast.ValueSpec); ok {
-				if len(vs.Values) >= 1 {
-					typ, err := w.constValueType(vs.Values[0])
-					if err == nil {
-						return typ, err
-					}
-				}
-			}
-		}
 		if t, ok := w.curPackage.consts[v.Name]; ok {
 			return t, nil
 		}
 		return constDepPrefix + v.Name, nil
 	case *ast.BinaryExpr:
 		//fix_code
-		if v.Op == token.EQL {
+		//== > < ! != >= <=
+		if v.Op == token.EQL || v.Op == token.LSS || v.Op == token.GTR || v.Op == token.NOT ||
+			v.Op == token.NEQ || v.Op == token.LEQ || v.Op == token.GEQ {
 			return "bool", nil
 		}
 		left, err := w.constValueType(v.X)
@@ -676,32 +829,19 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		if err != nil {
 			return "", err
 		}
+		//const left != right , one or two is ideal-
 		if left != right {
-			// TODO(bradfitz): encode the real rules here,
-			// rather than this mess.
-			if left == "ideal-int" && right == "ideal-float" {
-				return "ideal-float", nil // math.Log2E
-			}
-			if left == "ideal-char" && right == "ideal-int" {
-				return "ideal-int", nil // math/big.MaxBase
-			}
-			if left == "ideal-int" && right == "ideal-char" {
-				return "ideal-int", nil // text/scanner.GoWhitespace
-			}
-			if left == "ideal-int" && right == "Duration" {
-				// Hack, for package time.
-				return "Duration", nil
-			}
-			if left == "ideal-int" && !strings.HasPrefix(right, "ideal-") {
-				return right, nil
-			}
-			if right == "ideal-int" && !strings.HasPrefix(left, "ideal-") {
-				return left, nil
-			}
 			if strings.HasPrefix(left, constDepPrefix) && strings.HasPrefix(right, constDepPrefix) {
 				// Just pick one.
 				// e.g. text/scanner GoTokens const-dependency:ScanIdents, const-dependency:ScanFloats
 				return left, nil
+			}
+			lp := constTypePriority(w.constRealType(left))
+			rp := constTypePriority(w.constRealType(right))
+			if lp >= rp {
+				return left, nil
+			} else {
+				return right, nil
 			}
 			return "", fmt.Errorf("in BinaryExpr, unhandled type mismatch; left=%q, right=%q", left, right)
 		}
@@ -715,11 +855,157 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 	return "", fmt.Errorf("unknown const value type %T", vi)
 }
 
-//	bool byte complex64 complex128 error float32 float64
-//	int int8 int16 int32 int64 rune string
-//	uint uint8 uint16 uint32 uint64 uintptr
+func pkgRetType(pkg, ret string) string {
+	start := strings.HasPrefix(ret, "*")
+	var name = ret
+	if start {
+		name = ret[1:]
+	}
+	if ast.IsExported(name) {
+		if start {
+			return "*" + pkg + "." + name
+		}
+		return pkg + "." + name
+	}
+	return ret
+}
 
-func (w *Walker) varValueType(vi interface{}) (string, error) {
+func (w *Walker) findStructFieldType(st ast.Expr, name string) ast.Expr {
+	if s, ok := st.(*ast.StructType); ok {
+		for _, fi := range s.Fields.List {
+			for _, n := range fi.Names {
+				if n.Name == name {
+					return fi.Type
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
+	pos := strings.Index(name, ".")
+	if pos != -1 {
+		pkg := name[:pos]
+		typ := name[pos+1:]
+		if full, ok := w.selectorFullPkg[pkg]; ok {
+			if p, ok := w.packageMap[full]; ok {
+				fn := p.findMethod(typ, sel)
+				if fn != nil {
+					ret := funcRetType(fn, index)
+					if ret != nil {
+						return pkgRetType(pkg, w.nodeString(w.namelessType(ret))), nil
+					}
+				}
+			}
+		}
+		return "", fmt.Errorf("unknown pkg type function pkg: %s.%s.%s", pkg, typ, sel)
+	}
+	//find local var.func()
+	if ns, nt, ok := w.resolveName(name); ok {
+		var vt string
+		if nt != nil {
+			vt = w.nodeString(w.namelessType(nt))
+		} else if ns != nil {
+			typ, err := w.varValueType(ns, 0)
+			if err == nil {
+				vt = typ
+			}
+		} else {
+			typ := w.curPackage.findSelectorType(name)
+			if typ != nil {
+				vt = w.nodeString(w.namelessType(typ))
+			}
+		}
+		if strings.HasPrefix(vt, "*") {
+			vt = vt[1:]
+		}
+		if vt == "error" && sel == "Error" {
+			return "string", nil
+		}
+		if fn, ok := w.curPackage.functions[vt+"."+sel]; ok {
+			return w.nodeString(w.namelessType(funcRetType(fn.ft, index))), nil
+		}
+	}
+	//find pkg.func()
+	if pkg, ok := w.selectorFullPkg[name]; ok {
+		if p, ok := w.packageMap[pkg]; ok {
+			typ := p.findCallType(sel, index)
+			if typ != nil {
+				//log.Println(st.Name, typ)
+				return pkgRetType(name, w.nodeString(w.namelessType(typ))), nil
+			}
+			return "", fmt.Errorf("not find pkg func %v.%v", pkg, sel)
+		}
+	}
+	return "", fmt.Errorf("not find func %v.%v", name, sel)
+
+}
+
+func (w *Walker) varSelectorType(name string, sel string) (string, error) {
+	pos := strings.Index(name, ".")
+	if pos != -1 {
+		pkg := name[:pos]
+		typ := name[pos+1:]
+		if full, ok := w.selectorFullPkg[pkg]; ok {
+			if p, ok := w.packageMap[full]; ok {
+				t := p.findType(typ)
+				if t != nil {
+					typ := w.findStructFieldType(t, sel)
+					if typ != nil {
+						return w.nodeString(w.namelessType(typ)), nil
+					}
+				}
+			}
+		}
+		return "", fmt.Errorf("unknown pkg type selector pkg: %s.%s.%s", pkg, typ, sel)
+	}
+	_, vt, ok := w.resolveName(name)
+	if ok {
+		typ := w.nodeString(w.namelessType(vt))
+		//typ is type, find real type
+		for k, v := range w.curPackage.types {
+			if k == typ {
+				typ = w.nodeString(w.namelessType(v))
+			}
+		}
+		pos := strings.Index(typ, ".")
+		if pos == -1 {
+			t := w.curPackage.findType(typ)
+			if t != nil {
+				typ := w.findStructFieldType(t, sel)
+				if typ != nil {
+					return w.nodeString(w.namelessType(typ)), nil
+				}
+			}
+		} else {
+			name := typ[:pos]
+			typ = typ[pos+1:]
+			if pkg, ok := w.selectorFullPkg[name]; ok {
+				if p, ok := w.packageMap[pkg]; ok {
+					t := p.findType(typ)
+					if t != nil {
+						typ := w.findStructFieldType(t, sel)
+						if typ != nil {
+							return w.nodeString(w.namelessType(typ)), nil
+						}
+					}
+				}
+			}
+		}
+	}
+	if pkg, ok := w.selectorFullPkg[name]; ok {
+		if p, ok := w.packageMap[pkg]; ok {
+			typ := p.findSelectorType(sel)
+			if typ != nil {
+				return pkgRetType(name, w.nodeString(w.namelessType(typ))), nil
+			}
+		}
+	}
+	return "", fmt.Errorf("unknown selector expr ident: %s.%s", name, sel)
+}
+
+func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 	switch v := vi.(type) {
 	case *ast.BasicLit:
 		litType, ok := varType[v.Kind]
@@ -733,130 +1019,73 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 		return w.nodeString(w.namelessType(v.Type)), nil
 	case *ast.UnaryExpr:
 		if v.Op == token.AND {
-			typ, err := w.varValueType(v.X)
+			typ, err := w.varValueType(v.X, index)
 			return "*" + typ, err
 		}
 		return "", fmt.Errorf("unknown unary expr: %#v", v)
 	case *ast.SelectorExpr:
-		//fix_code
-		//return "", errTODO
-		// assume it is not a method.
-		pkg, ok := w.selectorFullPkg[w.nodeString(v.X)]
-		if ok {
-			p, ok := w.packageMap[pkg]
-			if !ok {
-				return "", fmt.Errorf("not find package: %s", pkg)
-			}
-			typ := p.findFunctionType(v.Sel.Name)
-			if typ != nil {
-				retType := w.nodeString(w.namelessType(typ))
-				if !ast.IsExported(retType) {
-					return retType, nil
+		switch st := v.X.(type) {
+		case *ast.Ident:
+			return w.varSelectorType(st.Name, v.Sel.Name)
+		case *ast.CallExpr:
+			typ, err := w.varValueType(v.X, index)
+			if err == nil {
+				if strings.HasPrefix(typ, "*") {
+					typ = typ[1:]
 				}
-				return pkg + "." + retType, nil
-			}
-			if retType, ok := p.consts[v.Sel.Name]; ok {
-				if !ast.IsExported(retType) {
-					return retType, nil
-				} else {
-					return pkg + "." + retType, nil
-				}
-			}
-		} else {
-			//fix_code
-			typ, err := w.varValueType(v.X)
-			if strings.HasPrefix(typ, "*") {
-				typ = typ[1:]
-			}
-			isLocal := w.curPackage.findType(typ)
-
-			if isLocal != nil {
-				//find local fuction
-				typ := w.curPackage.findFunctionType(typ + "." + v.Sel.Name)
-				if typ != nil {
-					return w.nodeString(typ), nil
-				}
-				//				if fn, ok := w.curPackage.functions[typ+"."+v.Sel.Name]; ok {
-				//					ret := funcRetType(fn.ft, 0)
-				//					if ret != nil {
-				//						return w.nodeString(w.namelessType(ret)), nil
-				//					}
-				//				}
-				//				funSym := pkgSymbol{w.curPackageName, typ + "." + v.Sel.Name}
-				//				if retType, ok := w.functionTypes[funSym]; ok {
-				//					return retType, nil
-				//				}
-				if t, ok := isLocal.(*ast.StructType); ok {
-					for _, fi := range t.Fields.List {
+				t := w.curPackage.findType(typ)
+				if st, ok := t.(*ast.StructType); ok {
+					for _, fi := range st.Fields.List {
 						for _, n := range fi.Names {
 							if n.Name == v.Sel.Name {
-								t, err := w.varValueType(fi.Type)
-								if err == nil {
-									return t, nil
-								}
-
-							}
-						}
-					}
-				}
-			} else {
-				//find other method			
-				pos := strings.LastIndex(typ, ".")
-				if err == nil && pos != -1 {
-					pkg := typ[:pos]
-					_, ok := w.packageState[pkg]
-					if ok == false {
-						pkg, ok = w.selectorFullPkg[typ[:pos]]
-					}
-					if ok {
-						p, ok := w.packageMap[pkg]
-						if ok {
-							fn := p.findMethod(typ[pos+1:], v.Sel.Name)
-							if fn != nil {
-								ret := funcRetType(fn, 0)
-								if ret != nil {
-									return w.nodeString(w.namelessType(ret)), nil
-								}
+								return w.varValueType(fi.Type, index)
 							}
 						}
 					}
 				}
 			}
+		case *ast.SelectorExpr:
+			typ, err := w.varValueType(v.X, index)
+			if err == nil {
+				return w.varSelectorType(typ, v.Sel.Name)
+			}
+		case *ast.IndexExpr:
+			//log.Fatalln(st.X)
+			typ, err := w.varValueType(st.X, index)
+			//log.Fatalln(typ, err)
+			if err == nil {
+				if strings.HasPrefix(typ, "[]") {
+					return w.varSelectorType(typ[2:], v.Sel.Name)
+				}
+			}
 		}
-		return "", fmt.Errorf("not a package: %s", w.nodeString(v.X))
+		return "", fmt.Errorf("unknown selector expr: %T %s.%s", v.X, w.nodeString(v.X), v.Sel)
 	case *ast.Ident:
-		switch v.Name {
-		case "true", "false":
+		if v.Name == "true" || v.Name == "false" {
 			return "bool", nil
-		case "byte", "int":
-			return v.Name, nil
 		}
-		if v.Obj != nil {
-			if vs, ok := v.Obj.Decl.(*ast.ValueSpec); ok {
-				if id, ok := vs.Type.(*ast.Ident); ok {
-					return id.Name, nil
-				}
-			}
+		if isBuiltinType(v.Name) {
+			return v.Name, nil
 		}
 		vt := w.curPackage.findType(v.Name)
 		if vt != nil {
 			return w.nodeString(vt), nil
 		}
 		node, _, ok := w.resolveName(v.Name)
-		if !ok {
-			return "", fmt.Errorf("unresolved identifier: %q", v.Name)
+		if ok {
+			return w.varValueType(node, index)
 		}
-		return w.varValueType(node)
+		return "", fmt.Errorf("unresolved identifier: %q", v.Name)
 	case *ast.BinaryExpr:
 		//fix_code
 		if v.Op == token.EQL {
 			return "bool", nil
 		}
-		left, err := w.varValueType(v.X)
+		left, err := w.varValueType(v.X, index)
 		if err != nil {
 			return "", err
 		}
-		right, err := w.varValueType(v.Y)
+		right, err := w.varValueType(v.Y, index)
 		if err != nil {
 			return "", err
 		}
@@ -865,73 +1094,75 @@ func (w *Walker) varValueType(vi interface{}) (string, error) {
 		}
 		return left, nil
 	case *ast.ParenExpr:
-		return w.varValueType(v.X)
+		return w.varValueType(v.X, index)
 	case *ast.CallExpr:
-		//		var funSym pkgSymbol
-		if selnode, ok := v.Fun.(*ast.SelectorExpr); ok {
-			return w.varValueType(selnode)
-		} else {
-			typ := w.curPackage.findFunctionType(w.nodeString(v.Fun))
+		switch ft := v.Fun.(type) {
+		case *ast.ArrayType:
+			return w.nodeString(v.Fun), nil
+		case *ast.Ident:
+			if ft.Name == "make" || ft.Name == "new" {
+				return w.varValueType(v.Args[0], index)
+			}
+			if isBuiltinType(ft.Name) {
+				return ft.Name, nil
+			}
+			typ := w.curPackage.findCallType(ft.Name, index)
 			if typ != nil {
-				return w.nodeString(typ), nil
+				return w.nodeString(w.namelessType(typ)), nil
 			}
-			//			if fn, ok := w.curPackage.functions[w.nodeString(v.Fun)]; ok {
-			//				ret := funcRetType(fn.ft, 0)
-			//				if ret != nil {
-			//					return w.nodeString(w.namelessType(ret)), nil
-			//				}
-			//			}
-			//			funSym = pkgSymbol{w.curPackageName, w.nodeString(v.Fun)}
-			//			if retType, ok := w.functionTypes[funSym]; ok {
-			//				log.Fatalln(retType)
-			//				return retType, nil
-			//			}
-		}
-		// maybe a function call; maybe a conversion.  Need to lookup type.
-		// TODO(bradfitz): this is a hack, but arguably most of this tool is,
-		// until the Go AST has type information.
-		nodeStr := w.nodeString(v.Fun)
-		switch nodeStr {
-		case "string", "[]byte":
-			return nodeStr, nil
-		//fix_code
-		case "make":
-			if len(v.Args) >= 1 {
-				return w.varValueType(v.Args[0])
+			return "", fmt.Errorf("unknown funcion %s %s", w.curPackageName, ft.Name)
+		case *ast.SelectorExpr:
+			switch st := ft.X.(type) {
+			case *ast.Ident:
+				return w.varFunctionType(st.Name, ft.Sel.Name, index)
+			case *ast.CallExpr:
+				return w.varValueType(st, index)
+			case *ast.SelectorExpr:
+				typ, err := w.varValueType(st, index)
+				if err == nil {
+					return w.varFunctionType(typ, ft.Sel.Name, index)
+				}
+			case *ast.IndexExpr:
+				typ, err := w.varValueType(st.X, index)
+				if err == nil {
+					if strings.HasPrefix(typ, "[]") {
+						return w.varFunctionType(typ[2:], ft.Sel.Name, index)
+					}
+				}
 			}
-		case "new":
-			if len(v.Args) >= 1 {
-				return w.varValueType(v.Args[0])
+		case *ast.FuncLit:
+			retType := funcRetType(ft.Type, index)
+			if retType != nil {
+				return w.nodeString(w.namelessType(retType)), nil
 			}
 		}
-		return "", fmt.Errorf("not a known function %q", nodeStr)
+		return "", fmt.Errorf("not a known function %T %v", v.Fun, w.nodeString(v.Fun))
 	//fix_code
 	case *ast.MapType:
 		return fmt.Sprintf("map[%s](%s)", w.nodeString(w.namelessType(v.Key)), w.nodeString(w.namelessType(v.Value))), nil
 	//fix_code
 	case *ast.ArrayType:
-		t, err := w.varValueType(v.Elt)
-		if err != nil {
-			return "", err
-		}
-		return "[]" + t, nil
+		return fmt.Sprintf("[]%s", w.nodeString(w.namelessType(v.Elt))), nil
 	//fix_code return functype
 	case *ast.FuncType:
-		var retType = "func"
-		retType += "("
-		var in []string
-		if v.Params != nil {
-			for _, t := range v.Params.List {
-				in = append(in, w.nodeString(w.namelessType(t.Type)))
+		return w.nodeString(w.namelessType(v)), nil
+	case *ast.IndexExpr:
+		typ, err := w.varValueType(v.X, index)
+		if err == nil {
+			if strings.HasPrefix(typ, "[]") {
+				return typ[2:], nil
 			}
 		}
-		var out []string
-		if v.Results != nil {
-			for _, t := range v.Results.List {
-				out = append(out, w.nodeString(w.namelessType(t.Type)))
+	case *ast.ChanType:
+		typ, err := w.varValueType(v.Value, index)
+		if err == nil {
+			if v.Dir == ast.RECV {
+				return "<-chan " + typ, nil
+			} else if v.Dir == ast.SEND {
+				return "chan<- " + typ, nil
 			}
+			return "chan " + typ, nil
 		}
-		return fmt.Sprintf("func(%s) (%s)", strings.Join(in, ","), strings.Join(out, ",")), nil
 	default:
 		return "", fmt.Errorf("unknown value type %T", vi)
 	}
@@ -1044,11 +1275,7 @@ func (w *Walker) resolveConstantDeps() {
 }
 
 func (w *Walker) walkVar(vs *ast.ValueSpec) {
-	for _, ident := range vs.Names {
-		if !IsExported(ident.Name) {
-			continue
-		}
-
+	for n, ident := range vs.Names {
 		typ := ""
 		if vs.Type != nil {
 			typ = w.nodeString(vs.Type)
@@ -1060,11 +1287,7 @@ func (w *Walker) walkVar(vs *ast.ValueSpec) {
 				log.Fatalf("more than 1 values in ValueSpec not handled, var %q", ident.Name)
 			}
 			var err error
-			typ, err = w.varValueType(vs.Values[0])
-			//fix_code fix error.New()
-			if strings.HasSuffix(typ, ".error") {
-				typ = "error"
-			}
+			typ, err = w.varValueType(vs.Values[0], n)
 			if err != nil {
 				//fix_code
 				if *verbose {
@@ -1072,12 +1295,12 @@ func (w *Walker) walkVar(vs *ast.ValueSpec) {
 						ident.Name, vs.Values, err, w.fset.Position(vs.Pos()))
 				}
 				typ = "unknown-type"
-				//log.Fatalf("unknown type of variable %q, type %T, error = %v\ncode: %s",
-				//	ident.Name, vs.Values[i], err, w.nodeString(vs.Values[i]))
 			}
 		}
 		w.curPackage.vars[ident.Name] = typ
-		w.emitFeature(fmt.Sprintf("var %s %s", ident, typ), ident.Pos())
+		if IsExported(ident.Name) {
+			w.emitFeature(fmt.Sprintf("var %s %s", ident, typ), ident.Pos())
+		}
 	}
 }
 
@@ -1428,15 +1651,15 @@ func (w *Walker) emitFeature(feature string, pos token.Pos) {
 	}
 	more := strings.Index(feature, "\n")
 	if more != -1 {
-		if *verbose {
-			log.Printf("feature contains newlines: %v, %s", feature, w.fset.Position(pos))
-		}
 		if len(feature) <= 1024 {
 			feature = strings.Replace(feature, "\n", " ", 1)
 			feature = strings.Replace(feature, "\n", ";", -1)
 			feature = strings.Replace(feature, "\t", " ", -1)
 		} else {
 			feature = feature[:more] + " ...more"
+		}
+		if *verbose {
+			log.Printf("feature contains newlines: %v, %s", feature, w.fset.Position(pos))
 		}
 	}
 	f := strings.Join(w.scope, w.sep) + w.sep + feature
