@@ -287,6 +287,7 @@ FileSearch::FileSearch(LiteApi::IApplication *app, QObject *parent) :
     connect(m_thread,SIGNAL(finished()),this,SLOT(findFinished()));
     connect(m_thread,SIGNAL(findResult(FileSearchResult)),this,SLOT(findResult(FileSearchResult)));
     connect(m_resultOutput,SIGNAL(dbclickEvent(QTextCursor)),this,SLOT(dbclickOutput(QTextCursor)));
+    connect(m_findCombo->lineEdit(),SIGNAL(returnPressed()),this,SLOT(findInFiles()));
 }
 
 FileSearch::~FileSearch()
@@ -309,6 +310,7 @@ FileSearch::~FileSearch()
 
 void FileSearch::setVisible(bool b)
 {
+    m_outputAct->setChecked(b);
     if (b) {
         LiteApi::IProject *proj = m_liteApp->projectManager()->currentProject();
         if (proj && !LiteApi::mimeIsFolder(proj->mimeType())) {
@@ -318,8 +320,8 @@ void FileSearch::setVisible(bool b)
             else
                 m_findPathCombo->setEditText(info.path());
         }
+        m_tab->setCurrentWidget(m_findWidget);
         m_findCombo->setFocus();
-
         LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
         if (editor) {
             QString text;
@@ -341,7 +343,6 @@ void FileSearch::setVisible(bool b)
             }
         }
     }
-    m_outputAct->setChecked(b);
 }
 
 void FileSearch::findInFiles()
