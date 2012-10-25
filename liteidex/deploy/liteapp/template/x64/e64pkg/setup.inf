@@ -1,7 +1,0 @@
-[SETUP]
-NAME = "Go Package (E64 Project)"
-AUTHOR = visualfc
-INFO = new golang package project (*.e64)
-TYPE = project
-FILES = root.e64 root.go doc.go
-OPEN = root.e64
