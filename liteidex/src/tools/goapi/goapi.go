@@ -137,6 +137,10 @@ var (
 	V13 = errors.New("hello").Error()
 )
 
+const (
+	X1 = complex(100, 200)
+)
+
 func init() {
 	fmt.Println(V8)
 }
@@ -872,7 +876,14 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		return left, nil
 	case *ast.CallExpr:
 		// Not a call, but a type conversion.
-		return w.nodeString(v.Fun), nil
+		typ := w.nodeString(v.Fun)
+		switch typ {
+		case "complex":
+			return "complex128", nil
+		case "real", "imag":
+			return "float64", nil
+		}
+		return typ, nil
 	case *ast.ParenExpr:
 		return w.constValueType(v.X)
 	}
