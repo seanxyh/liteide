@@ -98,6 +98,22 @@ func (p *ss) test3() (map[int]string, *ss) {
 	return nil, newss()
 }
 
+func (p *ss) test4() func(x int) int {
+	return func(x int) int {
+		return x
+	}
+}
+
+func (p *ss) test5() func(x int) *ss {
+	return func(x int) *ss {
+		return p
+	}
+}
+
+func (p *ss) test6() string {
+	return "hello"
+}
+
 func newss() *ss {
 	return &ss{}
 }
@@ -111,10 +127,14 @@ var (
 	V3     = s2.test2()
 	V4, V5 = s2.test3()
 	V6     = V5.test1()
+	//V7     = s2.test4()(100)
+	//V7 = s2.test5()(100).con.BuildTags
+	V9 = V8         //(100).test5()(100).tag
+	V8 = s2.test5() //(100)
 )
 
 func init() {
-	fmt.Println(MyArgs5.UseAllFiles)
+	fmt.Println(V8)
 }
 
 // Flags
@@ -902,12 +922,12 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 		return "", fmt.Errorf("unknown pkg type function pkg: %s.%s.%s", pkg, typ, sel)
 	}
 	//find local var.func()
-	if ns, nt, ok := w.resolveName(name); ok {
+	if ns, nt, n := w.resolveName(name); n >= 0 {
 		var vt string
 		if nt != nil {
 			vt = w.nodeString(w.namelessType(nt))
 		} else if ns != nil {
-			typ, err := w.varValueType(ns, 0)
+			typ, err := w.varValueType(ns, n)
 			if err == nil {
 				vt = typ
 			}
@@ -960,8 +980,8 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 		}
 		return "", fmt.Errorf("unknown pkg type selector pkg: %s.%s.%s", pkg, typ, sel)
 	}
-	_, vt, ok := w.resolveName(name)
-	if ok {
+	_, vt, n := w.resolveName(name)
+	if n >= 0 {
 		typ := w.nodeString(w.namelessType(vt))
 		//typ is type, find real type
 		for k, v := range w.curPackage.types {
@@ -1071,9 +1091,9 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 		if vt != nil {
 			return w.nodeString(vt), nil
 		}
-		node, _, ok := w.resolveName(v.Name)
-		if ok {
-			return w.varValueType(node, index)
+		vs, _, n := w.resolveName(v.Name)
+		if n >= 0 {
+			return w.varValueType(vs, n)
 		}
 		return "", fmt.Errorf("unresolved identifier: %q", v.Name)
 	case *ast.BinaryExpr:
@@ -1110,8 +1130,44 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 			if typ != nil {
 				return w.nodeString(w.namelessType(typ)), nil
 			}
+			//if var is func() type
+			vs, _, n := w.resolveName(ft.Name)
+			if n >= 0 {
+				if vs != nil {
+					typ, err := w.varValueType(vs, n)
+					if err == nil {
+						if strings.HasPrefix(typ, "func(") {
+							expr, err := parser.ParseExpr(typ + "{}")
+							if err == nil {
+								if fl, ok := expr.(*ast.FuncLit); ok {
+									retType := funcRetType(fl.Type, index)
+									if retType != nil {
+										return w.nodeString(w.namelessType(retType)), nil
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 			return "", fmt.Errorf("unknown funcion %s %s", w.curPackageName, ft.Name)
 		case *ast.SelectorExpr:
+			typ, err := w.varValueType(ft.X, index)
+			if err == nil {
+				if strings.HasPrefix(typ, "*") {
+					typ = typ[1:]
+				}
+				retType := w.curPackage.findCallType(typ+"."+ft.Sel.Name, index)
+				if retType != nil {
+					return w.nodeString(w.namelessType(retType)), nil
+				}
+				if ft.Sel.Name == "test6" {
+					retType := w.curPackage.findCallType(typ[1:]+"."+ft.Sel.Name, index)
+					log.Fatalln(retType)
+					log.Fatalln(w.varFunctionType(typ, ft.Sel.Name, index))
+					log.Fatalln(typ, ft.Sel.Name)
+				}
+			}
 			switch st := ft.X.(type) {
 			case *ast.Ident:
 				return w.varFunctionType(st.Name, ft.Sel.Name, index)
@@ -1134,6 +1190,19 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 			retType := funcRetType(ft.Type, index)
 			if retType != nil {
 				return w.nodeString(w.namelessType(retType)), nil
+			}
+		case *ast.CallExpr:
+			typ, err := w.varValueType(v.Fun, 0)
+			if err == nil && strings.HasPrefix(typ, "func(") {
+				expr, err := parser.ParseExpr(typ + "{}")
+				if err == nil {
+					if fl, ok := expr.(*ast.FuncLit); ok {
+						retType := funcRetType(fl.Type, index)
+						if retType != nil {
+							return w.nodeString(w.namelessType(retType)), nil
+						}
+					}
+				}
 			}
 		}
 		return "", fmt.Errorf("not a known function %T %v", v.Fun, w.nodeString(v.Fun))
@@ -1171,7 +1240,7 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 
 // resolveName finds a top-level node named name and returns the node
 // v and its type t, if known.
-func (w *Walker) resolveName(name string) (v interface{}, t interface{}, ok bool) {
+func (w *Walker) resolveName(name string) (v interface{}, t interface{}, n int) {
 	for _, file := range w.curPackage.apkg.Files {
 		for _, di := range file.Decls {
 			switch d := di.(type) {
@@ -1182,10 +1251,10 @@ func (w *Walker) resolveName(name string) (v interface{}, t interface{}, ok bool
 						vs := sp.(*ast.ValueSpec)
 						for i, vname := range vs.Names {
 							if vname.Name == name {
-								if len(vs.Values) > i {
-									return vs.Values[i], vs.Type, true
+								if len(vs.Values) == 1 {
+									return vs.Values[0], vs.Type, i
 								}
-								return nil, vs.Type, true
+								return nil, vs.Type, i
 							}
 						}
 					}
@@ -1193,7 +1262,7 @@ func (w *Walker) resolveName(name string) (v interface{}, t interface{}, ok bool
 			}
 		}
 	}
-	return nil, nil, false
+	return nil, nil, -1
 }
 
 // constDepPrefix is a magic prefix that is used by constValueType
