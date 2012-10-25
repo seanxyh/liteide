@@ -10,8 +10,8 @@ SUBDIRS = \
     liteeditor \
     litefind    \
     litedebug   \
-    makefileproject \
-    profileproject  \
+#    makefileproject \
+#    profileproject  \
     filebrowser \
     golangast \
 #    golangtool \
