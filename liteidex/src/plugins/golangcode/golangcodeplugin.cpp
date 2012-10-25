@@ -47,7 +47,7 @@ GolangCodePlugin::GolangCodePlugin()
     m_info->setId("plugin/golangcode");
     m_info->setName("GolangCode");
     m_info->setAnchor("visualfc");
-    m_info->setVer("x13.3");
+    m_info->setVer("x14");
     m_info->setInfo("Golang Gocode Plugin");
 }
 
@@ -58,17 +58,28 @@ bool GolangCodePlugin::initWithApp(LiteApi::IApplication *app)
     }
 
     m_code = new GolangCode(app,this);
+    m_play = new GolangCode(app,this);
     m_commentAct = new QAction(tr("Toggle Comment Selection"),this);
     m_commentAct->setShortcut(QKeySequence("CTRL+/"));
     connect(m_commentAct,SIGNAL(triggered()),this,SLOT(editorComment()));
     connect(m_liteApp->editorManager(),SIGNAL(editorCreated(LiteApi::IEditor*)),this,SLOT(editorCreated(LiteApi::IEditor*)));
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
+    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
     return true;
 }
 
 QStringList GolangCodePlugin::dependPluginList() const
 {
     return QStringList() << "plugin/liteenv" << "plugin/golangast";
+}
+
+void GolangCodePlugin::appLoaded()
+{
+    LiteApi::IEditor* editor = LiteApi::findExtensionObject<LiteApi::IEditor*>(m_liteApp->extension(),"LiteApi.Goplay.IEditor");
+    if (editor && editor->mimeType() == "text/x-gosrc") {
+        LiteApi::ICompleter *completer = LiteApi::findExtensionObject<LiteApi::ICompleter*>(editor,"LiteApi.ICompleter");
+        m_play->setCompleter(completer);
+    }
 }
 
 void GolangCodePlugin::editorCreated(LiteApi::IEditor *editor)

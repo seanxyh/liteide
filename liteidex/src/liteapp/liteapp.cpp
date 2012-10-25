@@ -286,6 +286,7 @@ void LiteApp::appendLog(const QString &model, const QString &log, bool error)
     text += QLatin1Char(' ');
     text += log;
     text += QLatin1Char('\n');
+    m_logOutput->updateExistsTextColor();
     if (error) {
         m_logOutput->append(text,Qt::red);
         m_logAct->setChecked(true);
