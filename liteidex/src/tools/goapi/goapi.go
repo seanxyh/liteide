@@ -146,7 +146,7 @@ var (
 	// TODO(bradfitz): once Go 1.1 comes out, allow the -c flag to take a comma-separated
 	// list of files, rather than just one.
 	verbose    = flag.Bool("v", false, "verbose debugging")
-	allmethods = flag.Bool("e", false, "show all embedded methods")
+	allmethods = flag.Bool("e", true, "show all embedded methods")
 	alldecls   = flag.Bool("a", false, "extract documentation for all package-level declarations")
 	showpos    = flag.Bool("p", false, "show token pos tag")
 	separate   = flag.String("sep", ",", "set token separate string")
@@ -383,8 +383,7 @@ func (p *Package) resolveName(name string) (ok bool) {
 }
 
 type Walker struct {
-	context *build.Context
-	//	root            string
+	context         *build.Context
 	fset            *token.FileSet
 	scope           []string
 	features        map[string]([]token.Pos) // set
@@ -409,6 +408,7 @@ func NewWalker() *Walker {
 		packageMap:      make(map[string]*Package),
 		selectorFullPkg: make(map[string]string),
 		wantedPkg:       make(map[string]bool),
+		sep:             ", ",
 		//		root:            filepath.Join(build.Default.GOROOT, "src/pkg"),
 	}
 }
@@ -845,7 +845,7 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		}
 		if p, ok := w.packageMap[pkg]; ok {
 			if ret, ok := p.consts[rhs]; ok {
-				return pkgRetType(lhs, ret), nil
+				return pkgRetType(pkg, ret), nil
 			}
 		}
 		return "", fmt.Errorf("unknown constant reference to %s.%s", lhs, rhs)
@@ -912,6 +912,7 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 }
 
 func pkgRetType(pkg, ret string) string {
+	pkg = pkg[strings.LastIndex(pkg, "/")+1:]
 	start := strings.HasPrefix(ret, "*")
 	var name = ret
 	if start {
@@ -950,7 +951,7 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 				if fn != nil {
 					ret := funcRetType(fn, index)
 					if ret != nil {
-						return pkgRetType(pkg, w.nodeString(w.namelessType(ret))), nil
+						return pkgRetType(full, w.nodeString(w.namelessType(ret))), nil
 					}
 				}
 			}
@@ -988,8 +989,7 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 		if p, ok := w.packageMap[pkg]; ok {
 			typ := p.findCallType(sel, index)
 			if typ != nil {
-				//log.Println(st.Name, typ)
-				return pkgRetType(name, w.nodeString(w.namelessType(typ))), nil
+				return pkgRetType(pkg, w.nodeString(w.namelessType(typ))), nil
 			}
 			return "", fmt.Errorf("not find pkg func %v.%v", pkg, sel)
 		}
@@ -1062,7 +1062,7 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 		if p, ok := w.packageMap[pkg]; ok {
 			typ := p.findSelectorType(sel)
 			if typ != nil {
-				return pkgRetType(name, w.nodeString(w.namelessType(typ))), nil
+				return pkgRetType(pkg, w.nodeString(w.namelessType(typ))), nil
 			}
 		}
 	}
@@ -1209,10 +1209,6 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 					}
 				}
 			}
-			if ft.Name == "probeIPv6Stack" {
-				log.Println(">", ft.Name, index, w.nodeString(w.namelessType(typ)))
-			}
-
 			return "", fmt.Errorf("unknown funcion %s %s", w.curPackageName, ft.Name)
 		case *ast.SelectorExpr:
 			typ, err := w.varValueType(ft.X, index)
@@ -1223,12 +1219,6 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 				retType := w.curPackage.findCallType(typ+"."+ft.Sel.Name, index)
 				if retType != nil {
 					return w.nodeString(w.namelessType(retType)), nil
-				}
-				if ft.Sel.Name == "test6" {
-					retType := w.curPackage.findCallType(typ[1:]+"."+ft.Sel.Name, index)
-					log.Fatalln(retType)
-					log.Fatalln(w.varFunctionType(typ, ft.Sel.Name, index))
-					log.Fatalln(typ, ft.Sel.Name)
 				}
 			}
 			switch st := ft.X.(type) {
