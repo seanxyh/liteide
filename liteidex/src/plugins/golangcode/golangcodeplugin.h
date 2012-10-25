@@ -40,12 +40,14 @@ public:
     virtual bool initWithApp(LiteApi::IApplication *app);
     virtual QStringList dependPluginList() const;
 protected slots:
+    void appLoaded();
     void editorComment();
     void editorCreated(LiteApi::IEditor*);
     void currentEditorChanged(LiteApi::IEditor*);
 protected:
     QAction    *m_commentAct;
     GolangCode *m_code;
+    GolangCode *m_play;
 };
 
 #endif // GOLANGCODEPLUGIN_H
