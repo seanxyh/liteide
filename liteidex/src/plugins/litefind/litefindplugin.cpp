@@ -90,7 +90,7 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
 
     m_findAct = new QAction(tr("Find"),this);
     m_findAct->setShortcut(QKeySequence::Find);
-    m_findAct->setCheckable(true);
+    //m_findAct->setCheckable(true);
 
     m_findNextAct = new QAction(tr("Find Next"),this);
     m_findNextAct->setShortcut(QKeySequence::FindNext);
@@ -99,11 +99,11 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
 
     m_replaceAct = new QAction(tr("Replace"),this);
     m_replaceAct->setShortcut(QKeySequence::Replace);
-    m_replaceAct->setCheckable(true);
+    //m_replaceAct->setCheckable(true);
 
     m_fileSearchAct = new QAction(tr("File Serach"),this);
     m_fileSearchAct->setShortcut(QKeySequence("CTRL+SHIFT+F"));
-    m_fileSearchAct->setCheckable(true);
+   // m_fileSearchAct->setCheckable(true);
 
     menu->addAction(m_findAct);
     menu->addAction(m_findNextAct);
@@ -113,61 +113,52 @@ bool LiteFindPlugin::initWithApp(LiteApi::IApplication *app)
     menu->addSeparator();
     menu->addAction(m_fileSearchAct);
 
-    connect(m_findAct,SIGNAL(toggled(bool)),this,SLOT(find(bool)));
+    connect(m_findAct,SIGNAL(triggered()),this,SLOT(find()));
     connect(m_findNextAct,SIGNAL(triggered()),m_findEditor,SLOT(findNext()));
     connect(m_findPrevAct,SIGNAL(triggered()),m_findEditor,SLOT(findPrev()));
-    connect(m_replaceAct,SIGNAL(toggled(bool)),this,SLOT(replace(bool)));
+    connect(m_replaceAct,SIGNAL(triggered()),this,SLOT(replace()));
     connect(m_findEditor,SIGNAL(hideFind()),this,SLOT(hideFind()));
     connect(m_replaceEditor,SIGNAL(hideReplace()),this,SLOT(hideReplace()));
     connect(m_findEditor,SIGNAL(swithReplace()),this,SLOT(switchReplace()));
-    connect(m_fileSearchAct,SIGNAL(toggled(bool)),this,SLOT(fileSearch(bool)));
+    connect(m_fileSearchAct,SIGNAL(triggered()),this,SLOT(fileSearch()));
 
     return true;
 }
 
 void LiteFindPlugin::hideFind()
 {
-    m_findAct->setChecked(false);
+    m_findEditor->setVisible(false);
 }
 
 void LiteFindPlugin::hideReplace()
 {
-    m_replaceAct->setChecked(false);
+    m_replaceEditor->setVisible(false);
 }
 
 void LiteFindPlugin::switchReplace()
 {
-    m_replaceAct->setChecked(true);
+    m_findEditor->setVisible(false);
+    m_replaceEditor->setVisible(true);
 }
 
-void LiteFindPlugin::find(bool b)
+void LiteFindPlugin::find()
 {
-    if (b) {
-        m_replaceAct->setChecked(false);
-        m_findEditor->setReady();
-    }
-    m_findEditor->setVisible(b);
+    m_replaceEditor->setVisible(false);
+    m_findEditor->setVisible(true);
 }
 
-void LiteFindPlugin::replace(bool b)
+void LiteFindPlugin::replace()
 {
-    if (b) {
-        if (m_findAct->isChecked()) {
-            m_replaceEditor->setReady(m_findEditor->findText());
-        } else {
-            m_replaceEditor->setReady();
-        }
-        m_findAct->setChecked(false);
-    }
-    m_replaceEditor->setVisible(b);
+    m_findEditor->setVisible(false);
+    m_replaceEditor->setVisible(true);
 }
 
-void LiteFindPlugin::fileSearch(bool b)
+void LiteFindPlugin::fileSearch()
 {
     if (m_fileSearch == 0) {
         m_fileSearch = new FileSearch(m_liteApp,this);
     }
-    m_fileSearch->setVisible(b);
+    m_fileSearch->setVisible(true);
 }
 
 Q_EXPORT_PLUGIN(LiteFindPlugin)

@@ -131,6 +131,7 @@ QWidget *ReplaceEditor::widget()
 
 void ReplaceEditor::setVisible(bool b)
 {
+    this->m_widget->setVisible(b);
     if (b) {
         LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
         if (editor) {
@@ -142,9 +143,10 @@ void ReplaceEditor::setVisible(bool b)
             if (!text.isEmpty()) {
                 this->m_findEdit->setText(text);
             }
+            this->m_findEdit->setFocus();
         }
     }
-    this->m_widget->setVisible(b);
+
 }
 
 

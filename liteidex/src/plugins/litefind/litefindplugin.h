@@ -42,12 +42,12 @@ public:
     ~LiteFindPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
 public slots:
-    void find(bool);
-    void replace(bool);
+    void find();
+    void replace();
     void hideFind();
     void hideReplace();
     void switchReplace();
-    void fileSearch(bool);
+    void fileSearch();
 protected:
     FindEditor *m_findEditor;
     ReplaceEditor *m_replaceEditor;
