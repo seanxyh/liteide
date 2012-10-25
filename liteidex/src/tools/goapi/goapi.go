@@ -141,10 +141,6 @@ const (
 	X1 = complex(100, 200)
 )
 
-func init() {
-	fmt.Println(V8)
-}
-
 // Flags
 var (
 	// TODO(bradfitz): once Go 1.1 comes out, allow the -c flag to take a comma-separated
@@ -194,32 +190,7 @@ func main() {
 	}
 
 	for _, pkg := range pkgs {
-		if build.IsLocalImport(pkg) {
-			wd, err := os.Getwd()
-			if err != nil {
-				log.Fatalln(err)
-				continue
-			}
-			dir := path.Clean(path.Join(wd, pkg))
-			bp, err := build.ImportDir(dir, 0)
-			if err != nil {
-				if *verbose {
-					log.Fatalln(err)
-				}
-				continue
-			}
-			w.wantedPkg[bp.Name] = true
-			w.WalkPackage(bp.Name, bp.Dir)
-		} else {
-			bp, err := build.Import(pkg, "", build.FindOnly)
-			if err != nil {
-				if *verbose {
-					log.Println(err)
-				}
-				continue
-			}
-			w.WalkPackage(pkg, bp.Dir)
-		}
+		w.WalkPackage(pkg)
 	}
 
 	if *nooutput {
@@ -293,8 +264,23 @@ func (p *Package) findType(name string) ast.Expr {
 }
 
 func funcRetType(ft *ast.FuncType, index int) ast.Expr {
-	if ft.Results != nil && len(ft.Results.List) >= index+1 {
-		return ft.Results.List[index].Type
+	if ft.Results != nil {
+		pos := 0
+		for _, fi := range ft.Results.List {
+			if fi.Names == nil {
+				if pos == index {
+					return fi.Type
+				}
+				pos++
+			} else {
+				for _ = range fi.Names {
+					if pos == index {
+						return fi.Type
+					}
+					pos++
+				}
+			}
+		}
 	}
 	return nil
 }
@@ -339,8 +325,13 @@ func (p *Package) findSelectorType(name string) ast.Expr {
 }
 
 func (p *Package) findCallType(name string, index int) ast.Expr {
-	if fn, ok := p.functions[name]; ok {
-		return funcRetType(fn.ft, index)
+	//	if fn, ok := p.functions[name]; ok {
+	//		return funcRetType(fn.ft, index)
+	//	}
+	for k, v := range p.functions {
+		if k == name {
+			return funcRetType(v.ft, index)
+		}
 	}
 	for k, v := range p.structs {
 		if k == name {
@@ -466,7 +457,42 @@ func fileDeps(f *ast.File) (pkgs []string) {
 
 // WalkPackage walks all files in package `name'.
 // WalkPackage does nothing if the package has already been loaded.
-func (w *Walker) WalkPackage(name string, dir string) {
+
+func (w *Walker) WalkPackage(pkg string) {
+	if build.IsLocalImport(pkg) {
+		wd, err := os.Getwd()
+		if err != nil {
+			if *verbose {
+				log.Println(err)
+			}
+			return
+		}
+		dir := path.Clean(path.Join(wd, pkg))
+		bp, err := build.ImportDir(dir, 0)
+		if err != nil {
+			if *verbose {
+				log.Println(err)
+			}
+			return
+		}
+		if w.wantedPkg[pkg] == true {
+			w.wantedPkg[bp.Name] = true
+			delete(w.wantedPkg, pkg)
+		}
+		w.WalkPackageDir(bp.Name, bp.Dir)
+	} else {
+		bp, err := build.Import(pkg, "", build.FindOnly)
+		if err != nil {
+			if *verbose {
+				log.Println(err)
+			}
+			return
+		}
+		w.WalkPackageDir(pkg, bp.Dir)
+	}
+}
+
+func (w *Walker) WalkPackageDir(name string, dir string) {
 	//log.Println("walk", name, dir)
 	switch w.packageState[name] {
 	case loading:
@@ -551,12 +577,7 @@ func (w *Walker) WalkPackage(name string, dir string) {
 			apkg.Files[file] = f
 			if *dep_parser {
 				for _, dep := range fileDeps(f) {
-					bp, err := build.Import(dep, "", build.FindOnly)
-					if err == nil {
-						if dep != name {
-							w.WalkPackage(dep, bp.Dir)
-						}
-					}
+					w.WalkPackage(dep)
 				}
 			}
 			if *showpos && w.wantedPkg[name] {
@@ -1188,6 +1209,10 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 					}
 				}
 			}
+			if ft.Name == "probeIPv6Stack" {
+				log.Println(">", ft.Name, index, w.nodeString(w.namelessType(typ)))
+			}
+
 			return "", fmt.Errorf("unknown funcion %s %s", w.curPackageName, ft.Name)
 		case *ast.SelectorExpr:
 			typ, err := w.varValueType(ft.X, index)
@@ -1764,9 +1789,9 @@ func (w *Walker) emitFeature(feature string, pos token.Pos) {
 			feature = strings.Replace(feature, "\t", " ", -1)
 		} else {
 			feature = feature[:more] + " ...more"
-		}
-		if *verbose {
-			log.Printf("feature contains newlines: %v, %s", feature, w.fset.Position(pos))
+			if *verbose {
+				log.Printf("feature contains newlines: %v, %s", feature, w.fset.Position(pos))
+			}
 		}
 	}
 	f := strings.Join(w.scope, w.sep) + w.sep + feature
