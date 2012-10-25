@@ -4,20 +4,13 @@
 
 // Api computes the exported API of a set of Go packages.
 //
-// BUG(bradfitz): Note that this tool is only currently suitable
-// for use on the Go standard library, not arbitrary packages.
-// Once the Go AST has type information, this tool will be more
-// reliable without hard-coded hacks throughout.
-
 // 2012.10.17 fixed for any package
 // visualfc
 
 package main
 
 import (
-	//	"bufio"
 	"bytes"
-	"errors"
 	"flag"
 	"fmt"
 	"go/ast"
@@ -37,114 +30,8 @@ import (
 	"strings"
 )
 
-var TT = make([]uint, 10)
-var TT2 = string("hello")
-
-type T []string
-
-var TT3 = T([]string{})
-
-var out = os.Stderr
-var out2 = os.ModeAppend
-var out3 = os.Args
-
-var MyArgs = flag.Args
-var MyArgs2 = flag.Args()
-
-type MyType build.Context
-
-var MyArgs4 = func() {}
-var MyArgs5 MyType
-var MyArgs6 = ast.NewIdent("ok")
-var MyArgs7 = MyArgs5.CgoEnabled
-var MyArgs8 = s0.test1()
-var MyArgs9 = s0.tag
-var MyArgs10 = build.Default.SrcDirs()[0]
-
-var MyArray = []build.Context{build.Default}
-var MyArgs11 = MyArray[0].SrcDirs()[0]
-var MyArgs12 = s0.con.Compiler
-
-var MyCh1 = make(chan int)
-var MyCh2 = make(chan<- int)
-var MyCh3 = make(<-chan int)
-
-var (
-	MyCh6        = "hello"
-	MyCh4, MyCh5 = func(int) (<-chan int, error) {
-		return make(chan int), errors.New("error")
-	}(10)
-	MyCh7 = MyCh5.Error()
-)
-
-//var MyArgs9 = build.Default.CgoEnabled
-
-const intSize = 32 << uint(^uint(0)>>63)
-const IntSize = intSize // number of bits in int, uint (32 or 64)
-type ss struct {
-	tag string
-	con build.Context
-}
-
-func (p *ss) test1() string {
-	return "hello"
-}
-
-func (p *ss) test2() (b []byte) {
-	return
-}
-
-func (p *ss) test3() (map[int]string, *ss) {
-	return nil, newss()
-}
-
-func (p *ss) test4() func(x int) int {
-	return func(x int) int {
-		return x
-	}
-}
-
-func (p *ss) test5() func(x int) *ss {
-	return func(x int) *ss {
-		return p
-	}
-}
-
-func (p *ss) test6() string {
-	return "hello"
-}
-
-func newss() *ss {
-	return &ss{}
-}
-
-var (
-	s0     ss
-	s1     = &ss{}
-	s2     = newss()
-	V1     = s0.test1()
-	V2     = s1.test1()
-	V3     = s2.test2()
-	V4, V5 = s2.test3()
-	V6     = V5.test1()
-	//V7     = s2.test4()(100)
-	//V7 = s2.test5()(100).con.BuildTags
-	V8  = s2.test5()(100).test5()(100)
-	V9  = append([]int{}, 10)
-	V10 = append(V9, 10)
-	V11 = cap(V10)
-	V12 = new(ss).con.BuildTags
-	V13 = errors.New("hello").Error()
-)
-
-const (
-	X1 = complex(100, 200)
-)
-
 // Flags
 var (
-	// TODO(bradfitz): once Go 1.1 comes out, allow the -c flag to take a comma-separated
-	// list of files, rather than just one.
 	verbose    = flag.Bool("v", false, "verbose debugging")
 	allmethods = flag.Bool("e", true, "show all embedded methods")
 	alldecls   = flag.Bool("a", false, "extract documentation for all package-level declarations")
@@ -155,7 +42,6 @@ var (
 )
 
 func usage() {
-
 	fmt.Fprintf(os.Stderr, `usage: api [std|all|package...|local-dir]
     local-dir : . or ./goapi`)
 	flag.PrintDefaults()
@@ -325,29 +211,19 @@ func (p *Package) findSelectorType(name string) ast.Expr {
 }
 
 func (p *Package) findCallType(name string, index int) ast.Expr {
-	//	if fn, ok := p.functions[name]; ok {
-	//		return funcRetType(fn.ft, index)
-	//	}
-	for k, v := range p.functions {
-		if k == name {
-			return funcRetType(v.ft, index)
+	if fn, ok := p.functions[name]; ok {
+		return funcRetType(fn.ft, index)
+	}
+	if s, ok := p.structs[name]; ok {
+		return &ast.Ident{
+			NamePos: s.Pos(),
+			Name:    name,
 		}
 	}
-	for k, v := range p.structs {
-		if k == name {
-			return &ast.Ident{
-				NamePos: v.Pos(),
-				Name:    name,
-			}
-		}
-	}
-	for k, v := range p.types {
-		if k == name {
-			return v
-			return &ast.Ident{
-				NamePos: v.Pos(),
-				Name:    name,
-			}
+	if t, ok := p.types[name]; ok {
+		return &ast.Ident{
+			NamePos: t.Pos(),
+			Name:    name,
 		}
 	}
 	return nil
@@ -369,17 +245,6 @@ func (p *Package) findMethod(typ, name string) *ast.FuncType {
 		}
 	}
 	return nil
-}
-
-func (p *Package) resolveName(name string) (ok bool) {
-	for _, v := range p.dpkg.Vars {
-		for _, vname := range v.Names {
-			if vname == name {
-				return true
-			}
-		}
-	}
-	return
 }
 
 type Walker struct {
@@ -409,7 +274,6 @@ func NewWalker() *Walker {
 		selectorFullPkg: make(map[string]string),
 		wantedPkg:       make(map[string]bool),
 		sep:             ", ",
-		//		root:            filepath.Join(build.Default.GOROOT, "src/pkg"),
 	}
 }
 
@@ -493,7 +357,6 @@ func (w *Walker) WalkPackage(pkg string) {
 }
 
 func (w *Walker) WalkPackageDir(name string, dir string) {
-	//log.Println("walk", name, dir)
 	switch w.packageState[name] {
 	case loading:
 		log.Fatalf("import cycle loading package %q?", name)
@@ -564,7 +427,6 @@ func (w *Walker) WalkPackageDir(name string, dir string) {
 		if strings.HasSuffix(file, ".go") {
 			f, err := parser.ParseFile(w.fset, filepath.Join(dir, file), nil, 0)
 			if err != nil {
-				//fix_code
 				if *verbose {
 					log.Printf("error parsing package %s, file %s: %v", name, file, err)
 				}
@@ -795,8 +657,6 @@ func constTypePriority(typ string) int {
 	return 101
 }
 
-var errTODO = errors.New("TODO")
-
 func (w *Walker) constRealType(typ string) string {
 	pos := strings.Index(typ, ".")
 	if pos >= 0 {
@@ -861,7 +721,6 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		}
 		return constDepPrefix + v.Name, nil
 	case *ast.BinaryExpr:
-		//fix_code
 		//== > < ! != >= <=
 		if v.Op == token.EQL || v.Op == token.LSS || v.Op == token.GTR || v.Op == token.NOT ||
 			v.Op == token.NEQ || v.Op == token.LEQ || v.Op == token.GEQ {
@@ -1141,8 +1000,9 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 		}
 		return "", fmt.Errorf("unresolved identifier: %q", v.Name)
 	case *ast.BinaryExpr:
-		//fix_code
-		if v.Op == token.EQL {
+		//== > < ! != >= <=
+		if v.Op == token.EQL || v.Op == token.LSS || v.Op == token.GTR || v.Op == token.NOT ||
+			v.Op == token.NEQ || v.Op == token.LEQ || v.Op == token.GEQ {
 			return "bool", nil
 		}
 		left, err := w.varValueType(v.X, index)
@@ -1259,13 +1119,10 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 			}
 		}
 		return "", fmt.Errorf("not a known function %T %v", v.Fun, w.nodeString(v.Fun))
-	//fix_code
 	case *ast.MapType:
 		return fmt.Sprintf("map[%s](%s)", w.nodeString(w.namelessType(v.Key)), w.nodeString(w.namelessType(v.Value))), nil
-	//fix_code
 	case *ast.ArrayType:
 		return fmt.Sprintf("[]%s", w.nodeString(w.namelessType(v.Elt))), nil
-	//fix_code return functype
 	case *ast.FuncType:
 		return w.nodeString(w.namelessType(v)), nil
 	case *ast.IndexExpr:
@@ -1337,7 +1194,6 @@ func (w *Walker) walkConst(vs *ast.ValueSpec) {
 				var err error
 				litType, err = w.constValueType(vs.Values[0])
 				if err != nil {
-					//fix_code
 					if *verbose {
 						log.Printf("unknown kind in const %q (%T): %v", ident.Name, vs.Values[0], err)
 					}
@@ -1351,8 +1207,6 @@ func (w *Walker) walkConst(vs *ast.ValueSpec) {
 			continue
 		}
 		if litType == "" {
-			//fix_code 			
-			//log.Fatalf("unknown kind in const %q", ident.Name)
 			if *verbose {
 				log.Printf("unknown kind in const %q", ident.Name)
 			}
@@ -1385,12 +1239,10 @@ func (w *Walker) resolveConstantDeps() {
 		}
 		t := findConstType(ident)
 		if t == "" {
-			//fix_code
 			if *verbose {
 				log.Printf("failed to resolve constant %q", ident)
 			}
 			continue
-			//log.Fatalf("failed to resolve constant %q", ident)
 		}
 		w.emitFeature(fmt.Sprintf("const %s %s", ident, t), info.pos)
 	}
@@ -1402,16 +1254,15 @@ func (w *Walker) walkVar(vs *ast.ValueSpec) {
 		if vs.Type != nil {
 			typ = w.nodeString(vs.Type)
 		} else {
-			if len(vs.Values) == 0 {
-				log.Fatalf("no values for var %q", ident.Name)
-			}
-			if len(vs.Values) > 1 {
-				log.Fatalf("more than 1 values in ValueSpec not handled, var %q", ident.Name)
+			if len(vs.Values) != 1 {
+				if *verbose {
+					log.Printf("error values in ValueSpec, var=%q,size=%d", ident.Name, len(vs.Values))
+				}
+				return
 			}
 			var err error
 			typ, err = w.varValueType(vs.Values[0], n)
 			if err != nil {
-				//fix_code
 				if *verbose {
 					log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
 						ident.Name, vs.Values, err, w.fset.Position(vs.Pos()))
@@ -1495,7 +1346,9 @@ func (w *Walker) walkStructType(name string, t *ast.StructType) {
 			case *ast.SelectorExpr:
 				w.emitFeature(fmt.Sprintf("embedded %s", w.nodeString(typ)), v.Pos())
 			default:
-				log.Fatalf("unable to handle embedded %T", typ)
+				if *verbose {
+					log.Printf("unable to handle embedded %T", typ)
+				}
 			}
 		}
 	}
@@ -1518,11 +1371,9 @@ type method struct {
 func (w *Walker) interfaceMethods(pkg, iname string) (methods []method, complete bool) {
 	t, ok := w.interfaces[pkgSymbol{pkg, iname}]
 	if !ok {
-		//fix_code
 		if *verbose {
 			log.Printf("failed to find interface %s.%s", pkg, iname)
 		}
-		//log.Fatalf("failed to find interface %s.%s", pkg, iname)
 		return
 	}
 
@@ -1640,7 +1491,6 @@ func baseTypeName(x ast.Expr) (name string, imported bool) {
 }
 
 func (w *Walker) peekFuncDecl(f *ast.FuncDecl) {
-	//fix_code
 	var fname = f.Name.Name
 	var recv ast.Expr
 	if f.Recv != nil {
@@ -1792,9 +1642,6 @@ func (w *Walker) emitFeature(feature string, pos token.Pos) {
 	}
 
 	w.features[f] = append(w.features[f], pos)
-	//	if *verbose {
-	//		log.Printf("feature: %s", f)
-	//	}
 }
 
 func strListContains(l []string, s string) bool {
