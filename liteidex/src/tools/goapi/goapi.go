@@ -129,8 +129,12 @@ var (
 	V6     = V5.test1()
 	//V7     = s2.test4()(100)
 	//V7 = s2.test5()(100).con.BuildTags
-	V9 = V8         //(100).test5()(100).tag
-	V8 = s2.test5() //(100)
+	V8  = s2.test5()(100).test5()(100)
+	V9  = append([]int{}, 10)
+	V10 = append(V9, 10)
+	V11 = cap(V10)
+	V12 = new(ss).con.BuildTags
+	V13 = errors.New("hello").Error()
 )
 
 func init() {
@@ -980,9 +984,17 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 		}
 		return "", fmt.Errorf("unknown pkg type selector pkg: %s.%s.%s", pkg, typ, sel)
 	}
-	_, vt, n := w.resolveName(name)
+	vs, vt, n := w.resolveName(name)
 	if n >= 0 {
-		typ := w.nodeString(w.namelessType(vt))
+		var typ string
+		if vt != nil {
+			typ = w.nodeString(w.namelessType(vt))
+		} else {
+			typ, _ = w.varValueType(vs, n)
+		}
+		if strings.HasPrefix(typ, "*") {
+			typ = typ[1:]
+		}
 		//typ is type, find real type
 		for k, v := range w.curPackage.types {
 			if k == typ {
@@ -1120,8 +1132,23 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 		case *ast.ArrayType:
 			return w.nodeString(v.Fun), nil
 		case *ast.Ident:
-			if ft.Name == "make" || ft.Name == "new" {
-				return w.varValueType(v.Args[0], index)
+			switch ft.Name {
+			case "make":
+				return w.nodeString(w.namelessType(v.Args[0])), nil
+			case "new":
+				return "*" + w.nodeString(w.namelessType(v.Args[0])), nil
+			case "append":
+				return w.varValueType(v.Args[0], 0)
+			case "recover":
+				return "interface{}", nil
+			case "len", "cap", "copy":
+				return "int", nil
+			case "complex":
+				return "complex128", nil
+			case "real":
+				return "float64", nil
+			case "imag":
+				return "float64", nil
 			}
 			if isBuiltinType(ft.Name) {
 				return ft.Name, nil
