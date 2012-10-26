@@ -10,6 +10,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"flag"
 	"fmt"
@@ -19,26 +20,33 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
-	//	"runtime"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Flags
 var (
+	checkFile  = flag.String("c", "", "optional filename to check API against")
+	allowNew   = flag.Bool("allow_new", true, "allow API additions")
+	exceptFile = flag.String("except", "", "optional filename of packages that are allowed to change without triggering a failure in the tool")
+	nextFile   = flag.String("next", "", "optional filename of tentative upcoming API features for the next release. This file can be lazily maintained. It only affects the delta warnings from the -c file printed on success.")
 	verbose    = flag.Bool("v", false, "verbose debugging")
-	allmethods = flag.Bool("e", true, "show all embedded methods")
-	alldecls   = flag.Bool("a", false, "extract documentation for all package-level declarations")
-	showpos    = flag.Bool("p", false, "show token pos tag")
-	separate   = flag.String("sep", ",", "set token separate string")
-	dep_parser = flag.Bool("dep", true, "check package import")
-	nooutput   = flag.Bool("n", false, "no output, check only")
+	allmethods = flag.Bool("e", true, "extract for all embedded methods")
+	alldecls   = flag.Bool("a", false, "extract for all declarations")
+	showpos    = flag.Bool("pos", false, "addition token position")
+	separate   = flag.String("sep", ",", "setup separators")
+	dep_parser = flag.Bool("dep", true, "parser package imports")
+	defaultCtx = flag.Bool("default_ctx", false, "extract for default context")
+	customCtx  = flag.String("custom_ctx", "", "optional comma-separated list of <goos>-<goarch>[-cgo] to override default contexts.")
 )
 
 func usage() {
@@ -47,9 +55,73 @@ func usage() {
 	flag.PrintDefaults()
 }
 
+// contexts are the default contexts which are scanned, unless
+// overridden by the -contexts flag.
+var contexts = []*build.Context{
+	{GOOS: "linux", GOARCH: "386", CgoEnabled: true},
+	{GOOS: "linux", GOARCH: "386"},
+	{GOOS: "linux", GOARCH: "amd64", CgoEnabled: true},
+	{GOOS: "linux", GOARCH: "amd64"},
+	{GOOS: "linux", GOARCH: "arm"},
+	{GOOS: "darwin", GOARCH: "386", CgoEnabled: true},
+	{GOOS: "darwin", GOARCH: "386"},
+	{GOOS: "darwin", GOARCH: "amd64", CgoEnabled: true},
+	{GOOS: "darwin", GOARCH: "amd64"},
+	{GOOS: "windows", GOARCH: "amd64"},
+	{GOOS: "windows", GOARCH: "386"},
+	{GOOS: "freebsd", GOARCH: "amd64"},
+	{GOOS: "freebsd", GOARCH: "386"},
+}
+
+func contextName(c *build.Context) string {
+	s := c.GOOS + "-" + c.GOARCH
+	if c.CgoEnabled {
+		return s + "-cgo"
+	}
+	return s
+}
+
+func parseContext(c string) *build.Context {
+	parts := strings.Split(c, "-")
+	if len(parts) < 2 {
+		log.Fatalf("bad context: %q", c)
+	}
+	bc := &build.Context{
+		GOOS:   parts[0],
+		GOARCH: parts[1],
+	}
+	if len(parts) == 3 {
+		if parts[2] == "cgo" {
+			bc.CgoEnabled = true
+		} else {
+			log.Fatalf("bad context: %q", c)
+		}
+	}
+	return bc
+}
+
+func setCustomContexts() {
+	contexts = []*build.Context{}
+	for _, c := range strings.Split(*customCtx, ",") {
+		contexts = append(contexts, parseContext(c))
+	}
+}
+
 func main() {
 	flag.Usage = usage
 	flag.Parse()
+
+	if !strings.Contains(runtime.Version(), "weekly") && !strings.Contains(runtime.Version(), "devel") {
+		if *nextFile != "" {
+			fmt.Printf("Go version is %q, ignoring -next %s\n", runtime.Version(), *nextFile)
+			*nextFile = ""
+		}
+	}
+
+	t := time.Now()
+	defer func() {
+		fmt.Println("time", time.Now().Sub(t))
+	}()
 
 	if flag.NArg() == 0 {
 		flag.Usage()
@@ -68,27 +140,161 @@ func main() {
 		pkgs = flag.Args()
 	}
 
-	w := NewWalker()
-	w.sep = *separate
-
-	for _, pkg := range pkgs {
-		w.wantedPkg[pkg] = true
+	if *customCtx != "" {
+		*defaultCtx = false
+		setCustomContexts()
 	}
 
-	for _, pkg := range pkgs {
-		w.WalkPackage(pkg)
+	var features []string
+
+	if *defaultCtx {
+		w := NewWalker()
+		w.context = &build.Default
+		w.sep = *separate
+
+		for _, pkg := range pkgs {
+			w.wantedPkg[pkg] = true
+		}
+		for _, pkg := range pkgs {
+			w.WalkPackage(pkg)
+		}
+		features = w.Features()
+	} else {
+		for _, c := range contexts {
+			c.Compiler = build.Default.Compiler
+		}
+
+		var featureCtx = make(map[string]map[string]bool) // feature -> context name -> true
+		for _, context := range contexts {
+			w := NewWalker()
+			w.context = context
+			w.sep = *separate
+
+			for _, pkg := range pkgs {
+				w.wantedPkg[pkg] = true
+			}
+			for _, pkg := range pkgs {
+				w.WalkPackage(pkg)
+			}
+			ctxName := contextName(context)
+			for _, f := range w.Features() {
+				if featureCtx[f] == nil {
+					featureCtx[f] = make(map[string]bool)
+				}
+				featureCtx[f][ctxName] = true
+			}
+		}
+
+		for f, cmap := range featureCtx {
+			if len(cmap) == len(contexts) {
+				features = append(features, f)
+				continue
+			}
+			comma := strings.Index(f, ",")
+			for cname := range cmap {
+				f2 := fmt.Sprintf("%s (%s)%s", f[:comma], cname, f[comma:])
+				features = append(features, f2)
+			}
+		}
+		sort.Strings(features)
 	}
 
-	if *nooutput {
+	fail := false
+	defer func() {
+		if fail {
+			os.Exit(1)
+		}
+	}()
+
+	bw := bufio.NewWriter(os.Stdout)
+	defer bw.Flush()
+
+	if *checkFile == "" {
+		for _, f := range features {
+			fmt.Fprintf(bw, "%s\n", f)
+		}
 		return
 	}
 
-	for _, feature := range w.Features() {
-		fmt.Println(feature)
+	var required []string
+	for _, filename := range []string{*checkFile} {
+		required = append(required, fileFeatures(filename)...)
+	}
+	sort.Strings(required)
+
+	var optional = make(map[string]bool) // feature => true
+	if *nextFile != "" {
+		for _, feature := range fileFeatures(*nextFile) {
+			optional[feature] = true
+		}
+	}
+
+	var exception = make(map[string]bool) // exception => true
+	if *exceptFile != "" {
+		for _, feature := range fileFeatures(*exceptFile) {
+			exception[feature] = true
+		}
+	}
+
+	take := func(sl *[]string) string {
+		s := (*sl)[0]
+		*sl = (*sl)[1:]
+		return s
+	}
+
+	for len(required) > 0 || len(features) > 0 {
+		switch {
+		case len(features) == 0 || required[0] < features[0]:
+			feature := take(&required)
+			if exception[feature] {
+				fmt.Fprintf(bw, "~%s\n", feature)
+			} else {
+				fmt.Fprintf(bw, "-%s\n", feature)
+				fail = true // broke compatibility
+			}
+		case len(required) == 0 || required[0] > features[0]:
+			newFeature := take(&features)
+			if optional[newFeature] {
+				// Known added feature to the upcoming release.
+				// Delete it from the map so we can detect any upcoming features
+				// which were never seen.  (so we can clean up the nextFile)
+				delete(optional, newFeature)
+			} else {
+				fmt.Fprintf(bw, "+%s\n", newFeature)
+				if !*allowNew {
+					fail = true // we're in lock-down mode for next release
+				}
+			}
+		default:
+			take(&required)
+			take(&features)
+		}
+	}
+
+	// In next file, but not in API.
+	var missing []string
+	for feature := range optional {
+		missing = append(missing, feature)
+	}
+	sort.Strings(missing)
+	for _, feature := range missing {
+		fmt.Fprintf(bw, "±%s\n", feature)
 	}
 }
 
-func IsExported(name string) bool {
+func fileFeatures(filename string) []string {
+	bs, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Fatalf("Error reading file %s: %v", filename, err)
+	}
+	text := strings.TrimSpace(string(bs))
+	if text == "" {
+		return nil
+	}
+	return strings.Split(text, "\n")
+}
+
+func isExtract(name string) bool {
 	if *alldecls {
 		return true
 	}
@@ -332,7 +538,7 @@ func (w *Walker) WalkPackage(pkg string) {
 			return
 		}
 		dir := path.Clean(path.Join(wd, pkg))
-		bp, err := build.ImportDir(dir, 0)
+		bp, err := w.context.ImportDir(dir, 0)
 		if err != nil {
 			if *verbose {
 				log.Println(err)
@@ -343,7 +549,7 @@ func (w *Walker) WalkPackage(pkg string) {
 			w.wantedPkg[bp.Name] = true
 			delete(w.wantedPkg, pkg)
 		}
-		w.WalkPackageDir(bp.Name, bp.Dir)
+		w.WalkPackageDir(bp.Name, bp.Dir, bp)
 	} else {
 		bp, err := build.Import(pkg, "", build.FindOnly)
 		if err != nil {
@@ -352,11 +558,11 @@ func (w *Walker) WalkPackage(pkg string) {
 			}
 			return
 		}
-		w.WalkPackageDir(pkg, bp.Dir)
+		w.WalkPackageDir(pkg, bp.Dir, nil)
 	}
 }
 
-func (w *Walker) WalkPackageDir(name string, dir string) {
+func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	switch w.packageState[name] {
 	case loading:
 		log.Fatalf("import cycle loading package %q?", name)
@@ -374,78 +580,77 @@ func (w *Walker) WalkPackageDir(name string, dir string) {
 	apkg := &ast.Package{
 		Files: make(map[string]*ast.File),
 	}
-
-	//	bp, err := build.Default.ImportDir(dir, 0)
-	//	if err != nil {
-	//		log.Fatalln(err)
-	//		//fmt.Println(err)
-	//	}
-
-	//	files := append(append([]string{}, bp.GoFiles...), bp.CgoFiles...)
-	//	for _, file := range files {
-	//		f, err := parser.ParseFile(w.fset, filepath.Join(dir, file), nil, 0)
-	//		if err != nil {
-	//			log.Fatalf("error parsing package %s, file %s: %v", name, file, err)
-	//		}
-	//		if sname != f.Name.Name {
-	//			continue
-	//		}
-	//		apkg.Files[file] = f
-	//		for _, dep := range fileDeps(f) {
-	//			bp, err := build.Import(dep, "", build.FindOnly)
-	//			if err == nil {
-	//				if dep != name {
-	//					w.WalkPackage(dep, bp.Dir)
-	//				}
-	//			}
-	//		}
-	//		if *showpos && w.wantedPkg[name] {
-	//			tf := w.fset.File(f.Pos())
-	//			if tf != nil {
-	//				fmt.Printf("pos %s,%s,%d,%d\n", name, filepath.Join(dir, file), tf.Base(), tf.Size())
-	//			}
-	//		}
-	//	}
-	fdir, err := os.Open(dir)
-	if err != nil {
-		log.Fatalln(err)
+	if bp == nil {
+		bp, _ = w.context.ImportDir(dir, 0)
 	}
-	infos, err := fdir.Readdir(-1)
-	fdir.Close()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	for _, info := range infos {
-		if info.IsDir() {
-			continue
-		}
-		file := info.Name()
-		if strings.HasPrefix(file, "_") || strings.HasSuffix(file, "_test.go") {
-			continue
-		}
-		if strings.HasSuffix(file, ".go") {
+	if bp != nil {
+		files := append(append([]string{}, bp.GoFiles...), bp.CgoFiles...)
+		for _, file := range files {
 			f, err := parser.ParseFile(w.fset, filepath.Join(dir, file), nil, 0)
 			if err != nil {
-				if *verbose {
-					log.Printf("error parsing package %s, file %s: %v", name, file, err)
-				}
+				log.Fatalf("error parsing package %s, file %s: %v", name, file, err)
+			}
+			if sname != f.Name.Name {
 				continue
 			}
-			if f.Name.Name != sname {
-				continue
-			}
-
 			apkg.Files[file] = f
 			if *dep_parser {
 				for _, dep := range fileDeps(f) {
+					if _, ok := w.packageState[dep]; ok {
+						continue
+					}
 					w.WalkPackage(dep)
 				}
 			}
 			if *showpos && w.wantedPkg[name] {
 				tf := w.fset.File(f.Pos())
 				if tf != nil {
-					fmt.Printf("pos %s%s%s%s%d:%d\n", name, w.sep, filepath.Join(dir, file), w.sep, tf.Base(), tf.Base()+tf.Size())
+					fmt.Printf("pos %s,%s,%d,%d\n", name, filepath.Join(dir, file), tf.Base(), tf.Size())
+				}
+			}
+		}
+	} else {
+		fdir, err := os.Open(dir)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		infos, err := fdir.Readdir(-1)
+		fdir.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		for _, info := range infos {
+			if info.IsDir() {
+				continue
+			}
+			file := info.Name()
+			if strings.HasPrefix(file, "_") || strings.HasSuffix(file, "_test.go") {
+				continue
+			}
+			if strings.HasSuffix(file, ".go") {
+				f, err := parser.ParseFile(w.fset, filepath.Join(dir, file), nil, 0)
+				if err != nil {
+					if *verbose {
+						log.Printf("error parsing package %s, file %s: %v", name, file, err)
+					}
+					continue
+				}
+				if f.Name.Name != sname {
+					continue
+				}
+
+				apkg.Files[file] = f
+				if *dep_parser {
+					for _, dep := range fileDeps(f) {
+						w.WalkPackage(dep)
+					}
+				}
+				if *showpos && w.wantedPkg[name] {
+					tf := w.fset.File(f.Pos())
+					if tf != nil {
+						fmt.Printf("pos %s%s%s%s%d:%d\n", name, w.sep, filepath.Join(dir, file), w.sep, tf.Base(), tf.Base()+tf.Size())
+					}
 				}
 			}
 		}
@@ -498,6 +703,10 @@ func (w *Walker) WalkPackageDir(name string, dir string) {
 	dpkg := doc.New(apkg, name, mode)
 	w.curPackage.dpkg = dpkg
 
+	if w.wantedPkg[name] != true {
+		return
+	}
+
 	for _, t := range dpkg.Types {
 		// Move funcs up to the top-level, not hiding in the Types.
 		dpkg.Funcs = append(dpkg.Funcs, t.Funcs...)
@@ -529,6 +738,7 @@ func (w *Walker) pushScope(name string) (popFunc func()) {
 }
 
 func (w *Walker) recordTypes(file *ast.File) {
+	cur := w.curPackage
 	for _, di := range file.Decls {
 		switch d := di.(type) {
 		case *ast.GenDecl:
@@ -539,14 +749,14 @@ func (w *Walker) recordTypes(file *ast.File) {
 					name := ts.Name.Name
 					switch t := ts.Type.(type) {
 					case *ast.InterfaceType:
-						if IsExported(name) {
+						if isExtract(name) {
 							w.noteInterface(name, t)
 						}
-						w.curPackage.interfaces[name] = t
+						cur.interfaces[name] = t
 					case *ast.StructType:
-						w.curPackage.structs[name] = t
+						cur.structs[name] = t
 					default:
-						w.curPackage.types[name] = ts.Type
+						cur.types[name] = ts.Type
 					}
 				}
 			}
@@ -1216,7 +1426,7 @@ func (w *Walker) walkConst(vs *ast.ValueSpec) {
 
 		w.curPackage.consts[ident.Name] = litType
 
-		if IsExported(ident.Name) {
+		if isExtract(ident.Name) {
 			w.emitFeature(fmt.Sprintf("const %s %s", ident, litType), ident.Pos())
 		}
 	}
@@ -1234,7 +1444,7 @@ func (w *Walker) resolveConstantDeps() {
 		return ""
 	}
 	for ident, info := range w.constDep {
-		if !IsExported(ident) {
+		if !isExtract(ident) {
 			continue
 		}
 		t := findConstType(ident)
@@ -1244,6 +1454,7 @@ func (w *Walker) resolveConstantDeps() {
 			}
 			continue
 		}
+		w.curPackage.consts[ident] = t
 		w.emitFeature(fmt.Sprintf("const %s %s", ident, t), info.pos)
 	}
 }
@@ -1271,7 +1482,7 @@ func (w *Walker) walkVar(vs *ast.ValueSpec) {
 			}
 		}
 		w.curPackage.vars[ident.Name] = typ
-		if IsExported(ident.Name) {
+		if isExtract(ident.Name) {
 			w.emitFeature(fmt.Sprintf("var %s %s", ident, typ), ident.Pos())
 		}
 	}
@@ -1301,7 +1512,7 @@ func (w *Walker) noteInterface(name string, it *ast.InterfaceType) {
 
 func (w *Walker) walkTypeSpec(ts *ast.TypeSpec) {
 	name := ts.Name.Name
-	if !IsExported(name) {
+	if !isExtract(name) {
 		return
 	}
 	switch t := ts.Type.(type) {
@@ -1322,20 +1533,20 @@ func (w *Walker) walkStructType(name string, t *ast.StructType) {
 	for _, f := range t.Fields.List {
 		typ := f.Type
 		for _, name := range f.Names {
-			if IsExported(name.Name) {
+			if isExtract(name.Name) {
 				w.emitFeature(fmt.Sprintf("%s %s", name, w.nodeString(w.namelessType(typ))), name.Pos())
 			}
 		}
 		if f.Names == nil {
 			switch v := typ.(type) {
 			case *ast.Ident:
-				if IsExported(v.Name) {
+				if isExtract(v.Name) {
 					w.emitFeature(fmt.Sprintf("embedded %s", v.Name), v.Pos())
 				}
 			case *ast.StarExpr:
 				switch vv := v.X.(type) {
 				case *ast.Ident:
-					if IsExported(vv.Name) {
+					if isExtract(vv.Name) {
 						w.emitFeature(fmt.Sprintf("embedded *%s", vv.Name), vv.Pos())
 					}
 				case *ast.SelectorExpr:
@@ -1383,7 +1594,7 @@ func (w *Walker) interfaceMethods(pkg, iname string) (methods []method, complete
 		switch tv := typ.(type) {
 		case *ast.FuncType:
 			for _, mname := range f.Names {
-				if IsExported(mname.Name) {
+				if isExtract(mname.Name) {
 					ft := typ.(*ast.FuncType)
 					methods = append(methods, method{
 						name: mname.Name,
@@ -1417,7 +1628,7 @@ func (w *Walker) interfaceMethods(pkg, iname string) (methods []method, complete
 				})
 				continue
 			}
-			if !IsExported(embedded) {
+			if !isExtract(embedded) {
 				log.Fatalf("unexported embedded interface %q in exported interface %s.%s; confused",
 					embedded, pkg, iname)
 			}
@@ -1514,15 +1725,15 @@ func (w *Walker) peekFuncDecl(f *ast.FuncDecl) {
 }
 
 func (w *Walker) walkFuncDecl(f *ast.FuncDecl) {
-	if !IsExported(f.Name.Name) {
+	if !isExtract(f.Name.Name) {
 		return
 	}
 	if f.Recv != nil {
 		// Method.
 		recvType := w.nodeString(f.Recv.List[0].Type)
-		keep := IsExported(recvType) ||
+		keep := isExtract(recvType) ||
 			(strings.HasPrefix(recvType, "*") &&
-				IsExported(recvType[1:]))
+				isExtract(recvType[1:]))
 		if !keep {
 			return
 		}
@@ -1640,7 +1851,6 @@ func (w *Walker) emitFeature(feature string, pos token.Pos) {
 		w.features[f] = append(w.features[f], pos)
 		return
 	}
-
 	w.features[f] = append(w.features[f], pos)
 }
 
