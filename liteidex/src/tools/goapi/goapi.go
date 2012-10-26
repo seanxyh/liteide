@@ -150,7 +150,7 @@ func main() {
 	if *defaultCtx {
 		w := NewWalker()
 		w.context = &build.Default
-		w.sep = *separate
+		w.sep = *separate + " "
 
 		for _, pkg := range pkgs {
 			w.wantedPkg[pkg] = true
@@ -457,7 +457,7 @@ type Walker struct {
 	context         *build.Context
 	fset            *token.FileSet
 	scope           []string
-	features        map[string]([]token.Pos) // set
+	features        map[string](token.Pos) // set
 	lastConstType   string
 	curPackageName  string
 	sep             string
@@ -473,7 +473,7 @@ type Walker struct {
 func NewWalker() *Walker {
 	return &Walker{
 		fset:            token.NewFileSet(),
-		features:        make(map[string]([]token.Pos)),
+		features:        make(map[string]token.Pos),
 		packageState:    make(map[string]loadState),
 		interfaces:      make(map[pkgSymbol]*ast.InterfaceType),
 		packageMap:      make(map[string]*Package),
@@ -492,17 +492,10 @@ const (
 	loaded
 )
 
-func postos(ps []token.Pos) (s []string) {
-	for _, p := range ps {
-		s = append(s, strconv.Itoa(int(p)))
-	}
-	return
-}
-
 func (w *Walker) Features() (fs []string) {
 	for f, ps := range w.features {
 		if *showpos {
-			fs = append(fs, f+w.sep+strings.Join(postos(ps), ","))
+			fs = append(fs, f+w.sep+strconv.Itoa(int(ps)))
 		} else {
 			fs = append(fs, f)
 		}
@@ -1848,10 +1841,9 @@ func (w *Walker) emitFeature(feature string, pos token.Pos) {
 	f := strings.Join(w.scope, w.sep) + w.sep + feature
 
 	if _, dup := w.features[f]; dup {
-		w.features[f] = append(w.features[f], pos)
 		return
 	}
-	w.features[f] = append(w.features[f], pos)
+	w.features[f] = pos
 }
 
 func strListContains(l []string, s string) bool {
