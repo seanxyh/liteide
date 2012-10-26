@@ -51,7 +51,10 @@ var (
 
 func usage() {
 	fmt.Fprintf(os.Stderr, `usage: api [std|all|package...|local-dir]
-    local-dir : . or ./goapi`)
+       api std
+       api -default_ctx=true fmt flag
+       api -default_ctx=true -a ./cmd/go
+`)
 	flag.PrintDefaults()
 }
 
