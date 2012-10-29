@@ -45,13 +45,24 @@ func TestGolden(t *testing.T) {
 
 		w.WalkPackage(fi.Name())
 
+		features := make(map[string]bool)
+		var fs []string
+		for _, p := range w.packageMap {
+			if w.wantedPkg[p.name] {
+				for _, f := range p.Features() {
+					features[f] = true
+					fs = append(fs, f)
+				}
+			}
+		}
+
 		if *updateGolden {
 			os.Remove(goldenFile)
 			f, err := os.Create(goldenFile)
 			if err != nil {
 				t.Fatal(err)
 			}
-			for _, feat := range w.Features() {
+			for _, feat := range fs {
 				fmt.Fprintf(f, "%s\n", feat)
 			}
 			f.Close()
@@ -63,18 +74,18 @@ func TestGolden(t *testing.T) {
 		}
 		wanted := strings.Split(string(bs), "\n")
 		sort.Strings(wanted)
+
 		for _, feature := range wanted {
 			if feature == "" {
 				continue
 			}
-			_, ok := w.features[feature]
+			_, ok := features[feature]
 			if !ok {
 				t.Errorf("package %s: missing feature %q", fi.Name(), feature)
 			}
-			delete(w.features, feature)
+			delete(features, feature)
 		}
-
-		for _, feature := range w.Features() {
+		for _, feature := range features {
 			t.Errorf("package %s: extra feature not in golden file: %q", fi.Name(), feature)
 		}
 	}
