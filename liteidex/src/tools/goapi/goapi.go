@@ -171,6 +171,7 @@ func main() {
 		for _, context := range contexts {
 			w := NewWalker()
 			w.context = context
+			w.ctxName = contextName(w.context)
 			w.sep = *separate
 
 			for _, pkg := range pkgs {
@@ -325,6 +326,7 @@ type Package struct {
 	functions        map[string]method             //function 
 	consts           map[string]string             //const => type
 	vars             map[string]string             //var => type
+	name             string
 }
 
 func NewPackage() *Package {
@@ -464,6 +466,7 @@ type Walker struct {
 	lastConstType   string
 	curPackageName  string
 	sep             string
+	ctxName         string
 	curPackage      *Package
 	constDep        map[string]*constInfo // key's const identifier has type of future value const identifier
 	packageState    map[string]loadState
@@ -521,6 +524,18 @@ func fileDeps(f *ast.File) (pkgs []string) {
 	return
 }
 
+func (w *Walker) findPackage(pkg string) *Package {
+	if full, ok := w.selectorFullPkg[pkg]; ok {
+		if p, ok := w.packageMap[w.ctxName+full]; ok {
+			return p
+		}
+		if p, ok := w.packageMap[full]; ok {
+			return p
+		}
+	}
+	return nil
+}
+
 // WalkPackage walks all files in package `name'.
 // WalkPackage does nothing if the package has already been loaded.
 
@@ -559,16 +574,17 @@ func (w *Walker) WalkPackage(pkg string) {
 }
 
 func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
-	switch w.packageState[name] {
+	ctxName := w.ctxName + name
+	switch w.packageState[ctxName] {
 	case loading:
 		log.Fatalf("import cycle loading package %q?", name)
 		return
 	case loaded:
 		return
 	}
-	w.packageState[name] = loading
+	w.packageState[ctxName] = loading
 	defer func() {
-		w.packageState[name] = loaded
+		w.packageState[ctxName] = loaded
 	}()
 
 	sname := name[strings.LastIndex(name, "/")+1:]
@@ -662,6 +678,7 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	w.constDep = map[string]*constInfo{}
 	w.curPackage = NewPackage()
 	w.curPackage.apkg = apkg
+	w.curPackage.name = name
 	w.packageMap[name] = w.curPackage
 
 	for _, afile := range apkg.Files {
@@ -871,12 +888,10 @@ func (w *Walker) constRealType(typ string) string {
 			return "int"
 		}
 		typ = typ[pos+1:]
-		if name, ok := w.selectorFullPkg[pkg]; ok {
-			if p, ok := w.packageMap[name]; ok {
-				ret := p.findType(typ)
-				if ret != nil {
-					return w.nodeString(w.namelessType(ret))
-				}
+		if p := w.findPackage(pkg); p != nil {
+			ret := p.findType(typ)
+			if ret != nil {
+				return w.nodeString(w.namelessType(ret))
 			}
 		}
 	} else {
@@ -905,13 +920,9 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		if lhs == "C" {
 			return lhs + "." + rhs, nil
 		}
-		pkg, ok := w.selectorFullPkg[lhs]
-		if !ok {
-			return "", fmt.Errorf("unknown constant reference; unknown package in expression %s.%s", lhs, rhs)
-		}
-		if p, ok := w.packageMap[pkg]; ok {
+		if p := w.findPackage(lhs); p != nil {
 			if ret, ok := p.consts[rhs]; ok {
-				return pkgRetType(pkg, ret), nil
+				return pkgRetType(p.name, ret), nil
 			}
 		}
 		return "", fmt.Errorf("unknown constant reference to %s.%s", lhs, rhs)
@@ -1010,14 +1021,13 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 	if pos != -1 {
 		pkg := name[:pos]
 		typ := name[pos+1:]
-		if full, ok := w.selectorFullPkg[pkg]; ok {
-			if p, ok := w.packageMap[full]; ok {
-				fn := p.findMethod(typ, sel)
-				if fn != nil {
-					ret := funcRetType(fn, index)
-					if ret != nil {
-						return pkgRetType(full, w.nodeString(w.namelessType(ret))), nil
-					}
+
+		if p := w.findPackage(pkg); p != nil {
+			fn := p.findMethod(typ, sel)
+			if fn != nil {
+				ret := funcRetType(fn, index)
+				if ret != nil {
+					return pkgRetType(p.name, w.nodeString(w.namelessType(ret))), nil
 				}
 			}
 		}
@@ -1050,14 +1060,13 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 		}
 	}
 	//find pkg.func()
-	if pkg, ok := w.selectorFullPkg[name]; ok {
-		if p, ok := w.packageMap[pkg]; ok {
-			typ := p.findCallType(sel, index)
-			if typ != nil {
-				return pkgRetType(pkg, w.nodeString(w.namelessType(typ))), nil
-			}
-			return "", fmt.Errorf("not find pkg func %v.%v", pkg, sel)
+
+	if p := w.findPackage(name); p != nil {
+		typ := p.findCallType(sel, index)
+		if typ != nil {
+			return pkgRetType(p.name, w.nodeString(w.namelessType(typ))), nil
 		}
+		return "", fmt.Errorf("not find pkg func %v.%v", p.name, sel)
 	}
 	return "", fmt.Errorf("not find func %v.%v", name, sel)
 
@@ -1068,14 +1077,12 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 	if pos != -1 {
 		pkg := name[:pos]
 		typ := name[pos+1:]
-		if full, ok := w.selectorFullPkg[pkg]; ok {
-			if p, ok := w.packageMap[full]; ok {
-				t := p.findType(typ)
-				if t != nil {
-					typ := w.findStructFieldType(t, sel)
-					if typ != nil {
-						return w.nodeString(w.namelessType(typ)), nil
-					}
+		if p := w.findPackage(pkg); p != nil {
+			t := p.findType(typ)
+			if t != nil {
+				typ := w.findStructFieldType(t, sel)
+				if typ != nil {
+					return w.nodeString(w.namelessType(typ)), nil
 				}
 			}
 		}
@@ -1110,25 +1117,21 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 		} else {
 			name := typ[:pos]
 			typ = typ[pos+1:]
-			if pkg, ok := w.selectorFullPkg[name]; ok {
-				if p, ok := w.packageMap[pkg]; ok {
-					t := p.findType(typ)
-					if t != nil {
-						typ := w.findStructFieldType(t, sel)
-						if typ != nil {
-							return w.nodeString(w.namelessType(typ)), nil
-						}
+			if p := w.findPackage(name); p != nil {
+				t := p.findType(typ)
+				if t != nil {
+					typ := w.findStructFieldType(t, sel)
+					if typ != nil {
+						return w.nodeString(w.namelessType(typ)), nil
 					}
 				}
 			}
 		}
 	}
-	if pkg, ok := w.selectorFullPkg[name]; ok {
-		if p, ok := w.packageMap[pkg]; ok {
-			typ := p.findSelectorType(sel)
-			if typ != nil {
-				return pkgRetType(pkg, w.nodeString(w.namelessType(typ))), nil
-			}
+	if p := w.findPackage(name); p != nil {
+		typ := p.findSelectorType(sel)
+		if typ != nil {
+			return pkgRetType(p.name, w.nodeString(w.namelessType(typ))), nil
 		}
 	}
 	return "", fmt.Errorf("unknown selector expr ident: %s.%s", name, sel)
