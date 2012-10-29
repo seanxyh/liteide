@@ -161,13 +161,19 @@ func main() {
 		for _, pkg := range pkgs {
 			w.WalkPackage(pkg)
 		}
-		features = w.Features()
+		//features = w.Features()
+		for _, p := range w.packageMap {
+			if w.wantedPkg[p.name] {
+				features = append(features, p.Features()...)
+			}
+		}
 	} else {
 		for _, c := range contexts {
 			c.Compiler = build.Default.Compiler
 		}
 
 		w := NewWalker()
+
 		var featureCtx = make(map[string]map[string]bool) // feature -> context name -> true
 		for _, context := range contexts {
 			w.context = context
@@ -557,11 +563,11 @@ func fileDeps(f *ast.File) (pkgs []string) {
 
 func (w *Walker) findPackage(pkg string) *Package {
 	if full, ok := w.selectorFullPkg[pkg]; ok {
-		if p, ok := w.packageMap[w.ctxName+full]; ok {
-			return p
-		}
-		if p, ok := w.packageMap[full]; ok {
-			return p
+		ctxName := w.ctxName + full
+		for k, v := range w.packageMap {
+			if k == full || k == ctxName {
+				return v
+			}
 		}
 	}
 	return nil
