@@ -84,6 +84,10 @@ func contextName(c *build.Context) string {
 	return s
 }
 
+func osArchName(c *build.Context) string {
+	return c.GOOS + "-" + c.GOARCH
+}
+
 func parseContext(c string) *build.Context {
 	parts := strings.Split(c, "-")
 	if len(parts) < 2 {
@@ -173,6 +177,9 @@ func main() {
 		}
 
 		w := NewWalker()
+		for _, pkg := range pkgs {
+			w.wantedPkg[pkg] = true
+		}
 
 		var featureCtx = make(map[string]map[string]bool) // feature -> context name -> true
 		for _, context := range contexts {
@@ -180,9 +187,6 @@ func main() {
 			w.ctxName = contextName(w.context) + ":"
 			w.sep = *separate
 
-			for _, pkg := range pkgs {
-				w.wantedPkg[pkg] = true
-			}
 			for _, pkg := range pkgs {
 				w.WalkPackage(pkg)
 			}
@@ -496,10 +500,10 @@ func (p *Package) findMethod(typ, name string) *ast.FuncType {
 }
 
 type Walker struct {
-	context         *build.Context
-	fset            *token.FileSet
-	scope           []string
-	features        map[string](token.Pos) // set
+	context *build.Context
+	fset    *token.FileSet
+	scope   []string
+	//	features        map[string](token.Pos) // set
 	lastConstType   string
 	curPackageName  string
 	sep             string
@@ -515,8 +519,8 @@ type Walker struct {
 
 func NewWalker() *Walker {
 	return &Walker{
-		fset:            token.NewFileSet(),
-		features:        make(map[string]token.Pos),
+		fset: token.NewFileSet(),
+		//		features:        make(map[string]token.Pos),
 		packageState:    make(map[string]loadState),
 		interfaces:      make(map[pkgSymbol]*ast.InterfaceType),
 		packageMap:      make(map[string]*Package),
@@ -535,17 +539,22 @@ const (
 	loaded
 )
 
-func (w *Walker) Features() (fs []string) {
-	for f, ps := range w.features {
-		if *showpos {
-			fs = append(fs, f+w.sep+strconv.Itoa(int(ps)))
-		} else {
-			fs = append(fs, f)
-		}
-	}
-	sort.Strings(fs)
-	return
-}
+//func (w *Walker) Features() (fs []string) {
+//	for _, p := range w.packageMap {
+//		if w.wantedPkg[p.name] {
+//			fs = append(fs, p.Features()...)
+//		}
+//	}
+//	//	for f, ps := range w.features {
+//	//		if *showpos {
+//	//			fs = append(fs, f+w.sep+strconv.Itoa(int(ps)))
+//	//		} else {
+//	//			fs = append(fs, f)
+//	//		}
+//	//	}
+//	sort.Strings(fs)
+//	return
+//}
 
 // fileDeps returns the imports in a file.
 func fileDeps(f *ast.File) (pkgs []string) {
@@ -645,7 +654,7 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 		}
 	}
 	isCgo := (len(bp.CgoFiles) > 0) && w.context.CgoEnabled
-	if isOSArch || isCgo {
+	if isCgo || isOSArch {
 		curName = ctxName
 	} else {
 		if p := w.findPackage(name); p != nil {
@@ -737,7 +746,7 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	}*/
 
 	if *verbose {
-		log.Printf("package %s", curName)
+		log.Printf("package %s=>%s", ctxName, curName)
 	}
 	pop := w.pushScope("pkg " + name)
 	defer pop()
