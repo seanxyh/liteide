@@ -43,7 +43,7 @@ var (
 	allmethods = flag.Bool("e", true, "extract for all embedded methods")
 	alldecls   = flag.Bool("a", false, "extract for all declarations")
 	showpos    = flag.Bool("pos", false, "addition token position")
-	separate   = flag.String("sep", ",", "setup separators")
+	separate   = flag.String("sep", ", ", "setup separators")
 	dep_parser = flag.Bool("dep", true, "parser package imports")
 	defaultCtx = flag.Bool("default_ctx", false, "extract for default context")
 	customCtx  = flag.String("custom_ctx", "", "optional comma-separated list of <goos>-<goarch>[-cgo] to override default contexts.")
@@ -125,14 +125,16 @@ func main() {
 		}
 	}
 
-	t := time.Now()
-	defer func() {
-		fmt.Println("time", time.Now().Sub(t))
-	}()
-
 	if flag.NArg() == 0 {
 		flag.Usage()
 		return
+	}
+
+	if *verbose {
+		now := time.Now()
+		defer func() {
+			log.Println("time", time.Now().Sub(now))
+		}()
 	}
 
 	var pkgs []string
@@ -165,12 +167,7 @@ func main() {
 		for _, pkg := range pkgs {
 			w.WalkPackage(pkg)
 		}
-		//features = w.Features()
-		for _, p := range w.packageMap {
-			if w.wantedPkg[p.name] {
-				features = append(features, p.Features()...)
-			}
-		}
+		features = w.Features("")
 	} else {
 		for _, c := range contexts {
 			c.Compiler = build.Default.Compiler
@@ -191,7 +188,7 @@ func main() {
 				w.WalkPackage(pkg)
 			}
 			//			ctxName := contextName(context)
-			//			for _, f := range w.Features() {
+			//			for _, f := range w.Features(ctxName) {
 			//				if featureCtx[f] == nil {
 			//					featureCtx[f] = make(map[string]bool)
 			//				}
@@ -353,6 +350,7 @@ type Package struct {
 	consts           map[string]string             //const => type
 	vars             map[string]string             //var => type
 	name             string
+	sep              string
 	deps             []string
 	features         map[string](token.Pos) // set	
 }
@@ -367,13 +365,14 @@ func NewPackage() *Package {
 		consts:           make(map[string]string),
 		vars:             make(map[string]string),
 		features:         make(map[string](token.Pos)),
+		sep:              ", ",
 	}
 }
 
 func (p *Package) Features() (fs []string) {
 	for f, ps := range p.features {
 		if *showpos {
-			fs = append(fs, f+*separate+strconv.Itoa(int(ps)))
+			fs = append(fs, f+p.sep+strconv.Itoa(int(ps)))
 		} else {
 			fs = append(fs, f)
 		}
@@ -539,22 +538,17 @@ const (
 	loaded
 )
 
-//func (w *Walker) Features() (fs []string) {
-//	for _, p := range w.packageMap {
-//		if w.wantedPkg[p.name] {
-//			fs = append(fs, p.Features()...)
-//		}
-//	}
-//	//	for f, ps := range w.features {
-//	//		if *showpos {
-//	//			fs = append(fs, f+w.sep+strconv.Itoa(int(ps)))
-//	//		} else {
-//	//			fs = append(fs, f)
-//	//		}
-//	//	}
-//	sort.Strings(fs)
-//	return
-//}
+func (w *Walker) Features(ctx string) (fs []string) {
+	for pkg, p := range w.packageMap {
+		if w.wantedPkg[p.name] {
+			if ctx == "" || strings.HasPrefix(pkg, ctx) {
+				fs = append(fs, p.Features()...)
+			}
+		}
+	}
+	sort.Strings(fs)
+	return
+}
 
 // fileDeps returns the imports in a file.
 func fileDeps(f *ast.File) (pkgs []string) {
@@ -572,9 +566,28 @@ func fileDeps(f *ast.File) (pkgs []string) {
 
 func (w *Walker) findPackage(pkg string) *Package {
 	if full, ok := w.selectorFullPkg[pkg]; ok {
-		ctxName := w.ctxName + full
+		if w.ctxName != "" {
+			ctxName := w.ctxName + full
+			for k, v := range w.packageMap {
+				if k == ctxName {
+					return v
+				}
+			}
+		}
 		for k, v := range w.packageMap {
-			if k == full || k == ctxName {
+			if k == full {
+				return v
+			}
+		}
+	}
+	return nil
+}
+
+func (w *Walker) findPackageOSArch(pkg string) *Package {
+	if full, ok := w.selectorFullPkg[pkg]; ok {
+		ctxName := osArchName(w.context) + ":" + full
+		for k, v := range w.packageMap {
+			if k == ctxName {
 				return v
 			}
 		}
@@ -631,6 +644,7 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	}
 	w.packageState[ctxName] = loading
 	w.selectorFullPkg[name] = name
+
 	defer func() {
 		w.packageState[ctxName] = loaded
 	}()
@@ -646,28 +660,38 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	if bp == nil {
 		return
 	}
-	isOSArch := false
-	for _, file := range bp.GoFiles {
-		if isOSArchFile(w.context, file) {
-			isOSArch = true
-			break
-		}
-	}
-	isCgo := (len(bp.CgoFiles) > 0) && w.context.CgoEnabled
-	if isCgo || isOSArch {
-		curName = ctxName
-	} else {
-		if p := w.findPackage(name); p != nil {
-			if *dep_parser {
-				for _, dep := range p.deps {
-					if _, ok := w.packageState[dep]; ok {
-						continue
-					}
-					w.WalkPackage(dep)
+	if w.ctxName != "" {
+		isCgo := (len(bp.CgoFiles) > 0) && w.context.CgoEnabled
+		if isCgo {
+			curName = ctxName
+		} else {
+			isOSArch := false
+			for _, file := range bp.GoFiles {
+				if isOSArchFile(w.context, file) {
+					isOSArch = true
+					break
 				}
 			}
-			w.packageMap[ctxName] = p
-			return
+			var p *Package
+			if isOSArch {
+				curName = osArchName(w.context) + ":" + name
+				p = w.findPackageOSArch(name)
+			} else {
+				curName = name
+				p = w.findPackage(name)
+			}
+			if p != nil {
+				if *dep_parser {
+					for _, dep := range p.deps {
+						if _, ok := w.packageState[dep]; ok {
+							continue
+						}
+						w.WalkPackage(dep)
+					}
+				}
+				w.packageMap[ctxName] = p
+				return
+			}
 		}
 	}
 
@@ -744,9 +768,16 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 			}
 		}
 	}*/
+	if curName != ctxName {
+		w.packageState[curName] = loading
+
+		defer func() {
+			w.packageState[curName] = loaded
+		}()
+	}
 
 	if *verbose {
-		log.Printf("package %s=>%s", ctxName, curName)
+		log.Printf("package %s => %s", ctxName, curName)
 	}
 	pop := w.pushScope("pkg " + name)
 	defer pop()
@@ -757,6 +788,7 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	w.curPackage.apkg = apkg
 	w.curPackage.name = name
 	w.curPackage.deps = deps
+	w.curPackage.sep = w.sep
 	w.packageMap[curName] = w.curPackage
 	w.packageMap[ctxName] = w.curPackage
 
