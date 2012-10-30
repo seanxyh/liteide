@@ -626,13 +626,12 @@ func (w *Walker) WalkPackage(pkg string) {
 			if *verbose {
 				log.Println(err)
 			}
-			return
 		}
 		if w.wantedPkg[pkg] == true {
 			w.wantedPkg[bp.Name] = true
 			delete(w.wantedPkg, pkg)
 		}
-		w.WalkPackageDir(bp.Name, bp.Dir, nil)
+		w.WalkPackageDir(bp.Name, bp.Dir, bp)
 	} else {
 		bp, err := build.Import(pkg, "", build.FindOnly)
 		if err != nil {
@@ -709,11 +708,19 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	}
 
 	files := append(append([]string{}, bp.GoFiles...), bp.CgoFiles...)
+	if len(files) == 0 {
+		if *verbose {
+			log.Println("no Go source files in", bp.Dir)
+		}
+		return
+	}
 	var deps []string
 	for _, file := range files {
 		f, err := parser.ParseFile(w.fset, filepath.Join(dir, file), nil, 0)
 		if err != nil {
-			log.Fatalf("error parsing package %s, file %s: %v", name, file, err)
+			if *verbose {
+				log.Printf("error parsing package %s, file %s: %v", name, file, err)
+			}
 		}
 
 		if sname != f.Name.Name {
