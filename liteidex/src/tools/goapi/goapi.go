@@ -620,6 +620,19 @@ func (w *Walker) WalkPackage(pkg string) {
 			delete(w.wantedPkg, pkg)
 		}
 		w.WalkPackageDir(bp.Name, bp.Dir, bp)
+	} else if filepath.IsAbs(pkg) {
+		bp, err := build.ImportDir(pkg, 0)
+		if err != nil {
+			if *verbose {
+				log.Println(err)
+			}
+			return
+		}
+		if w.wantedPkg[pkg] == true {
+			w.wantedPkg[bp.Name] = true
+			delete(w.wantedPkg, pkg)
+		}
+		w.WalkPackageDir(bp.Name, bp.Dir, nil)
 	} else {
 		bp, err := build.Import(pkg, "", build.FindOnly)
 		if err != nil {
@@ -702,6 +715,7 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 		if err != nil {
 			log.Fatalf("error parsing package %s, file %s: %v", name, file, err)
 		}
+
 		if sname != f.Name.Name {
 			continue
 		}
