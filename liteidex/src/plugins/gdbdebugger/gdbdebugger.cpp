@@ -174,14 +174,11 @@ void GdbDebugeer::setEnvironment (const QStringList &environment)
     m_process->setEnvironment(environment);
 }
 
-bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
+bool GdbDebugeer::start(const QString &program, const QString &arguments)
 {
     if (!m_envManager) {
         return false;
     }
-
-    QStringList args;
-    args << "--interpreter=mi";
 
     QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);
 
@@ -190,9 +187,9 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
         m_runtimeFilePath = QFileInfo(QDir(goroot),"src/pkg/runtime/").path();
     }
 
-    args << "--args" << program;
+    QString args = QString("--interpreter=mi --args %1").arg(program);
     if (!arguments.isEmpty()) {
-        args << arguments;
+        args  += " " + arguments;
     }
 
     QString gdb = env.value("LITEIDE_GDB","gdb");
@@ -213,9 +210,14 @@ bool GdbDebugeer::start(const QString &program, const QStringList &arguments)
 
     clear();
 
-    m_process->start(m_gdbFilePath,args);
+#ifdef Q_OS_WIN
+        m_process->setNativeArguments(args);
+        m_process->start("\""+m_gdbFilePath+"\"");
+#else
+        m_process->start(m_gdbFilePath + " " + args);
+#endif
 
-    QString log = QString("%1 %2").arg(m_gdbFilePath).arg(args.join(" "));
+    QString log = QString("%1 %2").arg(m_gdbFilePath).arg(args);
     emit debugLog(LiteApi::DebugRuntimeLog,log);
 
     return true;

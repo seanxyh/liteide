@@ -64,7 +64,7 @@ public:
     virtual QAbstractItemModel *debugModel(DEBUG_MODEL_TYPE type) = 0;
     virtual void setWorkingDirectory(const QString &dir) = 0;
     virtual void setEnvironment (const QStringList &environment) = 0;
-    virtual bool start(const QString &program, const QStringList &arguments) = 0;
+    virtual bool start(const QString &program, const QString &arguments) = 0;
     virtual void stop() = 0;
     virtual bool isRunning() = 0;
     virtual void stepOver() = 0;

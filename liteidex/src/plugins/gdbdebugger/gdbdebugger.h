@@ -121,7 +121,7 @@ public:
     virtual QAbstractItemModel *debugModel(LiteApi::DEBUG_MODEL_TYPE type);
     virtual void setWorkingDirectory(const QString &dir);
     virtual void setEnvironment (const QStringList &environment);
-    virtual bool start(const QString &program, const QStringList &arguments);
+    virtual bool start(const QString &program, const QString &arguments);
     virtual void stop();
     virtual bool isRunning();
     virtual void stepOver();

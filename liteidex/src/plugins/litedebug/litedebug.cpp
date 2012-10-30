@@ -270,10 +270,10 @@ void LiteDebug::debugLog(LiteApi::DEBUG_LOG_TYPE type, const QString &log)
         m_dbgWidget->appendLog(log);
         break;
     case LiteApi::DebugRuntimeLog:
-        m_output->appendTag1(QString("<%1>\n").arg(log));
+        m_output->appendTag1(QString("%1\n").arg(log));
         break;
     case LiteApi::DebugErrorLog:
-        m_output->appendTag1(QString("<Error %1>\n").arg(log));
+        m_output->append(QString("%1\n").arg(log));
         break;
     case LiteApi::DebugApplationLog:
         m_output->append(log);
@@ -352,7 +352,7 @@ void LiteDebug::startDebug()
     m_debugger->setInitBreakTable(m_fileBpMap);
     m_debugger->setEnvironment(m_envManager->currentEnvironment().toStringList());
     m_debugger->setWorkingDirectory(workDir);
-    m_debugger->start(target,args.split(" "));
+    m_debugger->start(target,args);
 }
 
 void LiteDebug::continueRun()
