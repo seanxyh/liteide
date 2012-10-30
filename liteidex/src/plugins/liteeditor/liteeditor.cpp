@@ -718,7 +718,10 @@ void LiteEditor::codecComboBoxChanged(QString codec)
 void LiteEditor::editPositionChanged()
 {
      QTextCursor cur = m_editorWidget->textCursor();
-     m_liteApp->editorManager()->updateLine(this,cur.blockNumber()+1,cur.columnNumber()+1);
+
+     QString src = cur.document()->toPlainText().left(cur.position());
+
+     m_liteApp->editorManager()->updateLine(this,cur.blockNumber()+1,cur.columnNumber()+1, src.toUtf8().length()+1);
 }
 
 void LiteEditor::gotoLine()

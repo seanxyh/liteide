@@ -304,7 +304,7 @@ public slots:
     virtual bool saveAllEditors() = 0;
     virtual bool closeEditor(IEditor *editor = 0) = 0;
     virtual bool closeAllEditors(bool autoSaveAll = false) = 0;
-    virtual void updateLine(IEditor *editor,int line, int col) = 0;
+    virtual void updateLine(IEditor *editor,int line, int col, int pos) = 0;
 signals:
     void currentEditorChanged(LiteApi::IEditor *editor);
     void editorCreated(LiteApi::IEditor *editor);
