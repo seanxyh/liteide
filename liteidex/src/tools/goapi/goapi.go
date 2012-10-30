@@ -866,8 +866,11 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	if w.cursorPkg == name {
 		for k, v := range apkg.Files {
 			if k == cursor_file {
-				pos := v.Pos() + cursor_pos
-				w.findCursorFile(v, pos)
+				node, err := w.findCursorFile(v, v.Pos()+cursor_pos)
+				if err != nil {
+					log.Fatalln("error", err)
+				}
+				fmt.Println(node)
 			}
 		}
 		return
@@ -950,10 +953,8 @@ func (w *Walker) recordTypes(file *ast.File) {
 	}
 }
 
-func (w *Walker) findCursorFile(file *ast.File, p token.Pos) string {
-	log.Println("find file", file.Name, p)
+func (w *Walker) findCursorFile(file *ast.File, p token.Pos) (string, error) {
 	for _, di := range file.Decls {
-		log.Printf("%T %v %v %v", di, di.Pos(), di.End(), p)
 		switch d := di.(type) {
 		case *ast.GenDecl:
 			if p >= d.Pos() && p < di.End() {
@@ -969,13 +970,13 @@ func (w *Walker) findCursorFile(file *ast.File, p token.Pos) string {
 				}
 			}
 		default:
-			log.Printf("%T ", d)
+			return "", fmt.Errorf("un parser decl %T", di)
 		}
 	}
-	return ""
+	return "", fmt.Errorf("un find cursor %v", w.fset.Position(p))
 }
 
-func (w *Walker) findCursorBlockStmt(body *ast.BlockStmt, p token.Pos) string {
+func (w *Walker) findCursorBlockStmt(body *ast.BlockStmt, p token.Pos) (string, error) {
 	log.Println("body", body)
 	for _, st := range body.List {
 		switch s := st.(type) {
@@ -986,7 +987,7 @@ func (w *Walker) findCursorBlockStmt(body *ast.BlockStmt, p token.Pos) string {
 			log.Printf("%T", st)
 		}
 	}
-	return ""
+	return "", fmt.Errorf("not find body", body)
 }
 
 func (w *Walker) findExprNode(vi ast.Expr) string {
@@ -1006,9 +1007,9 @@ func (w *Walker) findExprNode(vi ast.Expr) string {
 	return ""
 }
 
-func (w *Walker) findCursorDecl(decl ast.Decl, p token.Pos) string {
+func (w *Walker) findCursorDecl(decl ast.Decl, p token.Pos) (string, error) {
 	log.Printf("=> %v %T %v", decl, decl, p)
-	return ""
+	return "", nil
 	switch d := decl.(type) {
 	case *ast.GenDecl:
 		switch d.Tok {
@@ -1049,7 +1050,7 @@ func (w *Walker) findCursorDecl(decl ast.Decl, p token.Pos) string {
 	default:
 		log.Printf("unhandled %T, %#v\n", decl, decl)
 	}
-	return ""
+	return "", nil
 }
 
 func (w *Walker) walkFile(file *ast.File) {
