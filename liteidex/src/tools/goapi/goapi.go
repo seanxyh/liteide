@@ -50,6 +50,11 @@ var (
 	cursortype = flag.String("cursor_type", "", "print cursor node type \"file.go:pos\"")
 )
 
+var (
+	cursor_file string
+	cursor_pos  token.Pos = token.NoPos
+)
+
 func usage() {
 	fmt.Fprintf(os.Stderr, `usage: api [std|all|package...|local-dir]
        api std
@@ -150,6 +155,20 @@ func main() {
 		pkgs = flag.Args()
 	}
 
+	if *cursortype != "" {
+		pos := strings.Index(*cursortype, ":")
+		if pos != -1 {
+			cursor_file = (*cursortype)[:pos]
+			if i, err := strconv.Atoi((*cursortype)[pos+1:]); err == nil {
+				cursor_pos = token.Pos(i)
+			}
+		}
+	}
+	var cursorPkg string
+	if len(pkgs) == 1 && cursor_pos != token.NoPos {
+		cursorPkg = pkgs[0]
+	}
+
 	if *customCtx != "" {
 		*defaultCtx = false
 		setCustomContexts()
@@ -160,11 +179,13 @@ func main() {
 	if *defaultCtx {
 		w := NewWalker()
 		w.context = &build.Default
+		w.cursorPkg = cursorPkg
 		w.sep = *separate + " "
 
 		for _, pkg := range pkgs {
 			w.wantedPkg[pkg] = true
 		}
+
 		for _, pkg := range pkgs {
 			w.WalkPackage(pkg)
 		}
@@ -351,6 +372,7 @@ type Package struct {
 	consts           map[string]string             //const => type
 	vars             map[string]string             //var => type
 	name             string
+	dir              string
 	sep              string
 	deps             []string
 	features         map[string](token.Pos) // set	
@@ -515,6 +537,7 @@ type Walker struct {
 	interfaces      map[pkgSymbol]*ast.InterfaceType
 	selectorFullPkg map[string]string // "http" => "net/http", updated by imports
 	wantedPkg       map[string]bool   // packages requested on the command line
+	cursorPkg       string
 }
 
 func NewWalker() *Walker {
@@ -620,6 +643,9 @@ func (w *Walker) WalkPackage(pkg string) {
 			w.wantedPkg[bp.Name] = true
 			delete(w.wantedPkg, pkg)
 		}
+		if w.cursorPkg == pkg {
+			w.cursorPkg = bp.Name
+		}
 		w.WalkPackageDir(bp.Name, bp.Dir, bp)
 	} else if filepath.IsAbs(pkg) {
 		bp, err := build.ImportDir(pkg, 0)
@@ -631,6 +657,9 @@ func (w *Walker) WalkPackage(pkg string) {
 		if w.wantedPkg[pkg] == true {
 			w.wantedPkg[bp.Name] = true
 			delete(w.wantedPkg, pkg)
+		}
+		if w.cursorPkg == pkg {
+			w.cursorPkg = bp.Name
 		}
 		w.WalkPackageDir(bp.Name, bp.Dir, bp)
 	} else {
@@ -809,6 +838,7 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	w.curPackage = NewPackage()
 	w.curPackage.apkg = apkg
 	w.curPackage.name = name
+	w.curPackage.dir = dir
 	w.curPackage.deps = deps
 	w.curPackage.sep = w.sep
 	w.packageMap[curName] = w.curPackage
@@ -833,6 +863,16 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 
 	w.resolveConstantDeps()
 
+	if w.cursorPkg == name {
+		for k, v := range apkg.Files {
+			if k == cursor_file {
+				pos := v.Pos() + cursor_pos
+				w.findCursorFile(v, pos)
+			}
+		}
+		return
+	}
+
 	// Now that we're done walking types, vars and consts
 	// in the *ast.Package, use go/doc to do the rest
 	// (functions and methods). This is done here because
@@ -844,10 +884,6 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	}
 	if *alldecls {
 		mode |= doc.AllDecls
-	}
-
-	if name == "main" {
-		w.findCursor(dir, 56)
 	}
 
 	dpkg := doc.New(apkg, name, mode)
@@ -914,18 +950,8 @@ func (w *Walker) recordTypes(file *ast.File) {
 	}
 }
 
-func (w *Walker) findCursor(dir string, p token.Pos) string {
-	pos := w.fset.Position(p)
-	for k, v := range w.curPackage.apkg.Files {
-		if pos.Filename == filepath.Join(dir, k) {
-			return w.findCursorFile(v, p)
-		}
-	}
-	return ""
-}
-
 func (w *Walker) findCursorFile(file *ast.File, p token.Pos) string {
-	log.Println(file.Unresolved)
+	log.Println("find file", file.Name, p)
 	for _, di := range file.Decls {
 		log.Printf("%T %v %v %v", di, di.Pos(), di.End(), p)
 		switch d := di.(type) {
