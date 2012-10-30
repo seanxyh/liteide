@@ -210,7 +210,7 @@ void EditorManager::createActions()
 
     m_lineInfo = new QToolButton;
     m_lineInfo->setDefaultAction(gotoLine);
-    m_lineInfo->setText("000:000");
+    m_lineInfo->setText("000:000[000000]");
     right->addWidget(m_lineInfo);
     right->setStyleSheet("QToolBar {border:0}");
     m_lineInfo->setFixedWidth(m_lineInfo->sizeHint().width());
@@ -767,10 +767,10 @@ void EditorManager::setActionEnable(IEditor *editor, const QString &id, bool b)
     }
 }
 
-void EditorManager::updateLine(IEditor *editor, int line, int col)
+void EditorManager::updateLine(IEditor *editor, int line, int col, int pos)
 {
     if (m_currentEditor == editor) {
-        m_lineInfo->setText(QString("%1:%2").arg(line).arg(col));
+        m_lineInfo->setText(QString("%1:%2[%3]").arg(line).arg(col).arg(pos));
     }
 }
 

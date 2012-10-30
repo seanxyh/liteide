@@ -66,7 +66,7 @@ public:
     virtual void addAction(const QString &id, QAction *action);
     virtual QAction *editAction(const QString &id);
     virtual void setActionEnable(IEditor *editor, const QString &id, bool b);
-    virtual void updateLine(IEditor *editor, int line, int col);
+    virtual void updateLine(IEditor *editor, int line, int col,int pos);
 protected:
     void addEditor(IEditor *editor);
     bool eventFilter(QObject *target, QEvent *event);

@@ -47,6 +47,7 @@ var (
 	dep_parser = flag.Bool("dep", true, "parser package imports")
 	defaultCtx = flag.Bool("default_ctx", false, "extract for default context")
 	customCtx  = flag.String("custom_ctx", "", "optional comma-separated list of <goos>-<goarch>[-cgo] to override default contexts.")
+	cursortype = flag.String("cursor_type", "", "print cursor node type \"file.go:pos\"")
 )
 
 func usage() {
@@ -845,6 +846,10 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 		mode |= doc.AllDecls
 	}
 
+	if name == "main" {
+		w.findCursor(dir, 56)
+	}
+
 	dpkg := doc.New(apkg, name, mode)
 	w.curPackage.dpkg = dpkg
 
@@ -907,6 +912,118 @@ func (w *Walker) recordTypes(file *ast.File) {
 			}
 		}
 	}
+}
+
+func (w *Walker) findCursor(dir string, p token.Pos) string {
+	pos := w.fset.Position(p)
+	for k, v := range w.curPackage.apkg.Files {
+		if pos.Filename == filepath.Join(dir, k) {
+			return w.findCursorFile(v, p)
+		}
+	}
+	return ""
+}
+
+func (w *Walker) findCursorFile(file *ast.File, p token.Pos) string {
+	log.Println(file.Unresolved)
+	for _, di := range file.Decls {
+		log.Printf("%T %v %v %v", di, di.Pos(), di.End(), p)
+		switch d := di.(type) {
+		case *ast.GenDecl:
+			if p >= d.Pos() && p < di.End() {
+				return w.findCursorDecl(di, p)
+			}
+		case *ast.FuncDecl:
+			if p >= d.Name.Pos() && p < d.Name.End() {
+				return w.findCursorDecl(di, p)
+			}
+			if d.Body != nil {
+				if p >= d.Body.Pos() && p < d.Body.End() {
+					return w.findCursorBlockStmt(d.Body, p)
+				}
+			}
+		default:
+			log.Printf("%T ", d)
+		}
+	}
+	return ""
+}
+
+func (w *Walker) findCursorBlockStmt(body *ast.BlockStmt, p token.Pos) string {
+	log.Println("body", body)
+	for _, st := range body.List {
+		switch s := st.(type) {
+		case *ast.ExprStmt:
+			log.Println(w.findExprNode(s.X))
+		}
+		if p >= st.Pos() && p < st.End() {
+			log.Printf("%T", st)
+		}
+	}
+	return ""
+}
+
+func (w *Walker) findExprNode(vi ast.Expr) string {
+	switch v := vi.(type) {
+	case *ast.CallExpr:
+		return w.findExprNode(v.Fun)
+	case *ast.SelectorExpr:
+		return w.findExprNode(v.X) + "." + v.Sel.Name
+	case *ast.Ident:
+		if pkg, ok := w.selectorFullPkg[v.Name]; ok {
+			return pkg
+		}
+		log.Fatalf("=> un ident %v", v, w.nodeString(v))
+	default:
+		log.Fatalf("=> %T %v", v, w.nodeString(v))
+	}
+	return ""
+}
+
+func (w *Walker) findCursorDecl(decl ast.Decl, p token.Pos) string {
+	log.Printf("=> %v %T %v", decl, decl, p)
+	return ""
+	switch d := decl.(type) {
+	case *ast.GenDecl:
+		switch d.Tok {
+		case token.IMPORT:
+			//			for _, sp := range d.Specs {
+			//				is := sp.(*ast.ImportSpec)
+			//				fpath, err := strconv.Unquote(is.Path.Value)
+			//				if err != nil {
+			//					log.Fatal(err)
+			//				}
+			//				name := path.Base(fpath)
+			//				if is.Name != nil {
+			//					name = is.Name.Name
+			//				}
+			//				w.selectorFullPkg[name] = fpath
+			//			}
+		case token.CONST:
+			//			for _, sp := range d.Specs {
+			//				w.walkConst(sp.(*ast.ValueSpec))
+			//			}
+		case token.TYPE:
+			//			for _, sp := range d.Specs {
+			//				w.walkTypeSpec(sp.(*ast.TypeSpec))
+			//			}
+		case token.VAR:
+			//			for _, sp := range d.Specs {
+			//				w.walkVar(sp.(*ast.ValueSpec))
+			//			}
+		default:
+			log.Fatalf("unknown token type %d in GenDecl", d.Tok)
+		}
+	case *ast.FuncDecl:
+		log.Println(">>", d.Name.Name, p, d.Name.Pos(), d.Name.End())
+		if p >= d.Body.Pos() && p < d.Body.End() {
+			//log.Println(d.Body.List)
+		}
+		// Ignore. Handled in subsequent pass, by go/doc.
+	default:
+		log.Printf("unhandled %T, %#v\n", decl, decl)
+	}
+	return ""
 }
 
 func (w *Walker) walkFile(file *ast.File) {
