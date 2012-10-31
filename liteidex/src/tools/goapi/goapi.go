@@ -868,7 +868,7 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	if w.cursorPkg == name {
 		for k, v := range apkg.Files {
 			if k == cursor_file {
-				node, err := w.lookupFile(v, v.Pos()+cursor_pos)
+				node, err := w.lookupFile(v, v.Pos()+cursor_pos-1)
 				if err != nil {
 					log.Fatalln("lookup, err->", err)
 				}
@@ -955,21 +955,26 @@ func (w *Walker) recordTypes(file *ast.File) {
 	}
 }
 
+func inRange(node ast.Node, p token.Pos) bool {
+	if node == nil {
+		return false
+	}
+	return p >= node.Pos() && p < node.End()
+}
+
 func (w *Walker) lookupFile(file *ast.File, p token.Pos) (string, error) {
 	for _, di := range file.Decls {
 		switch d := di.(type) {
 		case *ast.GenDecl:
-			if p >= d.Pos() && p < di.End() {
-				return w.findCursorDecl(di, p)
+			if inRange(d, p) {
+				return w.findCursorDecl(d, p)
 			}
 		case *ast.FuncDecl:
-			if p >= d.Name.Pos() && p < d.Name.End() {
-				return w.findCursorDecl(di, p)
+			if inRange(d.Name, p) {
+				return w.findCursorDecl(d, p)
 			}
-			if d.Body != nil {
-				if p >= d.Body.Pos() && p < d.Body.End() {
-					return w.lookupStmt(d.Body, p)
-				}
+			if d.Body != nil && inRange(d.Body, p) {
+				return w.lookupStmt(d.Body, p)
 			}
 		default:
 			return "", fmt.Errorf("un parser decl %T", di)
@@ -979,11 +984,37 @@ func (w *Walker) lookupFile(file *ast.File, p token.Pos) (string, error) {
 }
 
 func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
+	if vi == nil {
+		return "", nil
+	}
+	log.Printf("lookup stem %v %T", vi, vi)
 	switch v := vi.(type) {
+	case *ast.BadStmt:
+		//
+	case *ast.EmptyStmt:
+		//
+	case *ast.LabeledStmt:
+		//
 	case *ast.DeclStmt:
-		return w.lookupDecl(v.Decl)
+		return w.lookupDecl(v.Decl, p)
 	case *ast.AssignStmt:
+		if len(v.Lhs) != len(v.Rhs) {
+			return "", fmt.Errorf("lsh %d != rsh %d", len(v.Lhs), len(v.Rhs))
+		}
 		for i := 0; i < len(v.Lhs); i++ {
+			if inRange(v.Lhs[i], p) {
+				if v.Tok == token.DEFINE {
+					return "", nil
+				}
+				return w.lookupExpr(v.Lhs[i], p)
+			} else if inRange(v.Rhs[i], p) {
+				return w.lookupExpr(v.Rhs[i], p)
+			}
+			if fl, ok := v.Rhs[i].(*ast.FuncLit); ok {
+				if inRange(fl, p) {
+					return w.lookupStmt(fl.Body, p)
+				}
+			}
 			switch lt := v.Lhs[i].(type) {
 			case *ast.Ident:
 				typ, err := w.varValueType(v.Rhs[i], i)
@@ -992,16 +1023,11 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 				}
 			}
 		}
-		return "", nil
 	case *ast.ExprStmt:
-		return w.lookupExpr(v.X)
-	case *ast.IfStmt:
-		return w.lookupStmt(v.Body, p)
-	case *ast.ForStmt:
-		return w.lookupStmt(v.Body, p)
+		return w.lookupExpr(v.X, p)
 	case *ast.BlockStmt:
 		for _, st := range v.List {
-			if p >= st.Pos() && p < st.End() {
+			if inRange(st, p) {
 				return w.lookupStmt(st, p)
 			}
 			_, err := w.lookupStmt(st, p)
@@ -1009,12 +1035,126 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 				log.Println(err)
 			}
 		}
-		return "", nil
+	case *ast.IfStmt:
+		if inRange(v.Init, p) {
+			return w.lookupStmt(v.Init, p)
+		} else {
+			w.lookupStmt(v.Init, p)
+		}
+		if inRange(v.Cond, p) {
+			return w.lookupExpr(v.Cond, p)
+		} else if inRange(v.Body, p) {
+			return w.lookupStmt(v.Body, p)
+		} else if inRange(v.Else, p) {
+			return w.lookupStmt(v.Else, p)
+		}
+	case *ast.SendStmt:
+		if inRange(v.Chan, p) {
+			return w.lookupExpr(v.Chan, p)
+		} else if inRange(v.Value, p) {
+			return w.lookupExpr(v.Value, p)
+		}
+	case *ast.IncDecStmt:
+		return w.lookupExpr(v.X, p)
+	case *ast.GoStmt:
+		return w.lookupExpr(v.Call, p)
+	case *ast.DeferStmt:
+		return w.lookupExpr(v.Call, p)
+	case *ast.ReturnStmt:
+		for _, r := range v.Results {
+			if inRange(r, p) {
+				return w.lookupExpr(r, p)
+			}
+		}
+	case *ast.BranchStmt:
+		//
+	case *ast.CaseClause:
+		for _, r := range v.List {
+			if inRange(r, p) {
+				return w.lookupExpr(r, p)
+			}
+		}
+		for _, body := range v.Body {
+			if inRange(body, p) {
+				return w.lookupStmt(body, p)
+			}
+		}
+	case *ast.SwitchStmt:
+		if inRange(v.Init, p) {
+			return w.lookupStmt(v.Init, p)
+		} else {
+			w.lookupStmt(v.Init, p)
+		}
+		if inRange(v.Tag, p) {
+			return w.lookupExpr(v.Tag, p)
+		} else if inRange(v.Body, p) {
+			return w.lookupStmt(v.Body, p)
+		}
+	case *ast.TypeSwitchStmt:
+		if inRange(v.Assign, p) {
+			return w.lookupStmt(v.Assign, p)
+		} else {
+			w.lookupStmt(v.Assign, p)
+		}
+		if inRange(v.Init, p) {
+			return w.lookupStmt(v.Init, p)
+		} else {
+			w.lookupStmt(v.Init, p)
+		}
+		if inRange(v.Body, p) {
+			return w.lookupStmt(v.Body, p)
+		}
+	case *ast.CommClause:
+		if inRange(v.Comm, p) {
+			return w.lookupStmt(v.Comm, p)
+		}
+		for _, body := range v.Body {
+			if inRange(body, p) {
+				return w.lookupStmt(body, p)
+			}
+		}
+	case *ast.SelectStmt:
+		if inRange(v.Body, p) {
+			return w.lookupStmt(v.Body, p)
+		}
+	case *ast.ForStmt:
+		if inRange(v.Init, p) {
+			return w.lookupStmt(v.Init, p)
+		} else {
+			w.lookupStmt(v.Init, p)
+		}
+		if inRange(v.Cond, p) {
+			return w.lookupExpr(v.Cond, p)
+		} else if inRange(v.Body, p) {
+			return w.lookupStmt(v.Body, p)
+		} else if inRange(v.Post, p) {
+			return w.lookupStmt(v.Post, p)
+		}
+	case *ast.RangeStmt:
+		if inRange(v.X, p) {
+			return w.lookupStmt(v.Body, p)
+		} else {
+			if key, ok := v.Key.(*ast.Ident); ok {
+				w.localvar[key.Name] = "int"
+			}
+			if value, ok := v.Value.(*ast.Ident); ok {
+				typ, err := w.varValueType(v.X, 0)
+				if err == nil {
+					w.localvar[value.Name] = typ
+				}
+			}
+		}
+		if inRange(v.Body, p) {
+			return w.lookupStmt(v.Body, p)
+		}
 	}
-	return "", fmt.Errorf("not looupStmt %T", vi)
+	return "", nil
 }
 
-func (w *Walker) lookupVar(vs *ast.ValueSpec) {
+func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos) (string, error) {
+	if inRange(vs.Type, p) {
+		return w.lookupExpr(vs.Type, p)
+	}
 	for n, ident := range vs.Names {
 		typ := ""
 		if vs.Type != nil {
@@ -1024,8 +1164,13 @@ func (w *Walker) lookupVar(vs *ast.ValueSpec) {
 				if *verbose {
 					log.Printf("error values in ValueSpec, var=%q,size=%d", ident.Name, len(vs.Values))
 				}
-				return
+				return "", nil
 			}
+
+			if inRange(vs.Values[0], p) {
+				return w.lookupExpr(vs.Values[0], p)
+			}
+
 			var err error
 			typ, err = w.varValueType(vs.Values[0], n)
 			if err != nil {
@@ -1036,11 +1181,15 @@ func (w *Walker) lookupVar(vs *ast.ValueSpec) {
 				typ = "unknown-type"
 			}
 		}
+		if inRange(ident, p) {
+			return fmt.Sprintf("local:%s:%s", typ, ident.Name), nil
+		}
 		w.localvar[ident.Name] = typ
 	}
+	return "", nil
 }
 
-func (w *Walker) lookupDecl(di ast.Decl) (string, error) {
+func (w *Walker) lookupDecl(di ast.Decl, p token.Pos) (string, error) {
 	switch d := di.(type) {
 	case *ast.GenDecl:
 		switch d.Tok {
@@ -1049,7 +1198,11 @@ func (w *Walker) lookupDecl(di ast.Decl) (string, error) {
 		case token.TYPE:
 		case token.VAR:
 			for _, sp := range d.Specs {
-				w.lookupVar(sp.(*ast.ValueSpec))
+				if inRange(sp, p) {
+					return w.lookupVar(sp.(*ast.ValueSpec), p)
+				} else {
+					w.lookupVar(sp.(*ast.ValueSpec), p)
+				}
 			}
 			return "", nil
 		default:
@@ -1061,25 +1214,44 @@ func (w *Walker) lookupDecl(di ast.Decl) (string, error) {
 	return "", fmt.Errorf("not lookupDecl %T", di)
 }
 
-func (w *Walker) lookupExpr(vi ast.Expr) (string, error) {
+func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
 	log.Printf("findExprNode %T %v", vi, w.nodeString(vi))
 	switch v := vi.(type) {
+	case *ast.BasicLit:
+		litType, ok := varType[v.Kind]
+		if !ok {
+			return "", fmt.Errorf("unknown basic literal kind %#v", v)
+		}
+		return litType, nil
+	case *ast.BinaryExpr:
+		if inRange(v.X, p) {
+			return w.lookupExpr(v.X, p)
+		} else if inRange(v.Y, p) {
+			return w.lookupExpr(v.Y, p)
+		}
+		return "", nil
 	case *ast.CallExpr:
+		for _, arg := range v.Args {
+			if inRange(arg, p) {
+				return w.lookupExpr(arg, p)
+			}
+		}
 		switch ft := v.Fun.(type) {
 		case *ast.Ident:
-			return ft.Name, nil
+			if typ, ok := w.localvar[ft.Name]; ok {
+				return fmt.Sprintf("local:%s:%s", typ, ft.Name), nil
+			}
+			if typ, ok := w.curPackage.functions[ft.Name]; ok {
+				return fmt.Sprintf("global:%s:%s", typ, ft.Name), nil
+			}
 		case *ast.SelectorExpr:
 			switch st := ft.X.(type) {
 			case *ast.Ident:
-				if typ, ok := w.localvar[st.Name]; ok {
-					return typ + "." + ft.Sel.Name, nil
+				s, err := w.lookupExpr(st, p)
+				if err != nil {
+					return "", err
 				}
-				if pkg, ok := w.selectorFullPkg[st.Name]; ok {
-					return pkg + "." + ft.Sel.Name, nil
-				}
-				if typ, ok := w.curPackage.vars[st.Name]; ok {
-					return typ + "." + ft.Sel.Name, nil
-				}
+				return s + "." + ft.Sel.Name, nil
 			default:
 				return "", fmt.Errorf("not find select %v %T", v, st)
 			}
@@ -1111,16 +1283,29 @@ func (w *Walker) lookupExpr(vi ast.Expr) (string, error) {
 		}
 		return "", fmt.Errorf("not find call %v %T", w.nodeString(v), v.Fun)
 	case *ast.SelectorExpr:
-		//return w.lookupExpr(v.X) + "." + v.Sel.Name, nil
-	case *ast.Ident:
-		if pkg, ok := w.selectorFullPkg[v.Name]; ok {
-			return pkg, nil
+		s, err := w.lookupExpr(v.X, p)
+		if err != nil {
+			return "", err
 		}
-		log.Fatalf("=> un ident %v", v, w.nodeString(v))
+		return s + "." + v.Sel.Name, nil
+	case *ast.Ident:
+		if typ, ok := w.localvar[v.Name]; ok {
+			return fmt.Sprintf("local:%s:%s", typ, v.Name), nil
+		}
+		if pkg, ok := w.selectorFullPkg[v.Name]; ok {
+			return fmt.Sprintf("pkg:%s:%s", pkg, v.Name), nil
+		}
+		if typ, ok := w.curPackage.vars[v.Name]; ok {
+			return fmt.Sprintf("global:%s:%s", typ, v.Name), nil
+		}
+		if isBuiltinType(v.Name) {
+			return v.Name, nil
+		}
+		return v.Name, nil
 	default:
 		log.Fatalf("=> %T %v", v, w.nodeString(v))
 	}
-	return "", nil
+	return "", fmt.Errorf("not lookupExpr %v %T", w.nodeString(vi), vi)
 }
 
 func (w *Walker) findCursorDecl(decl ast.Decl, p token.Pos) (string, error) {
