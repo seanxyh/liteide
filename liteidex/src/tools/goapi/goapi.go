@@ -967,11 +967,11 @@ func (w *Walker) lookupFile(file *ast.File, p token.Pos) (string, error) {
 		switch d := di.(type) {
 		case *ast.GenDecl:
 			if inRange(d, p) {
-				return w.findCursorDecl(d, p)
+				return w.lookupDecl(d, p, "global")
 			}
 		case *ast.FuncDecl:
-			if inRange(d.Name, p) {
-				return w.findCursorDecl(d, p)
+			if inRange(d, p) {
+				return w.lookupDecl(d, p, "global")
 			}
 			if d.Body != nil && inRange(d.Body, p) {
 				return w.lookupStmt(d.Body, p)
@@ -987,7 +987,6 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 	if vi == nil {
 		return "", nil
 	}
-	log.Printf("lookup stem %v %T", vi, vi)
 	switch v := vi.(type) {
 	case *ast.BadStmt:
 		//
@@ -996,7 +995,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 	case *ast.LabeledStmt:
 		//
 	case *ast.DeclStmt:
-		return w.lookupDecl(v.Decl, p)
+		return w.lookupDecl(v.Decl, p, "local")
 	case *ast.AssignStmt:
 		if len(v.Lhs) != len(v.Rhs) {
 			return "", fmt.Errorf("lsh %d != rsh %d", len(v.Lhs), len(v.Rhs))
@@ -1151,63 +1150,189 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 	return "", nil
 }
 
-func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos) (string, error) {
+func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, tag string) (string, error) {
 	if inRange(vs.Type, p) {
 		return w.lookupExpr(vs.Type, p)
 	}
 	for n, ident := range vs.Names {
 		typ := ""
-		if vs.Type != nil {
-			typ = w.nodeString(vs.Type)
+		if tag == "global" {
+			typ, _ = w.curPackage.vars[ident.Name]
 		} else {
-			if len(vs.Values) != 1 {
-				if *verbose {
-					log.Printf("error values in ValueSpec, var=%q,size=%d", ident.Name, len(vs.Values))
+			if vs.Type != nil {
+				typ = w.nodeString(vs.Type)
+			} else {
+				if len(vs.Values) != 1 {
+					if *verbose {
+						log.Printf("error values in ValueSpec, var=%q,size=%d", ident.Name, len(vs.Values))
+					}
+					return "", nil
 				}
-				return "", nil
-			}
 
-			if inRange(vs.Values[0], p) {
-				return w.lookupExpr(vs.Values[0], p)
-			}
-
-			var err error
-			typ, err = w.varValueType(vs.Values[0], n)
-			if err != nil {
-				if *verbose {
-					log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
-						ident.Name, vs.Values, err, w.fset.Position(vs.Pos()))
+				if inRange(vs.Values[0], p) {
+					return w.lookupExpr(vs.Values[0], p)
 				}
-				typ = "unknown-type"
+
+				var err error
+				typ, err = w.varValueType(vs.Values[0], n)
+				if err != nil {
+					if *verbose {
+						log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
+							ident.Name, vs.Values, err, w.fset.Position(vs.Pos()))
+					}
+					typ = "unknown-type"
+				}
 			}
+			w.localvar[ident.Name] = typ
 		}
 		if inRange(ident, p) {
-			return fmt.Sprintf("local:%s:%s", typ, ident.Name), nil
+			return fmt.Sprintf("%s:%s:%s", tag, typ, ident.Name), nil
 		}
-		w.localvar[ident.Name] = typ
 	}
 	return "", nil
 }
 
-func (w *Walker) lookupDecl(di ast.Decl, p token.Pos) (string, error) {
+func (w *Walker) lookupConst(vs *ast.ValueSpec, p token.Pos, tag string) (string, error) {
+	if inRange(vs.Type, p) {
+		return w.lookupExpr(vs.Type, p)
+	}
+	for _, ident := range vs.Names {
+		typ := ""
+		if typ == "global" {
+			typ, _ = w.curPackage.consts[ident.Name]
+		} else {
+			litType := ""
+			if vs.Type != nil {
+				litType = w.nodeString(vs.Type)
+			} else {
+				litType = w.lastConstType
+				if vs.Values != nil {
+					if len(vs.Values) != 1 {
+						if *verbose {
+							log.Printf("const %q, values: %#v", ident.Name, vs.Values)
+						}
+						return "", nil
+					}
+					var err error
+					litType, err = w.constValueType(vs.Values[0])
+					if err != nil {
+						if *verbose {
+							log.Printf("unknown kind in const %q (%T): %v", ident.Name, vs.Values[0], err)
+						}
+						litType = "unknown-type"
+					}
+				}
+			}
+			w.lastConstType = litType
+			typ = litType
+			w.localvar[ident.Name] = typ
+		}
+		if inRange(ident, p) {
+			return fmt.Sprintf("%s:%s:%s", tag, typ, ident.Name), nil
+		}
+	}
+	return "", nil
+}
+
+func (w *Walker) lookupType(ts *ast.TypeSpec, p token.Pos, tag string) (string, error) {
+	switch t := ts.Type.(type) {
+	case *ast.StructType:
+		if inRange(t.Fields, p) {
+			for _, fd := range t.Fields.List {
+				if inRange(fd.Type, p) {
+					return fmt.Sprintf("%s", w.nodeString(fd.Type)), nil
+				}
+				for _, ident := range fd.Names {
+					if inRange(ident, p) {
+						return fmt.Sprintf("%s:%s:%s.%s", tag, w.nodeString(fd.Type), ts.Name.Name, ident.Name), nil
+					}
+				}
+			}
+		}
+		return fmt.Sprintf("%s:%s:%s", tag, "struct", ts.Name.Name), nil
+	case *ast.InterfaceType:
+		return fmt.Sprintf("%s:%s:%s", tag, "interface", ts.Name.Name), nil
+	default:
+		return fmt.Sprintf("%s:%s:%s", tag, w.nodeString(ts.Type), ts.Name.Name), nil
+	}
+	return "", nil
+}
+
+func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, tag string) (string, error) {
 	switch d := di.(type) {
 	case *ast.GenDecl:
 		switch d.Tok {
 		case token.IMPORT:
+			for _, sp := range d.Specs {
+				is := sp.(*ast.ImportSpec)
+				fpath, err := strconv.Unquote(is.Path.Value)
+				if err != nil {
+					return "", err
+				}
+				name := path.Base(fpath)
+				if is.Name != nil {
+					name = is.Name.Name
+				}
+				if inRange(sp, p) {
+					return fmt.Sprintf("pkg:%s:%s", fpath, name), nil
+				}
+			}
 		case token.CONST:
+			for _, sp := range d.Specs {
+				if inRange(sp, p) {
+					return w.lookupConst(sp.(*ast.ValueSpec), p, tag)
+				} else {
+					w.lookupConst(sp.(*ast.ValueSpec), p, tag)
+				}
+			}
+			return "", nil
 		case token.TYPE:
+			for _, sp := range d.Specs {
+				if inRange(sp, p) {
+					return w.lookupType(sp.(*ast.TypeSpec), p, tag)
+				} else {
+					w.lookupType(sp.(*ast.TypeSpec), p, tag)
+				}
+			}
 		case token.VAR:
 			for _, sp := range d.Specs {
 				if inRange(sp, p) {
-					return w.lookupVar(sp.(*ast.ValueSpec), p)
+					return w.lookupVar(sp.(*ast.ValueSpec), p, tag)
 				} else {
-					w.lookupVar(sp.(*ast.ValueSpec), p)
+					w.lookupVar(sp.(*ast.ValueSpec), p, tag)
 				}
 			}
 			return "", nil
 		default:
 			log.Fatalf("unknown token type %d in GenDecl", d.Tok)
 		}
+	case *ast.FuncDecl:
+		if d.Type.Params != nil {
+			for _, fd := range d.Type.Params.List {
+				if inRange(fd, p) {
+					return w.lookupExpr(fd.Type, p)
+				}
+			}
+		}
+		if d.Type.Results != nil {
+			for _, fd := range d.Type.Results.List {
+				if inRange(fd, p) {
+					return w.lookupExpr(fd.Type, p)
+				}
+			}
+		}
+		if inRange(d.Body, p) {
+			return w.lookupStmt(d.Body, p)
+		}
+		var fname = d.Name.Name
+		if d.Recv != nil {
+			recvTypeName, imp := baseTypeName(d.Recv.List[0].Type)
+			if imp {
+				return "", nil
+			}
+			fname = recvTypeName + "." + d.Name.Name
+		}
+		return fmt.Sprintf("%s:func%s:%s", tag, w.funcSigString(d.Type), fname), nil
 	default:
 		log.Printf("unhandled %T, %#v\n", di, di)
 	}
@@ -1215,7 +1340,6 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos) (string, error) {
 }
 
 func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
-	log.Printf("findExprNode %T %v", vi, w.nodeString(vi))
 	switch v := vi.(type) {
 	case *ast.BasicLit:
 		litType, ok := varType[v.Kind]
@@ -1244,6 +1368,7 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
 			if typ, ok := w.curPackage.functions[ft.Name]; ok {
 				return fmt.Sprintf("global:%s:%s", typ, ft.Name), nil
 			}
+			return ft.Name, nil
 		case *ast.SelectorExpr:
 			switch st := ft.X.(type) {
 			case *ast.Ident:
@@ -1251,7 +1376,8 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
 				if err != nil {
 					return "", err
 				}
-				return s + "." + ft.Sel.Name, nil
+				ar := strings.Split(s, ":")
+				return fmt.Sprintf("%s:%s:%s", ar[0], ar[1]+"."+ft.Sel.Name, ar[2]+"."+ft.Sel.Name), nil
 			default:
 				return "", fmt.Errorf("not find select %v %T", v, st)
 			}
@@ -1287,7 +1413,8 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		return s + "." + v.Sel.Name, nil
+		ar := strings.Split(s, ":")
+		return fmt.Sprintf("%s:%s:%s", ar[0], ar[1]+"."+v.Sel.Name, ar[2]+"."+v.Sel.Name), nil
 	case *ast.Ident:
 		if typ, ok := w.localvar[v.Name]; ok {
 			return fmt.Sprintf("local:%s:%s", typ, v.Name), nil
@@ -1302,56 +1429,28 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
 			return v.Name, nil
 		}
 		return v.Name, nil
+	case *ast.IndexExpr:
+		return w.lookupExpr(v.X, p)
+	case *ast.ArrayType:
+		return w.lookupExpr(v.Elt, p)
+	case *ast.MapType:
+		if inRange(v.Key, p) {
+			return w.lookupExpr(v.Key, p)
+		} else if inRange(v.Value, p) {
+			return w.lookupExpr(v.Value, p)
+		}
+		typ, _ := w.varValueType(v, 0)
+		return fmt.Sprintf("local:%s:%s", typ, w.nodeString(v)), nil
+	case *ast.ChanType:
+		if inRange(v.Value, p) {
+			return w.lookupExpr(v.Value, p)
+		}
+		typ, _ := w.varValueType(v, 0)
+		return fmt.Sprintf("local:%s:%s", typ, w.nodeString(v)), nil
 	default:
 		log.Fatalf("=> %T %v", v, w.nodeString(v))
 	}
 	return "", fmt.Errorf("not lookupExpr %v %T", w.nodeString(vi), vi)
-}
-
-func (w *Walker) findCursorDecl(decl ast.Decl, p token.Pos) (string, error) {
-	log.Printf("=> %v %T %v", decl, decl, p)
-	return "", nil
-	switch d := decl.(type) {
-	case *ast.GenDecl:
-		switch d.Tok {
-		case token.IMPORT:
-			//			for _, sp := range d.Specs {
-			//				is := sp.(*ast.ImportSpec)
-			//				fpath, err := strconv.Unquote(is.Path.Value)
-			//				if err != nil {
-			//					log.Fatal(err)
-			//				}
-			//				name := path.Base(fpath)
-			//				if is.Name != nil {
-			//					name = is.Name.Name
-			//				}
-			//				w.selectorFullPkg[name] = fpath
-			//			}
-		case token.CONST:
-			//			for _, sp := range d.Specs {
-			//				w.walkConst(sp.(*ast.ValueSpec))
-			//			}
-		case token.TYPE:
-			//			for _, sp := range d.Specs {
-			//				w.walkTypeSpec(sp.(*ast.TypeSpec))
-			//			}
-		case token.VAR:
-			//			for _, sp := range d.Specs {
-			//				w.walkVar(sp.(*ast.ValueSpec))
-			//			}
-		default:
-			log.Fatalf("unknown token type %d in GenDecl", d.Tok)
-		}
-	case *ast.FuncDecl:
-		log.Println(">>", d.Name.Name, p, d.Name.Pos(), d.Name.End())
-		if p >= d.Body.Pos() && p < d.Body.End() {
-			//log.Println(d.Body.List)
-		}
-		// Ignore. Handled in subsequent pass, by go/doc.
-	default:
-		log.Printf("unhandled %T, %#v\n", decl, decl)
-	}
-	return "", nil
 }
 
 func (w *Walker) walkFile(file *ast.File) {
@@ -1499,7 +1598,7 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		}
 		if p := w.findPackage(lhs); p != nil {
 			if ret, ok := p.consts[rhs]; ok {
-				return pkgRetType(p.name, ret), nil
+				return w.pkgRetType(p.name, ret), nil
 			}
 		}
 		return "", fmt.Errorf("unknown constant reference to %s.%s", lhs, rhs)
@@ -1564,7 +1663,7 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 	return "", fmt.Errorf("unknown const value type %T", vi)
 }
 
-func pkgRetType(pkg, ret string) string {
+func (w *Walker) pkgRetType(pkg, ret string) string {
 	pkg = pkg[strings.LastIndex(pkg, "/")+1:]
 	start := strings.HasPrefix(ret, "*")
 	var name = ret
@@ -1604,7 +1703,7 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 			if fn != nil {
 				ret := funcRetType(fn, index)
 				if ret != nil {
-					return pkgRetType(p.name, w.nodeString(w.namelessType(ret))), nil
+					return w.pkgRetType(p.name, w.nodeString(w.namelessType(ret))), nil
 				}
 			}
 		}
@@ -1641,7 +1740,7 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 	if p := w.findPackage(name); p != nil {
 		typ := p.findCallType(sel, index)
 		if typ != nil {
-			return pkgRetType(p.name, w.nodeString(w.namelessType(typ))), nil
+			return w.pkgRetType(p.name, w.nodeString(w.namelessType(typ))), nil
 		}
 		return "", fmt.Errorf("not find pkg func %v.%v", p.name, sel)
 	}
@@ -1708,7 +1807,7 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 	if p := w.findPackage(name); p != nil {
 		typ := p.findSelectorType(sel)
 		if typ != nil {
-			return pkgRetType(p.name, w.nodeString(w.namelessType(typ))), nil
+			return w.pkgRetType(p.name, w.nodeString(w.namelessType(typ))), nil
 		}
 	}
 	return "", fmt.Errorf("unknown selector expr ident: %s.%s", name, sel)
