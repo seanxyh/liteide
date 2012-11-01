@@ -48,7 +48,7 @@ public:
     QString textCodec() const;
     bool reloadByCodec(const QString &codecName);
     bool open(const QString &filePath, const QString &mimeType, bool bCheckCodec);
-protected:
+public:
     enum LineTerminatorMode {
         LFLineTerminator = 0,
         CRLFLineTerminator,
