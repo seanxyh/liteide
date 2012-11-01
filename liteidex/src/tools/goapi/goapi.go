@@ -370,7 +370,7 @@ type Package struct {
 	types            map[string]ast.Expr           //type
 	functions        map[string]method             //function 
 	consts           map[string]*ExprType          //const => type
-	vars             map[string]string             //var => type
+	vars             map[string]*ExprType          //var => type
 	name             string
 	dir              string
 	sep              string
@@ -386,7 +386,7 @@ func NewPackage() *Package {
 		types:            make(map[string]ast.Expr),
 		functions:        make(map[string]method),
 		consts:           make(map[string]*ExprType),
-		vars:             make(map[string]string),
+		vars:             make(map[string]*ExprType),
 		features:         make(map[string](token.Pos)),
 		sep:              ", ",
 	}
@@ -457,7 +457,8 @@ func findFunction(funcs []*doc.Func, name string) *ast.FuncType {
 func (p *Package) findSelectorType(name string) ast.Expr {
 	if t, ok := p.vars[name]; ok {
 		return &ast.Ident{
-			Name: t,
+			NamePos: t.X.Pos(),
+			Name:    t.T,
 		}
 	}
 	if t, ok := p.consts[name]; ok {
@@ -481,6 +482,19 @@ func (p *Package) findSelectorType(name string) ast.Expr {
 		if k == name {
 			return v
 		}
+	}
+	return nil
+}
+
+func (p *Package) findCallFunc(name string) ast.Expr {
+	if fn, ok := p.functions[name]; ok {
+		return fn.ft
+	}
+	if s, ok := p.structs[name]; ok {
+		return s
+	}
+	if t, ok := p.types[name]; ok {
+		return t
 	}
 	return nil
 }
@@ -539,7 +553,7 @@ type Walker struct {
 	selectorFullPkg map[string]string // "http" => "net/http", updated by imports
 	wantedPkg       map[string]bool   // packages requested on the command line
 	cursorPkg       string
-	localvar        map[string]string
+	localvar        map[string]*ExprType
 }
 
 func NewWalker() *Walker {
@@ -551,7 +565,7 @@ func NewWalker() *Walker {
 		packageMap:      make(map[string]*Package),
 		selectorFullPkg: make(map[string]string),
 		wantedPkg:       make(map[string]bool),
-		localvar:        make(map[string]string),
+		localvar:        make(map[string]*ExprType),
 		sep:             ", ",
 	}
 }
@@ -869,11 +883,11 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	if w.cursorPkg == name {
 		for k, v := range apkg.Files {
 			if k == cursor_file {
-				node, err := w.lookupFile(v, v.Pos()+cursor_pos-1)
+				info, err := w.lookupFile(v, v.Pos()+cursor_pos-1)
 				if err != nil {
-					log.Fatalln("lookup, err->", err)
+					log.Fatalln("lookup error,", err)
 				}
-				fmt.Println("lookup->", node)
+				fmt.Println(info)
 			}
 		}
 		return
@@ -960,7 +974,7 @@ func inRange(node ast.Node, p token.Pos) bool {
 	if node == nil {
 		return false
 	}
-	return p >= node.Pos() && p < node.End()
+	return p >= node.Pos() && p <= node.End()
 }
 
 func (w *Walker) lookupFile(file *ast.File, p token.Pos) (string, error) {
@@ -1002,29 +1016,31 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 			return "", fmt.Errorf("lsh %d != rsh %d", len(v.Lhs), len(v.Rhs))
 		}
 		for i := 0; i < len(v.Lhs); i++ {
-			if inRange(v.Lhs[i], p) {
-				if v.Tok == token.DEFINE {
-					return "", nil
+			switch lt := v.Lhs[i].(type) {
+			case *ast.Ident:
+				typ, err := w.varValueType(v.Rhs[i], i)
+				if err == nil {
+					w.localvar[lt.Name] = &ExprType{T: typ, X: lt}
 				}
-				return w.lookupExpr(v.Lhs[i], p)
+			}
+			if inRange(v.Lhs[i], p) {
+				//				if v.Tok == token.DEFINE {
+				//					return "", nil
+				//				}
+				return w.lookupExprInfo(v.Lhs[i], p)
 			} else if inRange(v.Rhs[i], p) {
-				return w.lookupExpr(v.Rhs[i], p)
+				return w.lookupExprInfo(v.Rhs[i], p)
 			}
 			if fl, ok := v.Rhs[i].(*ast.FuncLit); ok {
 				if inRange(fl, p) {
 					return w.lookupStmt(fl.Body, p)
 				}
 			}
-			switch lt := v.Lhs[i].(type) {
-			case *ast.Ident:
-				typ, err := w.varValueType(v.Rhs[i], i)
-				if err == nil {
-					w.localvar[lt.Name] = typ
-				}
-			}
+
 		}
 	case *ast.ExprStmt:
-		return w.lookupExpr(v.X, p)
+		_, info, err := w.lookupExpr(v.X, p)
+		return info, err
 	case *ast.BlockStmt:
 		for _, st := range v.List {
 			if inRange(st, p) {
@@ -1042,7 +1058,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 			w.lookupStmt(v.Init, p)
 		}
 		if inRange(v.Cond, p) {
-			return w.lookupExpr(v.Cond, p)
+			return w.lookupExprInfo(v.Cond, p)
 		} else if inRange(v.Body, p) {
 			return w.lookupStmt(v.Body, p)
 		} else if inRange(v.Else, p) {
@@ -1050,20 +1066,20 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 		}
 	case *ast.SendStmt:
 		if inRange(v.Chan, p) {
-			return w.lookupExpr(v.Chan, p)
+			return w.lookupExprInfo(v.Chan, p)
 		} else if inRange(v.Value, p) {
-			return w.lookupExpr(v.Value, p)
+			return w.lookupExprInfo(v.Value, p)
 		}
 	case *ast.IncDecStmt:
-		return w.lookupExpr(v.X, p)
+		return w.lookupExprInfo(v.X, p)
 	case *ast.GoStmt:
-		return w.lookupExpr(v.Call, p)
+		return w.lookupExprInfo(v.Call, p)
 	case *ast.DeferStmt:
-		return w.lookupExpr(v.Call, p)
+		return w.lookupExprInfo(v.Call, p)
 	case *ast.ReturnStmt:
 		for _, r := range v.Results {
 			if inRange(r, p) {
-				return w.lookupExpr(r, p)
+				return w.lookupExprInfo(r, p)
 			}
 		}
 	case *ast.BranchStmt:
@@ -1071,7 +1087,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 	case *ast.CaseClause:
 		for _, r := range v.List {
 			if inRange(r, p) {
-				return w.lookupExpr(r, p)
+				return w.lookupExprInfo(r, p)
 			}
 		}
 		for _, body := range v.Body {
@@ -1086,7 +1102,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 			w.lookupStmt(v.Init, p)
 		}
 		if inRange(v.Tag, p) {
-			return w.lookupExpr(v.Tag, p)
+			return w.lookupExprInfo(v.Tag, p)
 		} else if inRange(v.Body, p) {
 			return w.lookupStmt(v.Body, p)
 		}
@@ -1124,7 +1140,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 			w.lookupStmt(v.Init, p)
 		}
 		if inRange(v.Cond, p) {
-			return w.lookupExpr(v.Cond, p)
+			return w.lookupExprInfo(v.Cond, p)
 		} else if inRange(v.Body, p) {
 			return w.lookupStmt(v.Body, p)
 		} else if inRange(v.Post, p) {
@@ -1135,12 +1151,12 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 			return w.lookupStmt(v.Body, p)
 		} else {
 			if key, ok := v.Key.(*ast.Ident); ok {
-				w.localvar[key.Name] = "int"
+				w.localvar[key.Name] = &ExprType{T: "int"}
 			}
 			if value, ok := v.Value.(*ast.Ident); ok {
 				typ, err := w.varValueType(v.X, 0)
 				if err == nil {
-					w.localvar[value.Name] = typ
+					w.localvar[value.Name] = &ExprType{T: typ, X: v.X}
 				}
 			}
 		}
@@ -1153,12 +1169,14 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 
 func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, error) {
 	if inRange(vs.Type, p) {
-		return w.lookupExpr(vs.Type, p)
+		return w.lookupExprInfo(vs.Type, p)
 	}
 	for n, ident := range vs.Names {
 		typ := ""
 		if !local {
-			typ, _ = w.curPackage.vars[ident.Name]
+			if t, ok := w.curPackage.vars[ident.Name]; ok {
+				typ = t.T
+			}
 		} else {
 			if vs.Type != nil {
 				typ = w.nodeString(vs.Type)
@@ -1171,7 +1189,7 @@ func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, 
 				}
 
 				if inRange(vs.Values[0], p) {
-					return w.lookupExpr(vs.Values[0], p)
+					return w.lookupExprInfo(vs.Values[0], p)
 				}
 
 				var err error
@@ -1184,10 +1202,10 @@ func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, 
 					typ = "unknown-type"
 				}
 			}
-			w.localvar[ident.Name] = typ
+			w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
 		}
 		if inRange(ident, p) {
-			return fmt.Sprintf("%v:%s:%s", local, typ, ident.Name), nil
+			return fmt.Sprintf("var,%s,%s,%s", ident.Name, typ, w.fset.Position(ident.Pos())), nil
 		}
 	}
 	return "", nil
@@ -1195,7 +1213,7 @@ func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, 
 
 func (w *Walker) lookupConst(vs *ast.ValueSpec, p token.Pos, local bool) (string, error) {
 	if inRange(vs.Type, p) {
-		return w.lookupExpr(vs.Type, p)
+		return w.lookupExprInfo(vs.Type, p)
 	}
 	for _, ident := range vs.Names {
 		typ := ""
@@ -1228,10 +1246,10 @@ func (w *Walker) lookupConst(vs *ast.ValueSpec, p token.Pos, local bool) (string
 			}
 			w.lastConstType = litType
 			typ = litType
-			w.localvar[ident.Name] = typ
+			w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
 		}
 		if inRange(ident, p) {
-			return fmt.Sprintf("%v:%s:%s", local, typ, ident.Name), nil
+			return fmt.Sprintf("const,%s,%s,%s", ident.Name, typ, w.fset.Position(ident.Pos())), nil
 		}
 	}
 	return "", nil
@@ -1252,11 +1270,11 @@ func (w *Walker) lookupType(ts *ast.TypeSpec, p token.Pos, local bool) (string, 
 				}
 			}
 		}
-		return fmt.Sprintf("%v:%s:%s", local, "struct", ts.Name.Name), nil
+		return fmt.Sprintf("struct,%s,%s,%s", ts.Name, "struct", w.fset.Position(ts.Pos())), nil
 	case *ast.InterfaceType:
-		return fmt.Sprintf("%v:%s:%s", local, "interface", ts.Name.Name), nil
+		return fmt.Sprintf("interface,%s,%s,%s", ts.Name, "interface", w.fset.Position(ts.Pos())), nil
 	default:
-		return fmt.Sprintf("%v:%s:%s", local, w.nodeString(ts.Type), ts.Name.Name), nil
+		return fmt.Sprintf("type,%s,%s,%s", ts.Name, w.nodeString(ts.Type), w.fset.Position(ts.Pos())), nil
 	}
 	return "", nil
 }
@@ -1277,7 +1295,7 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, local bool) (string, error
 					name = is.Name.Name
 				}
 				if inRange(sp, p) {
-					return fmt.Sprintf("pkg:%s:%s", fpath, name), nil
+					return fmt.Sprintf("import,%s,%s,%s", name, fpath, w.fset.Position(is.Pos())), nil
 				}
 			}
 		case token.CONST:
@@ -1313,14 +1331,14 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, local bool) (string, error
 		if d.Type.Params != nil {
 			for _, fd := range d.Type.Params.List {
 				if inRange(fd, p) {
-					return w.lookupExpr(fd.Type, p)
+					return w.lookupExprInfo(fd.Type, p)
 				}
 			}
 		}
 		if d.Type.Results != nil {
 			for _, fd := range d.Type.Results.List {
 				if inRange(fd, p) {
-					return w.lookupExpr(fd.Type, p)
+					return w.lookupExprInfo(fd.Type, p)
 				}
 			}
 		}
@@ -1335,28 +1353,37 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, local bool) (string, error
 			}
 			fname = recvTypeName + "." + d.Name.Name
 		}
-		return fmt.Sprintf("%v:func%s:%s", local, w.funcSigString(d.Type), fname), nil
+		return fmt.Sprintf("func,%s,%s,%s", fname, w.funcSigString(d.Type), w.fset.Position(d.Name.Pos())), nil
 	default:
 		log.Printf("unhandled %T, %#v\n", di, di)
 	}
 	return "", fmt.Errorf("not lookupDecl %T", di)
 }
 
-func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
+func (w *Walker) lookupExprInfo(vi ast.Expr, p token.Pos) (string, error) {
+	_, info, err := w.lookupExpr(vi, p)
+	return info, err
+}
+
+// lookupExpr , return name,info,error
+func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 	switch v := vi.(type) {
 	case *ast.BasicLit:
 		litType, ok := varType[v.Kind]
 		if !ok {
-			return "", fmt.Errorf("unknown basic literal kind %#v", v)
+			return "", "", fmt.Errorf("unknown basic literal kind %#v", v)
 		}
-		return litType, nil
+		return litType, fmt.Sprintf("builtin,%s", litType), nil
+	case *ast.UnaryExpr:
+		s, info, err := w.lookupExpr(v.X, p)
+		return v.Op.String() + s, info, err
 	case *ast.BinaryExpr:
 		if inRange(v.X, p) {
 			return w.lookupExpr(v.X, p)
 		} else if inRange(v.Y, p) {
 			return w.lookupExpr(v.Y, p)
 		}
-		return "", nil
+		return "", "", nil
 	case *ast.CallExpr:
 		for _, arg := range v.Args {
 			if inRange(arg, p) {
@@ -1366,24 +1393,55 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
 		switch ft := v.Fun.(type) {
 		case *ast.Ident:
 			if typ, ok := w.localvar[ft.Name]; ok {
-				return fmt.Sprintf("local:%s:%s", typ, ft.Name), nil
+				return ft.Name, fmt.Sprintf("func,%s,%s,%s", ft.Name, typ.T, w.fset.Position(typ.X.Pos())), nil
 			}
 			if typ, ok := w.curPackage.functions[ft.Name]; ok {
-				return fmt.Sprintf("global:%s:%s", typ, ft.Name), nil
+				return ft.Name, fmt.Sprintf("func,%s,%s,%s", ft.Name, typ.sig, w.fset.Position(typ.pos)), nil
 			}
-			return ft.Name, nil
+			return ft.Name, "", nil
 		case *ast.SelectorExpr:
+			//			s, _, err := w.lookupExpr(ft.X, p)
+			//			if err != nil {
+			//				return "", "", err
+			//			}
+			//			if strings.HasPrefix(s, "*") {
+			//				s = s[1:]
+			//			}
+			//			fname := s + "." + ft.Sel.Name
+			//			if fn, ok := w.curPackage.functions[fname]; ok {
+			//				return fname, fmt.Sprintf("method,%s,%s,%s", fname, w.nodeString(w.namelessType(fn.ft)), w.fset.Position(fn.pos)), nil
+			//			}
+			//			info, e := w.lookupFunction(s, ft.Sel.Name)
+			//			return fname, info, e
 			switch st := ft.X.(type) {
 			case *ast.Ident:
-				s, err := w.lookupExpr(st, p)
+				s, _, err := w.lookupExpr(st, p)
 				if err != nil {
-					return "", err
+					return "", "", err
 				}
-				ar := strings.Split(s, ":")
-				return fmt.Sprintf("%s:%s:%s", ar[0], ar[1]+"."+ft.Sel.Name, ar[2]+"."+ft.Sel.Name), nil
+				if strings.HasPrefix(s, "*") {
+					s = s[1:]
+				}
+				fname := s + "." + ft.Sel.Name
+				if fn, ok := w.curPackage.functions[fname]; ok {
+					return fname, fmt.Sprintf("method,%s,%s,%s", fname, w.nodeString(w.namelessType(fn.ft)), w.fset.Position(fn.pos)), nil
+				}
+				info, e := w.lookupFunction(s, ft.Sel.Name)
+				return fname, info, e
+			case *ast.SelectorExpr:
+				s, _, err := w.lookupExpr(st.X, p)
+				if err != nil {
+					return "", "", err
+				}
+				if strings.HasSuffix(s, "*") {
+					s = s[1:]
+				}
+				info, e := w.lookupSelector(s, st.Sel.Name)
+				return s + "." + ft.Sel.Name, info, e
 			default:
-				return "", fmt.Errorf("not find select %v %T", v, st)
+				return "", "", fmt.Errorf("not find select %v %T", v, st)
 			}
+
 			//			typ, err := w.varValueType(ft.X, 0)
 			//			if err == nil {
 			//				if strings.HasPrefix(typ, "*") {
@@ -1410,28 +1468,43 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
 			//				}
 			//			}
 		}
-		return "", fmt.Errorf("not find call %v %T", w.nodeString(v), v.Fun)
+		return "", "", fmt.Errorf("not find call %v %T", w.nodeString(v), v.Fun)
 	case *ast.SelectorExpr:
-		s, err := w.lookupExpr(v.X, p)
+		s, info, err := w.lookupExpr(v.X, p)
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
-		ar := strings.Split(s, ":")
-		return fmt.Sprintf("%s:%s:%s", ar[0], ar[1]+"."+v.Sel.Name, ar[2]+"."+v.Sel.Name), nil
+		if strings.HasPrefix(s, "*") {
+			s = s[1:]
+		}
+		info, e := w.lookupSelector(s, v.Sel.Name)
+		return s + "." + v.Sel.Name, info, e
 	case *ast.Ident:
 		if typ, ok := w.localvar[v.Name]; ok {
-			return fmt.Sprintf("local:%s:%s", typ, v.Name), nil
+			return typ.T, fmt.Sprintf("var,%s,%s,%s", v.Name, typ.T, w.fset.Position(typ.X.Pos())), nil
 		}
-		if pkg, ok := w.selectorFullPkg[v.Name]; ok {
-			return fmt.Sprintf("pkg:%s:%s", pkg, v.Name), nil
+		if typ, ok := w.curPackage.interfaces[v.Name]; ok {
+			return v.Name, fmt.Sprintf("type,%s,interface,%s", v.Name, w.fset.Position(typ.Pos())), nil
+		}
+		if typ, ok := w.curPackage.structs[v.Name]; ok {
+			return v.Name, fmt.Sprintf("type,%s,struct,%s", v.Name, w.fset.Position(typ.Pos())), nil
+		}
+		if typ, ok := w.curPackage.types[v.Name]; ok {
+			return v.Name, fmt.Sprintf("type,%s,%s,%s", v.Name, v.Name, w.fset.Position(typ.Pos())), nil
 		}
 		if typ, ok := w.curPackage.vars[v.Name]; ok {
-			return fmt.Sprintf("global:%s:%s", typ, v.Name), nil
+			return v.Name, fmt.Sprintf("var,%s,%s,%s", v.Name, typ.T, w.fset.Position(typ.X.Pos())), nil
+		}
+		if typ, ok := w.curPackage.consts[v.Name]; ok {
+			return v.Name, fmt.Sprintf("const,%s,%s,%s", v.Name, typ.T, w.fset.Position(typ.X.Pos())), nil
+		}
+		if pkg, ok := w.selectorFullPkg[v.Name]; ok {
+			return v.Name, fmt.Sprintf("import,%s,%s", v.Name, pkg), nil
 		}
 		if isBuiltinType(v.Name) {
-			return v.Name, nil
+			return v.Name, fmt.Sprintf("builtin,%s", v.Name), nil
 		}
-		return v.Name, nil
+		return v.Name, "", nil
 	case *ast.IndexExpr:
 		return w.lookupExpr(v.X, p)
 	case *ast.ArrayType:
@@ -1443,17 +1516,17 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, error) {
 			return w.lookupExpr(v.Value, p)
 		}
 		typ, _ := w.varValueType(v, 0)
-		return fmt.Sprintf("local:%s:%s", typ, w.nodeString(v)), nil
+		return typ, fmt.Sprintf("var,%s,%s,%s", w.nodeString(v), typ, w.fset.Position(v.Pos())), nil
 	case *ast.ChanType:
 		if inRange(v.Value, p) {
 			return w.lookupExpr(v.Value, p)
 		}
 		typ, _ := w.varValueType(v, 0)
-		return fmt.Sprintf("local:%s:%s", typ, w.nodeString(v)), nil
+		return w.nodeString(v), fmt.Sprintf("chan,%s,%s,%s", w.nodeString(v), typ, w.fset.Position(v.Pos())), nil
 	default:
-		log.Fatalf("=> %T %v", v, w.nodeString(v))
+		return "", "", fmt.Errorf("not lookupExpr %v %T", w.nodeString(v), v)
 	}
-	return "", fmt.Errorf("not lookupExpr %v %T", w.nodeString(vi), vi)
+	return "", "", fmt.Errorf("not lookupExpr %v %T", w.nodeString(vi), vi)
 }
 
 func (w *Walker) walkFile(file *ast.File) {
@@ -1695,6 +1768,58 @@ func (w *Walker) findStructFieldType(st ast.Expr, name string) ast.Expr {
 	return nil
 }
 
+func (w *Walker) lookupFunction(name, sel string) (string, error) {
+	//find pkg.typ.func()
+	pos := strings.Index(name, ".")
+	if pos != -1 {
+		pkg := name[:pos]
+		typ := name[pos+1:]
+
+		if p := w.findPackage(pkg); p != nil {
+			if fn := p.findMethod(typ, sel); fn != nil {
+				return fmt.Sprintf("method,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(fn)), w.fset.Position(fn.Pos())), nil
+			}
+		}
+		return "", fmt.Errorf("not lookup pkg type function pkg: %s.%s.%s", pkg, typ, sel)
+	}
+	//find local var.func()
+	if ns, nt, n := w.resolveName(name); n >= 0 {
+		var vt string
+		if nt != nil {
+			vt = w.nodeString(w.namelessType(nt))
+		} else if ns != nil {
+			typ, err := w.varValueType(ns, n)
+			if err == nil {
+				vt = typ
+			}
+		} else {
+			typ := w.curPackage.findSelectorType(name)
+			if typ != nil {
+				vt = w.nodeString(w.namelessType(typ))
+			}
+		}
+		if strings.HasPrefix(vt, "*") {
+			vt = vt[1:]
+		}
+		if vt == "error" && sel == "Error" {
+			return "builtin,error.Error,()string", nil
+		}
+		if fn, ok := w.curPackage.functions[vt+"."+sel]; ok {
+			return fmt.Sprintf("func,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(fn)), w.fset.Position(fn.pos)), nil
+		}
+	}
+	//find pkg.func()
+
+	if p := w.findPackage(name); p != nil {
+		fn := p.findCallFunc(sel)
+		if fn != nil {
+			return fmt.Sprintf("func,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(fn)), w.fset.Position(fn.Pos())), nil
+		}
+		return "", fmt.Errorf("not find pkg func %v.%v", p.name, sel)
+	}
+	return "", fmt.Errorf("not find func %v.%v", name, sel)
+}
+
 func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 	pos := strings.Index(name, ".")
 	if pos != -1 {
@@ -1712,7 +1837,21 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 		}
 		return "", fmt.Errorf("unknown pkg type function pkg: %s.%s.%s", pkg, typ, sel)
 	}
-	//find local var.func()
+	//find local var
+	if v, ok := w.localvar[name]; ok {
+		vt := v.T
+		if strings.HasPrefix(vt, "*") {
+			vt = vt[1:]
+		}
+		if vt == "error" && sel == "Error" {
+			return "string", nil
+		}
+		typ, err := w.varFunctionType(vt, sel, 0)
+		if err == nil {
+			return typ, nil
+		}
+	}
+	//find global var.func()
 	if ns, nt, n := w.resolveName(name); n >= 0 {
 		var vt string
 		if nt != nil {
@@ -1748,7 +1887,71 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 		return "", fmt.Errorf("not find pkg func %v.%v", p.name, sel)
 	}
 	return "", fmt.Errorf("not find func %v.%v", name, sel)
+}
 
+func (w *Walker) lookupSelector(name string, sel string) (string, error) {
+	pos := strings.Index(name, ".")
+	if pos != -1 {
+		pkg := name[:pos]
+		typ := name[pos+1:]
+		if p := w.findPackage(pkg); p != nil {
+			t := p.findType(typ)
+			if t != nil {
+				typ := w.findStructFieldType(t, sel)
+				if typ != nil {
+					return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(typ)), w.fset.Position(typ.Pos())), nil
+				}
+			}
+		}
+		return "", fmt.Errorf("unknown pkg type selector pkg: %s.%s.%s", pkg, typ, sel)
+	}
+	vs, vt, n := w.resolveName(name)
+	if n >= 0 {
+		var typ string
+		if vt != nil {
+			typ = w.nodeString(w.namelessType(vt))
+		} else {
+			typ, _ = w.varValueType(vs, n)
+		}
+		if strings.HasPrefix(typ, "*") {
+			typ = typ[1:]
+		}
+		//typ is type, find real type
+		for k, v := range w.curPackage.types {
+			if k == typ {
+				typ = w.nodeString(w.namelessType(v))
+			}
+		}
+		pos := strings.Index(typ, ".")
+		if pos == -1 {
+			t := w.curPackage.findType(typ)
+			if t != nil {
+				typ := w.findStructFieldType(t, sel)
+				if typ != nil {
+					return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(typ)), w.fset.Position(typ.Pos())), nil
+				}
+			}
+		} else {
+			name := typ[:pos]
+			typ = typ[pos+1:]
+			if p := w.findPackage(name); p != nil {
+				t := p.findType(typ)
+				if t != nil {
+					typ := w.findStructFieldType(t, sel)
+					if typ != nil {
+						return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(typ)), w.fset.Position(typ.Pos())), nil
+					}
+				}
+			}
+		}
+	}
+	if p := w.findPackage(name); p != nil {
+		typ := p.findSelectorType(sel)
+		if typ != nil {
+			return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(typ)), w.fset.Position(typ.Pos())), nil
+		}
+	}
+	return "", fmt.Errorf("unknown selector expr ident: %s.%s", name, sel)
 }
 
 func (w *Walker) varSelectorType(name string, sel string) (string, error) {
@@ -1816,7 +2019,7 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 	return "", fmt.Errorf("unknown selector expr ident: %s.%s", name, sel)
 }
 
-func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
+func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 	switch v := vi.(type) {
 	case *ast.BasicLit:
 		litType, ok := varType[v.Kind]
@@ -1861,9 +2064,7 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 				return w.varSelectorType(typ, v.Sel.Name)
 			}
 		case *ast.IndexExpr:
-			//log.Fatalln(st.X)
 			typ, err := w.varValueType(st.X, index)
-			//log.Fatalln(typ, err)
 			if err == nil {
 				if strings.HasPrefix(typ, "[]") {
 					return w.varSelectorType(typ[2:], v.Sel.Name)
@@ -1936,6 +2137,21 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 			typ := w.curPackage.findCallType(ft.Name, index)
 			if typ != nil {
 				return w.nodeString(w.namelessType(typ)), nil
+			}
+			//if local var type
+			if fn, ok := w.localvar[ft.Name]; ok {
+				typ := fn.T
+				if strings.HasPrefix(typ, "func(") {
+					expr, err := parser.ParseExpr(typ + "{}")
+					if err == nil {
+						if fl, ok := expr.(*ast.FuncLit); ok {
+							retType := funcRetType(fl.Type, index)
+							if retType != nil {
+								return w.nodeString(w.namelessType(retType)), nil
+							}
+						}
+					}
+				}
 			}
 			//if var is func() type
 			vs, _, n := w.resolveName(ft.Name)
@@ -2020,6 +2236,7 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 				return typ[2:], nil
 			}
 		}
+		return "", fmt.Errorf("unknown index %v", err)
 	case *ast.ChanType:
 		typ, err := w.varValueType(v.Value, index)
 		if err == nil {
@@ -2033,12 +2250,13 @@ func (w *Walker) varValueType(vi interface{}, index int) (string, error) {
 	default:
 		return "", fmt.Errorf("unknown value type %T", vi)
 	}
-	panic("unreachable")
+	//panic("unreachable")
+	return "", fmt.Errorf("unreachable value type %v %T", vi, vi)
 }
 
 // resolveName finds a top-level node named name and returns the node
 // v and its type t, if known.
-func (w *Walker) resolveName(name string) (v interface{}, t interface{}, n int) {
+func (w *Walker) resolveName(name string) (v ast.Expr, t interface{}, n int) {
 	for _, file := range w.curPackage.apkg.Files {
 		for _, di := range file.Decls {
 			switch d := di.(type) {
@@ -2159,7 +2377,7 @@ func (w *Walker) walkVar(vs *ast.ValueSpec) {
 				typ = "unknown-type"
 			}
 		}
-		w.curPackage.vars[ident.Name] = typ
+		w.curPackage.vars[ident.Name] = &ExprType{T: typ, X: ident}
 		if isExtract(ident.Name) {
 			w.emitFeature(fmt.Sprintf("var %s %s", ident, typ), ident.Pos())
 		}
