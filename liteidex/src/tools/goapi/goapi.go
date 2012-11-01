@@ -1177,9 +1177,11 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 				} else if strings.HasPrefix(typ, "map[") {
 					node, err := parser.ParseExpr(typ + "{}")
 					if err == nil {
-						if m, ok := node.(*ast.MapType); ok {
-							kt = w.nodeString(w.namelessType(m.Key))
-							vt = w.nodeString(w.namelessType(m.Value))
+						if cl, ok := node.(*ast.CompositeLit); ok {
+							if m, ok := cl.Type.(*ast.MapType); ok {
+								kt = w.nodeString(w.namelessType(m.Key))
+								vt = w.nodeString(w.namelessType(m.Value))
+							}
 						}
 					}
 				}
@@ -2092,6 +2094,21 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 		}
 		return "", fmt.Errorf("unknown pkg type selector pkg: %s.%s.%s", pkg, typ, sel)
 	}
+	//check local
+	if lv, ok := w.localvar[name]; ok {
+		typ := lv.T
+		if strings.HasPrefix(typ, "*") {
+			typ = typ[1:]
+		}
+		t := w.curPackage.findType(typ)
+		if t != nil {
+			typ := w.findStructFieldType(t, sel)
+			if typ != nil {
+				return w.nodeString(w.namelessType(typ)), nil
+			}
+		}
+	}
+
 	vs, vt, n := w.resolveName(name)
 	if n >= 0 {
 		var typ string
@@ -2138,7 +2155,7 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 			return w.pkgRetType(p.name, w.nodeString(w.namelessType(typ))), nil
 		}
 	}
-	return "", fmt.Errorf("unknown selector expr ident: %s.%s", name, sel)
+	return "", fmt.Errorf("unknown var selector expr ident: %s.%s", name, sel)
 }
 
 func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
@@ -2206,6 +2223,9 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 		}
 		if isBuiltinType(v.Name) {
 			return v.Name, nil
+		}
+		if lv, ok := w.localvar[v.Name]; ok {
+			return lv.T, nil
 		}
 		vt := w.curPackage.findType(v.Name)
 		if vt != nil {
