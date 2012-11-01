@@ -1495,6 +1495,19 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 				}
 				info, e := w.lookupSelector(s, st.Sel.Name)
 				return s + "." + ft.Sel.Name, info, e
+			case *ast.CallExpr:
+				if inRange(st, p) {
+					return w.lookupExpr(st, p)
+				}
+				typ, err := w.varValueType(st, 0)
+				if err != nil {
+					return "", "", err
+				}
+				info, e := w.lookupFunction(typ, ft.Sel.Name)
+				if e != nil {
+					return "", "", e
+				}
+				return typ + "." + ft.Sel.Name, info, e
 			default:
 				return "", "", fmt.Errorf("not find select %v %T", v, st)
 			}
@@ -2304,7 +2317,11 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 			case *ast.Ident:
 				return w.varFunctionType(st.Name, ft.Sel.Name, index)
 			case *ast.CallExpr:
-				return w.varValueType(st, index)
+				typ, err := w.varValueType(st, 0)
+				if err != nil {
+					return "", err
+				}
+				return w.varFunctionType(typ, ft.Sel.Name, index)
 			case *ast.SelectorExpr:
 				typ, err := w.varValueType(st, index)
 				if err == nil {
