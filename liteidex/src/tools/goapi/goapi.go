@@ -2389,6 +2389,8 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 			}
 		}
 		return "", fmt.Errorf("unknown index %v", err)
+	case *ast.SliceExpr:
+		return w.varValueType(v.X, index)
 	case *ast.ChanType:
 		typ, err := w.varValueType(v.Value, index)
 		if err == nil {
