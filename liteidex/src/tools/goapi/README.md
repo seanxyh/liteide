@@ -7,9 +7,11 @@ goapi tool
 		       api std
 		       api -default_ctx=true fmt flag
 		       api -default_ctx=true -a ./cmd/go
+		       api -default_ctx=true -cursor_type main.go:121 f:/hello 
 		  -a=false: extract for all declarations
 		  -allow_new=true: allow API additions
 		  -c="": optional filename to check API against
+		  -cursor_type="": print cursor node type "file.go:pos"
 		  -custom_ctx="": optional comma-separated list of <goos>-<goarch>[-cgo] to override default contexts.
 		  -default_ctx=false: extract for default context
 		  -dep=true: parser package imports

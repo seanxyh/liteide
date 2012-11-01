@@ -47,7 +47,7 @@ var (
 	dep_parser = flag.Bool("dep", true, "parser package imports")
 	defaultCtx = flag.Bool("default_ctx", false, "extract for default context")
 	customCtx  = flag.String("custom_ctx", "", "optional comma-separated list of <goos>-<goarch>[-cgo] to override default contexts.")
-	cursortype = flag.String("cursor_type", "", "print cursor node type \"file.go:pos\"")
+	lookupDec  = flag.String("lookup_dec", "", "lookup cursor node declarations \"file.go:pos\"")
 )
 
 var (
@@ -155,11 +155,11 @@ func main() {
 		pkgs = flag.Args()
 	}
 
-	if *cursortype != "" {
-		pos := strings.Index(*cursortype, ":")
+	if *lookupDec != "" {
+		pos := strings.Index(*lookupDec, ":")
 		if pos != -1 {
-			cursor_file = (*cursortype)[:pos]
-			if i, err := strconv.Atoi((*cursortype)[pos+1:]); err == nil {
+			cursor_file = (*lookupDec)[:pos]
+			if i, err := strconv.Atoi((*lookupDec)[pos+1:]); err == nil {
 				cursor_pos = token.Pos(i)
 			}
 		}
@@ -356,9 +356,9 @@ type pkgSymbol struct {
 	symbol string // "RoundTripper"
 }
 
-type constInfo struct {
-	typ string
-	pos token.Pos
+type ExprType struct {
+	X ast.Expr
+	T string
 }
 
 type Package struct {
@@ -369,7 +369,7 @@ type Package struct {
 	structs          map[string]*ast.StructType    //struct
 	types            map[string]ast.Expr           //type
 	functions        map[string]method             //function 
-	consts           map[string]string             //const => type
+	consts           map[string]*ExprType          //const => type
 	vars             map[string]string             //var => type
 	name             string
 	dir              string
@@ -385,7 +385,7 @@ func NewPackage() *Package {
 		structs:          make(map[string]*ast.StructType),
 		types:            make(map[string]ast.Expr),
 		functions:        make(map[string]method),
-		consts:           make(map[string]string),
+		consts:           make(map[string]*ExprType),
 		vars:             make(map[string]string),
 		features:         make(map[string](token.Pos)),
 		sep:              ", ",
@@ -462,7 +462,8 @@ func (p *Package) findSelectorType(name string) ast.Expr {
 	}
 	if t, ok := p.consts[name]; ok {
 		return &ast.Ident{
-			Name: t,
+			NamePos: t.X.Pos(),
+			Name:    t.T,
 		}
 	}
 	if t, ok := p.functions[name]; ok {
@@ -531,7 +532,7 @@ type Walker struct {
 	sep             string
 	ctxName         string
 	curPackage      *Package
-	constDep        map[string]*constInfo // key's const identifier has type of future value const identifier
+	constDep        map[string]*ExprType // key's const identifier has type of future value const identifier
 	packageState    map[string]loadState
 	packageMap      map[string]*Package
 	interfaces      map[pkgSymbol]*ast.InterfaceType
@@ -836,7 +837,7 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	defer pop()
 
 	w.curPackageName = curName
-	w.constDep = map[string]*constInfo{}
+	w.constDep = map[string]*ExprType{}
 	w.curPackage = NewPackage()
 	w.curPackage.apkg = apkg
 	w.curPackage.name = name
@@ -967,11 +968,11 @@ func (w *Walker) lookupFile(file *ast.File, p token.Pos) (string, error) {
 		switch d := di.(type) {
 		case *ast.GenDecl:
 			if inRange(d, p) {
-				return w.lookupDecl(d, p, "global")
+				return w.lookupDecl(d, p, false)
 			}
 		case *ast.FuncDecl:
 			if inRange(d, p) {
-				return w.lookupDecl(d, p, "global")
+				return w.lookupDecl(d, p, false)
 			}
 			if d.Body != nil && inRange(d.Body, p) {
 				return w.lookupStmt(d.Body, p)
@@ -995,7 +996,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 	case *ast.LabeledStmt:
 		//
 	case *ast.DeclStmt:
-		return w.lookupDecl(v.Decl, p, "local")
+		return w.lookupDecl(v.Decl, p, true)
 	case *ast.AssignStmt:
 		if len(v.Lhs) != len(v.Rhs) {
 			return "", fmt.Errorf("lsh %d != rsh %d", len(v.Lhs), len(v.Rhs))
@@ -1150,13 +1151,13 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 	return "", nil
 }
 
-func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, tag string) (string, error) {
+func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, error) {
 	if inRange(vs.Type, p) {
 		return w.lookupExpr(vs.Type, p)
 	}
 	for n, ident := range vs.Names {
 		typ := ""
-		if tag == "global" {
+		if !local {
 			typ, _ = w.curPackage.vars[ident.Name]
 		} else {
 			if vs.Type != nil {
@@ -1186,20 +1187,22 @@ func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, tag string) (string, 
 			w.localvar[ident.Name] = typ
 		}
 		if inRange(ident, p) {
-			return fmt.Sprintf("%s:%s:%s", tag, typ, ident.Name), nil
+			return fmt.Sprintf("%v:%s:%s", local, typ, ident.Name), nil
 		}
 	}
 	return "", nil
 }
 
-func (w *Walker) lookupConst(vs *ast.ValueSpec, p token.Pos, tag string) (string, error) {
+func (w *Walker) lookupConst(vs *ast.ValueSpec, p token.Pos, local bool) (string, error) {
 	if inRange(vs.Type, p) {
 		return w.lookupExpr(vs.Type, p)
 	}
 	for _, ident := range vs.Names {
 		typ := ""
-		if typ == "global" {
-			typ, _ = w.curPackage.consts[ident.Name]
+		if !local {
+			if t, ok := w.curPackage.consts[ident.Name]; ok {
+				typ = t.T
+			}
 		} else {
 			litType := ""
 			if vs.Type != nil {
@@ -1228,13 +1231,13 @@ func (w *Walker) lookupConst(vs *ast.ValueSpec, p token.Pos, tag string) (string
 			w.localvar[ident.Name] = typ
 		}
 		if inRange(ident, p) {
-			return fmt.Sprintf("%s:%s:%s", tag, typ, ident.Name), nil
+			return fmt.Sprintf("%v:%s:%s", local, typ, ident.Name), nil
 		}
 	}
 	return "", nil
 }
 
-func (w *Walker) lookupType(ts *ast.TypeSpec, p token.Pos, tag string) (string, error) {
+func (w *Walker) lookupType(ts *ast.TypeSpec, p token.Pos, local bool) (string, error) {
 	switch t := ts.Type.(type) {
 	case *ast.StructType:
 		if inRange(t.Fields, p) {
@@ -1244,21 +1247,21 @@ func (w *Walker) lookupType(ts *ast.TypeSpec, p token.Pos, tag string) (string, 
 				}
 				for _, ident := range fd.Names {
 					if inRange(ident, p) {
-						return fmt.Sprintf("%s:%s:%s.%s", tag, w.nodeString(fd.Type), ts.Name.Name, ident.Name), nil
+						return fmt.Sprintf("%v:%s:%s.%s", local, w.nodeString(fd.Type), ts.Name.Name, ident.Name), nil
 					}
 				}
 			}
 		}
-		return fmt.Sprintf("%s:%s:%s", tag, "struct", ts.Name.Name), nil
+		return fmt.Sprintf("%v:%s:%s", local, "struct", ts.Name.Name), nil
 	case *ast.InterfaceType:
-		return fmt.Sprintf("%s:%s:%s", tag, "interface", ts.Name.Name), nil
+		return fmt.Sprintf("%v:%s:%s", local, "interface", ts.Name.Name), nil
 	default:
-		return fmt.Sprintf("%s:%s:%s", tag, w.nodeString(ts.Type), ts.Name.Name), nil
+		return fmt.Sprintf("%v:%s:%s", local, w.nodeString(ts.Type), ts.Name.Name), nil
 	}
 	return "", nil
 }
 
-func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, tag string) (string, error) {
+func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, local bool) (string, error) {
 	switch d := di.(type) {
 	case *ast.GenDecl:
 		switch d.Tok {
@@ -1280,26 +1283,26 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, tag string) (string, error
 		case token.CONST:
 			for _, sp := range d.Specs {
 				if inRange(sp, p) {
-					return w.lookupConst(sp.(*ast.ValueSpec), p, tag)
+					return w.lookupConst(sp.(*ast.ValueSpec), p, local)
 				} else {
-					w.lookupConst(sp.(*ast.ValueSpec), p, tag)
+					w.lookupConst(sp.(*ast.ValueSpec), p, local)
 				}
 			}
 			return "", nil
 		case token.TYPE:
 			for _, sp := range d.Specs {
 				if inRange(sp, p) {
-					return w.lookupType(sp.(*ast.TypeSpec), p, tag)
+					return w.lookupType(sp.(*ast.TypeSpec), p, local)
 				} else {
-					w.lookupType(sp.(*ast.TypeSpec), p, tag)
+					w.lookupType(sp.(*ast.TypeSpec), p, local)
 				}
 			}
 		case token.VAR:
 			for _, sp := range d.Specs {
 				if inRange(sp, p) {
-					return w.lookupVar(sp.(*ast.ValueSpec), p, tag)
+					return w.lookupVar(sp.(*ast.ValueSpec), p, local)
 				} else {
-					w.lookupVar(sp.(*ast.ValueSpec), p, tag)
+					w.lookupVar(sp.(*ast.ValueSpec), p, local)
 				}
 			}
 			return "", nil
@@ -1332,7 +1335,7 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, tag string) (string, error
 			}
 			fname = recvTypeName + "." + d.Name.Name
 		}
-		return fmt.Sprintf("%s:func%s:%s", tag, w.funcSigString(d.Type), fname), nil
+		return fmt.Sprintf("%v:func%s:%s", local, w.funcSigString(d.Type), fname), nil
 	default:
 		log.Printf("unhandled %T, %#v\n", di, di)
 	}
@@ -1598,7 +1601,7 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 		}
 		if p := w.findPackage(lhs); p != nil {
 			if ret, ok := p.consts[rhs]; ok {
-				return w.pkgRetType(p.name, ret), nil
+				return w.pkgRetType(p.name, ret.T), nil
 			}
 		}
 		return "", fmt.Errorf("unknown constant reference to %s.%s", lhs, rhs)
@@ -1610,7 +1613,7 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 			return "bool", nil
 		}
 		if t, ok := w.curPackage.consts[v.Name]; ok {
-			return t, nil
+			return t.T, nil
 		}
 		return constDepPrefix + v.Name, nil
 	case *ast.BinaryExpr:
@@ -2088,7 +2091,7 @@ func (w *Walker) walkConst(vs *ast.ValueSpec) {
 		}
 		if strings.HasPrefix(litType, constDepPrefix) {
 			dep := litType[len(constDepPrefix):]
-			w.constDep[ident.Name] = &constInfo{dep, ident.Pos()}
+			w.constDep[ident.Name] = &ExprType{T: dep, X: ident}
 			continue
 		}
 		if litType == "" {
@@ -2099,7 +2102,7 @@ func (w *Walker) walkConst(vs *ast.ValueSpec) {
 		}
 		w.lastConstType = litType
 
-		w.curPackage.consts[ident.Name] = litType
+		w.curPackage.consts[ident.Name] = &ExprType{T: litType, X: ident}
 
 		if isExtract(ident.Name) {
 			w.emitFeature(fmt.Sprintf("const %s %s", ident, litType), ident.Pos())
@@ -2111,10 +2114,10 @@ func (w *Walker) resolveConstantDeps() {
 	var findConstType func(string) string
 	findConstType = func(ident string) string {
 		if dep, ok := w.constDep[ident]; ok {
-			return findConstType(dep.typ)
+			return findConstType(dep.T)
 		}
 		if t, ok := w.curPackage.consts[ident]; ok {
-			return t
+			return t.T
 		}
 		return ""
 	}
@@ -2129,8 +2132,8 @@ func (w *Walker) resolveConstantDeps() {
 			}
 			continue
 		}
-		w.curPackage.consts[ident] = t
-		w.emitFeature(fmt.Sprintf("const %s %s", ident, t), info.pos)
+		w.curPackage.consts[ident] = &ExprType{T: t, X: info.X}
+		w.emitFeature(fmt.Sprintf("const %s %s", ident, t), info.X.Pos())
 	}
 }
 
