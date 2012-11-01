@@ -1030,33 +1030,50 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 	case *ast.DeclStmt:
 		return w.lookupDecl(v.Decl, p, true)
 	case *ast.AssignStmt:
-		if len(v.Lhs) != len(v.Rhs) {
-			return "", fmt.Errorf("lsh %d != rsh %d", len(v.Lhs), len(v.Rhs))
-		}
-		for i := 0; i < len(v.Lhs); i++ {
-			switch lt := v.Lhs[i].(type) {
-			case *ast.Ident:
-				typ, err := w.varValueType(v.Rhs[i], i)
-				if err == nil {
-					w.localvar[lt.Name] = &ExprType{T: typ, X: lt}
-				} else if *verbose {
-					log.Println(err)
+		if len(v.Lhs) == len(v.Rhs) {
+			for i := 0; i < len(v.Lhs); i++ {
+				switch lt := v.Lhs[i].(type) {
+				case *ast.Ident:
+					typ, err := w.varValueType(v.Rhs[i], 0)
+					if err == nil {
+						w.localvar[lt.Name] = &ExprType{T: typ, X: lt}
+					} else if *verbose {
+						log.Println(err)
+					}
+				}
+				if inRange(v.Lhs[i], p) {
+					return w.lookupExprInfo(v.Lhs[i], p)
+				} else if inRange(v.Rhs[i], p) {
+					return w.lookupExprInfo(v.Rhs[i], p)
+				}
+				if fl, ok := v.Rhs[i].(*ast.FuncLit); ok {
+					if inRange(fl, p) {
+						return w.lookupStmt(fl.Body, p)
+					}
 				}
 			}
-			if inRange(v.Lhs[i], p) {
-				//				if v.Tok == token.DEFINE {
-				//					return "", nil
-				//				}
-				return w.lookupExprInfo(v.Lhs[i], p)
-			} else if inRange(v.Rhs[i], p) {
-				return w.lookupExprInfo(v.Rhs[i], p)
-			}
-			if fl, ok := v.Rhs[i].(*ast.FuncLit); ok {
-				if inRange(fl, p) {
-					return w.lookupStmt(fl.Body, p)
+		} else if len(v.Rhs) == 1 {
+			for i := 0; i < len(v.Lhs); i++ {
+				switch lt := v.Lhs[i].(type) {
+				case *ast.Ident:
+					typ, err := w.varValueType(v.Rhs[0], i)
+					if err == nil {
+						w.localvar[lt.Name] = &ExprType{T: typ, X: lt}
+					} else if *verbose {
+						log.Println(err)
+					}
+				}
+				if inRange(v.Lhs[i], p) {
+					return w.lookupExprInfo(v.Lhs[i], p)
+				} else if inRange(v.Rhs[0], p) {
+					return w.lookupExprInfo(v.Rhs[0], p)
+				}
+				if fl, ok := v.Rhs[0].(*ast.FuncLit); ok {
+					if inRange(fl, p) {
+						return w.lookupStmt(fl.Body, p)
+					}
 				}
 			}
-
 		}
 	case *ast.ExprStmt:
 		_, info, err := w.lookupExpr(v.X, p)

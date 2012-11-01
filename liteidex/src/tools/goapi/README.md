@@ -11,12 +11,12 @@ goapi tool
 		  -a=false: extract for all declarations
 		  -allow_new=true: allow API additions
 		  -c="": optional filename to check API against
-		  -cursor_type="": print cursor node type "file.go:pos"
 		  -custom_ctx="": optional comma-separated list of <goos>-<goarch>[-cgo] to override default contexts.
 		  -default_ctx=false: extract for default context
 		  -dep=true: parser package imports
 		  -e=true: extract for all embedded methods
 		  -except="": optional filename of packages that are allowed to change without triggering a failure in the tool
+		  -lookup_dec="": lookup cursor node declarations "file.go:pos"
 		  -next="": optional filename of tentative upcoming API features for the next release. This file can be lazily maintained. It only affects the delta warnings from the -c file printed on success.
 		  -pos=false: addition token position
 		  -sep=",": setup separators
