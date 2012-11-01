@@ -248,6 +248,10 @@ func main() {
 		sort.Strings(features)
 	}
 
+	if *lookupDec != "" {
+		return
+	}
+
 	fail := false
 	defer func() {
 		if fail {
@@ -883,11 +887,19 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	if w.cursorPkg == name {
 		for k, v := range apkg.Files {
 			if k == cursor_file {
-				info, err := w.lookupFile(v, v.Pos()+cursor_pos-1)
+				f := w.fset.File(v.Pos())
+				if f == nil {
+					log.Fatalf("error fset postion %v", v.Pos())
+				}
+				info, err := w.lookupFile(v, token.Pos(f.Base())+cursor_pos-1)
+				//log.Println(w.fset.Position(token.Pos(f.Base())))
+				//log.Println(w.fset.Position(token.Pos(f.Base()) + cursor_pos - 1))
+				//log.Printf("lookup %d %d %d %v ", v.Pos(), cursor_pos, token.Pos(f.Base()), w.fset.Position(token.Pos(f.Base())+cursor_pos-1))
 				if err != nil {
 					log.Fatalln("lookup error,", err)
 				}
-				fmt.Println(info)
+				fmt.Println(">>", info, v.Pos())
+				return
 			}
 		}
 		return

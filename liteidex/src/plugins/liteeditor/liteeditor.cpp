@@ -720,8 +720,12 @@ void LiteEditor::editPositionChanged()
      QTextCursor cur = m_editorWidget->textCursor();
 
      QString src = cur.document()->toPlainText().left(cur.position());
+     int offset = 0;
+     if (m_file->m_lineTerminatorMode == LiteEditorFile::CRLFLineTerminator) {
+        offset = cur.blockNumber();
+     }
 
-     m_liteApp->editorManager()->updateLine(this,cur.blockNumber()+1,cur.columnNumber()+1, src.toUtf8().length()+1);
+     m_liteApp->editorManager()->updateLine(this,cur.blockNumber()+1,cur.columnNumber()+1, src.toUtf8().length()+offset+1);
 }
 
 void LiteEditor::gotoLine()
