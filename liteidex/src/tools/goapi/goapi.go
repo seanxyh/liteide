@@ -1039,6 +1039,8 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 				typ, err := w.varValueType(v.Rhs[i], i)
 				if err == nil {
 					w.localvar[lt.Name] = &ExprType{T: typ, X: lt}
+				} else if *verbose {
+					log.Println(err)
 				}
 			}
 			if inRange(v.Lhs[i], p) {
@@ -1596,6 +1598,23 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 			return w.lookupExpr(v.Index, p)
 		}
 		return w.lookupExpr(v.X, p)
+	case *ast.ParenExpr:
+		return w.lookupExpr(v.X, p)
+	case *ast.FuncLit:
+		if inRange(v.Type, p) {
+			return w.lookupExpr(v.Type, p)
+		} else {
+			w.lookupExpr(v.Type, p)
+		}
+		typ, err := w.varValueType(v.Type, 0)
+		if err != nil {
+			return "", "", err
+		}
+		info, e := w.lookupStmt(v.Body, p)
+		if e != nil {
+			return "", "", err
+		}
+		return typ, info, nil
 	case *ast.FuncType:
 		if v.Params != nil {
 			for _, fd := range v.Params.List {
@@ -2383,6 +2402,7 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 		return w.nodeString(w.namelessType(v)), nil
 	case *ast.IndexExpr:
 		typ, err := w.varValueType(v.X, index)
+		typ = strings.TrimLeft(typ, "*")
 		if err == nil {
 			if strings.HasPrefix(typ, "[]") {
 				return typ[2:], nil
