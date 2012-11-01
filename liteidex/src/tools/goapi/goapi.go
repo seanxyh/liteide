@@ -892,13 +892,11 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 					log.Fatalf("error fset postion %v", v.Pos())
 				}
 				info, err := w.lookupFile(v, token.Pos(f.Base())+cursor_pos-1)
-				//log.Println(w.fset.Position(token.Pos(f.Base())))
-				//log.Println(w.fset.Position(token.Pos(f.Base()) + cursor_pos - 1))
-				//log.Printf("lookup %d %d %d %v ", v.Pos(), cursor_pos, token.Pos(f.Base()), w.fset.Position(token.Pos(f.Base())+cursor_pos-1))
+				log.Println("lookup", w.fset.Position(token.Pos(f.Base())+cursor_pos-1))
 				if err != nil {
 					log.Fatalln("lookup error,", err)
 				}
-				fmt.Println(">>", info, v.Pos())
+				fmt.Println(info)
 				return
 			}
 		}
@@ -1345,12 +1343,24 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, local bool) (string, error
 				if inRange(fd, p) {
 					return w.lookupExprInfo(fd.Type, p)
 				}
+				for _, ident := range fd.Names {
+					typ, err := w.varValueType(fd.Type, 0)
+					if err == nil {
+						w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
+					}
+				}
 			}
 		}
 		if d.Type.Results != nil {
 			for _, fd := range d.Type.Results.List {
 				if inRange(fd, p) {
 					return w.lookupExprInfo(fd.Type, p)
+				}
+				for _, ident := range fd.Names {
+					typ, err := w.varValueType(fd.Type, 0)
+					if err == nil {
+						w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
+					}
 				}
 			}
 		}
@@ -1389,6 +1399,12 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 	case *ast.UnaryExpr:
 		s, info, err := w.lookupExpr(v.X, p)
 		return v.Op.String() + s, info, err
+		//	case *ast.FuncLit:
+		//		if inRange(v.Body, p) {
+		//			info, err := w.lookupStmt(v.Body, p)
+		//			return "", info, err
+		//		}
+		//		return w.lookupExpr(v.Type, p)
 	case *ast.BinaryExpr:
 		if inRange(v.X, p) {
 			return w.lookupExpr(v.X, p)
@@ -1411,20 +1427,16 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 				return ft.Name, fmt.Sprintf("func,%s,%s,%s", ft.Name, typ.sig, w.fset.Position(typ.pos)), nil
 			}
 			return ft.Name, "", nil
+		case *ast.FuncLit:
+			if inRange(ft.Body, p) {
+				info, err := w.lookupStmt(ft.Body, p)
+				if err == nil {
+					return "", info, nil
+				}
+				return "", "", err
+			}
+			return w.lookupExpr(ft.Type, p)
 		case *ast.SelectorExpr:
-			//			s, _, err := w.lookupExpr(ft.X, p)
-			//			if err != nil {
-			//				return "", "", err
-			//			}
-			//			if strings.HasPrefix(s, "*") {
-			//				s = s[1:]
-			//			}
-			//			fname := s + "." + ft.Sel.Name
-			//			if fn, ok := w.curPackage.functions[fname]; ok {
-			//				return fname, fmt.Sprintf("method,%s,%s,%s", fname, w.nodeString(w.namelessType(fn.ft)), w.fset.Position(fn.pos)), nil
-			//			}
-			//			info, e := w.lookupFunction(s, ft.Sel.Name)
-			//			return fname, info, e
 			switch st := ft.X.(type) {
 			case *ast.Ident:
 				s, _, err := w.lookupExpr(st, p)
@@ -1489,6 +1501,9 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 		if strings.HasPrefix(s, "*") {
 			s = s[1:]
 		}
+		if inRange(v.X, p) {
+			return s, info, err
+		}
 		info, e := w.lookupSelector(s, v.Sel.Name)
 		return s + "." + v.Sel.Name, info, e
 	case *ast.Ident:
@@ -1518,9 +1533,47 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 		}
 		return v.Name, "", nil
 	case *ast.IndexExpr:
+		if inRange(v.Index, p) {
+			return w.lookupExpr(v.Index, p)
+		}
 		return w.lookupExpr(v.X, p)
+	case *ast.FuncType:
+		if v.Params != nil {
+			for _, fd := range v.Params.List {
+				if inRange(fd, p) {
+					return w.lookupExpr(fd.Type, p)
+				}
+				for _, ident := range fd.Names {
+					typ, err := w.varValueType(fd.Type, 0)
+					if err == nil {
+						w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
+					}
+				}
+			}
+		}
+		if v.Results != nil {
+			for _, fd := range v.Results.List {
+				if inRange(fd, p) {
+					return w.lookupExpr(fd.Type, p)
+				}
+				for _, ident := range fd.Names {
+					typ, err := w.varValueType(fd.Type, 0)
+					if err == nil {
+						w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
+					}
+				}
+			}
+		}
+		return "", "", nil
 	case *ast.ArrayType:
 		return w.lookupExpr(v.Elt, p)
+	case *ast.SliceExpr:
+		if inRange(v.High, p) {
+			return w.lookupExpr(v.High, p)
+		} else if inRange(v.Low, p) {
+			return w.lookupExpr(v.Low, p)
+		}
+		return w.lookupExpr(v.X, p)
 	case *ast.MapType:
 		if inRange(v.Key, p) {
 			return w.lookupExpr(v.Key, p)
@@ -2043,6 +2096,12 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 		return w.nodeString(v.Type), nil
 	case *ast.FuncLit:
 		return w.nodeString(w.namelessType(v.Type)), nil
+	case *ast.StarExpr:
+		typ, err := w.varValueType(v.X, index)
+		if err != nil {
+			return "", err
+		}
+		return "*" + typ, err
 	case *ast.UnaryExpr:
 		if v.Op == token.AND {
 			typ, err := w.varValueType(v.X, index)
@@ -2722,7 +2781,14 @@ func (w *Walker) namelessFieldList(fl *ast.FieldList) *ast.FieldList {
 	fl2 := &ast.FieldList{}
 	if fl != nil {
 		for _, f := range fl.List {
-			fl2.List = append(fl2.List, w.namelessField(f))
+			n := len(f.Names)
+			if n >= 1 {
+				for i := 0; i < n; i++ {
+					fl2.List = append(fl2.List, w.namelessField(f))
+				}
+			} else {
+				fl2.List = append(fl2.List, w.namelessField(f))
+			}
 		}
 	}
 	return fl2
