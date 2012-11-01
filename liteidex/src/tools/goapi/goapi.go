@@ -1364,6 +1364,16 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, local bool) (string, error
 				}
 			}
 		}
+		if d.Recv != nil {
+			for _, fd := range d.Recv.List {
+				if inRange(fd, p) {
+					return w.lookupExprInfo(fd.Type, p)
+				}
+				for _, ident := range fd.Names {
+					w.localvar[ident.Name] = &ExprType{T: w.nodeString(fd.Type), X: ident}
+				}
+			}
+		}
 		if inRange(d.Body, p) {
 			return w.lookupStmt(d.Body, p)
 		}
@@ -1396,15 +1406,12 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 			return "", "", fmt.Errorf("unknown basic literal kind %#v", v)
 		}
 		return litType, fmt.Sprintf("builtin,%s", litType), nil
+	case *ast.StarExpr:
+		s, info, err := w.lookupExpr(v.X, p)
+		return "*" + s, info, err
 	case *ast.UnaryExpr:
 		s, info, err := w.lookupExpr(v.X, p)
 		return v.Op.String() + s, info, err
-		//	case *ast.FuncLit:
-		//		if inRange(v.Body, p) {
-		//			info, err := w.lookupStmt(v.Body, p)
-		//			return "", info, err
-		//		}
-		//		return w.lookupExpr(v.Type, p)
 	case *ast.BinaryExpr:
 		if inRange(v.X, p) {
 			return w.lookupExpr(v.X, p)
@@ -1504,8 +1511,19 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 		if inRange(v.X, p) {
 			return s, info, err
 		}
+		t := w.curPackage.findType(s)
+		fname := s + "." + v.Sel.Name
+		if st, ok := t.(*ast.StructType); ok {
+			for _, fi := range st.Fields.List {
+				for _, n := range fi.Names {
+					if n.Name == v.Sel.Name {
+						return fname, fmt.Sprintf("var,%s,%s,%s", fname, w.nodeString(w.namelessType(fi.Type)), w.fset.Position(n.Pos())), nil
+					}
+				}
+			}
+		}
 		info, e := w.lookupSelector(s, v.Sel.Name)
-		return s + "." + v.Sel.Name, info, e
+		return fname, info, e
 	case *ast.Ident:
 		if typ, ok := w.localvar[v.Name]; ok {
 			return typ.T, fmt.Sprintf("var,%s,%s,%s", v.Name, typ.T, w.fset.Position(typ.X.Pos())), nil
