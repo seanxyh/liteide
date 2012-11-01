@@ -500,6 +500,14 @@ func (p *Package) findCallFunc(name string) ast.Expr {
 	if t, ok := p.types[name]; ok {
 		return t
 	}
+	if v, ok := p.vars[name]; ok {
+		if strings.HasPrefix(v.T, "func(") {
+			e, err := parser.ParseExpr(v.T + "{}")
+			if err == nil {
+				return e
+			}
+		}
+	}
 	return nil
 }
 
@@ -1158,15 +1166,33 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 		}
 	case *ast.RangeStmt:
 		if inRange(v.X, p) {
-			return w.lookupStmt(v.Body, p)
+			return w.lookupExprInfo(v.X, p)
 		} else {
-			if key, ok := v.Key.(*ast.Ident); ok {
-				w.localvar[key.Name] = &ExprType{T: "int"}
-			}
-			if value, ok := v.Value.(*ast.Ident); ok {
-				typ, err := w.varValueType(v.X, 0)
-				if err == nil {
-					w.localvar[value.Name] = &ExprType{T: typ, X: v.X}
+			typ, err := w.varValueType(v.X, 0)
+			if err == nil {
+				var kt, vt string
+				if strings.HasPrefix(typ, "[]") {
+					kt = "int"
+					vt = typ[2:]
+				} else if strings.HasPrefix(typ, "map[") {
+					node, err := parser.ParseExpr(typ + "{}")
+					if err == nil {
+						if m, ok := node.(*ast.MapType); ok {
+							kt = w.nodeString(w.namelessType(m.Key))
+							vt = w.nodeString(w.namelessType(m.Value))
+						}
+					}
+				}
+				if inRange(v.Key, p) {
+					return fmt.Sprintf("var,%s,%s,%s", w.nodeString(v.Key), kt, w.fset.Position(v.Key.Pos())), nil
+				} else if inRange(v.Value, p) {
+					return fmt.Sprintf("var,%s,%s,%s", w.nodeString(v.Value), vt, w.fset.Position(v.Value.Pos())), nil
+				}
+				if key, ok := v.Key.(*ast.Ident); ok {
+					w.localvar[key.Name] = &ExprType{T: kt, X: v.Key}
+				}
+				if value, ok := v.Value.(*ast.Ident); ok {
+					w.localvar[value.Name] = &ExprType{T: vt, X: v.Value}
 				}
 			}
 		}
@@ -2698,15 +2724,16 @@ func (w *Walker) peekFuncDecl(f *ast.FuncDecl) {
 		recv = f.Recv.List[0].Type
 	}
 	// Record return type for later use.
-	if f.Type.Results != nil && len(f.Type.Results.List) >= 1 {
-		w.curPackage.functions[fname] = method{
-			name: fname,
-			sig:  w.funcSigString(f.Type),
-			ft:   f.Type,
-			pos:  f.Pos(),
-			recv: recv,
-		}
+	//if f.Type.Results != nil && len(f.Type.Results.List) >= 1 {
+	// record all function
+	w.curPackage.functions[fname] = method{
+		name: fname,
+		sig:  w.funcSigString(f.Type),
+		ft:   f.Type,
+		pos:  f.Pos(),
+		recv: recv,
 	}
+	//}
 }
 
 func (w *Walker) walkFuncDecl(f *ast.FuncDecl) {
