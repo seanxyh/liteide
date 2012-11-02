@@ -1511,7 +1511,42 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 	case *ast.StarExpr:
 		s, info, err := w.lookupExpr(v.X, p)
 		return "*" + s, info, err
+	case *ast.KeyValueExpr:
+		if inRange(v.Key, p) {
+			return w.lookupExpr(v.Key, p)
+		} else if inRange(v.Value, p) {
+			return w.lookupExpr(v.Value, p)
+		}
 	case *ast.CompositeLit:
+		typ, err := w.varValueType(v.Type, 0)
+		if err == nil {
+			typ = strings.TrimLeft(typ, "*")
+			pos := strings.Index(typ, ".")
+			var pt *Package = w.curPackage
+			if pos != -1 {
+				pkg := typ[:pos]
+				typ = typ[pos+1:]
+				pt = w.findPackage(pkg)
+			}
+			if pt != nil {
+				if ss, ok := pt.structs[typ]; ok {
+					for _, elt := range v.Elts {
+						if inRange(elt, p) {
+							if kv, ok := elt.(*ast.KeyValueExpr); ok {
+								if inRange(kv.Key, p) {
+									n, t := w.findStructField(ss, w.nodeString(kv.Key))
+									if n != nil {
+										return n.Name, fmt.Sprintf("field,%s,%s,%s", typ+"."+n.Name, w.nodeString(w.namelessType(t)), w.fset.Position(n.Pos())), nil
+									}
+								} else if inRange(kv.Value, p) {
+									return w.lookupExpr(kv.Value, p)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		for _, elt := range v.Elts {
 			if inRange(elt, p) {
 				return w.lookupExpr(elt, p)
@@ -1522,7 +1557,6 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 		s, info, err := w.lookupExpr(v.X, p)
 		return v.Op.String() + s, info, err
 	case *ast.TypeAssertExpr:
-		//log.Println(w.nodeString(v.X), w.nodeString(v.Type))
 		if inRange(v.X, p) {
 			return w.lookupExpr(v.X, p)
 		}
@@ -1664,29 +1698,73 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 		}
 		return "", "", fmt.Errorf("not find call %v %T", w.nodeString(v), v.Fun)
 	case *ast.SelectorExpr:
-		s, info, err := w.lookupExpr(v.X, p)
-		if err != nil {
-			return "", "", err
-		}
-		if strings.HasPrefix(s, "*") {
-			s = s[1:]
-		}
-		if inRange(v.X, p) {
-			return s, info, err
-		}
-		t := w.curPackage.findType(s)
-		fname := s + "." + v.Sel.Name
-		if st, ok := t.(*ast.StructType); ok {
-			for _, fi := range st.Fields.List {
-				for _, n := range fi.Names {
-					if n.Name == v.Sel.Name {
-						return fname, fmt.Sprintf("var,%s,%s,%s", fname, w.nodeString(w.namelessType(fi.Type)), w.fset.Position(n.Pos())), nil
-					}
-				}
+		switch st := v.X.(type) {
+		case *ast.Ident:
+			info, err := w.lookupSelector(st.Name, v.Sel.Name)
+			if err != nil {
+				return "", "", err
 			}
+			return st.Name + v.Sel.Name, info, nil
+			//		case *ast.CallExpr:
+			//			typ, err := w.varValueType(v.X, index)
+			//			if err == nil {
+			//				if strings.HasPrefix(typ, "*") {
+			//					typ = typ[1:]
+			//				}
+			//				t := w.curPackage.findType(typ)
+			//				if st, ok := t.(*ast.StructType); ok {
+			//					for _, fi := range st.Fields.List {
+			//						for _, n := range fi.Names {
+			//							if n.Name == v.Sel.Name {
+			//								return w.varValueType(fi.Type, index)
+			//							}
+			//						}
+			//					}
+			//				}
+			//			}
+		case *ast.SelectorExpr:
+			typ, err := w.varValueType(st, 0)
+			if err == nil {
+				info, err := w.lookupSelector(typ, v.Sel.Name)
+				if err != nil {
+					return "", "", err
+				}
+				return typ + v.Sel.Name, info, nil
+			}
+			//		case *ast.IndexExpr:
+			//			typ, err := w.varValueType(st.X, index)
+			//			if err == nil {
+			//				if strings.HasPrefix(typ, "[]") {
+			//					return w.varSelectorType(typ[2:], v.Sel.Name)
+			//				}
+			//			}
 		}
-		info, e := w.lookupSelector(s, v.Sel.Name)
-		return fname, info, e
+		return "", "", fmt.Errorf("lookup unknown selector expr: %T %s.%s", v.X, w.nodeString(v.X), v.Sel)
+
+		//		s, info, err := w.lookupExpr(v.X, p)
+		//		if err != nil {
+		//			return "", "", err
+		//		}
+		//		if strings.HasPrefix(s, "*") {
+		//			s = s[1:]
+		//		}
+		//		if inRange(v.X, p) {
+		//			return s, info, err
+		//		}
+		//		t := w.curPackage.findType(s)
+		//		fname := s + "." + v.Sel.Name
+		//		if st, ok := t.(*ast.StructType); ok {
+		//			for _, fi := range st.Fields.List {
+		//				for _, n := range fi.Names {
+		//					if n.Name == v.Sel.Name {
+		//						return fname, fmt.Sprintf("var,%s,%s,%s", fname, w.nodeString(w.namelessType(fi.Type)), w.fset.Position(n.Pos())), nil
+		//					}
+		//				}
+		//			}
+		//		}
+		//		log.Println(">>", s)
+		//		info, e := w.lookupSelector(s, v.Sel.Name)
+		//		return fname, info, e
 	case *ast.Ident:
 		if typ, ok := w.localvar[v.Name]; ok {
 			return typ.T, fmt.Sprintf("var,%s,%s,%s", v.Name, typ.T, w.fset.Position(typ.X.Pos())), nil
@@ -2031,6 +2109,19 @@ func (w *Walker) findStructFieldType(st ast.Expr, name string) ast.Expr {
 	return nil
 }
 
+func (w *Walker) findStructField(st ast.Expr, name string) (*ast.Ident, ast.Expr) {
+	if s, ok := st.(*ast.StructType); ok {
+		for _, fi := range s.Fields.List {
+			for _, n := range fi.Names {
+				if n.Name == name {
+					return n, fi.Type
+				}
+			}
+		}
+	}
+	return nil, nil
+}
+
 func (w *Walker) lookupFunction(name, sel string) (string, error) {
 	//find pkg.typ.func()
 	pos := strings.Index(name, ".")
@@ -2168,7 +2259,7 @@ func (w *Walker) lookupSelector(name string, sel string) (string, error) {
 				}
 			}
 		}
-		return "", fmt.Errorf("unknown pkg type selector pkg: %s.%s.%s", pkg, typ, sel)
+		return "", fmt.Errorf("lookup unknown pkg type selector pkg: %s.%s %s", pkg, typ, sel)
 	}
 
 	vs, vt, n := w.resolveName(name)
@@ -2221,6 +2312,7 @@ func (w *Walker) lookupSelector(name string, sel string) (string, error) {
 }
 
 func (w *Walker) varSelectorType(name string, sel string) (string, error) {
+	name = strings.TrimLeft(name, "*")
 	pos := strings.Index(name, ".")
 	if pos != -1 {
 		pkg := name[:pos]
@@ -2230,7 +2322,7 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 			if t != nil {
 				typ := w.findStructFieldType(t, sel)
 				if typ != nil {
-					return w.nodeString(w.namelessType(typ)), nil
+					return w.pkgRetType(pkg, w.nodeString(w.namelessType(typ))), nil
 				}
 			}
 		}
@@ -2238,9 +2330,9 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 	}
 	//check local
 	if lv, ok := w.localvar[name]; ok {
-		typ := lv.T
-		if strings.HasPrefix(typ, "*") {
-			typ = typ[1:]
+		typ := strings.TrimLeft(lv.T, "*")
+		if strings.Index(typ, ".") != -1 {
+			return w.varSelectorType(typ, sel)
 		}
 		t := w.curPackage.findType(typ)
 		if t != nil {
@@ -2374,6 +2466,9 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 		}
 		vt := w.curPackage.findType(v.Name)
 		if vt != nil {
+			if _, ok := vt.(*ast.StructType); ok {
+				return v.Name, nil
+			}
 			return w.nodeString(vt), nil
 		}
 		vs, _, n := w.resolveName(v.Name)
