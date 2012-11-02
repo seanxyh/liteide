@@ -1075,6 +1075,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 				}
 			}
 		}
+		return "", nil
 	case *ast.ExprStmt:
 		_, info, err := w.lookupExpr(v.X, p)
 		return info, err
@@ -1221,7 +1222,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 			return w.lookupStmt(v.Body, p)
 		}
 	}
-	return "", fmt.Errorf("not lookup stmt %v %T", vi, vi)
+	return "", nil //fmt.Errorf("not lookup stmt %v %T", vi, vi)
 }
 
 func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, error) {
@@ -1518,6 +1519,12 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 			if typ, ok := w.curPackage.functions[ft.Name]; ok {
 				return ft.Name, fmt.Sprintf("func,%s,%s,%s", ft.Name, typ.sig, w.fset.Position(typ.pos)), nil
 			}
+			if typ := w.curPackage.findType(ft.Name); typ != nil {
+				return ft.Name, fmt.Sprintf("func,%s,%s,%s", ft.Name, w.nodeString(w.namelessType(typ)), w.fset.Position(typ.Pos())), nil
+			}
+			if isBuiltinType(ft.Name) {
+				return ft.Name, fmt.Sprintf("builtin,%s", ft.Name), nil
+			}
 			return ft.Name, "", nil
 		case *ast.FuncLit:
 			if inRange(ft.Body, p) {
@@ -1552,14 +1559,24 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 				if err != nil {
 					return "", "", err
 				}
-				if strings.HasSuffix(s, "*") {
-					s = s[1:]
+				fname := s + "." + st.Sel.Name
+				s = strings.TrimLeft(s, "*")
+				if t := w.curPackage.findType(s); t != nil {
+					if ss, ok := t.(*ast.StructType); ok {
+						for _, fi := range ss.Fields.List {
+							for _, n := range fi.Names {
+								if n.Name == st.Sel.Name {
+									return fname, fmt.Sprintf("var,%s,%s,%s", fname, w.nodeString(w.namelessType(fi.Type)), w.fset.Position(n.Pos())), nil
+								}
+							}
+						}
+					}
 				}
 				info, e := w.lookupSelector(s, st.Sel.Name)
 				if e != nil {
 					return "", "", e
 				}
-				return s + "." + ft.Sel.Name, info, nil
+				return fname, info, nil
 			case *ast.CallExpr:
 				if inRange(st, p) {
 					return w.lookupExpr(st, p)
@@ -2038,6 +2055,7 @@ func (w *Walker) lookupFunction(name, sel string) (string, error) {
 }
 
 func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
+	name = strings.TrimLeft(name, "*")
 	pos := strings.Index(name, ".")
 	if pos != -1 {
 		pkg := name[:pos]
@@ -2107,6 +2125,7 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 }
 
 func (w *Walker) lookupSelector(name string, sel string) (string, error) {
+	name = strings.TrimLeft(name, "*")
 	pos := strings.Index(name, ".")
 	if pos != -1 {
 		pkg := name[:pos]
@@ -2122,6 +2141,7 @@ func (w *Walker) lookupSelector(name string, sel string) (string, error) {
 		}
 		return "", fmt.Errorf("unknown pkg type selector pkg: %s.%s.%s", pkg, typ, sel)
 	}
+
 	vs, vt, n := w.resolveName(name)
 	if n >= 0 {
 		var typ string
