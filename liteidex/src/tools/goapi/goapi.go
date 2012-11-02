@@ -1155,8 +1155,39 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 		} else {
 			w.lookupStmt(v.Init, p)
 		}
+		var vs string
+		if as, ok := v.Assign.(*ast.AssignStmt); ok {
+			if len(as.Lhs) == 1 {
+				vs = w.nodeString(as.Lhs[0])
+			}
+		}
 		if inRange(v.Body, p) {
-			return w.lookupStmt(v.Body, p)
+			for _, s := range v.Body.List {
+				if inRange(s, p) {
+					switch cs := s.(type) {
+					case *ast.CaseClause:
+						for _, r := range cs.List {
+							if inRange(r, p) {
+								return w.lookupExprInfo(r, p)
+							} else if vs != "" {
+								typ, err := w.varValueType(r, 0)
+								if err == nil {
+									w.localvar[vs] = &ExprType{T: typ, X: r}
+								}
+							}
+						}
+						for _, body := range cs.Body {
+							if inRange(body, p) {
+								return w.lookupStmt(body, p)
+							} else {
+								w.lookupStmt(body, p)
+							}
+						}
+					default:
+						return w.lookupStmt(cs, p)
+					}
+				}
+			}
 		}
 	case *ast.CommClause:
 		if inRange(v.Comm, p) {
@@ -1228,15 +1259,23 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, error) {
 	if inRange(vs.Type, p) {
 		return w.lookupExprInfo(vs.Type, p)
-	} else if len(vs.Values) == 1 && inRange(vs.Values[0], p) {
-		return w.lookupExprInfo(vs.Values[0], p)
 	}
 	for _, v := range vs.Values {
 		if inRange(v, p) {
 			return w.lookupExprInfo(v, p)
 		}
 	}
-	if len(vs.Names) == len(vs.Values) {
+	if vs.Type != nil {
+		typ := w.nodeString(vs.Type)
+		for _, ident := range vs.Names {
+			if local {
+				w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
+			}
+			if inRange(ident, p) {
+				return fmt.Sprintf("var,%s,%s,%s", ident.Name, typ, w.fset.Position(ident.Pos())), nil
+			}
+		}
+	} else if len(vs.Names) == len(vs.Values) {
 		for n, ident := range vs.Names {
 			typ := ""
 			if !local {
@@ -1244,18 +1283,13 @@ func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, 
 					typ = t.T
 				}
 			} else {
-				if vs.Type != nil {
-					typ = w.nodeString(vs.Type)
-				} else {
-					var err error
-					typ, err = w.varValueType(vs.Values[n], n)
-					if err != nil {
-						if *verbose {
-							log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
-								ident.Name, vs.Values[n], err, w.fset.Position(vs.Pos()))
-						}
-						typ = "unknown-type"
+				typ, err := w.varValueType(vs.Values[n], n)
+				if err != nil {
+					if *verbose {
+						log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
+							ident.Name, vs.Values[n], err, w.fset.Position(vs.Pos()))
 					}
+					typ = "unknown-type"
 				}
 				w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
 			}
@@ -1271,18 +1305,13 @@ func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, 
 					typ = t.T
 				}
 			} else {
-				if vs.Type != nil {
-					typ = w.nodeString(vs.Type)
-				} else {
-					var err error
-					typ, err = w.varValueType(vs.Values[0], n)
-					if err != nil {
-						if *verbose {
-							log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
-								ident.Name, vs.Values[0], err, w.fset.Position(vs.Pos()))
-						}
-						typ = "unknown-type"
+				typ, err := w.varValueType(vs.Values[0], n)
+				if err != nil {
+					if *verbose {
+						log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
+							ident.Name, vs.Values[0], err, w.fset.Position(vs.Pos()))
 					}
+					typ = "unknown-type"
 				}
 				w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
 			}
@@ -2272,6 +2301,9 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 }
 
 func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
+	if vi == nil {
+		return "", nil
+	}
 	switch v := vi.(type) {
 	case *ast.BasicLit:
 		litType, ok := varType[v.Kind]
@@ -2525,7 +2557,7 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 	case *ast.TypeAssertExpr:
 		return w.varValueType(v.Type, 0)
 	default:
-		return "", fmt.Errorf("unknown value type %T", vi)
+		return "", fmt.Errorf("unknown value type %v %T", w.nodeString(vi), vi)
 	}
 	//panic("unreachable")
 	return "", fmt.Errorf("unreachable value type %v %T", vi, vi)
