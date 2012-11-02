@@ -7,7 +7,7 @@ goapi tool
 		       api std
 		       api -default_ctx=true fmt flag
 		       api -default_ctx=true -a ./cmd/go
-		       api -default_ctx=true -cursor_type main.go:121 f:/hello 
+		       api -default_ctx=true -lookup_dec main.go:121 f:/hello 
 		  -a=false: extract for all declarations
 		  -allow_new=true: allow API additions
 		  -c="": optional filename to check API against

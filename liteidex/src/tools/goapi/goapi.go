@@ -1221,51 +1221,76 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (string, error) {
 			return w.lookupStmt(v.Body, p)
 		}
 	}
-	return "", nil
+	return "", fmt.Errorf("not lookup stmt %v %T", vi, vi)
 }
 
 func (w *Walker) lookupVar(vs *ast.ValueSpec, p token.Pos, local bool) (string, error) {
 	if inRange(vs.Type, p) {
 		return w.lookupExprInfo(vs.Type, p)
+	} else if len(vs.Values) == 1 && inRange(vs.Values[0], p) {
+		return w.lookupExprInfo(vs.Values[0], p)
 	}
-	for n, ident := range vs.Names {
-		typ := ""
-		if !local {
-			if t, ok := w.curPackage.vars[ident.Name]; ok {
-				typ = t.T
-			}
-		} else {
-			if vs.Type != nil {
-				typ = w.nodeString(vs.Type)
+	for _, v := range vs.Values {
+		if inRange(v, p) {
+			return w.lookupExprInfo(v, p)
+		}
+	}
+	if len(vs.Names) == len(vs.Values) {
+		for n, ident := range vs.Names {
+			typ := ""
+			if !local {
+				if t, ok := w.curPackage.vars[ident.Name]; ok {
+					typ = t.T
+				}
 			} else {
-				if len(vs.Values) != 1 {
-					if *verbose {
-						log.Printf("error values in ValueSpec, var=%q,size=%d", ident.Name, len(vs.Values))
+				if vs.Type != nil {
+					typ = w.nodeString(vs.Type)
+				} else {
+					var err error
+					typ, err = w.varValueType(vs.Values[n], n)
+					if err != nil {
+						if *verbose {
+							log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
+								ident.Name, vs.Values[n], err, w.fset.Position(vs.Pos()))
+						}
+						typ = "unknown-type"
 					}
-					return "", nil
 				}
-
-				if inRange(vs.Values[0], p) {
-					return w.lookupExprInfo(vs.Values[0], p)
-				}
-
-				var err error
-				typ, err = w.varValueType(vs.Values[0], n)
-				if err != nil {
-					if *verbose {
-						log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
-							ident.Name, vs.Values, err, w.fset.Position(vs.Pos()))
-					}
-					typ = "unknown-type"
-				}
+				w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
 			}
-			w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
+			if inRange(ident, p) {
+				return fmt.Sprintf("var,%s,%s,%s", ident.Name, typ, w.fset.Position(ident.Pos())), nil
+			}
 		}
-		if inRange(ident, p) {
-			return fmt.Sprintf("var,%s,%s,%s", ident.Name, typ, w.fset.Position(ident.Pos())), nil
+	} else if len(vs.Values) == 1 {
+		for n, ident := range vs.Names {
+			typ := ""
+			if !local {
+				if t, ok := w.curPackage.vars[ident.Name]; ok {
+					typ = t.T
+				}
+			} else {
+				if vs.Type != nil {
+					typ = w.nodeString(vs.Type)
+				} else {
+					var err error
+					typ, err = w.varValueType(vs.Values[0], n)
+					if err != nil {
+						if *verbose {
+							log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
+								ident.Name, vs.Values[0], err, w.fset.Position(vs.Pos()))
+						}
+						typ = "unknown-type"
+					}
+				}
+				w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
+			}
+			if inRange(ident, p) {
+				return fmt.Sprintf("var,%s,%s,%s", ident.Name, typ, w.fset.Position(ident.Pos())), nil
+			}
 		}
 	}
-	return "", nil
+	return "", fmt.Errorf("not lookup var local:%v value:%v type:s%T", local, w.nodeString(vs), vs)
 }
 
 func (w *Walker) lookupConst(vs *ast.ValueSpec, p token.Pos, local bool) (string, error) {
@@ -1456,9 +1481,22 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 	case *ast.StarExpr:
 		s, info, err := w.lookupExpr(v.X, p)
 		return "*" + s, info, err
+	case *ast.CompositeLit:
+		for _, elt := range v.Elts {
+			if inRange(elt, p) {
+				return w.lookupExpr(elt, p)
+			}
+		}
+		return w.lookupExpr(v.Type, p)
 	case *ast.UnaryExpr:
 		s, info, err := w.lookupExpr(v.X, p)
 		return v.Op.String() + s, info, err
+	case *ast.TypeAssertExpr:
+		//log.Println(w.nodeString(v.X), w.nodeString(v.Type))
+		if inRange(v.X, p) {
+			return w.lookupExpr(v.X, p)
+		}
+		return w.lookupExpr(v.Type, p)
 	case *ast.BinaryExpr:
 		if inRange(v.X, p) {
 			return w.lookupExpr(v.X, p)
@@ -1505,7 +1543,10 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 					return fname, fmt.Sprintf("method,%s,%s,%s", fname, w.nodeString(w.namelessType(fn.ft)), w.fset.Position(fn.pos)), nil
 				}
 				info, e := w.lookupFunction(s, ft.Sel.Name)
-				return fname, info, e
+				if e != nil {
+					return "", "", e
+				}
+				return fname, info, nil
 			case *ast.SelectorExpr:
 				s, _, err := w.lookupExpr(st.X, p)
 				if err != nil {
@@ -1515,7 +1556,10 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 					s = s[1:]
 				}
 				info, e := w.lookupSelector(s, st.Sel.Name)
-				return s + "." + ft.Sel.Name, info, e
+				if e != nil {
+					return "", "", e
+				}
+				return s + "." + ft.Sel.Name, info, nil
 			case *ast.CallExpr:
 				if inRange(st, p) {
 					return w.lookupExpr(st, p)
@@ -1528,7 +1572,20 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 				if e != nil {
 					return "", "", e
 				}
-				return typ + "." + ft.Sel.Name, info, e
+				return typ + "." + ft.Sel.Name, info, nil
+			case *ast.TypeAssertExpr:
+				if inRange(st.X, p) {
+					return w.lookupExpr(st.X, p)
+				}
+				typ, err := w.varValueType(st.Type, 0)
+				if err != nil {
+					return "", "", err
+				}
+				info, e := w.lookupFunction(typ, ft.Sel.Name)
+				if e != nil {
+					return "", "", e
+				}
+				return typ + "." + ft.Sel.Name, info, nil
 			default:
 				return "", "", fmt.Errorf("not find select %v %T", v, st)
 			}
@@ -2390,7 +2447,14 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 						return w.varFunctionType(typ[2:], ft.Sel.Name, index)
 					}
 				}
+			case *ast.TypeAssertExpr:
+				typ, err := w.varValueType(st.Type, 0)
+				if err == nil {
+					typ = strings.TrimLeft(typ, "*")
+					return w.varFunctionType(typ, ft.Sel.Name, index)
+				}
 			}
+			return "", fmt.Errorf("unknown var function selector %v %T", w.nodeString(ft.X), ft.X)
 		case *ast.FuncLit:
 			retType := funcRetType(ft.Type, index)
 			if retType != nil {
@@ -2438,6 +2502,8 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 			}
 			return "chan " + typ, nil
 		}
+	case *ast.TypeAssertExpr:
+		return w.varValueType(v.Type, 0)
 	default:
 		return "", fmt.Errorf("unknown value type %T", vi)
 	}
@@ -2547,30 +2613,43 @@ func (w *Walker) resolveConstantDeps() {
 }
 
 func (w *Walker) walkVar(vs *ast.ValueSpec) {
-	for n, ident := range vs.Names {
-		typ := ""
-		if vs.Type != nil {
-			typ = w.nodeString(vs.Type)
-		} else {
-			if len(vs.Values) != 1 {
-				if *verbose {
-					log.Printf("error values in ValueSpec, var=%q,size=%d", ident.Name, len(vs.Values))
-				}
-				return
+	if vs.Type != nil {
+		typ := w.nodeString(vs.Type)
+		for _, ident := range vs.Names {
+			w.curPackage.vars[ident.Name] = &ExprType{T: typ, X: ident}
+			if isExtract(ident.Name) {
+				w.emitFeature(fmt.Sprintf("var %s %s", ident, typ), ident.Pos())
 			}
-			var err error
-			typ, err = w.varValueType(vs.Values[0], n)
+		}
+	} else if len(vs.Names) == len(vs.Values) {
+		for n, ident := range vs.Names {
+			typ, err := w.varValueType(vs.Values[n], n)
 			if err != nil {
 				if *verbose {
 					log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
-						ident.Name, vs.Values, err, w.fset.Position(vs.Pos()))
+						ident.Name, vs.Values[n], err, w.fset.Position(vs.Pos()))
 				}
 				typ = "unknown-type"
 			}
+			w.curPackage.vars[ident.Name] = &ExprType{T: typ, X: ident}
+			if isExtract(ident.Name) {
+				w.emitFeature(fmt.Sprintf("var %s %s", ident, typ), ident.Pos())
+			}
 		}
-		w.curPackage.vars[ident.Name] = &ExprType{T: typ, X: ident}
-		if isExtract(ident.Name) {
-			w.emitFeature(fmt.Sprintf("var %s %s", ident, typ), ident.Pos())
+	} else if len(vs.Values) == 1 {
+		for n, ident := range vs.Names {
+			typ, err := w.varValueType(vs.Values[0], n)
+			if err != nil {
+				if *verbose {
+					log.Printf("unknown type of variable %q, type %T, error = %v, pos=%s",
+						ident.Name, vs.Values[0], err, w.fset.Position(vs.Pos()))
+				}
+				typ = "unknown-type"
+			}
+			w.curPackage.vars[ident.Name] = &ExprType{T: typ, X: ident}
+			if isExtract(ident.Name) {
+				w.emitFeature(fmt.Sprintf("var %s %s", ident, typ), ident.Pos())
+			}
 		}
 	}
 }
