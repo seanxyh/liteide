@@ -1550,6 +1550,8 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 	case *ast.StarExpr:
 		s, info, err := w.lookupExpr(v.X, p)
 		return "*" + s, info, err
+	case *ast.InterfaceType:
+		return "interface{}", fmt.Sprintf("interface,%s,%s,%s", w.nodeString(v), w.nodeString(v), w.fset.Position(vi.Pos())), nil
 	case *ast.KeyValueExpr:
 		if inRange(v.Key, p) {
 			return w.lookupExpr(v.Key, p)
@@ -1771,7 +1773,8 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, string, error) {
 				return typ + v.Sel.Name, info, nil
 			}
 			//		case *ast.IndexExpr:
-			//			typ, err := w.varValueType(st.X, index)
+			//			typ, err := w.varValueType(st.X, 0)
+			//			log.Println(typ, err)
 			//			if err == nil {
 			//				if strings.HasPrefix(typ, "[]") {
 			//					return w.varSelectorType(typ[2:], v.Sel.Name)
@@ -2294,11 +2297,15 @@ func (w *Walker) lookupSelector(name string, sel string) (string, error) {
 			if t != nil {
 				typ := w.findStructFieldType(t, sel)
 				if typ != nil {
-					return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(typ)), w.fset.Position(typ.Pos())), nil
+					return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.pkgRetType(p.name, w.nodeString(w.namelessType(typ))), w.fset.Position(typ.Pos())), nil
 				}
 			}
 		}
 		return "", fmt.Errorf("lookup unknown pkg type selector pkg: %s.%s %s", pkg, typ, sel)
+	}
+
+	if lv, ok := w.localvar[name]; ok {
+		return w.lookupSelector(lv.T, sel)
 	}
 
 	vs, vt, n := w.resolveName(name)
@@ -2345,6 +2352,14 @@ func (w *Walker) lookupSelector(name string, sel string) (string, error) {
 		typ := p.findSelectorType(sel)
 		if typ != nil {
 			return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.pkgRetType(p.name, w.nodeString(w.namelessType(typ))), w.fset.Position(typ.Pos())), nil
+		}
+	}
+
+	t := w.curPackage.findType(name)
+	if t != nil {
+		typ := w.findStructFieldType(t, sel)
+		if typ != nil {
+			return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(typ)), w.fset.Position(typ.Pos())), nil
 		}
 	}
 	return "", fmt.Errorf("unknown selector expr ident: %s.%s", name, sel)
@@ -2446,6 +2461,8 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 		return w.nodeString(v.Type), nil
 	case *ast.FuncLit:
 		return w.nodeString(w.namelessType(v.Type)), nil
+	case *ast.InterfaceType:
+		return w.nodeString(v), nil
 	case *ast.StarExpr:
 		typ, err := w.varValueType(v.X, index)
 		if err != nil {
@@ -2492,7 +2509,7 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 				}
 			}
 		}
-		return "", fmt.Errorf("unknown selector expr: %T %s.%s", v.X, w.nodeString(v.X), v.Sel)
+		return "", fmt.Errorf("var unknown selector expr: %T %s.%s", v.X, w.nodeString(v.X), v.Sel)
 	case *ast.Ident:
 		if v.Name == "true" || v.Name == "false" {
 			return "bool", nil
@@ -2671,8 +2688,20 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 		typ, err := w.varValueType(v.X, index)
 		typ = strings.TrimLeft(typ, "*")
 		if err == nil {
+			if index == 1 {
+				return "bool", nil
+			}
 			if strings.HasPrefix(typ, "[]") {
 				return typ[2:], nil
+			} else if strings.HasPrefix(typ, "map[") {
+				node, err := parser.ParseExpr(typ + "{}")
+				if err == nil {
+					if cl, ok := node.(*ast.CompositeLit); ok {
+						if m, ok := cl.Type.(*ast.MapType); ok {
+							return w.nodeString(w.namelessType(m.Value)), nil
+						}
+					}
+				}
 			}
 		}
 		return "", fmt.Errorf("unknown index %v", err)
