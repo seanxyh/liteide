@@ -360,6 +360,31 @@ type pkgSymbol struct {
 	symbol string // "RoundTripper"
 }
 
+//expression kind
+type Kind int
+
+const (
+	KindBuiltin Kind = iota
+	KindPackage
+	KindVar
+	KindConst
+	KindInterface
+	KindStruct
+	KindMethod
+	KindField
+	KindType
+	KindFunc
+)
+
+//expression info
+type ExprInfo struct {
+	Kind     Kind     //expr kind
+	X        ast.Expr //expr
+	T        ast.Expr //expr type
+	Name     string   //expr name
+	TypeName string   //expr type name
+}
+
 type ExprType struct {
 	X ast.Expr
 	T string
@@ -475,6 +500,14 @@ func (p *Package) findSelectorType(name string) ast.Expr {
 		return t.ft
 	}
 	for k, v := range p.structs {
+		if k == name {
+			return &ast.Ident{
+				NamePos: v.Pos(),
+				Name:    name,
+			}
+		}
+	}
+	for k, v := range p.interfaces {
 		if k == name {
 			return &ast.Ident{
 				NamePos: v.Pos(),
@@ -1446,6 +1479,12 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, local bool) (string, error
 					return w.lookupExprInfo(fd.Type, p)
 				}
 				for _, ident := range fd.Names {
+					if inRange(ident, p) {
+						info, err := w.lookupExprInfo(fd.Type, p)
+						if err == nil {
+							return fmt.Sprintf("var,%s,%s,%s,", ident.Name, info), nil
+						}
+					}
 					typ, err := w.varValueType(fd.Type, 0)
 					if err == nil {
 						w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
@@ -2305,7 +2344,7 @@ func (w *Walker) lookupSelector(name string, sel string) (string, error) {
 	if p := w.findPackage(name); p != nil {
 		typ := p.findSelectorType(sel)
 		if typ != nil {
-			return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.nodeString(w.namelessType(typ)), w.fset.Position(typ.Pos())), nil
+			return fmt.Sprintf("var,%s,%s,%s", name+"."+sel, w.pkgRetType(p.name, w.nodeString(w.namelessType(typ))), w.fset.Position(typ.Pos())), nil
 		}
 	}
 	return "", fmt.Errorf("unknown selector expr ident: %s.%s", name, sel)
@@ -2650,6 +2689,9 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 			return "chan " + typ, nil
 		}
 	case *ast.TypeAssertExpr:
+		if index == 1 {
+			return "bool", nil
+		}
 		return w.varValueType(v.Type, 0)
 	default:
 		return "", fmt.Errorf("unknown value type %v %T", w.nodeString(vi), vi)
