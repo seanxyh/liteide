@@ -180,7 +180,7 @@ func main() {
 		w := NewWalker()
 		w.context = &build.Default
 		w.cursorPkg = cursorPkg
-		w.sep = *separate + " "
+		w.sep = *separate
 
 		for _, pkg := range pkgs {
 			w.wantedPkg[pkg] = true
@@ -973,9 +973,13 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 					log.Fatalln("lookup error,", err)
 				}
 				if info.T != nil {
-					fmt.Printf("%s,%s,%s,%s\n", info.Kind, info.Name, info.Type, w.fset.Position(info.T.Pos()))
+					fmt.Printf("%s%s%s%s%s%s%s\n",
+						info.Kind, w.sep,
+						info.Name, w.sep,
+						info.Type, w.sep,
+						w.fset.Position(info.T.Pos()))
 				} else {
-					fmt.Printf("%s,%s\n", info.Kind, info.Name)
+					fmt.Printf("%s%s%s\n", info.Kind, w.sep, info.Name)
 				}
 				return
 			}
