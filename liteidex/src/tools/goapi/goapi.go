@@ -196,6 +196,7 @@ func main() {
 		}
 
 		w := NewWalker()
+		w.cursorPkg = cursorPkg
 		for _, pkg := range pkgs {
 			w.wantedPkg[pkg] = true
 		}
@@ -377,6 +378,9 @@ const (
 	KindType
 	KindFunc
 	KindChan
+	KindArray
+	KindMap
+	KindSlice
 )
 
 func (k Kind) String() string {
@@ -407,6 +411,12 @@ func (k Kind) String() string {
 		return "func"
 	case KindChan:
 		return "chan"
+	case KindMap:
+		return "map"
+	case KindArray:
+		return "array"
+	case KindSlice:
+		return "slice"
 	}
 	return fmt.Sprintf("unknown-%v", k)
 }
@@ -509,13 +519,13 @@ func funcRetType(ft *ast.FuncType, index int) ast.Expr {
 	return nil
 }
 
-func findFunction(funcs []*doc.Func, name string) *ast.FuncType {
+func findFunction(funcs []*doc.Func, name string) (*ast.Ident, *ast.FuncType) {
 	for _, f := range funcs {
 		if f.Name == name {
-			return f.Decl.Type
+			return &ast.Ident{Name: name, NamePos: f.Decl.Pos()}, f.Decl.Type
 		}
 	}
-	return nil
+	return nil, nil
 }
 
 func (p *Package) findSelectorType(name string) ast.Expr {
@@ -598,22 +608,37 @@ func (p *Package) findCallType(name string, index int) ast.Expr {
 	return nil
 }
 
-func (p *Package) findMethod(typ, name string) *ast.FuncType {
+func (p *Package) findMethod(typ, name string) (*ast.Ident, *ast.FuncType) {
+	if t, ok := p.interfaces[typ]; ok && t.Methods != nil {
+		for _, fd := range t.Methods.List {
+			switch ft := fd.Type.(type) {
+			case *ast.FuncType:
+				for _, ident := range fd.Names {
+					if ident.Name == name {
+						return ident, ft
+					}
+				}
+			}
+		}
+	}
 	for k, v := range p.interfaceMethods {
 		if k == typ {
 			for _, m := range v {
 				if m.name == name {
-					return m.ft
+					return &ast.Ident{Name: name, NamePos: m.pos}, m.ft
 				}
 			}
 		}
+	}
+	if p.dpkg == nil {
+		return nil, nil
 	}
 	for _, t := range p.dpkg.Types {
 		if t.Name == typ {
 			return findFunction(t.Methods, name)
 		}
 	}
-	return nil
+	return nil, nil
 }
 
 type Walker struct {
@@ -1209,6 +1234,8 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (*TypeInfo, error) {
 		for _, body := range v.Body {
 			if inRange(body, p) {
 				return w.lookupStmt(body, p)
+			} else {
+				w.lookupStmt(body, p)
 			}
 		}
 	case *ast.SwitchStmt:
@@ -1455,13 +1482,25 @@ func (w *Walker) lookupType(ts *ast.TypeSpec, p token.Pos, local bool) (*TypeInf
 				}
 				for _, ident := range fd.Names {
 					if inRange(ident, p) {
-						return &TypeInfo{Kind: KindField, X: ident, Name: ident.Name, T: fd.Type, Type: w.nodeString(w.namelessType(fd.Type))}, nil
+						return &TypeInfo{Kind: KindField, X: ident, Name: ts.Name.Name + "." + ident.Name, T: fd.Type, Type: w.nodeString(w.namelessType(fd.Type))}, nil
 					}
 				}
 			}
 		}
 		return &TypeInfo{Kind: KindStruct, X: ts.Name, Name: ts.Name.Name, T: ts.Type, Type: "struct"}, nil
 	case *ast.InterfaceType:
+		if inRange(t.Methods, p) {
+			for _, fd := range t.Methods.List {
+				if inRange(fd.Type, p) {
+					return w.lookupExprInfo(fd.Type, p)
+				}
+				for _, ident := range fd.Names {
+					if inRange(ident, p) {
+						return &TypeInfo{Kind: KindMethod, X: ident, Name: ts.Name.Name + "." + ident.Name, T: ident, Type: w.nodeString(w.namelessType(fd.Type))}, nil
+					}
+				}
+			}
+		}
 		return &TypeInfo{Kind: KindInterface, X: ts.Name, Name: ts.Name.Name, T: ts.Type, Type: "interface"}, nil
 	default:
 		return &TypeInfo{Kind: KindType, X: ts.Name, Name: ts.Name.Name, T: ts.Type, Type: w.nodeString(w.namelessType(ts.Type))}, nil
@@ -1533,6 +1572,8 @@ func (w *Walker) lookupDecl(di ast.Decl, p token.Pos, local bool) (*TypeInfo, er
 					typ, err := w.varValueType(fd.Type, 0)
 					if err == nil {
 						w.localvar[ident.Name] = &ExprType{T: typ, X: ident}
+					} else if *verbose {
+						log.Println(err)
 					}
 				}
 			}
@@ -1602,6 +1643,12 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 		return "*" + s, &TypeInfo{Kind: info.Kind, X: v, Name: "*" + info.Name, T: info.T, Type: "*" + info.Type}, err
 	case *ast.InterfaceType:
 		return "interface{}", &TypeInfo{Kind: KindInterface, X: v, Name: w.nodeString(v), T: v, Type: "interface{}"}, nil
+	case *ast.Ellipsis:
+		s, info, err := w.lookupExpr(v.Elt, p)
+		if err != nil {
+			return "", nil, err
+		}
+		return "[]" + s, &TypeInfo{Kind: KindArray, X: v.Elt, Name: "..." + s, T: info.T, Type: "[]" + info.Type}, nil
 	case *ast.KeyValueExpr:
 		if inRange(v.Key, p) {
 			return w.lookupExpr(v.Key, p)
@@ -1690,6 +1737,8 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 				return "", nil, err
 			}
 			return w.lookupExpr(ft.Type, p)
+		case *ast.ParenExpr:
+			return w.lookupExpr(ft.X, p)
 		case *ast.SelectorExpr:
 			switch st := ft.X.(type) {
 			case *ast.Ident:
@@ -1749,10 +1798,7 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 				if inRange(st.X, p) {
 					return w.lookupExpr(st.X, p)
 				}
-				typ, err := w.varValueType(st.Type, 0)
-				if err != nil {
-					return "", nil, err
-				}
+				typ := w.nodeString(w.namelessType(st.Type))
 				info, e := w.lookupFunction(typ, ft.Sel.Name)
 				if e != nil {
 					return "", nil, e
@@ -1806,7 +1852,7 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 			//				}
 			//			}
 		}
-		return "", nil, fmt.Errorf("lookup unknown selector expr: %T %s.%s", v.X, w.nodeString(v.X), v.Sel)
+		return "", nil, fmt.Errorf("unknown lookup selector expr: %T %s.%s", v.X, w.nodeString(v.X), v.Sel)
 
 		//		s, info, err := w.lookupExpr(v.X, p)
 		//		if err != nil {
@@ -1857,7 +1903,8 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 		if isBuiltinType(v.Name) {
 			return v.Name, &TypeInfo{Kind: KindBuiltin, Name: v.Name}, nil
 		}
-		return v.Name, nil, nil
+		return "", nil, fmt.Errorf("lookup unknown ident %v", v)
+		//return v.Name, &TypeInfo{Kind: KindVar, X: v, Name: v.Name, T: v, Type: v.Name}, nil
 	case *ast.IndexExpr:
 		if inRange(v.Index, p) {
 			return w.lookupExpr(v.Index, p)
@@ -1909,7 +1956,11 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 		}
 		return "", nil, nil
 	case *ast.ArrayType:
-		return w.lookupExpr(v.Elt, p)
+		s, info, err := w.lookupExpr(v.Elt, p)
+		if err != nil {
+			return "", nil, err
+		}
+		return "[]" + s, &TypeInfo{Kind: KindArray, Name: "[]" + info.Name, Type: "[]" + info.Type, T: info.T}, nil
 	case *ast.SliceExpr:
 		if inRange(v.High, p) {
 			return w.lookupExpr(v.High, p)
@@ -1927,7 +1978,7 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 		if err != nil {
 			return "", nil, err
 		}
-		return typ, &TypeInfo{Kind: KindVar, X: v, Name: w.nodeString(v), T: v, Type: typ}, nil
+		return typ, &TypeInfo{Kind: KindMap, X: v, Name: w.nodeString(v), T: v, Type: typ}, nil
 	case *ast.ChanType:
 		if inRange(v.Value, p) {
 			return w.lookupExpr(v.Value, p)
@@ -2172,9 +2223,54 @@ func (w *Walker) pkgRetType(pkg, ret string) string {
 func (w *Walker) findStructFieldType(st ast.Expr, name string) ast.Expr {
 	if s, ok := st.(*ast.StructType); ok {
 		for _, fi := range s.Fields.List {
+			typ := fi.Type
 			for _, n := range fi.Names {
 				if n.Name == name {
 					return fi.Type
+				}
+			}
+			if fi.Names == nil {
+				switch v := typ.(type) {
+				case *ast.Ident:
+					if t := w.curPackage.findType(v.Name); t != nil {
+						return w.findStructFieldType(t, name)
+					}
+				case *ast.StarExpr:
+					switch vv := v.X.(type) {
+					case *ast.Ident:
+						if t := w.curPackage.findType(vv.Name); t != nil {
+							return w.findStructFieldType(t, name)
+						}
+					case *ast.SelectorExpr:
+						pt := w.nodeString(typ)
+						pos := strings.Index(pt, ".")
+						if pos != -1 {
+							if p := w.findPackage(pt[:pos]); p != nil {
+								if t := p.findType(pt[pos+1:]); t != nil {
+									return w.findStructFieldType(t, name)
+								}
+							}
+						}
+						w.emitFeature(fmt.Sprintf("embedded %s", w.nodeString(typ)), v.Pos())
+					default:
+						if *verbose {
+							log.Printf("unable to handle embedded starexpr before %T", typ)
+						}
+					}
+				case *ast.SelectorExpr:
+					pt := w.nodeString(typ)
+					pos := strings.Index(pt, ".")
+					if pos != -1 {
+						if p := w.findPackage(pt[:pos]); p != nil {
+							if t := p.findType(pt[pos+1:]); t != nil {
+								return w.findStructFieldType(t, name)
+							}
+						}
+					}
+				default:
+					if *verbose {
+						log.Printf("unable to handle embedded %T", typ)
+					}
 				}
 			}
 		}
@@ -2203,8 +2299,8 @@ func (w *Walker) lookupFunction(name, sel string) (*TypeInfo, error) {
 		typ := name[pos+1:]
 
 		if p := w.findPackage(pkg); p != nil {
-			if fn := p.findMethod(typ, sel); fn != nil {
-				return &TypeInfo{Kind: KindMethod, X: fn, Name: name + "." + sel, T: fn, Type: w.nodeString(w.namelessType(fn))}, nil
+			if ident, fn := p.findMethod(typ, sel); fn != nil {
+				return &TypeInfo{Kind: KindMethod, X: fn, Name: name + "." + sel, T: ident, Type: w.nodeString(w.namelessType(fn))}, nil
 			}
 		}
 		return nil, fmt.Errorf("not lookup pkg type function pkg: %s.%s.%s", pkg, typ, sel)
@@ -2235,7 +2331,10 @@ func (w *Walker) lookupFunction(name, sel string) (*TypeInfo, error) {
 			return &TypeInfo{Kind: KindMethod, X: fn.ft, Name: name + "." + sel, T: fn.ft, Type: w.nodeString(w.namelessType(fn))}, nil
 		}
 	}
-	//find pkg.func()
+
+	if ident, fn := w.curPackage.findMethod(name, sel); ident != nil && fn != nil {
+		return &TypeInfo{Kind: KindMethod, X: fn, Name: name + "." + sel, T: ident, Type: w.nodeString(w.namelessType(fn))}, nil
+	}
 
 	if p := w.findPackage(name); p != nil {
 		fn := p.findCallFunc(sel)
@@ -2244,7 +2343,7 @@ func (w *Walker) lookupFunction(name, sel string) (*TypeInfo, error) {
 		}
 		return nil, fmt.Errorf("not find pkg func %v.%v", p.name, sel)
 	}
-	return nil, fmt.Errorf("not find func %v.%v", name, sel)
+	return nil, fmt.Errorf("not lookup func %v.%v", name, sel)
 }
 
 func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
@@ -2255,7 +2354,7 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 		typ := name[pos+1:]
 
 		if p := w.findPackage(pkg); p != nil {
-			fn := p.findMethod(typ, sel)
+			_, fn := p.findMethod(typ, sel)
 			if fn != nil {
 				ret := funcRetType(fn, index)
 				if ret != nil {
@@ -2494,6 +2593,12 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 		return w.nodeString(w.namelessType(v.Type)), nil
 	case *ast.InterfaceType:
 		return w.nodeString(v), nil
+	case *ast.Ellipsis:
+		typ, err := w.varValueType(v.Elt, index)
+		if err != nil {
+			return "", err
+		}
+		return "[]" + typ, nil
 	case *ast.StarExpr:
 		typ, err := w.varValueType(v.X, index)
 		if err != nil {
@@ -2682,11 +2787,9 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 					}
 				}
 			case *ast.TypeAssertExpr:
-				typ, err := w.varValueType(st.Type, 0)
-				if err == nil {
-					typ = strings.TrimLeft(typ, "*")
-					return w.varFunctionType(typ, ft.Sel.Name, index)
-				}
+				typ := w.nodeString(w.namelessType(st.Type))
+				typ = strings.TrimLeft(typ, "*")
+				return w.varFunctionType(typ, ft.Sel.Name, index)
 			}
 			return "", fmt.Errorf("unknown var function selector %v %T", w.nodeString(ft.X), ft.X)
 		case *ast.FuncLit:
@@ -2752,7 +2855,7 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 		if index == 1 {
 			return "bool", nil
 		}
-		return w.varValueType(v.Type, 0)
+		return w.nodeString(w.namelessType(v.Type)), nil
 	default:
 		return "", fmt.Errorf("unknown value type %v %T", w.nodeString(vi), vi)
 	}
