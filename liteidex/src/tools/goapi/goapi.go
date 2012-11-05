@@ -2221,25 +2221,30 @@ func (w *Walker) pkgRetType(pkg, ret string) string {
 }
 
 func (w *Walker) findStructFieldType(st ast.Expr, name string) ast.Expr {
+	_, expr := w.findStructField(st, name)
+	return expr
+}
+
+func (w *Walker) findStructField(st ast.Expr, name string) (*ast.Ident, ast.Expr) {
 	if s, ok := st.(*ast.StructType); ok {
 		for _, fi := range s.Fields.List {
 			typ := fi.Type
 			for _, n := range fi.Names {
 				if n.Name == name {
-					return fi.Type
+					return n, fi.Type
 				}
 			}
 			if fi.Names == nil {
 				switch v := typ.(type) {
 				case *ast.Ident:
 					if t := w.curPackage.findType(v.Name); t != nil {
-						return w.findStructFieldType(t, name)
+						return w.findStructField(t, name)
 					}
 				case *ast.StarExpr:
 					switch vv := v.X.(type) {
 					case *ast.Ident:
 						if t := w.curPackage.findType(vv.Name); t != nil {
-							return w.findStructFieldType(t, name)
+							return w.findStructField(t, name)
 						}
 					case *ast.SelectorExpr:
 						pt := w.nodeString(typ)
@@ -2247,7 +2252,7 @@ func (w *Walker) findStructFieldType(st ast.Expr, name string) ast.Expr {
 						if pos != -1 {
 							if p := w.findPackage(pt[:pos]); p != nil {
 								if t := p.findType(pt[pos+1:]); t != nil {
-									return w.findStructFieldType(t, name)
+									return w.findStructField(t, name)
 								}
 							}
 						}
@@ -2263,7 +2268,7 @@ func (w *Walker) findStructFieldType(st ast.Expr, name string) ast.Expr {
 					if pos != -1 {
 						if p := w.findPackage(pt[:pos]); p != nil {
 							if t := p.findType(pt[pos+1:]); t != nil {
-								return w.findStructFieldType(t, name)
+								return w.findStructField(t, name)
 							}
 						}
 					}
@@ -2271,19 +2276,6 @@ func (w *Walker) findStructFieldType(st ast.Expr, name string) ast.Expr {
 					if *verbose {
 						log.Printf("unable to handle embedded %T", typ)
 					}
-				}
-			}
-		}
-	}
-	return nil
-}
-
-func (w *Walker) findStructField(st ast.Expr, name string) (*ast.Ident, ast.Expr) {
-	if s, ok := st.(*ast.StructType); ok {
-		for _, fi := range s.Fields.List {
-			for _, n := range fi.Names {
-				if n.Name == name {
-					return n, fi.Type
 				}
 			}
 		}
