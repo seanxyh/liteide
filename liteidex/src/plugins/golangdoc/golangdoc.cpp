@@ -568,9 +568,16 @@ void GolangDoc::openUrlPdoc(const QUrl &url)
             additional = false;
         }
     }
+    QStringList pathList = LiteApi::getGopathList(m_liteApp,false);
+    if (additional) {
+        pathList << ".";
+    }
+    if (!pathList.isEmpty()) {
+        args << "-path" << pathList.join(":");
+    }
     if (additional) {
         m_godocProcess->setWorkingDirectory(url.path());
-        args << "-html=true" << "-path=." << ".";
+        args << "-html=true" << ".";
     } else {
         m_godocProcess->setWorkingDirectory(m_goroot);
         args << "-html=true" << url.path();
