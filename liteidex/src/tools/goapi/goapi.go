@@ -250,8 +250,23 @@ lookup:
 			if w.lookupInfo.Type != "" {
 				fmt.Println("type,", strings.TrimLeft(w.lookupInfo.Type, "*"))
 			}
-			if w.lookupInfo.T != nil {
+			if w.lookupInfo.Kind == KindImport || w.lookupInfo.Kind == KindPackage {
+				if p := w.findPackage(w.lookupInfo.Name); p != nil {
+					fmt.Println("help,", p.name)
+				}
+			} else if w.lookupInfo.T != nil {
 				fmt.Println("pos,", w.fset.Position(w.lookupInfo.T.Pos()))
+				for _, typ := range []string{w.lookupInfo.Name, w.lookupInfo.Type} {
+					typ = strings.TrimLeft(w.lookupInfo.Name, "*")
+					pos := strings.Index(typ, ".")
+					if pos != -1 {
+						if p := w.findPackage(typ[:pos]); p != nil {
+							fmt.Println("help,", p.name+typ[pos:])
+							break
+						}
+					}
+
+				}
 			}
 		}
 		return
@@ -1127,6 +1142,10 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (*TypeInfo, error) {
 	case *ast.EmptyStmt:
 		//
 	case *ast.LabeledStmt:
+		if inRange(v.Label, p) {
+			return nil, nil
+		}
+		return w.lookupStmt(v.Stmt, p)
 		//
 	case *ast.DeclStmt:
 		return w.lookupDecl(v.Decl, p, true)
@@ -1659,17 +1678,40 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 		typ, err := w.varValueType(v.Type, 0)
 		if err == nil {
 			typ = strings.TrimLeft(typ, "*")
+			if strings.HasPrefix(typ, "[]") {
+				typ = strings.TrimLeft(typ[2:], "*")
+			}
 			pos := strings.Index(typ, ".")
 			var pt *Package = w.curPackage
+			var pkgdot string
 			if pos != -1 {
 				pkg := typ[:pos]
 				typ = typ[pos+1:]
 				pt = w.findPackage(pkg)
+				if pt != nil {
+					pkgdot = pkg + "."
+				}
 			}
 			if pt != nil {
 				if ss, ok := pt.structs[typ]; ok {
 					for _, elt := range v.Elts {
 						if inRange(elt, p) {
+							if cl, ok := elt.(*ast.CompositeLit); ok {
+								for _, elt := range cl.Elts {
+									if inRange(elt, p) {
+										if kv, ok := elt.(*ast.KeyValueExpr); ok {
+											if inRange(kv.Key, p) {
+												n, t := w.findStructField(ss, w.nodeString(kv.Key))
+												if n != nil {
+													return pkgdot + typ + "." + w.nodeString(kv.Key), &TypeInfo{Kind: KindField, X: kv.Key, Name: pkgdot + typ + "." + w.nodeString(kv.Key), T: n, Type: w.nodeString(w.namelessType(t))}, nil
+												}
+											} else if inRange(kv.Value, p) {
+												return w.lookupExpr(kv.Value, p)
+											}
+										}
+									}
+								}
+							}
 							if kv, ok := elt.(*ast.KeyValueExpr); ok {
 								if inRange(kv.Key, p) {
 									n, t := w.findStructField(ss, w.nodeString(kv.Key))

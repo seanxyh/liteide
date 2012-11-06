@@ -84,6 +84,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_godocProcess = new ProcessEx(this);
     m_goapiProcess = new ProcessEx(this);
     m_lookupProcess = new ProcessEx(this);
+    m_helpProcess = new ProcessEx(this);
 
     m_widget = new QWidget;
     m_findResultModel = new QStringListModel(this);
@@ -162,6 +163,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     connect(m_goapiProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(goapiFinish(bool,int,QString)));
     connect(m_lookupProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(lookupOutput(QByteArray,bool)));
     connect(m_lookupProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(lookupFinish(bool,int,QString)));
+    connect(m_helpProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(helpOutput(QByteArray,bool)));
+    connect(m_helpProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(helpFinish(bool,int,QString)));
     connect(m_findProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
     connect(m_findProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(findFinish(bool,int,QString)));
     connect(m_findResultListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickListView(QModelIndex)));
@@ -232,28 +235,14 @@ void GolangDoc::editorFindDoc()
     if (!textEditor) {
         return;
     }
-    QPlainTextEdit *ed = LiteApi::findExtensionObject<QPlainTextEdit*>(textEditor,"LiteApi.QPlainTextEdit");
-    if (!ed) {
-        return;
-    }
-    QTextCursor tc = ed->textCursor();
-    QString text;
-    if (!tc.hasSelection()) {
-        tc.select(QTextCursor::WordUnderCursor);
-        text = tc.selectedText();
-        int pos = tc.selectionStart()-tc.block().position();
-        if (pos >= 1) {
-            if (tc.block().text().at(pos-1) == '.') {
-                text = "."+text;
-            }
-        }
-    } else {
-        text = tc.selectedText();
-    }
-    if (!text.isEmpty()) {
-        m_toolAct->setChecked(true);
-        m_findEdit->setText(text);
-    }
+    m_liteApp->editorManager()->saveEditor(editor,false);
+
+    m_helpData.clear();
+    QFileInfo info(textEditor->filePath());
+    m_helpProcess->setWorkingDirectory(info.path());
+    m_helpProcess->startEx(m_goapiCmd,QString("-cursor_info %1:%2 .").
+                             arg(info.fileName()).
+                             arg(textEditor->position()));
 }
 
 void GolangDoc::editorCreated(LiteApi::IEditor *editor)
@@ -955,6 +944,28 @@ void GolangDoc::lookupFinish(bool error, int code, QString)
                     int col = reg.cap(2).toInt();                    
                     LiteApi::gotoLine(m_liteApp,fileName,line-1,col-1);
                 }
+            }
+        }
+    }
+}
+
+void GolangDoc::helpOutput(QByteArray data, bool bStdErr)
+{
+    if (!bStdErr) {
+        m_helpData.append(data);
+    }
+}
+
+void GolangDoc::helpFinish(bool error, int code, QString)
+{
+    if (!error && code == 0) {
+        QTextStream s(&m_helpData);
+        while (!s.atEnd()) {
+            QString line = s.readLine();
+            if (line.startsWith("help,")) {
+                m_toolAct->setChecked(true);
+                QString help = line.mid(5).trimmed();
+                m_findEdit->setText(help);
             }
         }
     }
