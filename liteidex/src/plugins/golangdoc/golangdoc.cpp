@@ -215,6 +215,8 @@ void GolangDoc::editorJumpToDecl()
     if (!textEditor) {
         return;
     }
+    m_liteApp->editorManager()->saveEditor(editor,false);
+
     m_lookupData.clear();
     QFileInfo info(textEditor->filePath());
     m_lookupProcess->setWorkingDirectory(info.path());
@@ -950,12 +952,8 @@ void GolangDoc::lookupFinish(bool error, int code, QString)
                 if (pos >= 0) {
                     QString fileName = info.left(pos);
                     int line = reg.cap(1).toInt();
-                    int col = reg.cap(2).toInt();
-                    LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName,true);
-                    LiteApi::ITextEditor *ed = LiteApi::getTextEditor(editor);
-                    if (ed) {
-                        ed->gotoLine(line-1,col-1);
-                    }
+                    int col = reg.cap(2).toInt();                    
+                    LiteApi::gotoLine(m_liteApp,fileName,line-1,col-1);
                 }
             }
         }
