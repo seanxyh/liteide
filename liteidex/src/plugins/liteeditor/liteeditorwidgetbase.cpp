@@ -735,7 +735,7 @@ void LiteEditorWidgetBase::maybeSelectLine()
 
 void LiteEditorWidgetBase::gotoLine(int line, int column, bool center)
 {
-    //m_lastCursorChangeWasInteresting = false;
+    m_lastCursorChangeWasInteresting = false;
     const int blockNumber = line;
     const QTextBlock &block = document()->findBlockByNumber(blockNumber);
     if (block.isValid()) {

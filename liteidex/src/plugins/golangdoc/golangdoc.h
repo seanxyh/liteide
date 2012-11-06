@@ -84,6 +84,8 @@ public slots:
     void goapiFinish(bool,int,QString);
     void lookupOutput(QByteArray,bool);
     void lookupFinish(bool,int,QString);
+    void helpOutput(QByteArray,bool);
+    void helpFinish(bool,int,QString);
     void doubleClickListView(QModelIndex);
     void currentIndexChanged(QModelIndex);
     void findTag(const QString &tag);
@@ -115,11 +117,13 @@ protected:
     ProcessEx  *m_godocProcess;
     ProcessEx  *m_goapiProcess;
     ProcessEx  *m_lookupProcess;
+    ProcessEx  *m_helpProcess;
     QAction *m_browserAct;
     QString m_goroot;
     QByteArray  m_godocData;
     QByteArray  m_goapiData;
     QByteArray  m_lookupData;
+    QByteArray  m_helpData;
     QByteArray  m_findData;
     QString  m_templateData;
     LiteApi::IEnvManager *m_envManager;
