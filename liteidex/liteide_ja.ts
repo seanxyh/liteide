@@ -370,89 +370,94 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <translation type="unfinished">全てを閉じる</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="138"/>
+        <location filename="src/liteapp/editormanager.cpp" line="93"/>
+        <source>Move To New Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/editormanager.cpp" line="141"/>
         <source>Undo</source>
         <translation type="unfinished">元に戻す</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="141"/>
+        <location filename="src/liteapp/editormanager.cpp" line="144"/>
         <source>Redo</source>
         <translation type="unfinished">やり直し</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="144"/>
+        <location filename="src/liteapp/editormanager.cpp" line="147"/>
         <source>Cut</source>
         <translation type="unfinished">切り取り</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="147"/>
+        <location filename="src/liteapp/editormanager.cpp" line="150"/>
         <source>Copy</source>
         <translation type="unfinished">コピー</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="150"/>
+        <location filename="src/liteapp/editormanager.cpp" line="153"/>
         <source>Paste</source>
         <oldsource>paste</oldsource>
         <translation type="unfinished">貼り付け</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="153"/>
+        <location filename="src/liteapp/editormanager.cpp" line="156"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="156"/>
+        <location filename="src/liteapp/editormanager.cpp" line="159"/>
         <source>Goto Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="163"/>
+        <location filename="src/liteapp/editormanager.cpp" line="166"/>
         <source>&amp;Edit</source>
         <oldsource>Edit</oldsource>
         <translation type="unfinished">編集</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="186"/>
+        <location filename="src/liteapp/editormanager.cpp" line="189"/>
         <source>GoBack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="190"/>
+        <location filename="src/liteapp/editormanager.cpp" line="193"/>
         <source>GoForward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="223"/>
+        <location filename="src/liteapp/editormanager.cpp" line="226"/>
         <source>File is writable</source>
         <translation type="unfinished">書き込み可能</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="364"/>
+        <location filename="src/liteapp/editormanager.cpp" line="367"/>
         <source>%1 is modified.</source>
         <translation>%1 は変更されています</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="365"/>
+        <location filename="src/liteapp/editormanager.cpp" line="368"/>
         <source>Save Modify</source>
         <translation>変更を保存</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="438"/>
+        <location filename="src/liteapp/editormanager.cpp" line="443"/>
         <source>All Files (*)</source>
         <translation>全てのファイル (*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="440"/>
+        <location filename="src/liteapp/editormanager.cpp" line="445"/>
         <source>Save As</source>
         <translation>名前を付けて保存...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="507"/>
+        <location filename="src/liteapp/editormanager.cpp" line="512"/>
         <source>File Is ReadOnly</source>
         <translation type="unfinished">読み取り専用</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="510"/>
+        <location filename="src/liteapp/editormanager.cpp" line="515"/>
         <source>File Is Writable</source>
         <translation type="unfinished">書き込み可能</translation>
     </message>
@@ -691,12 +696,12 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <translation>全てのファイル (*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="279"/>
+        <location filename="src/liteapp/filemanager.cpp" line="278"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="280"/>
+        <location filename="src/liteapp/filemanager.cpp" line="279"/>
         <source>Project &apos;%1&apos; is created.
 Do you want to load?</source>
         <translation>プロジェクト &apos;%1&apos; が作成されました。
@@ -713,34 +718,34 @@ Do you want to load?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="222"/>
+        <location filename="src/liteapp/filemanager.cpp" line="221"/>
         <source>Open Package Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="235"/>
+        <location filename="src/liteapp/filemanager.cpp" line="234"/>
         <source>Open Files</source>
         <translation>ファイルを開く...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="248"/>
+        <location filename="src/liteapp/filemanager.cpp" line="247"/>
         <source>Open Project</source>
         <translation>プロジェクトを開く</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="583"/>
+        <location filename="src/liteapp/filemanager.cpp" line="582"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
         <translation>%1
 このファイルは削除されました。ファイルを保存しますか?またはエディタを終了しますか?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="584"/>
+        <location filename="src/liteapp/filemanager.cpp" line="583"/>
         <source>LiteIDE X</source>
         <translation>LiteIDE X</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="602"/>
+        <location filename="src/liteapp/filemanager.cpp" line="601"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation type="unfinished">%1
@@ -821,17 +826,17 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="365"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="366"/>
         <source>Searching for &apos;%1&apos;...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="405"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="406"/>
         <source>Open Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litefind/filesearch.cpp" line="417"/>
+        <location filename="src/plugins/litefind/filesearch.cpp" line="418"/>
         <source>%1 occurrence(s) have been found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -839,136 +844,136 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>FileSystemWidget</name>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="84"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="82"/>
         <source>Open Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="85"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="83"/>
         <source>New File</source>
         <translation type="unfinished">新しいファイル</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="86"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="84"/>
         <source>New File Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="87"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="226"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="232"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="237"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="85"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="224"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="230"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="235"/>
         <source>Rename File</source>
         <translation type="unfinished">ファイル名を変更</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="88"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="251"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="256"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="86"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="249"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="254"/>
         <source>Remove File</source>
         <translation type="unfinished">ファイルを削除</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="90"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="88"/>
         <source>New Folder</source>
         <translation type="unfinished">新しいフォルダ</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="91"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="292"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="301"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="306"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="89"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="290"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="299"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="304"/>
         <source>Rename Folder</source>
         <translation type="unfinished">フォルダ名を変更</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="92"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="320"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="327"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="90"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="318"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="325"/>
         <source>Remove Folder</source>
         <translation type="unfinished">フォルダを削除</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="94"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="92"/>
         <source>Open Terminal Here</source>
         <translation type="unfinished">ここでターミナルを開く</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="95"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="93"/>
         <source>Open Explorer Here</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="185"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="195"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="183"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="193"/>
         <source>Create File</source>
         <translation type="unfinished">ファイルを作成</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="186"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="184"/>
         <source>The filename is exists!</source>
         <translation type="unfinished">このファイル名は存在します!</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="196"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="194"/>
         <source>Failed to create the file!</source>
         <translation type="unfinished">ファイルの作成に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="226"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="224"/>
         <source>File Name</source>
         <translation type="unfinished">ファイル名</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="233"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="238"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="231"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="236"/>
         <source>Failed to rename the file!</source>
         <translation type="unfinished">ファイル名の変更に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="252"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="250"/>
         <source>Confirm remove the file and continue</source>
         <translation type="unfinished">ファイル削除の続行を確認</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="257"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="255"/>
         <source>Failed to remove the file!</source>
         <translation type="unfinished">ファイルの削除に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="275"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="278"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="273"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="276"/>
         <source>Create Folder</source>
         <translation type="unfinished">フォルダを作成</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="276"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="274"/>
         <source>The folder name is exists!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="279"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="277"/>
         <source>Failed to create the folder!</source>
         <translation type="unfinished">フォルダの作成に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="292"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="290"/>
         <source>Folder Name</source>
         <translation type="unfinished">フォルダ名</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="302"/>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="307"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="300"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="305"/>
         <source>Failed to rename the folder!</source>
         <translation type="unfinished">フォルダ名の変更に失敗しました!</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="321"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="319"/>
         <source>Confirm remove the foler and continue</source>
         <translation type="unfinished">フォルダ削除の続行を確認</translation>
     </message>
     <message>
-        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="328"/>
+        <location filename="src/utils/filesystem/filesystemwidget.cpp" line="326"/>
         <source>Failed to remove the folder!</source>
         <translation type="unfinished">フォルダの削除に失敗しました!</translation>
     </message>
@@ -1027,7 +1032,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/litefind/findeditor.cpp" line="77"/>
-        <location filename="src/plugins/litefind/findeditor.cpp" line="159"/>
+        <location filename="src/plugins/litefind/findeditor.cpp" line="161"/>
         <source>Ready</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1068,7 +1073,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangCodePlugin</name>
     <message>
-        <location filename="src/plugins/golangcode/golangcodeplugin.cpp" line="61"/>
+        <location filename="src/plugins/golangcode/golangcodeplugin.cpp" line="62"/>
         <source>Toggle Comment Selection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1076,14 +1081,24 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangDoc</name>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="124"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="122"/>
         <source>Golang Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="127"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="125"/>
         <source>Golang Document Browser</source>
         <oldsource>Golang Document Browser Page</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="144"/>
+        <source>Lookup Api Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="147"/>
+        <source>Jump to Declaration</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1134,22 +1149,22 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="250"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="251"/>
         <source>Load File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="250"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="251"/>
         <source>Items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="266"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="267"/>
         <source>Save File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="266"/>
+        <location filename="src/plugins/golangplay/goplaybrowser.cpp" line="267"/>
         <source>New FileName:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1157,7 +1172,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteApp</name>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="343"/>
+        <location filename="src/liteapp/liteapp.cpp" line="348"/>
         <source>New</source>
         <translation>新規</translation>
     </message>
@@ -1167,68 +1182,68 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="345"/>
+        <location filename="src/liteapp/liteapp.cpp" line="350"/>
         <source>Open File</source>
         <translation type="unfinished">ファイルを開く</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="347"/>
+        <location filename="src/liteapp/liteapp.cpp" line="352"/>
         <source>Open Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="348"/>
+        <location filename="src/liteapp/liteapp.cpp" line="353"/>
         <source>Close</source>
         <translation>閉じる</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="350"/>
+        <location filename="src/liteapp/liteapp.cpp" line="355"/>
         <source>Close All</source>
         <translation>全てを閉じる</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="351"/>
+        <location filename="src/liteapp/liteapp.cpp" line="356"/>
         <source>Open Project</source>
         <translation>プロジェクトを開く</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="352"/>
+        <location filename="src/liteapp/liteapp.cpp" line="357"/>
         <source>Save Project</source>
         <translation>プロジェクトを保存</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="353"/>
+        <location filename="src/liteapp/liteapp.cpp" line="358"/>
         <source>Close Project</source>
         <translation>プロジェクトを閉じる</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="354"/>
+        <location filename="src/liteapp/liteapp.cpp" line="359"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="356"/>
+        <location filename="src/liteapp/liteapp.cpp" line="361"/>
         <source>Save As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="358"/>
+        <location filename="src/liteapp/liteapp.cpp" line="363"/>
         <source>Save All</source>
         <oldsource>Save As</oldsource>
         <translation type="unfinished">名前を付けて保存...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="360"/>
+        <location filename="src/liteapp/liteapp.cpp" line="365"/>
         <source>Exit</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="363"/>
+        <location filename="src/liteapp/liteapp.cpp" line="368"/>
         <source>About LiteIDE...</source>
         <translation>LiteIDE について...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="364"/>
+        <location filename="src/liteapp/liteapp.cpp" line="369"/>
         <source>About Plugins...</source>
         <translation>プラグインについて...</translation>
     </message>
@@ -1492,19 +1507,19 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <name>LiteEditor</name>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="201"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="626"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="646"/>
         <source>Export HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="203"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="653"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="673"/>
         <source>Export PDF</source>
         <translation>PDFへエクスポート</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="204"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="677"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="697"/>
         <source>Print Document</source>
         <translation>印刷</translation>
     </message>
@@ -1535,51 +1550,56 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="218"/>
-        <source>Fold</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="220"/>
-        <source>Unfold</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="222"/>
-        <source>Fold All</source>
+        <source>Select Next Param</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="223"/>
+        <source>Fold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="225"/>
+        <source>Unfold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="227"/>
+        <source>Fold All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="228"/>
         <source>Unfold All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="721"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="748"/>
         <source>Goto Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="232"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="237"/>
         <source>Duplicate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="634"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="654"/>
         <source>Can not write file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="635"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="655"/>
         <source>LiteIDE</source>
         <translation type="unfinished">LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="694"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="714"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation type="unfinished">ファイル %1 の変更を取り消し、再読み込みしますか?</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="721"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="748"/>
         <source>Line: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1761,24 +1781,20 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>MakefileFile</name>
     <message>
-        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="80"/>
         <source>GOFILES</source>
-        <translation>GOFILES</translation>
+        <translation type="obsolete">GOFILES</translation>
     </message>
     <message>
-        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="81"/>
         <source>CGOFILES</source>
-        <translation>CGOFILES</translation>
+        <translation type="obsolete">CGOFILES</translation>
     </message>
     <message>
-        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="82"/>
         <source>Headers</source>
-        <translation>ヘッダ</translation>
+        <translation type="obsolete">ヘッダ</translation>
     </message>
     <message>
-        <location filename="src/plugins/makefileproject/makefilefile.cpp" line="83"/>
         <source>Sources</source>
-        <translation>ソース</translation>
+        <translation type="obsolete">ソース</translation>
     </message>
 </context>
 <context>
@@ -1930,12 +1946,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="168"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="169"/>
         <source>Not find go in PATH...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="173"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="174"/>
         <source>Loading go package ...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1954,28 +1970,28 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/golangpackage/packageproject.cpp" line="80"/>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="303"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="302"/>
         <source>Add Source File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="303"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="302"/>
         <source>FileName:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="314"/>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="319"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="313"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="318"/>
         <source>LiteApp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="314"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="313"/>
         <source>File %1 exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packageproject.cpp" line="319"/>
+        <location filename="src/plugins/golangpackage/packageproject.cpp" line="318"/>
         <source>Open File %1 false</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2021,24 +2037,20 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>ProfileFile</name>
     <message>
-        <location filename="src/plugins/profileproject/profilefile.cpp" line="81"/>
         <source>GOFILES</source>
-        <translation>GOFILES</translation>
+        <translation type="obsolete">GOFILES</translation>
     </message>
     <message>
-        <location filename="src/plugins/profileproject/profilefile.cpp" line="82"/>
         <source>CGOFILES</source>
-        <translation>CGOFILES</translation>
+        <translation type="obsolete">CGOFILES</translation>
     </message>
     <message>
-        <location filename="src/plugins/profileproject/profilefile.cpp" line="83"/>
         <source>Headers</source>
-        <translation>ヘッダ</translation>
+        <translation type="obsolete">ヘッダ</translation>
     </message>
     <message>
-        <location filename="src/plugins/profileproject/profilefile.cpp" line="84"/>
         <source>Sources</source>
-        <translation>ソース</translation>
+        <translation type="obsolete">ソース</translation>
     </message>
 </context>
 <context>
@@ -2108,7 +2120,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/litefind/replaceeditor.cpp" line="71"/>
-        <location filename="src/plugins/litefind/replaceeditor.cpp" line="162"/>
+        <location filename="src/plugins/litefind/replaceeditor.cpp" line="164"/>
         <source>Ready</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2288,7 +2300,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>WelcomeBrowser</name>
     <message>
-        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="176"/>
+        <location filename="src/plugins/welcome/welcomebrowser.cpp" line="185"/>
         <source>Welcome</source>
         <oldsource>Welcome Page</oldsource>
         <translation type="unfinished">ようこそ</translation>
@@ -2310,24 +2322,24 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>フォーム</translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="32"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="38"/>
         <source>New</source>
         <oldsource>NewFile</oldsource>
         <translation type="unfinished">新規</translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="39"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="48"/>
         <source>Open File</source>
         <oldsource>OpenFile</oldsource>
         <translation type="unfinished">ファイルを開く</translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="46"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="58"/>
         <source>Open Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/welcome/welcomewidget.ui" line="66"/>
+        <location filename="src/plugins/welcome/welcomewidget.ui" line="84"/>
         <source>Options</source>
         <translation>オプション</translation>
     </message>

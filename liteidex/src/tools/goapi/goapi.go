@@ -1143,7 +1143,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (*TypeInfo, error) {
 		//
 	case *ast.LabeledStmt:
 		if inRange(v.Label, p) {
-			return nil, nil
+			return &TypeInfo{Kind: KindBuiltin, Name: v.Label.Name, Type: "string"}, nil
 		}
 		return w.lookupStmt(v.Stmt, p)
 		//
@@ -1240,6 +1240,9 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (*TypeInfo, error) {
 			}
 		}
 	case *ast.BranchStmt:
+		if inRange(v.Label, p) {
+			return &TypeInfo{Kind: KindBuiltin, Name: v.Label.Name, Type: "string"}, nil
+		}
 		//
 	case *ast.CaseClause:
 		for _, r := range v.List {
@@ -1653,7 +1656,11 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 		if !ok {
 			return "", nil, fmt.Errorf("unknown basic literal kind %#v", v)
 		}
-		return litType, &TypeInfo{Kind: KindBuiltin, X: v, Name: litType, T: v, Type: litType}, nil
+		name := v.Value
+		if len(name) >= 128 {
+			name = name[:128] + "..."
+		}
+		return litType, &TypeInfo{Kind: KindBuiltin, X: v, Name: name, T: v, Type: litType}, nil
 	case *ast.StarExpr:
 		s, info, err := w.lookupExpr(v.X, p)
 		if err != nil {

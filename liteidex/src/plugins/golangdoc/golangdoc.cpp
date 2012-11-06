@@ -141,10 +141,10 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuBrowserPos,m_browserAct);
 
-    m_findDocAct = new QAction(tr("Find Godoc"),this);
+    m_findDocAct = new QAction(tr("Lookup Api Help"),this);
     m_findDocAct->setShortcut(QKeySequence::HelpContents);
 
-    m_jumpDeclAct = new QAction(tr("Jump to declaration"),this);
+    m_jumpDeclAct = new QAction(tr("Jump to Declaration"),this);
     m_jumpDeclAct->setShortcut(QKeySequence("F2"));
 
     connect(m_findDocAct,SIGNAL(triggered()),this,SLOT(editorFindDoc()));

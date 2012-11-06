@@ -604,7 +604,7 @@ inline void gotoLine(IApplication *app, const QString &fileName, int line, int c
 
 } //namespace LiteApi
 
-Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/x13.2")
+Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/x14.0")
 
 
 #endif //__LITEAPI_H__
