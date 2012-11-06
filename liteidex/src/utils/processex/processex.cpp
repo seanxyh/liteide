@@ -123,3 +123,17 @@ void ProcessEx::slotReadError()
 {
     emit extOutput(this->readAllStandardError(),true);
 }
+
+void ProcessEx::startEx(const QString &cmd, const QString &args)
+{
+#ifdef Q_OS_WIN
+    this->setNativeArguments(args);
+    if (cmd.indexOf(" ")) {
+        this->start("\""+cmd+"\"");
+    } else {
+        this->start(cmd);
+    }
+#else
+    this->start(cmd+" "+args);
+#endif
+}

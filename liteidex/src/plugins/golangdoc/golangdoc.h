@@ -79,6 +79,8 @@ public slots:
     void godocFindPackage(QString name);
     void godocOutput(QByteArray,bool);
     void godocFinish(bool,int,QString);
+    void goapiOutput(QByteArray,bool);
+    void goapiFinish(bool,int,QString);
     void doubleClickListView(QModelIndex);
     void currentIndexChanged(QModelIndex);
     void findTag(const QString &tag);
@@ -108,9 +110,11 @@ protected:
     QLabel     *m_tagInfo;
     ProcessEx  *m_findProcess;
     ProcessEx  *m_godocProcess;
+    ProcessEx  *m_goapiProcess;
     QAction *m_browserAct;
     QString m_goroot;
     QByteArray  m_godocData;
+    QByteArray  m_goapiData;
     QByteArray  m_findData;
     QString  m_templateData;
     LiteApi::IEnvManager *m_envManager;

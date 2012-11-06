@@ -119,20 +119,23 @@ bool GolangApi::loadStream(QTextStream *stream)
         if (flag == "var") {
             ///pkg archive/tar, var ErrFieldTooLong error
             int pos = right.indexOf(" ");
-            if (pos != -1) {
-                lastPkg->valueList.append(new Value(VarApi,right.left(pos),right.mid(pos+1)));
+            QString name = right.left(pos);
+            if (pos != -1 && lastPkg->findValue(name) == 0) {
+                lastPkg->valueList.append(new Value(VarApi,name,right.mid(pos+1)));
             }
         } else if (flag == "const") {
             //pkg syscall (windows-amd64), const ECOMM Errno
             int pos = right.indexOf(" ");
-            if (pos != -1) {
-                lastPkg->valueList.append(new Value(ConstApi,right.left(pos),right.mid(pos+1)));
+            QString name = right.left(pos);
+            if (pos != -1 && lastPkg->findValue(name) == 0) {
+                lastPkg->valueList.append(new Value(ConstApi,name,right.mid(pos+1)));
             }
         } else if (flag == "func") {
             //pkg bytes, func FieldsFunc([]byte, func(rune) bool) [][]byte
             int pos = right.indexOf("(");
-            if (pos != -1) {
-                lastPkg->valueList.append(new Value(FuncApi,right.left(pos),right.mid(pos)));
+            QString name = right.left(pos);
+            if (pos != -1 && lastPkg->findValue(name) == 0) {
+                lastPkg->valueList.append(new Value(FuncApi,name,right.mid(pos)));
             }
         } else if (flag == "method") {
             //pkg archive/tar, method (*Reader) Next() (*Header, error)
@@ -150,7 +153,9 @@ bool GolangApi::loadStream(QTextStream *stream)
                         lastPkg->typeList.append(lastType);
                     }
                 }
-                lastType->valueList.append(new Value(TypeMethodApi,name,exp));
+                if (lastType->findValue(name) == 0) {
+                    lastType->valueList.append(new Value(TypeMethodApi,name,exp));
+                }
             }
         } else if (flag == "type") {
             //pkg go/ast, type ObjKind int
@@ -179,10 +184,14 @@ bool GolangApi::loadStream(QTextStream *stream)
                                 lastPkg->typeList.append(lastType);
                             }
                         }
-                        if (last.left(pos2) == "embedded") {
-                            lastType->embeddedList.append(last.mid(pos2+1));
-                        } else {
-                            lastType->valueList.append(new Value(TypeVarApi,last.left(pos2),last.mid(pos2+1)));
+                        QString name = last.left(pos2);
+                        if (name == "embedded") {
+                            QString emName = last.mid(pos2+1);
+                            if (!lastType->embeddedList.contains(emName)) {
+                                lastType->embeddedList.append(emName);
+                            }
+                        } else if (lastType->findValue(name) == 0){
+                            lastType->valueList.append(new Value(TypeVarApi,name,last.mid(pos2+1)));
                         }
                     }
                 } else if (exp.startsWith("interface {")) {
@@ -202,7 +211,10 @@ bool GolangApi::loadStream(QTextStream *stream)
                                 lastPkg->typeList.append(lastType);
                             }
                         }
-                        lastType->valueList.append(new Value(TypeMethodApi,last.left(pos2),last.mid(pos2)));
+                        QString name = last.left(pos2);
+                        if (lastType->findValue(name) == 0) {
+                            lastType->valueList.append(new Value(TypeMethodApi,name,last.mid(pos2)));
+                        }
                     }
                 } else {
                     lastType = lastPkg->findType(typeName);
