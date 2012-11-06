@@ -83,6 +83,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_findProcess = new ProcessEx(this);
     m_godocProcess = new ProcessEx(this);
     m_goapiProcess = new ProcessEx(this);
+    m_lookupProcess = new ProcessEx(this);
 
     m_widget = new QWidget;
     m_findResultModel = new QStringListModel(this);
@@ -141,7 +142,12 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
     m_findDocAct = new QAction(tr("Find Godoc"),this);
     m_findDocAct->setShortcut(QKeySequence::HelpContents);
+
+    m_jumpDeclAct = new QAction(tr("Jump to declaration"),this);
+    m_jumpDeclAct->setShortcut(QKeySequence("F2"));
+
     connect(m_findDocAct,SIGNAL(triggered()),this,SLOT(editorFindDoc()));
+    connect(m_jumpDeclAct,SIGNAL(triggered()),this,SLOT(editorJumpToDecl()));
 
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
     connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));    
@@ -154,6 +160,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
     connect(m_goapiProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(goapiOutput(QByteArray,bool)));
     connect(m_goapiProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(goapiFinish(bool,int,QString)));
+    connect(m_lookupProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(lookupOutput(QByteArray,bool)));
+    connect(m_lookupProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(lookupFinish(bool,int,QString)));
     connect(m_findProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
     connect(m_findProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(findFinish(bool,int,QString)));
     connect(m_findResultListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickListView(QModelIndex)));
@@ -198,6 +206,21 @@ GolangDoc::~GolangDoc()
     }
     //delete m_findMenu;
     delete m_widget;
+}
+
+void GolangDoc::editorJumpToDecl()
+{
+    LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+    LiteApi::ITextEditor *textEditor = LiteApi::getTextEditor(editor);
+    if (!textEditor) {
+        return;
+    }
+    m_lookupData.clear();
+    QFileInfo info(textEditor->filePath());
+    m_lookupProcess->setWorkingDirectory(info.path());
+    m_lookupProcess->startEx(m_goapiCmd,QString("-cursor_info %1:%2 .").
+                             arg(info.fileName()).
+                             arg(textEditor->position()));
 }
 
 void GolangDoc::editorFindDoc()
@@ -248,41 +271,16 @@ void GolangDoc::editorCreated(LiteApi::IEditor *editor)
         return;
     }
     textEditor->widget()->addAction(m_findDocAct);
+    textEditor->widget()->addAction(m_jumpDeclAct);
     menu->addSeparator();
     menu->addAction(m_findDocAct);
+    menu->addAction(m_jumpDeclAct);
 }
 
 void GolangDoc::loadApi()
 {
-    QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);
-    m_goapiProcess->setEnvironment(env.toStringList());
-    QString cmd = FileUtil::lookPathInDir("goapi",env,m_liteApp->applicationPath());
-    if (cmd.isEmpty()) {
-        m_liteApp->appendLog("golangdoc","not find goapi",true);
-        return;
-    }
     m_goapiData.clear();
-    m_goapiProcess->startEx(cmd,"all");
-    /*
-    QString goroot = LiteApi::getGoroot(m_liteApp);
-    QFileInfo info(goroot,"api/go1.txt");
-    if (!info.exists()) {
-        QString path = m_liteApp->resourcePath()+"/golangdoc";
-        info.setFile(path,"go1.txt");
-        if (!info.exists())
-            return;
-    }
-    if (m_golangApi->load(info.filePath())) {
-        m_findResultModel->setStringList(m_golangApi->all(LiteApi::AllGolangApi));//&~LiteApi::ConstApi));
-//        LiteApi::IWordApiManager *mgr = LiteApi::findExtensionObject<LiteApi::IWordApiManager*>(m_liteApp,"LiteApi.IWordApiManager");
-//        if (mgr) {
-//            LiteApi::IWordApi *api = mgr->findWordApi("text/x-gosrc");
-//            if (api) {
-//                api->appendExp(m_golangApi->all(LiteApi::PkgApi|LiteApi::FuncApi|LiteApi::ConstApi|LiteApi::VarApi));
-//            }
-//        }
-    }
-    */
+    m_goapiProcess->startEx(m_goapiCmd,"all");
 }
 
 void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
@@ -302,12 +300,19 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
         find = FileUtil::lookPath("godocview",env,true);
     }
 
+    m_goapiCmd = FileUtil::lookPathInDir("goapi",env,m_liteApp->applicationPath());
+    if (m_goapiCmd.isEmpty()) {
+        m_liteApp->appendLog("golangdoc","not find goapi",true);
+    }
+
     m_goroot = goroot;
     m_godocCmd = godoc;
     m_findCmd = find;
 
     m_findProcess->setEnvironment(env.toStringList());
     m_godocProcess->setEnvironment(env.toStringList());
+    m_goapiProcess->setEnvironment(env.toStringList());
+    m_lookupProcess->setEnvironment(env.toStringList());
     this->loadApi();
     m_pathFileMap.clear();
     QDir dir(goroot);
@@ -925,3 +930,34 @@ void GolangDoc::goapiFinish(bool error,int code,QString)
     }
 }
 
+void GolangDoc::lookupOutput(QByteArray data, bool bStdErr)
+{
+    if (!bStdErr) {
+        m_lookupData.append(data);
+    }
+}
+
+void GolangDoc::lookupFinish(bool error, int code, QString)
+{
+    if (!error && code == 0) {
+        QTextStream s(&m_lookupData);
+        while (!s.atEnd()) {
+            QString line = s.readLine();
+            if (line.startsWith("pos,")) {
+                QString info = line.mid(4).trimmed();
+                QRegExp reg(":(\\d+):(\\d+)");
+                int pos = reg.lastIndexIn(info);
+                if (pos >= 0) {
+                    QString fileName = info.left(pos);
+                    int line = reg.cap(1).toInt();
+                    int col = reg.cap(2).toInt();
+                    LiteApi::IEditor *editor = m_liteApp->fileManager()->openEditor(fileName,true);
+                    LiteApi::ITextEditor *ed = LiteApi::getTextEditor(editor);
+                    if (ed) {
+                        ed->gotoLine(line-1,col-1);
+                    }
+                }
+            }
+        }
+    }
+}

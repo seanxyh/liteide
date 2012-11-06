@@ -484,6 +484,17 @@ int LiteEditor::column() const
     return m_editorWidget->textCursor().columnNumber();
 }
 
+int LiteEditor::position() const
+{
+    QTextCursor cur = m_editorWidget->textCursor();
+    QString src = cur.document()->toPlainText().left(cur.position());
+    int offset = 0;
+    if (m_file->m_lineTerminatorMode == LiteEditorFile::CRLFLineTerminator) {
+       offset = cur.blockNumber();
+    }
+    return src.toUtf8().length()+offset+1;
+}
+
 void LiteEditor::gotoLine(int line, int column, bool center)
 {
     m_editorWidget->gotoLine(line,column,center);
