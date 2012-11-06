@@ -146,7 +146,7 @@ func main() {
 	var pkgs []string
 
 	if flag.Arg(0) == "std" || flag.Arg(0) == "all" {
-		out, err := exec.Command("go", "list", flag.Arg(0)).Output()
+		out, err := exec.Command("go", "list", "-e", flag.Arg(0)).Output()
 		if err != nil {
 			log.Fatal(err)
 		}
