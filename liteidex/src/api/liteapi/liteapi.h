@@ -593,6 +593,15 @@ protected:
     IApplication *m_liteApp;
 };
 
+inline void gotoLine(IApplication *app, const QString &fileName, int line, int col) {
+    app->editorManager()->addNavigationHistory();
+    IEditor *edit = app->fileManager()->openEditor(fileName);
+    ITextEditor *textEdit = getTextEditor(edit);
+    if (textEdit) {
+        textEdit->gotoLine(line,col);
+    }
+}
+
 } //namespace LiteApi
 
 Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/x13.2")

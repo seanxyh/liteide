@@ -1136,7 +1136,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (*TypeInfo, error) {
 				switch lt := v.Lhs[i].(type) {
 				case *ast.Ident:
 					typ, err := w.varValueType(v.Rhs[i], 0)
-					if err == nil {
+					if err == nil && v.Tok == token.DEFINE {
 						w.localvar[lt.Name] = &ExprType{T: typ, X: lt}
 					} else if *verbose {
 						log.Println(err)
@@ -1158,7 +1158,7 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (*TypeInfo, error) {
 				switch lt := v.Lhs[i].(type) {
 				case *ast.Ident:
 					typ, err := w.varValueType(v.Rhs[0], i)
-					if err == nil {
+					if err == nil && v.Tok == token.DEFINE {
 						w.localvar[lt.Name] = &ExprType{T: typ, X: lt}
 					} else if *verbose {
 						log.Println(err)

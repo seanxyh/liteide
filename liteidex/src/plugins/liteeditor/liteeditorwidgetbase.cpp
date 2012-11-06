@@ -690,6 +690,16 @@ void LiteEditorWidgetBase::saveCurrentCursorPositionForNavigation()
 
 void LiteEditorWidgetBase::slotCursorPositionChanged()
 {
+    if (m_lastCursorChangeWasInteresting) {
+        //navigate change
+        emit navigationStateChanged(m_tempNavigationState);
+        m_lastCursorChangeWasInteresting = false;
+    } else {
+        this->saveCurrentCursorPositionForNavigation();
+    }
+
+    //emit navigationStateChanged(saveState());
+    /*
     if (!m_contentsChanged && m_lastCursorChangeWasInteresting) {
         //navigate change
         emit navigationStateChanged(m_tempNavigationState);
@@ -697,6 +707,7 @@ void LiteEditorWidgetBase::slotCursorPositionChanged()
     } else if (m_contentsChanged) {
         this->saveCurrentCursorPositionForNavigation();
     }
+    */
     highlightCurrentLine();
 }
 
@@ -724,7 +735,7 @@ void LiteEditorWidgetBase::maybeSelectLine()
 
 void LiteEditorWidgetBase::gotoLine(int line, int column, bool center)
 {
-    m_lastCursorChangeWasInteresting = false;
+    //m_lastCursorChangeWasInteresting = false;
     const int blockNumber = line;
     const QTextBlock &block = document()->findBlockByNumber(blockNumber);
     if (block.isValid()) {

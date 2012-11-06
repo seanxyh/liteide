@@ -656,7 +656,9 @@ void EditorManager::addNavigationHistory(IEditor *editor,const QByteArray &saveS
     EditLocation location;
     location.filePath = filePath;
     location.state = state;
+
     m_currentNavigationHistoryPosition = qMin(m_currentNavigationHistoryPosition, m_navigationHistory.size()); // paranoia
+
     m_navigationHistory.insert(m_currentNavigationHistoryPosition, location);
     ++m_currentNavigationHistoryPosition;
 
