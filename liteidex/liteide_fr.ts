@@ -1111,7 +1111,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="42"/>
+        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="40"/>
+        <source>Auto popup gofmt error message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="49"/>
         <source>Process TimeOut( &gt; 50ms ):</source>
         <oldsource>Process TimeOut( &gt; 10ms ):</oldsource>
         <translation type="unfinished"></translation>
@@ -1764,17 +1769,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
-    <name>MakefileFile</name>
-    <message>
-        <source>Headers</source>
-        <translation type="obsolete">Entêtes</translation>
-    </message>
-    <message>
-        <source>Sources</source>
-        <translation type="obsolete">Sources</translation>
-    </message>
-</context>
-<context>
     <name>NewFileDialog</name>
     <message>
         <location filename="src/liteapp/newfiledialog.ui" line="14"/>
@@ -2009,17 +2003,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/liteapp/pluginsdialog.cpp" line="57"/>
         <source>FileName</source>
         <translation>Nom du fichier</translation>
-    </message>
-</context>
-<context>
-    <name>ProfileFile</name>
-    <message>
-        <source>Headers</source>
-        <translation type="obsolete">Entêtes</translation>
-    </message>
-    <message>
-        <source>Sources</source>
-        <translation type="obsolete">Sources</translation>
     </message>
 </context>
 <context>

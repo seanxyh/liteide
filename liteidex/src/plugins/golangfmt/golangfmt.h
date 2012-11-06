@@ -58,6 +58,7 @@ protected:
     QByteArray m_errData;
     bool m_diff;
     bool m_autofmt;
+    bool m_autopop;
     int  m_timeout;
 };
 

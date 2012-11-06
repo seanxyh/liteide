@@ -322,10 +322,6 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <translation>变量监视: (例 sq.str)</translation>
     </message>
     <message>
-        <source>Add Watch</source>
-        <translation type="obsolete">添加监视</translation>
-    </message>
-    <message>
         <location filename="src/plugins/litedebug/debugwidget.cpp" line="255"/>
         <source>Watch var:(example main.var os.Stdout)</source>
         <translation>变量监视: (例 main.var os.Stdout)</translation>
@@ -462,10 +458,6 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>EnvManager</name>
     <message>
-        <source>Environment ToolBar</source>
-        <translation type="obsolete">环境设置工具栏</translation>
-    </message>
-    <message>
         <location filename="src/plugins/liteenv/envmanager.cpp" line="224"/>
         <source>Build ToolBar</source>
         <translation>编译工具栏</translation>
@@ -487,10 +479,6 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="116"/>
         <source>Synchronize with editor</source>
         <translation>与编辑器同步</translation>
-    </message>
-    <message>
-        <source>open to parent</source>
-        <translation type="obsolete">向上</translation>
     </message>
     <message>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="193"/>
@@ -1126,7 +1114,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>文件保存时使用gofmt自动格式化</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="42"/>
+        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="40"/>
+        <source>Auto popup gofmt error message</source>
+        <translation>自动弹出gofmt错误消息</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="49"/>
         <source>Process TimeOut( &gt; 50ms ):</source>
         <oldsource>Process TimeOut( &gt; 10ms ):</oldsource>
         <translation>处理超时( &gt; 50ms):</translation>
@@ -1459,10 +1452,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>插入/删除　断点</translation>
     </message>
     <message>
-        <source>BreakPoint</source>
-        <translation type="obsolete">断点</translation>
-    </message>
-    <message>
         <location filename="src/plugins/litedebug/litedebug.cpp" line="118"/>
         <source>Insert/Remove Breakpoint (F9)</source>
         <translation>插入/删除 断点 (F9)</translation>
@@ -1555,7 +1544,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="218"/>
         <source>Select Next Param</source>
-        <translation type="unfinished"></translation>
+        <translation>选择下一项</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="223"/>
@@ -1783,25 +1772,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
-    <name>MakefileFile</name>
-    <message>
-        <source>GOFILES</source>
-        <translation type="obsolete">GO文件</translation>
-    </message>
-    <message>
-        <source>CGOFILES</source>
-        <translation type="obsolete">CGO文件</translation>
-    </message>
-    <message>
-        <source>Headers</source>
-        <translation type="obsolete">头文件</translation>
-    </message>
-    <message>
-        <source>Sources</source>
-        <translation type="obsolete">源文件</translation>
-    </message>
-</context>
-<context>
     <name>NewFileDialog</name>
     <message>
         <location filename="src/liteapp/newfiledialog.ui" line="14"/>
@@ -1952,10 +1922,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>Package浏览</translation>
     </message>
     <message>
-        <source>GOPATH Setup</source>
-        <translation type="obsolete">GOPATH设置</translation>
-    </message>
-    <message>
         <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="169"/>
         <source>Not find go in PATH...</source>
         <translation>在PATH中无法找到GO...</translation>
@@ -2042,25 +2008,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/liteapp/pluginsdialog.cpp" line="57"/>
         <source>FileName</source>
         <translation>文件名称</translation>
-    </message>
-</context>
-<context>
-    <name>ProfileFile</name>
-    <message>
-        <source>GOFILES</source>
-        <translation type="obsolete">GO文件</translation>
-    </message>
-    <message>
-        <source>CGOFILES</source>
-        <translation type="obsolete">CGO文件</translation>
-    </message>
-    <message>
-        <source>Headers</source>
-        <translation type="obsolete">头文件</translation>
-    </message>
-    <message>
-        <source>Sources</source>
-        <translation type="obsolete">源文件</translation>
     </message>
 </context>
 <context>

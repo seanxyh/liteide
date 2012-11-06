@@ -35,6 +35,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="checkBoxAutoPopMessage">
+        <property name="text">
+         <string>Auto popup gofmt error message</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="label">

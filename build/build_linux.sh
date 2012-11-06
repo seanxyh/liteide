@@ -47,10 +47,11 @@ fi
 echo build liteide tools ...
 cd $LITEIDE_ROOT
 export GOPATH=$PWD
-go install -v -ldflags -s tools/goastview
-go install -v -ldflags -s tools/godocview
-go install -v -ldflags -s tools/goexec
-go install -v -ldflags -s tools/gopromake
+
+go install -ldflags "-s" -v tools/goastview
+go install -ldflags "-s" -v tools/godocview
+go install -ldflags "-s" -v tools/goexec
+go install -ldflags "-s" -v tools/goapi
 
 if [ $? -ge 1 ]; then
 	echo 'error, go install fail'
