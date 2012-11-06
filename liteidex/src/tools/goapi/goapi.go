@@ -35,19 +35,19 @@ import (
 
 // Flags
 var (
-	checkFile  = flag.String("c", "", "optional filename to check API against")
-	allowNew   = flag.Bool("allow_new", true, "allow API additions")
-	exceptFile = flag.String("except", "", "optional filename of packages that are allowed to change without triggering a failure in the tool")
-	nextFile   = flag.String("next", "", "optional filename of tentative upcoming API features for the next release. This file can be lazily maintained. It only affects the delta warnings from the -c file printed on success.")
-	verbose    = flag.Bool("v", false, "verbose debugging")
-	allmethods = flag.Bool("e", true, "extract for all embedded methods")
-	alldecls   = flag.Bool("a", false, "extract for all declarations")
-	showpos    = flag.Bool("pos", false, "addition token position")
-	separate   = flag.String("sep", ", ", "setup separators")
-	dep_parser = flag.Bool("dep", true, "parser package imports")
-	defaultCtx = flag.Bool("default_ctx", false, "extract for default context")
-	customCtx  = flag.String("custom_ctx", "", "optional comma-separated list of <goos>-<goarch>[-cgo] to override default contexts.")
-	lookupDec  = flag.String("lookup_dec", "", "lookup cursor node declarations \"file.go:pos\"")
+	checkFile        = flag.String("c", "", "optional filename to check API against")
+	allowNew         = flag.Bool("allow_new", true, "allow API additions")
+	exceptFile       = flag.String("except", "", "optional filename of packages that are allowed to change without triggering a failure in the tool")
+	nextFile         = flag.String("next", "", "optional filename of tentative upcoming API features for the next release. This file can be lazily maintained. It only affects the delta warnings from the -c file printed on success.")
+	verbose          = flag.Bool("v", false, "verbose debugging")
+	allmethods       = flag.Bool("e", true, "extract for all embedded methods")
+	alldecls         = flag.Bool("a", false, "extract for all declarations")
+	showpos          = flag.Bool("pos", false, "addition token position")
+	separate         = flag.String("sep", ", ", "setup separators")
+	dep_parser       = flag.Bool("dep", true, "parser package imports")
+	defaultCtx       = flag.Bool("default_ctx", false, "extract for default context")
+	customCtx        = flag.String("custom_ctx", "", "optional comma-separated list of <goos>-<goarch>[-cgo] to override default contexts.")
+	lookupCursorInfo = flag.String("cursor_info", "", "lookup cursor node info\"file.go:pos\"")
 )
 
 var (
@@ -155,11 +155,11 @@ func main() {
 		pkgs = flag.Args()
 	}
 
-	if *lookupDec != "" {
-		pos := strings.Index(*lookupDec, ":")
+	if *lookupCursorInfo != "" {
+		pos := strings.Index(*lookupCursorInfo, ":")
 		if pos != -1 {
-			cursor_file = (*lookupDec)[:pos]
-			if i, err := strconv.Atoi((*lookupDec)[pos+1:]); err == nil {
+			cursor_file = (*lookupCursorInfo)[:pos]
+			if i, err := strconv.Atoi((*lookupCursorInfo)[pos+1:]); err == nil {
 				cursor_pos = token.Pos(i)
 			}
 		}
@@ -249,7 +249,7 @@ func main() {
 		sort.Strings(features)
 	}
 
-	if *lookupDec != "" {
+	if *lookupCursorInfo != "" {
 		return
 	}
 
@@ -997,7 +997,10 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 				if err != nil {
 					log.Fatalln("lookup error,", err)
 				}
-				if info.T != nil {
+				if info == nil {
+					return
+				}
+				if info != nil && info.T != nil {
 					fmt.Printf("%s%s%s%s%s%s%s\n",
 						info.Kind, w.sep,
 						info.Name, w.sep,
@@ -1491,13 +1494,13 @@ func (w *Walker) lookupType(ts *ast.TypeSpec, p token.Pos, local bool) (*TypeInf
 	case *ast.InterfaceType:
 		if inRange(t.Methods, p) {
 			for _, fd := range t.Methods.List {
-				if inRange(fd.Type, p) {
-					return w.lookupExprInfo(fd.Type, p)
-				}
 				for _, ident := range fd.Names {
 					if inRange(ident, p) {
 						return &TypeInfo{Kind: KindMethod, X: ident, Name: ts.Name.Name + "." + ident.Name, T: ident, Type: w.nodeString(w.namelessType(fd.Type))}, nil
 					}
+				}
+				if inRange(fd.Type, p) {
+					return w.lookupExprInfo(fd.Type, p)
 				}
 			}
 		}
@@ -1628,6 +1631,9 @@ func (w *Walker) lookupExprInfo(vi ast.Expr, p token.Pos) (*TypeInfo, error) {
 
 // lookupExpr , return name,info,error
 func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error) {
+	if *verbose {
+		log.Printf("lookup expr %v %T", w.nodeString(vi), vi)
+	}
 	switch v := vi.(type) {
 	case *ast.BasicLit:
 		litType, ok := varType[v.Kind]
@@ -1720,8 +1726,16 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 			if typ, ok := w.curPackage.functions[ft.Name]; ok {
 				return ft.Name, &TypeInfo{Kind: KindFunc, X: ft, Name: ft.Name, T: typ.ft, Type: typ.sig}, nil
 			}
-			if typ := w.curPackage.findType(ft.Name); typ != nil {
-				//fixme
+			if typ, ok := w.curPackage.interfaces[ft.Name]; ok {
+				return ft.Name, &TypeInfo{Kind: KindInterface, X: ft, Name: ft.Name, T: typ, Type: w.nodeString(w.namelessType(typ))}, nil
+			}
+			if typ, ok := w.curPackage.interfaces[ft.Name]; ok {
+				return ft.Name, &TypeInfo{Kind: KindInterface, X: ft, Name: ft.Name, T: typ, Type: w.nodeString(w.namelessType(typ))}, nil
+			}
+			if typ, ok := w.curPackage.structs[ft.Name]; ok {
+				return ft.Name, &TypeInfo{Kind: KindStruct, X: ft, Name: ft.Name, T: typ, Type: w.nodeString(w.namelessType(typ))}, nil
+			}
+			if typ, ok := w.curPackage.types[ft.Name]; ok {
 				return ft.Name, &TypeInfo{Kind: KindType, X: ft, Name: ft.Name, T: typ, Type: w.nodeString(w.namelessType(typ))}, nil
 			}
 			if isBuiltinType(ft.Name) {
@@ -2133,7 +2147,7 @@ func (w *Walker) constValueType(vi interface{}) (string, error) {
 	case *ast.SelectorExpr:
 		lhs := w.nodeString(v.X)
 		rhs := w.nodeString(v.Sel)
-		//fix_code example C.PROT_NONE
+		//if CGO
 		if lhs == "C" {
 			return lhs + "." + rhs, nil
 		}
@@ -2284,7 +2298,7 @@ func (w *Walker) findStructField(st ast.Expr, name string) (*ast.Ident, ast.Expr
 }
 
 func (w *Walker) lookupFunction(name, sel string) (*TypeInfo, error) {
-	//find pkg.typ.func()
+	name = strings.TrimLeft(name, "*")
 	pos := strings.Index(name, ".")
 	if pos != -1 {
 		pkg := name[:pos]
@@ -2323,6 +2337,12 @@ func (w *Walker) lookupFunction(name, sel string) (*TypeInfo, error) {
 			return &TypeInfo{Kind: KindMethod, X: fn.ft, Name: name + "." + sel, T: fn.ft, Type: w.nodeString(w.namelessType(fn))}, nil
 		}
 	}
+
+	//	if typ, ok := w.curPackage.types[name]; ok {
+	//		if fn, ok := w.curPackage.functions[w.nodeString(typ)+"."+sel]; ok {
+	//			return &TypeInfo{Kind: KindMethod, X: fn.ft, Name: name + "." + sel, T: fn.ft, Type: w.nodeString(w.namelessType(fn.ft))}, nil
+	//		}
+	//	}
 
 	if ident, fn := w.curPackage.findMethod(name, sel); ident != nil && fn != nil {
 		return &TypeInfo{Kind: KindMethod, X: fn, Name: name + "." + sel, T: ident, Type: w.nodeString(w.namelessType(fn))}, nil
@@ -2483,6 +2503,9 @@ func (w *Walker) lookupSelector(name string, sel string) (*TypeInfo, error) {
 		if typ != nil {
 			return &TypeInfo{Kind: KindField, X: typ, Name: name + "." + sel, T: typ, Type: w.nodeString(w.namelessType(typ))}, nil
 		}
+	}
+	if t, ok := w.curPackage.types[name]; ok {
+		return w.lookupSelector(w.nodeString(t), sel)
 	}
 	return nil, fmt.Errorf("unknown selector expr ident: %s.%s", name, sel)
 }
