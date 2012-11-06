@@ -33,6 +33,7 @@
 #include <QStandardItemModel>
 #include <QAbstractItemView>
 #include <QScrollBar>
+#include <QTextBlock>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -298,7 +299,7 @@ void LiteCompleter::insertCompletion(QModelIndex index)
         extra = text;
         wordText = text;
     }
-    if (kind == "func") {
+    if (kind == "func" && tc.block().text().at(tc.positionInBlock()) != '(') {
         extra += "()";
         tc.insertText(extra);
         if (!info.startsWith("func()")) {
