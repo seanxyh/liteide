@@ -37,6 +37,7 @@ public:
     void setUserData(int id, const QVariant &data);
     QVariant userData(int id) const;
     bool isRuning() const;
+    void startEx(const QString &cmd, const QString &args);
 signals:
     void extOutput(const QByteArray &data,bool bError);
     void extFinish(bool error,int code, QString msg);

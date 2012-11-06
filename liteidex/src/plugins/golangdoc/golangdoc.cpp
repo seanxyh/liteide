@@ -82,6 +82,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 {
     m_findProcess = new ProcessEx(this);
     m_godocProcess = new ProcessEx(this);
+    m_goapiProcess = new ProcessEx(this);
 
     m_widget = new QWidget;
     m_findResultModel = new QStringListModel(this);
@@ -151,6 +152,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     //connect(m_findEdit,SIGNAL(activated(QString)),this,SLOT(findPackage(QString)));
     connect(m_godocProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(godocOutput(QByteArray,bool)));
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
+    connect(m_goapiProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(goapiOutput(QByteArray,bool)));
+    connect(m_goapiProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(goapiFinish(bool,int,QString)));
     connect(m_findProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
     connect(m_findProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(findFinish(bool,int,QString)));
     connect(m_findResultListView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickListView(QModelIndex)));
@@ -251,6 +254,16 @@ void GolangDoc::editorCreated(LiteApi::IEditor *editor)
 
 void GolangDoc::loadApi()
 {
+    QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);
+    m_goapiProcess->setEnvironment(env.toStringList());
+    QString cmd = FileUtil::lookPathInDir("goapi",env,m_liteApp->applicationPath());
+    if (cmd.isEmpty()) {
+        m_liteApp->appendLog("golangdoc","not find goapi",true);
+        return;
+    }
+    m_goapiData.clear();
+    m_goapiProcess->startEx(cmd,"all");
+    /*
     QString goroot = LiteApi::getGoroot(m_liteApp);
     QFileInfo info(goroot,"api/go1.txt");
     if (!info.exists()) {
@@ -261,17 +274,15 @@ void GolangDoc::loadApi()
     }
     if (m_golangApi->load(info.filePath())) {
         m_findResultModel->setStringList(m_golangApi->all(LiteApi::AllGolangApi));//&~LiteApi::ConstApi));
-        /*
-        LiteApi::IWordApiManager *mgr = LiteApi::findExtensionObject<LiteApi::IWordApiManager*>(m_liteApp,"LiteApi.IWordApiManager");
-        if (mgr) {
-            LiteApi::IWordApi *api = mgr->findWordApi("text/x-gosrc");
-            if (api) {
-                api->appendExp(m_golangApi->all(LiteApi::PkgApi|LiteApi::FuncApi|LiteApi::ConstApi|LiteApi::VarApi));
-            }
-        }
-        */
+//        LiteApi::IWordApiManager *mgr = LiteApi::findExtensionObject<LiteApi::IWordApiManager*>(m_liteApp,"LiteApi.IWordApiManager");
+//        if (mgr) {
+//            LiteApi::IWordApi *api = mgr->findWordApi("text/x-gosrc");
+//            if (api) {
+//                api->appendExp(m_golangApi->all(LiteApi::PkgApi|LiteApi::FuncApi|LiteApi::ConstApi|LiteApi::VarApi));
+//            }
+//        }
     }
-
+    */
 }
 
 void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
@@ -888,3 +899,22 @@ void GolangDoc::filterTextChanged(QString str)
         m_findResultListView->setCurrentIndex(m_findFilterModel->index(0,0));
     }
 }
+
+void GolangDoc::goapiOutput(QByteArray data,bool bError)
+{
+    if (bError) {
+        return;
+    }
+    m_goapiData.append(data);
+}
+
+void GolangDoc::goapiFinish(bool error,int code,QString)
+{
+    if (!error && code == 0) {
+        QTextStream stream(m_goapiData);
+        if (m_golangApi->loadStream(&stream)) {
+            m_findResultModel->setStringList(m_golangApi->all(LiteApi::AllGolangApi));
+        }
+    }
+}
+
