@@ -88,7 +88,7 @@ bool GolangApi::loadStream(QTextStream *stream)
     //pkg container/heap, type Interface interface { Len, Less, Pop, Push, Swap }
     //pkg container/heap, type Interface interface, Len() int
 
-    QRegExp reg("^pkg\\s([\\w\\/]+)(\\s\\(([\\w-]+)\\))?,\\s(\\w+)");
+    QRegExp reg("^pkg\\s([\\w\\-\\.\\/]+)(\\s\\(([\\w\\-]+)\\))?,\\s(\\w+)");
     QRegExp regm("\\(\\*?([\\w\\-]+)\\)\\s*(\\w+)");
     Package *lastPkg = 0;
     Type *lastType = 0;
