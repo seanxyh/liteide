@@ -78,6 +78,7 @@ public:
     virtual LiteApi::IFile *file();
     virtual int line() const;
     virtual int column() const;
+    virtual int position() const;
     virtual void gotoLine(int line, int column, bool center);
     virtual QString textCodec() const;
     virtual void setTextCodec(const QString &codec);

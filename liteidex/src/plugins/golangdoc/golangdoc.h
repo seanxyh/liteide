@@ -68,6 +68,7 @@ public slots:
     virtual void activeBrowser();
 public slots:
     void editorFindDoc();
+    void editorJumpToDecl();
     void editorCreated(LiteApi::IEditor *editor);
     void loadApi();
     void currentEnvChanged(LiteApi::IEnv*);
@@ -81,6 +82,8 @@ public slots:
     void godocFinish(bool,int,QString);
     void goapiOutput(QByteArray,bool);
     void goapiFinish(bool,int,QString);
+    void lookupOutput(QByteArray,bool);
+    void lookupFinish(bool,int,QString);
     void doubleClickListView(QModelIndex);
     void currentIndexChanged(QModelIndex);
     void findTag(const QString &tag);
@@ -111,20 +114,24 @@ protected:
     ProcessEx  *m_findProcess;
     ProcessEx  *m_godocProcess;
     ProcessEx  *m_goapiProcess;
+    ProcessEx  *m_lookupProcess;
     QAction *m_browserAct;
     QString m_goroot;
     QByteArray  m_godocData;
     QByteArray  m_goapiData;
+    QByteArray  m_lookupData;
     QByteArray  m_findData;
     QString  m_templateData;
     LiteApi::IEnvManager *m_envManager;
     GolangApi  *m_golangApi;
     QString m_godocCmd;
     QString m_findCmd;
+    QString m_goapiCmd;
     QStringList m_targetList;
     QMap<QString,QString> m_pathFileMap;
     QAction *m_toolAct;
     QAction *m_findDocAct;
+    QAction *m_jumpDeclAct;
     QString m_docFind;
 };
 

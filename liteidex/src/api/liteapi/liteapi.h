@@ -262,6 +262,7 @@ public:
     ITextEditor(QObject *parent = 0) : IEditor(parent) {}
     virtual int line() const = 0;
     virtual int column() const = 0;
+    virtual int position() const = 0;
     virtual void gotoLine(int line, int column, bool center = false) = 0;
     virtual QString textCodec() const = 0;
     virtual void setTextCodec(const QString &codec) = 0;

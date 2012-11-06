@@ -175,12 +175,12 @@ func main() {
 	}
 
 	var features []string
+	w := NewWalker()
+	w.cursorPkg = cursorPkg
+	w.sep = *separate
 
 	if *defaultCtx {
-		w := NewWalker()
 		w.context = &build.Default
-		w.cursorPkg = cursorPkg
-		w.sep = *separate
 
 		for _, pkg := range pkgs {
 			w.wantedPkg[pkg] = true
@@ -195,8 +195,6 @@ func main() {
 			c.Compiler = build.Default.Compiler
 		}
 
-		w := NewWalker()
-		w.cursorPkg = cursorPkg
 		for _, pkg := range pkgs {
 			w.wantedPkg[pkg] = true
 		}
@@ -205,18 +203,13 @@ func main() {
 		for _, context := range contexts {
 			w.context = context
 			w.ctxName = contextName(w.context) + ":"
-			w.sep = *separate
 
 			for _, pkg := range pkgs {
 				w.WalkPackage(pkg)
 			}
-			//			ctxName := contextName(context)
-			//			for _, f := range w.Features(ctxName) {
-			//				if featureCtx[f] == nil {
-			//					featureCtx[f] = make(map[string]bool)
-			//				}
-			//				featureCtx[f][ctxName] = true
-			//			}
+			if w.lookupInfo != nil {
+				goto lookup
+			}
 		}
 
 		for pkg, p := range w.packageMap {
@@ -249,7 +242,18 @@ func main() {
 		sort.Strings(features)
 	}
 
+lookup:
 	if *lookupCursorInfo != "" {
+		if w.lookupInfo != nil {
+			fmt.Println("kind,", w.lookupInfo.Kind)
+			fmt.Println("name,", w.lookupInfo.Name)
+			if w.lookupInfo.Type != "" {
+				fmt.Println("type,", strings.TrimLeft(w.lookupInfo.Type, "*"))
+			}
+			if w.lookupInfo.T != nil {
+				fmt.Println("pos,", w.fset.Position(w.lookupInfo.T.Pos()))
+			}
+		}
 		return
 	}
 
@@ -659,6 +663,7 @@ type Walker struct {
 	wantedPkg       map[string]bool   // packages requested on the command line
 	cursorPkg       string
 	localvar        map[string]*ExprType
+	lookupInfo      *TypeInfo
 }
 
 func NewWalker() *Walker {
@@ -993,23 +998,12 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 					log.Fatalf("error fset postion %v", v.Pos())
 				}
 				info, err := w.lookupFile(v, token.Pos(f.Base())+cursor_pos-1)
-				log.Println("lookup", w.fset.Position(token.Pos(f.Base())+cursor_pos-1))
 				if err != nil {
 					log.Fatalln("lookup error,", err)
-				}
-				if info == nil {
-					return
-				}
-				if info != nil && info.T != nil {
-					fmt.Printf("%s%s%s%s%s%s%s\n",
-						info.Kind, w.sep,
-						info.Name, w.sep,
-						info.Type, w.sep,
-						w.fset.Position(info.T.Pos()))
 				} else {
-					fmt.Printf("%s%s%s\n", info.Kind, w.sep, info.Name)
+					w.lookupInfo = info
 				}
-				return
+				break
 			}
 		}
 		return
