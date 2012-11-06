@@ -1123,7 +1123,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="42"/>
+        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="40"/>
+        <source>Auto popup gofmt error message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="49"/>
         <source>Process TimeOut( &gt; 50ms ):</source>
         <oldsource>Process TimeOut( &gt; 10ms ):</oldsource>
         <translation type="unfinished"></translation>
@@ -1776,25 +1781,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
-    <name>MakefileFile</name>
-    <message>
-        <source>GOFILES</source>
-        <translation type="obsolete">GOFILES</translation>
-    </message>
-    <message>
-        <source>CGOFILES</source>
-        <translation type="obsolete">CGOFILES</translation>
-    </message>
-    <message>
-        <source>Headers</source>
-        <translation type="obsolete">Заголовочные файлы</translation>
-    </message>
-    <message>
-        <source>Sources</source>
-        <translation type="obsolete">Исходный код</translation>
-    </message>
-</context>
-<context>
     <name>NewFileDialog</name>
     <message>
         <location filename="src/liteapp/newfiledialog.ui" line="14"/>
@@ -2029,25 +2015,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/liteapp/pluginsdialog.cpp" line="57"/>
         <source>FileName</source>
         <translation type="unfinished">Имя файла</translation>
-    </message>
-</context>
-<context>
-    <name>ProfileFile</name>
-    <message>
-        <source>GOFILES</source>
-        <translation type="obsolete">Файлы Go</translation>
-    </message>
-    <message>
-        <source>CGOFILES</source>
-        <translation type="obsolete">Файлы Cgo</translation>
-    </message>
-    <message>
-        <source>Headers</source>
-        <translation type="obsolete">Заголовочные файлы</translation>
-    </message>
-    <message>
-        <source>Sources</source>
-        <translation type="obsolete">Исходный код</translation>
     </message>
 </context>
 <context>

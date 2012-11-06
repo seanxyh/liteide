@@ -9,6 +9,7 @@
  * LiteEditor: fix code compelter func test ()
  * GolangCode : auto restart gocode if liteide GOPATH changed
  * GolanPlay: enable gocode and fmt
+ * GolangFmt: auto popup gofmt messsage option
  * LiteBuild : fix build config custom view
  * LiteBuild : BUILDARGS / INSTALLARGS support set 
 		example -gcflags "-N -l" for debug

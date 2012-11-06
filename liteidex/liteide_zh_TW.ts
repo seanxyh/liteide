@@ -466,10 +466,6 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>EnvManager</name>
     <message>
-        <source>Environment ToolBar</source>
-        <translation type="obsolete">環境設置工具列</translation>
-    </message>
-    <message>
         <location filename="src/plugins/liteenv/envmanager.cpp" line="224"/>
         <source>Build ToolBar</source>
         <translation type="unfinished">編譯工具列</translation>
@@ -491,10 +487,6 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="116"/>
         <source>Synchronize with editor</source>
         <translation>與編輯器同步</translation>
-    </message>
-    <message>
-        <source>open to parent</source>
-        <translation type="obsolete">向上</translation>
     </message>
     <message>
         <location filename="src/plugins/filebrowser/filebrowser.cpp" line="193"/>
@@ -1130,7 +1122,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="42"/>
+        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="40"/>
+        <source>Auto popup gofmt error message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangfmt/golangfmtoption.ui" line="49"/>
         <source>Process TimeOut( &gt; 50ms ):</source>
         <oldsource>Process TimeOut( &gt; 10ms ):</oldsource>
         <translation type="unfinished"></translation>
@@ -1463,10 +1460,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>BreakPoint</source>
-        <translation type="obsolete">中斷點</translation>
-    </message>
-    <message>
         <location filename="src/plugins/litedebug/litedebug.cpp" line="118"/>
         <source>Insert/Remove Breakpoint (F9)</source>
         <translation>插入/刪除 中斷點 (F9)</translation>
@@ -1787,17 +1780,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
 </context>
 <context>
-    <name>MakefileFile</name>
-    <message>
-        <source>Headers</source>
-        <translation type="obsolete">標頭檔</translation>
-    </message>
-    <message>
-        <source>Sources</source>
-        <translation type="obsolete">原始碼</translation>
-    </message>
-</context>
-<context>
     <name>NewFileDialog</name>
     <message>
         <location filename="src/liteapp/newfiledialog.ui" line="14"/>
@@ -2034,25 +2016,6 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <location filename="src/liteapp/pluginsdialog.cpp" line="57"/>
         <source>FileName</source>
         <translation>文件名稱</translation>
-    </message>
-</context>
-<context>
-    <name>ProfileFile</name>
-    <message>
-        <source>GOFILES</source>
-        <translation type="obsolete">GO文件</translation>
-    </message>
-    <message>
-        <source>CGOFILES</source>
-        <translation type="obsolete">CGO文件</translation>
-    </message>
-    <message>
-        <source>Headers</source>
-        <translation type="obsolete">標頭檔</translation>
-    </message>
-    <message>
-        <source>Sources</source>
-        <translation type="obsolete">原始碼</translation>
     </message>
 </context>
 <context>

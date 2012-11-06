@@ -76,6 +76,7 @@ void GolangFmt::applyOption(QString id)
     }
     m_diff = m_liteApp->settings()->value("golangfmt/diff",true).toBool();
     m_autofmt = m_liteApp->settings()->value("golangfmt/autofmt",true).toBool();
+    m_autopop = m_liteApp->settings()->value("golangfmt/autopop",false).toBool();
     if (!m_diff) {
         m_autofmt = false;
     }
@@ -130,26 +131,26 @@ void GolangFmt::syncfmtEditor(LiteApi::IEditor *editor, bool save, bool check)
     if (!error.isEmpty()) {
         QString data = codec->toUnicode(error);
         data.replace("<standard input>",fileName);
-        m_liteApp->appendLog("gofmt error\n",data,true);
-        //goto error line
-        QRegExp rep("([\\w\\d_\\\\/\\.]+):(\\d+):");
-
-        int index = rep.indexIn(data);
-        if (index < 0)
-            return;
-        QStringList capList = rep.capturedTexts();
-
-        if (capList.count() < 3)
-            return;
-        //QString fileName = capList[1];
-        QString fileLine = capList[2];
-
-        bool ok = false;
-        int line = fileLine.toInt(&ok);
-        if (!ok)
-            return;
-        textEditor->gotoLine(line-1,0,true);
+        m_liteApp->appendLog("gofmt error\n",data,m_autopop);
         return;
+        //goto error line
+//        QRegExp rep("([\\w\\d_\\\\/\\.]+):(\\d+):");
+
+//        int index = rep.indexIn(data);
+//        if (index < 0)
+//            return;
+//        QStringList capList = rep.capturedTexts();
+
+//        if (capList.count() < 3)
+//            return;
+//        //QString fileName = capList[1];
+//        QString fileLine = capList[2];
+
+//        bool ok = false;
+//        int line = fileLine.toInt(&ok);
+//        if (!ok)
+//            return;
+        //textEditor->gotoLine(line-1,0,true);
     }
     QByteArray data = process.readAllStandardOutput();
     /*

@@ -38,10 +38,10 @@ echo .
 cd %LITEIDE_ROOT%
 set GOPATH=%CD%;%GOPATH%
 
-go install -v tools/goastview
-go install -v tools/godocview
-go install -v tools/goexec
-go install -v tools/gopromake
+go install -ldflags "-s" -v tools/goastview
+go install -ldflags "-s" -v tools/godocview
+go install -ldflags "-s" -v tools/goexec
+go install -ldflags "-s" -v tools/goapi
 
 cd %BUILD_ROOT%
 
