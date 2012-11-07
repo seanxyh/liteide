@@ -496,7 +496,11 @@ int LiteEditor::utf8Position() const
 }
 
 QByteArray LiteEditor::utf8Data() const {
-    return m_editorWidget->document()->toPlainText().toUtf8();
+    QString src = m_editorWidget->document()->toPlainText();
+//    if (m_file->m_lineTerminatorMode == LiteEditorFile::CRLFLineTerminator) {
+//        src = src.replace("\n","\r\n");
+//    }
+    return src.toUtf8();
 }
 
 void LiteEditor::gotoLine(int line, int column, bool center)

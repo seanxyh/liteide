@@ -288,7 +288,7 @@ void GolangDoc::loadApi()
 
 void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
 {
-    QProcessEnvironment env = m_envManager->currentEnvironment();
+    QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);//m_envManager->currentEnvironment();
     QString goroot = env.value("GOROOT");
     QString gobin = env.value("GOBIN");
     if (!goroot.isEmpty() && gobin.isEmpty()) {
@@ -316,6 +316,8 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
     m_godocProcess->setEnvironment(env.toStringList());
     m_goapiProcess->setEnvironment(env.toStringList());
     m_lookupProcess->setEnvironment(env.toStringList());
+    m_helpProcess->setEnvironment(env.toStringList());
+
     this->loadApi();
     m_pathFileMap.clear();
     QDir dir(goroot);
