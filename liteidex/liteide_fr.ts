@@ -1066,23 +1066,24 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangDoc</name>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="122"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="125"/>
         <source>Golang Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="125"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="128"/>
         <source>Golang Document Browser</source>
         <oldsource>Golang Document Browser Page</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="144"/>
-        <source>Lookup Api Help</source>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="147"/>
+        <source>View Expression Infomation</source>
+        <oldsource>View Cursor Infomation</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="147"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="150"/>
         <source>Jump to Declaration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1497,19 +1498,19 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <name>LiteEditor</name>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="201"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="646"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="654"/>
         <source>Export HTML</source>
         <translation>Exporter en HTML</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="203"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="673"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="681"/>
         <source>Export PDF</source>
         <translation>Exporter en PDF</translation>
     </message>
     <message>
         <location filename="src/plugins/liteeditor/liteeditor.cpp" line="204"/>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="697"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="705"/>
         <source>Print Document</source>
         <translation>Imprimer le document</translation>
     </message>
@@ -1564,7 +1565,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="748"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="756"/>
         <source>Goto Line</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1574,22 +1575,22 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="654"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="662"/>
         <source>Can not write file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="655"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="663"/>
         <source>LiteIDE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="714"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="722"/>
         <source>Cancel file %1 modify and reload ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="748"/>
+        <location filename="src/plugins/liteeditor/liteeditor.cpp" line="756"/>
         <source>Line: </source>
         <translation type="unfinished"></translation>
     </message>
