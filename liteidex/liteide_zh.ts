@@ -1081,8 +1081,8 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     </message>
     <message>
         <location filename="src/plugins/golangdoc/golangdoc.cpp" line="147"/>
-        <source>View Expression Infomation</source>
-        <oldsource>View Cursor Infomation</oldsource>
+        <source>View Expression Information</source>
+        <oldsource>View Expression Infomation</oldsource>
         <translation>查看表达式信息</translation>
     </message>
     <message>
