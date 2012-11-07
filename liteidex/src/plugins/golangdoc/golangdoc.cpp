@@ -161,8 +161,10 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     connect(m_godocProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(godocFinish(bool,int,QString)));
     connect(m_goapiProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(goapiOutput(QByteArray,bool)));
     connect(m_goapiProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(goapiFinish(bool,int,QString)));
+    connect(m_lookupProcess,SIGNAL(started()),this,SLOT(lookupStarted()));
     connect(m_lookupProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(lookupOutput(QByteArray,bool)));
     connect(m_lookupProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(lookupFinish(bool,int,QString)));
+    connect(m_helpProcess,SIGNAL(started()),this,SLOT(helpStarted()));
     connect(m_helpProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(helpOutput(QByteArray,bool)));
     connect(m_helpProcess,SIGNAL(extFinish(bool,int,QString)),this,SLOT(helpFinish(bool,int,QString)));
     connect(m_findProcess,SIGNAL(extOutput(QByteArray,bool)),this,SLOT(findOutput(QByteArray,bool)));
@@ -218,14 +220,15 @@ void GolangDoc::editorJumpToDecl()
     if (!textEditor) {
         return;
     }
-    m_liteApp->editorManager()->saveEditor(editor,false);
+    //m_liteApp->editorManager()->saveEditor(editor,false);
 
+    m_srcData = textEditor->utf8Data();
     m_lookupData.clear();
     QFileInfo info(textEditor->filePath());
     m_lookupProcess->setWorkingDirectory(info.path());
-    m_lookupProcess->startEx(m_goapiCmd,QString("-cursor_info %1:%2 .").
+    m_lookupProcess->startEx(m_goapiCmd,QString("-cursor_std -cursor_info %1:%2 .").
                              arg(info.fileName()).
-                             arg(textEditor->position()));
+                             arg(textEditor->utf8Position()));
 }
 
 void GolangDoc::editorFindDoc()
@@ -235,14 +238,14 @@ void GolangDoc::editorFindDoc()
     if (!textEditor) {
         return;
     }
-    m_liteApp->editorManager()->saveEditor(editor,false);
-
+    //m_liteApp->editorManager()->saveEditor(editor,false);
+    m_srcData = textEditor->utf8Data();
     m_helpData.clear();
     QFileInfo info(textEditor->filePath());
     m_helpProcess->setWorkingDirectory(info.path());
-    m_helpProcess->startEx(m_goapiCmd,QString("-cursor_info %1:%2 .").
+    m_helpProcess->startEx(m_goapiCmd,QString("-cursor_std -cursor_info %1:%2 .").
                              arg(info.fileName()).
-                             arg(textEditor->position()));
+                             arg(textEditor->utf8Position()));
 }
 
 void GolangDoc::editorCreated(LiteApi::IEditor *editor)
@@ -921,6 +924,12 @@ void GolangDoc::goapiFinish(bool error,int code,QString)
     }
 }
 
+void GolangDoc::lookupStarted()
+{
+    m_lookupProcess->write(m_srcData);
+    m_lookupProcess->closeWriteChannel();
+}
+
 void GolangDoc::lookupOutput(QByteArray data, bool bStdErr)
 {
     if (!bStdErr) {
@@ -947,6 +956,12 @@ void GolangDoc::lookupFinish(bool error, int code, QString)
             }
         }
     }
+}
+
+void GolangDoc::helpStarted()
+{
+    m_helpProcess->write(m_srcData);
+    m_helpProcess->closeWriteChannel();
 }
 
 void GolangDoc::helpOutput(QByteArray data, bool bStdErr)
