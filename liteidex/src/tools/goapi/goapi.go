@@ -1846,6 +1846,9 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 				}
 				return fname, info, nil
 			case *ast.SelectorExpr:
+				if inRange(st, p) {
+					return w.lookupExpr(st, p)
+				}
 				typ, err := w.varValueType(st, 0)
 				if err != nil {
 					return "", nil, err
@@ -1924,6 +1927,10 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 			//				}
 			//			}
 		case *ast.SelectorExpr:
+			if inRange(st, p) {
+				return w.lookupExpr(st, p)
+			}
+
 			typ, err := w.varValueType(st, 0)
 			if err == nil {
 				info, err := w.lookupSelector(typ, v.Sel.Name)
