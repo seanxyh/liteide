@@ -592,7 +592,7 @@ void GolangDoc::openUrlPdoc(const QUrl &url)
         m_godocProcess->setWorkingDirectory(m_goroot);
         args << "-html=true" << url.path();
     }
-    m_godocProcess->setEnvironment(LiteApi::getGoEnvironment(m_liteApp).toStringList());
+    //m_godocProcess->setEnvironment(LiteApi::getGoEnvironment(m_liteApp).toStringList());
     m_godocProcess->start(m_godocCmd,args);
 }
 
@@ -802,53 +802,22 @@ void GolangDoc::openUrl(const QUrl &_url)
 
 void GolangDoc::findTag(const QString &tag)
 {
-    QString exp;
-    LiteApi::PkgApiEnum typ = m_golangApi->findExp(tag,exp);
-    if (typ == LiteApi::NullApi) {
-        return;
-    }
-    QString pkg = tag;
-    QString type;
-    QString field;
-    //archive/tar.Reader.Next
-    int pos = tag.lastIndexOf("/");
-    if (pos >= 0) {
-        pkg = tag.left(pos);
-        QStringList split = tag.mid(pos+1).split(".",QString::SkipEmptyParts);
-        if (split.size() >= 1) {
-            pkg += "/"+split.takeFirst();
-        }
-        if (split.size() >= 1) {
-            type = split.takeFirst();
-        }
-        if (split.size() >= 1) {
-            field = split.takeFirst();
+    if (!tag.isEmpty()){
+        QStringList urlList = m_golangApi->findDocUrl(tag);
+        if (!urlList.isEmpty()) {
+            if (urlList.size() >= 2) {
+                m_docFind = urlList.at(1);
+            } else {
+                m_docFind.clear();
+            }
+            QString text = urlList.at(0);
+            if (!text.isEmpty()) {
+                activeBrowser();
+                QUrl url(QString("pdoc:%1").arg(text));
+                openUrl(url);
+            }
         }
     }
-    QString text;
-    if (typ == LiteApi::VarApi) {
-        text = pkg+"#variables";
-    } else if (typ == LiteApi::ConstApi) {
-        if (exp.startsWith("ideal-") ||
-                exp == "uint16") {
-            text = pkg+"#constants";
-        } else {
-            text = pkg+"#"+exp;
-        }
-    } else if (typ == LiteApi::TypeVarApi) {
-        text = pkg+"#"+type;
-    } else {
-        text = pkg;
-        if (!type.isEmpty()) {
-            text += "#"+type;
-        }
-        if (!field.isEmpty()) {
-            text += "."+field;
-        }
-    }
-    activeBrowser();
-    QUrl url(QString("pdoc:%1").arg(text));
-    openUrl(url);
 }
 
 void GolangDoc::doubleClickListView(QModelIndex index)
@@ -990,7 +959,7 @@ void GolangDoc::helpFinish(bool error, int code, QString)
         while (!s.atEnd()) {
             QString line = s.readLine();
             if (line.startsWith("help,")) {
-                m_toolAct->setChecked(true);
+                //m_toolAct->setChecked(true);
                 QString help = line.mid(5).trimmed();
                 m_findEdit->setText(help);
             } else if (line.startsWith("info,")) {

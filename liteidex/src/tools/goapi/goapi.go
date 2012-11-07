@@ -278,7 +278,8 @@ lookup:
 			if p := w.findPackage(info.Name); p != nil {
 				fmt.Println("help,", p.name)
 			}
-		} else if info.T != nil {
+		}
+		if info.T != nil {
 			for _, text := range []string{info.Name, info.Type} {
 				typ := strings.TrimLeft(text, "*")
 				pos := strings.Index(typ, ".")
@@ -1045,6 +1046,16 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 				if err != nil {
 					log.Fatalln("lookup error,", err)
 				} else {
+					if info != nil && info.Kind == KindImport {
+						for _, is := range v.Imports {
+							fpath, err := strconv.Unquote(is.Path.Value)
+							if err == nil {
+								if info.Name == path.Base(fpath) {
+									info.T = is.Path
+								}
+							}
+						}
+					}
 					w.cursorInfo.info = info
 				}
 				break
@@ -1829,6 +1840,9 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 		case *ast.SelectorExpr:
 			switch st := ft.X.(type) {
 			case *ast.Ident:
+				if inRange(st, p) {
+					return w.lookupExpr(st, p)
+				}
 				s, _, err := w.lookupExpr(st, p)
 				if err != nil {
 					return "", nil, err
@@ -1846,6 +1860,9 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 				}
 				return fname, info, nil
 			case *ast.SelectorExpr:
+				if inRange(st.X, p) {
+					return w.lookupExpr(st.X, p)
+				}
 				if inRange(st, p) {
 					return w.lookupExpr(st, p)
 				}
@@ -1904,6 +1921,9 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 	case *ast.SelectorExpr:
 		switch st := v.X.(type) {
 		case *ast.Ident:
+			if inRange(st, p) {
+				return w.lookupExpr(st, p)
+			}
 			info, err := w.lookupSelector(st.Name, v.Sel.Name)
 			if err != nil {
 				return "", nil, err
@@ -1927,6 +1947,10 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 			//				}
 			//			}
 		case *ast.SelectorExpr:
+			if inRange(st.X, p) {
+				return w.lookupExpr(st.X, p)
+			}
+
 			if inRange(st, p) {
 				return w.lookupExpr(st, p)
 			}
