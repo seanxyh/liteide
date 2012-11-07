@@ -1197,14 +1197,14 @@ void LiteEditorWidgetBase::indentEnter(QTextCursor cur)
     ensureCursorVisible();
 }
 
-void LiteEditorWidgetBase::showTip(const QString &tip)
+void LiteEditorWidgetBase::showToolTip(const QTextCursor &cursor, const QString &tip)
 {
-    QRect rc = cursorRect();
+    QRect rc = cursorRect(cursor);
     QPoint pt = mapToGlobal(rc.topRight());
     QToolTip::showText(pt,tip,this);
 }
 
-void LiteEditorWidgetBase::hideTip()
+void LiteEditorWidgetBase::hideToolTip()
 {
     QToolTip::hideText();
 }

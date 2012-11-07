@@ -29,6 +29,7 @@
 #include "liteobj.h"
 
 #include <QWidget>
+#include <QPlainTextEdit>
 #include <QSettings>
 #include <QMainWindow>
 #include <QDockWidget>
@@ -274,6 +275,13 @@ inline ITextEditor *getTextEditor(IEditor *editor)
 {
     if (editor && editor->extension()) {
         return findExtensionObject<ITextEditor*>(editor->extension(),"LiteApi.ITextEditor");
+    }
+    return 0;
+}
+
+inline QPlainTextEdit *getPlainTextEdit(IEditor *editor) {
+    if (editor && editor->extension()) {
+        return findExtensionObject<QPlainTextEdit*>(editor->extension(),"LiteApi.QPlainTextEdit");
     }
     return 0;
 }

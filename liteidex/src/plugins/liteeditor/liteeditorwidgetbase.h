@@ -48,8 +48,8 @@ public:
     void extraAreaMouseEvent(QMouseEvent *e);
     void extraAreaLeaveEvent(QEvent *e);
     void resizeEvent(QResizeEvent *e);
-    void showTip(const QString &tip);
-    void hideTip();
+    void showToolTip(const QTextCursor &cursor, const QString &tip);
+    void hideToolTip();
 signals:
     void navigationStateChanged(const QByteArray &array);
 public:
