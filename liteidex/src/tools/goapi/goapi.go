@@ -258,19 +258,27 @@ func main() {
 	}
 
 lookup:
-	if w.cursorInfo != nil && w.cursorInfo.info != nil {
+	if w.cursorInfo != nil {
 		info := w.cursorInfo.info
-		fmt.Println("kind,", info.Kind)
-		fmt.Println("name,", info.Name)
-		if info.Type != "" {
-			fmt.Println("type,", strings.TrimLeft(info.Type, "*"))
+		if info == nil {
+			os.Exit(1)
+			return
+		}
+		//		fmt.Println("kind,", info.Kind)
+		//		fmt.Println("name,", info.Name)
+		//		if info.Type != "" {
+		//			fmt.Println("type,", strings.TrimLeft(info.Type, "*"))
+		//		}
+		if info.Name == info.Type || info.Type == "" {
+			fmt.Printf("info, %s, %s\n", info.Kind, info.Name)
+		} else {
+			fmt.Printf("info, %s, %s, %s\n", info.Kind, info.Name, info.Type)
 		}
 		if info.Kind == KindImport || info.Kind == KindPackage {
 			if p := w.findPackage(info.Name); p != nil {
 				fmt.Println("help,", p.name)
 			}
 		} else if info.T != nil {
-			fmt.Println("pos,", w.fset.Position(info.T.Pos()))
 			for _, text := range []string{info.Name, info.Type} {
 				typ := strings.TrimLeft(text, "*")
 				pos := strings.Index(typ, ".")
@@ -281,6 +289,7 @@ lookup:
 					}
 				}
 			}
+			fmt.Println("pos,", w.fset.Position(info.T.Pos()))
 		}
 		return
 	}
@@ -785,7 +794,7 @@ func (w *Walker) WalkPackage(pkg string) {
 			}
 			return
 		}
-		dir := path.Clean(path.Join(wd, pkg))
+		dir := filepath.Clean(filepath.Join(wd, pkg))
 		bp, err := w.context.ImportDir(dir, 0)
 		if err != nil {
 			if *verbose {
@@ -1783,6 +1792,7 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 		}
 		switch ft := v.Fun.(type) {
 		case *ast.Ident:
+			return w.lookupExpr(ft, p)
 			if typ, ok := w.localvar[ft.Name]; ok {
 				return ft.Name, &TypeInfo{Kind: KindVar, X: ft, Name: ft.Name, T: typ.X, Type: typ.T}, nil
 			}
@@ -1847,7 +1857,7 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 						for _, fi := range ss.Fields.List {
 							for _, n := range fi.Names {
 								if n.Name == st.Sel.Name {
-									return fname, &TypeInfo{Kind: KindField, X: n, Name: fname, T: fi.Tag, Type: w.nodeString(w.namelessType(fi.Tag))}, nil
+									return fname, &TypeInfo{Kind: KindField, X: n, Name: fname, T: fi.Type, Type: w.nodeString(w.namelessType(fi.Type))}, nil
 								}
 							}
 						}
@@ -2592,19 +2602,16 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 	}
 	//check local
 	if lv, ok := w.localvar[name]; ok {
-		typ := strings.TrimLeft(lv.T, "*")
-		if strings.Index(typ, ".") != -1 {
-			return w.varSelectorType(typ, sel)
-		}
-		t := w.curPackage.findType(typ)
-		if t != nil {
-			typ := w.findStructFieldType(t, sel)
-			if typ != nil {
-				return w.nodeString(w.namelessType(typ)), nil
-			}
+		return w.varSelectorType(lv.T, sel)
+	}
+	//check struct
+	if t := w.curPackage.findType(name); t != nil {
+		typ := w.findStructFieldType(t, sel)
+		if typ != nil {
+			return w.nodeString(w.namelessType(typ)), nil
 		}
 	}
-
+	//check var
 	vs, vt, n := w.resolveName(name)
 	if n >= 0 {
 		var typ string
@@ -2645,6 +2652,7 @@ func (w *Walker) varSelectorType(name string, sel string) (string, error) {
 			}
 		}
 	}
+
 	if p := w.findPackage(name); p != nil {
 		typ := p.findSelectorType(sel)
 		if typ != nil {

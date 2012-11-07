@@ -126,6 +126,8 @@ protected:
     QByteArray  m_goapiData;
     QByteArray  m_lookupData;
     QByteArray  m_srcData;
+    QTextCursor m_lastCursor;
+    LiteApi::IEditor *m_lastEditor;
     QByteArray  m_helpData;
     QByteArray  m_findData;
     QString  m_templateData;

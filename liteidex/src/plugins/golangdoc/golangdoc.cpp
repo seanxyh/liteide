@@ -59,6 +59,7 @@
 #include <QDomDocument>
 #include <QScrollBar>
 #include <QTextBlock>
+#include <QToolTip>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -85,6 +86,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_goapiProcess = new ProcessEx(this);
     m_lookupProcess = new ProcessEx(this);
     m_helpProcess = new ProcessEx(this);
+
+    m_lastEditor = 0;
 
     m_widget = new QWidget;
     m_findResultModel = new QStringListModel(this);
@@ -238,8 +241,14 @@ void GolangDoc::editorFindDoc()
     if (!textEditor) {
         return;
     }
+    QPlainTextEdit *ed = LiteApi::getPlainTextEdit(editor);
+    if (!ed) {
+        return;
+    }
     //m_liteApp->editorManager()->saveEditor(editor,false);
     m_srcData = textEditor->utf8Data();
+    m_lastCursor = ed->textCursor();
+    m_lastEditor = editor;
     m_helpData.clear();
     QFileInfo info(textEditor->filePath());
     m_helpProcess->setWorkingDirectory(info.path());
@@ -975,12 +984,26 @@ void GolangDoc::helpFinish(bool error, int code, QString)
 {
     if (!error && code == 0) {
         QTextStream s(&m_helpData);
+        QString info;
         while (!s.atEnd()) {
             QString line = s.readLine();
             if (line.startsWith("help,")) {
                 m_toolAct->setChecked(true);
                 QString help = line.mid(5).trimmed();
                 m_findEdit->setText(help);
+            } else if (line.startsWith("info,")) {
+                info = line.mid(5).trimmed();
+            }
+        }
+        if (!info.isEmpty()) {
+            LiteApi::IEditor *editor = m_liteApp->editorManager()->currentEditor();
+            if (editor && editor == m_lastEditor) {
+                QPlainTextEdit *ed = LiteApi::getPlainTextEdit(editor);
+                if (ed && ed->textCursor() == m_lastCursor) {
+                    QRect rc = ed->cursorRect(m_lastCursor);
+                    QPoint pt = ed->mapToGlobal(rc.topRight());
+                    QToolTip::showText(pt,info,ed);
+                }
             }
         }
     }
