@@ -144,7 +144,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_browserAct = m_liteApp->editorManager()->registerBrowser(m_docBrowser);
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuBrowserPos,m_browserAct);
 
-    m_findDocAct = new QAction(tr("Lookup Api Help"),this);
+    m_findDocAct = new QAction(tr("View Expression Infomation"),this);
     m_findDocAct->setShortcut(QKeySequence::HelpContents);
 
     m_jumpDeclAct = new QAction(tr("Jump to Declaration"),this);

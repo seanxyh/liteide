@@ -1,6 +1,6 @@
 ==== 2012.11.6 Ver x14.0 ====
  * tools/goapi : new goapi tool
- * GolangDoc: Lookup Api Help (F1)
+ * GolangDoc: View Expression Infomation (F1)
  * GolangDoc: Jump to Declaration (F2)
  * GolangDoc: lookup all GOPATH pkg api
  * LiteApp: fix editor navigate 
