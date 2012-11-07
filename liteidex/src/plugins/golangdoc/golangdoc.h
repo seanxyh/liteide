@@ -82,8 +82,10 @@ public slots:
     void godocFinish(bool,int,QString);
     void goapiOutput(QByteArray,bool);
     void goapiFinish(bool,int,QString);
+    void lookupStarted();
     void lookupOutput(QByteArray,bool);
     void lookupFinish(bool,int,QString);
+    void helpStarted();
     void helpOutput(QByteArray,bool);
     void helpFinish(bool,int,QString);
     void doubleClickListView(QModelIndex);
@@ -123,6 +125,7 @@ protected:
     QByteArray  m_godocData;
     QByteArray  m_goapiData;
     QByteArray  m_lookupData;
+    QByteArray  m_srcData;
     QByteArray  m_helpData;
     QByteArray  m_findData;
     QString  m_templateData;

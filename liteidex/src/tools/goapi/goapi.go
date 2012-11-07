@@ -48,12 +48,17 @@ var (
 	defaultCtx       = flag.Bool("default_ctx", false, "extract for default context")
 	customCtx        = flag.String("custom_ctx", "", "optional comma-separated list of <goos>-<goarch>[-cgo] to override default contexts.")
 	lookupCursorInfo = flag.String("cursor_info", "", "lookup cursor node info\"file.go:pos\"")
+	cursorStd        = flag.Bool("cursor_std", false, "cursor_info use stdin")
 )
 
-var (
-	cursor_file string
-	cursor_pos  token.Pos = token.NoPos
-)
+type CursorInfo struct {
+	pkg  string
+	file string
+	pos  token.Pos
+	src  []byte
+	std  bool
+	info *TypeInfo
+}
 
 func usage() {
 	fmt.Fprintf(os.Stderr, `usage: api [std|all|package...|local-dir]
@@ -154,19 +159,27 @@ func main() {
 	} else {
 		pkgs = flag.Args()
 	}
-
+	var curinfo CursorInfo
 	if *lookupCursorInfo != "" {
 		pos := strings.Index(*lookupCursorInfo, ":")
 		if pos != -1 {
-			cursor_file = (*lookupCursorInfo)[:pos]
+			curinfo.file = (*lookupCursorInfo)[:pos]
 			if i, err := strconv.Atoi((*lookupCursorInfo)[pos+1:]); err == nil {
-				cursor_pos = token.Pos(i)
+				curinfo.pos = token.Pos(i)
 			}
 		}
 	}
-	var cursorPkg string
-	if len(pkgs) == 1 && cursor_pos != token.NoPos {
-		cursorPkg = pkgs[0]
+
+	if len(pkgs) == 1 && curinfo.pos != token.NoPos {
+		curinfo.pkg = pkgs[0]
+	}
+
+	if *cursorStd {
+		src, err := ioutil.ReadAll(os.Stdin)
+		if err == nil {
+			curinfo.src = src
+			curinfo.std = true
+		}
 	}
 
 	if *customCtx != "" {
@@ -176,7 +189,9 @@ func main() {
 
 	var features []string
 	w := NewWalker()
-	w.cursorPkg = cursorPkg
+	if curinfo.pkg != "" {
+		w.cursorInfo = &curinfo
+	}
 	w.sep = *separate
 
 	if *defaultCtx {
@@ -207,7 +222,7 @@ func main() {
 			for _, pkg := range pkgs {
 				w.WalkPackage(pkg)
 			}
-			if w.lookupInfo != nil {
+			if w.cursorInfo != nil && w.cursorInfo.info != nil {
 				goto lookup
 			}
 		}
@@ -243,29 +258,27 @@ func main() {
 	}
 
 lookup:
-	if *lookupCursorInfo != "" {
-		if w.lookupInfo != nil {
-			fmt.Println("kind,", w.lookupInfo.Kind)
-			fmt.Println("name,", w.lookupInfo.Name)
-			if w.lookupInfo.Type != "" {
-				fmt.Println("type,", strings.TrimLeft(w.lookupInfo.Type, "*"))
+	if w.cursorInfo != nil && w.cursorInfo.info != nil {
+		info := w.cursorInfo.info
+		fmt.Println("kind,", info.Kind)
+		fmt.Println("name,", info.Name)
+		if info.Type != "" {
+			fmt.Println("type,", strings.TrimLeft(info.Type, "*"))
+		}
+		if info.Kind == KindImport || info.Kind == KindPackage {
+			if p := w.findPackage(info.Name); p != nil {
+				fmt.Println("help,", p.name)
 			}
-			if w.lookupInfo.Kind == KindImport || w.lookupInfo.Kind == KindPackage {
-				if p := w.findPackage(w.lookupInfo.Name); p != nil {
-					fmt.Println("help,", p.name)
-				}
-			} else if w.lookupInfo.T != nil {
-				fmt.Println("pos,", w.fset.Position(w.lookupInfo.T.Pos()))
-				for _, typ := range []string{w.lookupInfo.Name, w.lookupInfo.Type} {
-					typ = strings.TrimLeft(w.lookupInfo.Name, "*")
-					pos := strings.Index(typ, ".")
-					if pos != -1 {
-						if p := w.findPackage(typ[:pos]); p != nil {
-							fmt.Println("help,", p.name+typ[pos:])
-							break
-						}
+		} else if info.T != nil {
+			fmt.Println("pos,", w.fset.Position(info.T.Pos()))
+			for _, text := range []string{info.Name, info.Type} {
+				typ := strings.TrimLeft(text, "*")
+				pos := strings.Index(typ, ".")
+				if pos != -1 {
+					if p := w.findPackage(typ[:pos]); p != nil {
+						fmt.Println("help,", p.name+typ[pos:])
+						break
 					}
-
 				}
 			}
 		}
@@ -676,9 +689,8 @@ type Walker struct {
 	interfaces      map[pkgSymbol]*ast.InterfaceType
 	selectorFullPkg map[string]string // "http" => "net/http", updated by imports
 	wantedPkg       map[string]bool   // packages requested on the command line
-	cursorPkg       string
+	cursorInfo      *CursorInfo
 	localvar        map[string]*ExprType
-	lookupInfo      *TypeInfo
 }
 
 func NewWalker() *Walker {
@@ -785,8 +797,8 @@ func (w *Walker) WalkPackage(pkg string) {
 			w.wantedPkg[bp.Name] = true
 			delete(w.wantedPkg, pkg)
 		}
-		if w.cursorPkg == pkg {
-			w.cursorPkg = bp.Name
+		if w.cursorInfo != nil && w.cursorInfo.pkg == pkg {
+			w.cursorInfo.pkg = bp.Name
 		}
 		w.WalkPackageDir(bp.Name, bp.Dir, bp)
 	} else if filepath.IsAbs(pkg) {
@@ -800,9 +812,10 @@ func (w *Walker) WalkPackage(pkg string) {
 			w.wantedPkg[bp.Name] = true
 			delete(w.wantedPkg, pkg)
 		}
-		if w.cursorPkg == pkg {
-			w.cursorPkg = bp.Name
+		if w.cursorInfo != nil && w.cursorInfo.pkg == pkg {
+			w.cursorInfo.pkg = bp.Name
 		}
+
 		w.WalkPackageDir(bp.Name, bp.Dir, bp)
 	} else {
 		bp, err := build.Import(pkg, "", build.FindOnly)
@@ -888,7 +901,14 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	}
 	var deps []string
 	for _, file := range files {
-		f, err := parser.ParseFile(w.fset, filepath.Join(dir, file), nil, 0)
+		var src interface{} = nil
+		if w.cursorInfo != nil &&
+			w.cursorInfo.pkg == name &&
+			w.cursorInfo.file == file &&
+			w.cursorInfo.std {
+			src = w.cursorInfo.src
+		}
+		f, err := parser.ParseFile(w.fset, filepath.Join(dir, file), src, 0)
 		if err != nil {
 			if *verbose {
 				log.Printf("error parsing package %s, file %s: %v", name, file, err)
@@ -1005,18 +1025,18 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 
 	w.resolveConstantDeps()
 
-	if w.cursorPkg == name {
+	if w.cursorInfo != nil && w.cursorInfo.pkg == name {
 		for k, v := range apkg.Files {
-			if k == cursor_file {
+			if k == w.cursorInfo.file {
 				f := w.fset.File(v.Pos())
 				if f == nil {
 					log.Fatalf("error fset postion %v", v.Pos())
 				}
-				info, err := w.lookupFile(v, token.Pos(f.Base())+cursor_pos-1)
+				info, err := w.lookupFile(v, token.Pos(f.Base())+w.cursorInfo.pos-1)
 				if err != nil {
 					log.Fatalln("lookup error,", err)
 				} else {
-					w.lookupInfo = info
+					w.cursorInfo.info = info
 				}
 				break
 			}
