@@ -2042,6 +2042,9 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 		if typ, ok := w.curPackage.consts[v.Name]; ok {
 			return v.Name, &TypeInfo{Kind: KindConst, X: v, Name: v.Name, T: typ.X, Type: typ.T}, nil
 		}
+		if typ, ok := w.curPackage.functions[v.Name]; ok {
+			return v.Name, &TypeInfo{Kind: KindFunc, X: typ.ft, Name: v.Name, T: typ.ft, Type: typ.sig}, nil
+		}
 		if p := w.findPackage(v.Name); p != nil {
 			return v.Name, &TypeInfo{Kind: KindImport, X: v, Name: v.Name, Type: p.name}, nil
 		}
@@ -2466,9 +2469,17 @@ func (w *Walker) lookupFunction(name, sel string) (*TypeInfo, error) {
 			return &TypeInfo{Kind: KindMethod, X: fn.ft, Name: name + "." + sel, T: fn.ft, Type: w.nodeString(w.namelessType(fn))}, nil
 		}
 	}
-	if _, ok := w.curPackage.structs[name]; ok {
+	if typ, ok := w.curPackage.structs[name]; ok {
 		if fn, ok := w.curPackage.functions[name+"."+sel]; ok {
 			return &TypeInfo{Kind: KindMethod, X: fn.ft, Name: name + "." + sel, T: fn.ft, Type: w.nodeString(w.namelessType(fn.ft))}, nil
+		}
+		// struct field is type function
+		if ft := w.findStructFieldType(typ, sel); ft != nil {
+			typ, err := w.varValueType(ft, 0)
+			if err != nil {
+				typ = w.nodeString(ft)
+			}
+			return &TypeInfo{Kind: KindField, X: ft, Name: name + "." + sel, T: ft, Type: typ}, nil
 		}
 	}
 
@@ -2544,8 +2555,12 @@ func (w *Walker) varFunctionType(name, sel string, index int) (string, error) {
 			return w.nodeString(w.namelessType(funcRetType(fn.ft, index))), nil
 		}
 	}
+	if typ, ok := w.curPackage.structs[name]; ok {
+		if ft := w.findStructFieldType(typ, sel); ft != nil {
+			return w.varValueType(ft, index)
+		}
+	}
 	//find pkg.func()
-
 	if p := w.findPackage(name); p != nil {
 		typ := p.findCallType(sel, index)
 		if typ != nil {
