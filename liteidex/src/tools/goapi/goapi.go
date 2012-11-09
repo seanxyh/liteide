@@ -20,12 +20,14 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"sort"
 	"strconv"
@@ -312,25 +314,45 @@ lookup:
 		return
 	}
 
-	var required []string
-	for _, filename := range []string{*checkFile} {
-		required = append(required, fileFeatures(filename)...)
+	if *checkFile == "" {
+		for _, f := range features {
+			fmt.Fprintf(bw, "%s\n", f)
+		}
+		return
 	}
+
+	required := fileFeatures(*checkFile)
+	optional := fileFeatures(*nextFile)
+	exception := fileFeatures(*exceptFile)
+	fail = !compareAPI(bw, features, required, optional, exception)
+}
+
+func set(items []string) map[string]bool {
+	s := make(map[string]bool)
+	for _, v := range items {
+		s[v] = true
+	}
+	return s
+}
+
+var spaceParensRx = regexp.MustCompile(` \(\S+?\)`)
+
+func featureWithoutContext(f string) string {
+	if !strings.Contains(f, "(") {
+		return f
+	}
+	return spaceParensRx.ReplaceAllString(f, "")
+}
+
+func compareAPI(w io.Writer, features, required, optional, exception []string) (ok bool) {
+	ok = true
+
+	optionalSet := set(optional)
+	exceptionSet := set(exception)
+	featureSet := set(features)
+
+	sort.Strings(features)
 	sort.Strings(required)
-
-	var optional = make(map[string]bool) // feature => true
-	if *nextFile != "" {
-		for _, feature := range fileFeatures(*nextFile) {
-			optional[feature] = true
-		}
-	}
-
-	var exception = make(map[string]bool) // exception => true
-	if *exceptFile != "" {
-		for _, feature := range fileFeatures(*exceptFile) {
-			exception[feature] = true
-		}
-	}
 
 	take := func(sl *[]string) string {
 		s := (*sl)[0]
@@ -340,25 +362,27 @@ lookup:
 
 	for len(required) > 0 || len(features) > 0 {
 		switch {
-		case len(features) == 0 || required[0] < features[0]:
+		case len(features) == 0 || (len(required) > 0 && required[0] < features[0]):
 			feature := take(&required)
-			if exception[feature] {
-				fmt.Fprintf(bw, "~%s\n", feature)
+			if exceptionSet[feature] {
+				fmt.Fprintf(w, "~%s\n", feature)
+			} else if featureSet[featureWithoutContext(feature)] {
+				// okay.
 			} else {
-				fmt.Fprintf(bw, "-%s\n", feature)
-				fail = true // broke compatibility
+				fmt.Fprintf(w, "-%s\n", feature)
+				ok = false // broke compatibility
 			}
-		case len(required) == 0 || required[0] > features[0]:
+		case len(required) == 0 || (len(features) > 0 && required[0] > features[0]):
 			newFeature := take(&features)
-			if optional[newFeature] {
+			if optionalSet[newFeature] {
 				// Known added feature to the upcoming release.
 				// Delete it from the map so we can detect any upcoming features
 				// which were never seen.  (so we can clean up the nextFile)
-				delete(optional, newFeature)
+				delete(optionalSet, newFeature)
 			} else {
-				fmt.Fprintf(bw, "+%s\n", newFeature)
+				fmt.Fprintf(w, "+%s\n", newFeature)
 				if !*allowNew {
-					fail = true // we're in lock-down mode for next release
+					ok = false // we're in lock-down mode for next release
 				}
 			}
 		default:
@@ -369,13 +393,14 @@ lookup:
 
 	// In next file, but not in API.
 	var missing []string
-	for feature := range optional {
+	for feature := range optionalSet {
 		missing = append(missing, feature)
 	}
 	sort.Strings(missing)
 	for _, feature := range missing {
-		fmt.Fprintf(bw, "±%s\n", feature)
+		fmt.Fprintf(w, "±%s\n", feature)
 	}
+	return
 }
 
 func fileFeatures(filename string) []string {
