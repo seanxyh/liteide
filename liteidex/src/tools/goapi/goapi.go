@@ -928,6 +928,20 @@ func (w *Walker) WalkPackageDir(name string, dir string, bp *build.Package) {
 	}
 
 	files := append(append([]string{}, bp.GoFiles...), bp.CgoFiles...)
+	if w.cursorInfo != nil && w.cursorInfo.pkg == name {
+		files = append(files, bp.TestGoFiles...)
+		for _, v := range bp.XTestGoFiles {
+			if v == w.cursorInfo.file {
+				var xbp build.Package
+				xbp.Name = name + "_test"
+				xbp.GoFiles = append(xbp.GoFiles, bp.XTestGoFiles...)
+				w.cursorInfo.pkg = xbp.Name
+				w.WalkPackageDir(xbp.Name, dir, &xbp)
+				break
+			}
+		}
+	}
+
 	if len(files) == 0 {
 		if *verbose {
 			log.Println("no Go source files in", bp.Dir)
@@ -1197,6 +1211,30 @@ func (w *Walker) lookupFile(file *ast.File, p token.Pos) (*TypeInfo, error) {
 	return nil, fmt.Errorf("un find cursor %v", w.fset.Position(p))
 }
 
+func (w *Walker) isType(typ string) *ExprType {
+	pos := strings.Index(typ, ".")
+	if pos != -1 {
+		pkg := typ[:pos]
+		typ = typ[pos+1:]
+		if p := w.findPackage(pkg); p != nil {
+			if t, ok := p.types[typ]; ok {
+				if r := w.isType(typ); r != nil {
+					return r
+				}
+				return &ExprType{X: t, T: w.pkgRetType(pkg, w.nodeString(t))}
+			}
+		}
+		return nil
+	}
+	if t, ok := w.curPackage.types[typ]; ok {
+		if r := w.isType(w.nodeString(t)); r != nil {
+			return r
+		}
+		return &ExprType{X: t, T: w.nodeString(t)}
+	}
+	return nil
+}
+
 func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (*TypeInfo, error) {
 	if vi == nil {
 		return nil, nil
@@ -1409,6 +1447,11 @@ func (w *Walker) lookupStmt(vi ast.Stmt, p token.Pos) (*TypeInfo, error) {
 			return w.lookupExprInfo(v.X, p)
 		} else {
 			typ, err := w.varValueType(v.X, 0)
+			//check is type
+			if t := w.isType(typ); t != nil {
+				log.Println(t)
+				typ = t.T
+			}
 			if err == nil {
 				var kt, vt string
 				if strings.HasPrefix(typ, "[]") {
@@ -1832,6 +1875,9 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 			if typ, ok := w.localvar[ft.Name]; ok {
 				return ft.Name, &TypeInfo{Kind: KindVar, X: ft, Name: ft.Name, T: typ.X, Type: typ.T}, nil
 			}
+			if typ, ok := w.curPackage.vars[ft.Name]; ok {
+				return ft.Name, &TypeInfo{Kind: KindVar, X: v, Name: ft.Name, T: typ.X, Type: typ.T}, nil
+			}
 			if typ, ok := w.curPackage.functions[ft.Name]; ok {
 				return ft.Name, &TypeInfo{Kind: KindFunc, X: ft, Name: ft.Name, T: typ.ft, Type: typ.sig}, nil
 			}
@@ -1868,18 +1914,20 @@ func (w *Walker) lookupExpr(vi ast.Expr, p token.Pos) (string, *TypeInfo, error)
 				if inRange(st, p) {
 					return w.lookupExpr(st, p)
 				}
-				s, _, err := w.lookupExpr(st, p)
+				s, info, err := w.lookupExpr(st, p)
 				if err != nil {
 					return "", nil, err
 				}
-				if strings.HasPrefix(s, "*") {
-					s = s[1:]
+				typ := info.Type
+				if typ == "" {
+					typ = s
 				}
-				fname := s + "." + ft.Sel.Name
+				fname := typ + "." + ft.Sel.Name
+				typ = strings.TrimLeft(typ, "*")
 				if fn, ok := w.curPackage.functions[fname]; ok {
 					return fname, &TypeInfo{Kind: KindMethod, X: st, Name: fname, T: fn.ft, Type: w.nodeString(w.namelessType(fn.ft))}, nil
 				}
-				info, e := w.lookupFunction(s, ft.Sel.Name)
+				info, e := w.lookupFunction(typ, ft.Sel.Name)
 				if e != nil {
 					return "", nil, e
 				}
