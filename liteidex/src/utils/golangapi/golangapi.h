@@ -30,6 +30,7 @@
 
 #include <QTextStream>
 #include <QSharedData>
+#include <QThread>
 
 using namespace LiteApi;
 
@@ -255,6 +256,7 @@ protected:
 
 class GolangApi : public LiteApi::IGolangApi
 {
+    Q_OBJECT
 public:
     GolangApi(QObject *parent = 0);
     bool load(const QString &fileName);
@@ -265,6 +267,23 @@ public:
     virtual QString findDocInfo(const QString &tag) const;
 protected:
     Packages m_pkgs;
+};
+
+class GolangApiThread : public QThread
+{
+public:
+    GolangApiThread(QObject *parent);
+    void loadData(const QByteArray &data);
+    void loadFile(const QString &fileName);
+    LiteApi::IGolangApi* api() const;
+    QStringList all() const;
+    QByteArray data() const;
+protected:
+    virtual void run();
+    QByteArray m_data;
+    QString    m_file;
+    QStringList m_all;
+    GolangApi  *m_api;
 };
 
 #endif // GOLANGAPI_H
