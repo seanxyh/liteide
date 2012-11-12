@@ -304,6 +304,8 @@ void ProjectManager::closeProjectHelper(IProject *project)
     m_liteApp->appendLog("ProjectManager","closeProject "+cur->name());
     if (cur != m_folderProject) {
         delete cur;
+    } else if (cur && (cur == m_currentProject) ){
+        m_currentProject = 0;
     }
 }
 

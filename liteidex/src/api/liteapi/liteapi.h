@@ -35,6 +35,7 @@
 #include <QDockWidget>
 #include <QFlags>
 #include <QUrl>
+#include <QDesktopServices>
 
 #define EA_COPY "copy"
 #define EA_SAVE "save"
@@ -542,6 +543,11 @@ signals:
     void loaded();
     void broadcast(QString,QString,QVariant);
 };
+
+inline  QString storagePath() {
+    return QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/liteide";
+}
+
 
 class PluginInfo
 {
