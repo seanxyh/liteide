@@ -184,6 +184,8 @@ void GolangAst::loadProjectPath(const QString &path)
         m_updateFileNames.append(info.fileName());
         m_updateFilePaths.append(info.filePath());
     }
+
+    m_workPath = path;
     m_process->setWorkingDirectory(m_workPath);
     m_projectAstWidget->setWorkPath(m_workPath);
     updateAst();
@@ -345,6 +347,7 @@ void GolangAst::updateAstNow()
     QStringList args;
     args << "-files";
     args << m_updateFileNames.join(" ");
+
     m_process->start(cmd,args);
 }
 
@@ -379,9 +382,9 @@ void GolangAst::updateAstNowFile()
 void GolangAst::finishedProcess(int code,QProcess::ExitStatus status)
 {
     if (code == 0 && status == QProcess::NormalExit) {
-        if (m_liteApp->projectManager()->currentProject()) {
-            m_projectAstWidget->updateModel(m_process->readAllStandardOutput());
-        }
+       // if (m_liteApp->projectManager()->currentProject()) {
+        m_projectAstWidget->updateModel(m_process->readAllStandardOutput());
+       // }
     } else {
         //qDebug() << m_process->readAllStandardError();
     }
