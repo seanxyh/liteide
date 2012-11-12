@@ -27,6 +27,8 @@
 #include <QFile>
 #include <QSet>
 #include <QRegExp>
+#include <QTextStream>
+#include <QFile>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -490,4 +492,57 @@ PkgApiEnum GolangApi::findExp(const QString &tag, QString &exp) const
         }
     }
     return NullApi;
+}
+
+GolangApiThread::GolangApiThread(QObject *parent)
+    :QThread(parent)
+{
+    m_api = new GolangApi(this);
+}
+
+void GolangApiThread::loadData(const QByteArray &data)
+{
+    m_data = data;
+    m_file.clear();
+    QThread::start();
+}
+
+void GolangApiThread::loadFile(const QString &fileName)
+{
+    m_file = fileName;
+    QThread::start();
+}
+
+LiteApi::IGolangApi* GolangApiThread::api() const
+{
+    return m_api;
+}
+
+QStringList GolangApiThread::all() const
+{
+    return m_all;
+}
+
+QByteArray GolangApiThread::data() const
+{
+    return m_data;
+}
+
+void GolangApiThread::run()
+{
+    if (!m_file.isEmpty()) {
+        QFile f(m_file);
+        if (!f.open(QFile::ReadOnly)) {
+            return;
+        }
+        QTextStream s(&f);
+        if (m_api->loadStream(&s)) {
+            m_all = m_api->all(LiteApi::AllGolangApi);
+        }
+    } else {
+        QTextStream s(&m_data);
+        if (m_api->loadStream(&s)) {
+            m_all = m_api->all(LiteApi::AllGolangApi);
+        }
+    }
 }

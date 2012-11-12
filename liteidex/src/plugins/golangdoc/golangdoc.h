@@ -47,6 +47,7 @@ class ProcessEx;
 class DocumentBrowser;
 class QSortFilterProxyModel;
 class GolangApi;
+class GolangApiThread;
 
 class ListViewEx : public QListView
 {
@@ -67,10 +68,13 @@ public slots:
     virtual void openUrl(const QUrl &url);
     virtual void activeBrowser();
 public slots:
+    void appLoaded();
+    void saveGolangApi();
     void editorFindDoc();
     void editorJumpToDecl();
     void editorCreated(LiteApi::IEditor *editor);
     void loadApi();
+    void loadApiFinished();
     void currentEnvChanged(LiteApi::IEnv*);
     void listCmd();
     void listPkg();
@@ -132,7 +136,7 @@ protected:
     QByteArray  m_findData;
     QString  m_templateData;
     LiteApi::IEnvManager *m_envManager;
-    GolangApi  *m_golangApi;
+    GolangApiThread *m_golangApiThread;
     QString m_godocCmd;
     QString m_findCmd;
     QString m_goapiCmd;
