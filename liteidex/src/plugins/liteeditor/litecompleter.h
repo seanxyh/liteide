@@ -35,6 +35,7 @@ class QPlainTextEdit;
 class TreeModelCompleter;
 class QStandardItemModel;
 
+
 class LiteCompleter : public LiteApi::ICompleter
 {
     Q_OBJECT

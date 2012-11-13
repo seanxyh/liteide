@@ -180,6 +180,7 @@ protected:
     static int extractObservableState(const int state);
 
     int m_regionDepth;
+    int m_lastRegionDepth;
     bool m_indentationBasedFolding;
     const TabSettings *m_tabSettings;
 
