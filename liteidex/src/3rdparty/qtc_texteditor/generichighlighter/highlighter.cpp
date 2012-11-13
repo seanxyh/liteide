@@ -60,6 +60,7 @@ const Highlighter::KateFormatMap Highlighter::m_kateFormats;
 Highlighter::Highlighter(QTextDocument *parent) :
     TextEditor::SyntaxHighlighter(parent),
     m_regionDepth(0),
+    m_lastRegionDepth(0),
     m_indentationBasedFolding(false),
     m_tabSettings(0),
     m_persistentObservableStatesCounter(PersistentsStart),
@@ -156,9 +157,11 @@ void Highlighter::setupDataForBlock(const QString &text)
 
     if (previousBlockState() == -1) {
         m_regionDepth = 0;
+        m_lastRegionDepth = 0;
         setupDefault();
     } else {
         m_regionDepth = extractRegionDepth(previousBlockState());
+        m_lastRegionDepth = m_regionDepth;
         const int observablePreviousState = extractObservableState(previousBlockState());
         if (observablePreviousState == Default)
             setupDefault();
@@ -233,7 +236,7 @@ void Highlighter::iterateThroughRules(const QString &text,
 
     RuleIterator it = rules.begin();
     RuleIterator endIt = rules.end();
-
+    bool detlaDeptn = false;
     while (it != endIt && progress->offset() < length) {
         int startOffset = progress->offset();
         const QSharedPointer<Rule> &rule = *it;
@@ -263,22 +266,25 @@ void Highlighter::iterateThroughRules(const QString &text,
             }
 
             if (!m_indentationBasedFolding) {
-                if (!rule->beginRegion().isEmpty()) {
-                    blockData(currentBlockUserData())->m_foldingRegions.push(rule->beginRegion());
-                    ++m_regionDepth;                    
-                    if (progress->isOpeningBraceMatchAtFirstNonSpace()) {
-                        ++blockData(currentBlockUserData())->m_foldingIndentDelta;
-                    }
-                }
                 if (!rule->endRegion().isEmpty()) {
                     QStack<QString> *currentRegions =
                         &blockData(currentBlockUserData())->m_foldingRegions;
                     if (!currentRegions->isEmpty() && rule->endRegion() == currentRegions->top()) {
                         currentRegions->pop();
                         --m_regionDepth;
-                        if (progress->isClosingBraceMatchAtNonEnd()) {
+                        if (m_lastRegionDepth > m_regionDepth) {
+                            detlaDeptn = true;
+                        }
+                        if (!m_stringOrComment && progress->isClosingBraceMatchAtNonEnd()) {
                             --blockData(currentBlockUserData())->m_foldingIndentDelta;
                         }
+                    }
+                }
+                if (!rule->beginRegion().isEmpty()) {
+                    blockData(currentBlockUserData())->m_foldingRegions.push(rule->beginRegion());
+                    ++m_regionDepth;                    
+                    if (!m_stringOrComment && progress->isOpeningBraceMatchAtFirstNonSpace()) {
+                        ++blockData(currentBlockUserData())->m_foldingIndentDelta;
                     }
                 }
                 progress->clearBracesMatches();
@@ -333,6 +339,9 @@ void Highlighter::iterateThroughRules(const QString &text,
                 progress->setOnlySpacesSoFar(false);
             progress->incrementOffset();
         }
+    }
+    if (detlaDeptn && m_lastRegionDepth == m_regionDepth) {
+        blockData(currentBlockUserData())->m_foldingIndentDelta--;
     }
 }
 
