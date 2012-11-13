@@ -306,9 +306,14 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
         find = FileUtil::lookPath("godocview",env,true);
     }
 
-    m_goapiCmd = FileUtil::lookPathInDir("goapi",env,m_liteApp->applicationPath());
+    m_goapiCmd = FileUtil::lookPath("goapi",env,false);
     if (m_goapiCmd.isEmpty()) {
-        m_liteApp->appendLog("golangdoc","not find goapi",true);
+        m_goapiCmd = FileUtil::lookPathInDir("goapi",env,m_liteApp->applicationPath());
+    }
+    if (m_goapiCmd.isEmpty()) {
+        m_liteApp->appendLog("GolangDoc","not find goapi",true);
+    } else {
+        m_liteApp->appendLog("GolangDoc",QString("load %1").arg(m_goapiCmd),true);
     }
 
     m_goroot = goroot;
