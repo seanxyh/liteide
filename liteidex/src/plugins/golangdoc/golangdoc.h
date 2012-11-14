@@ -74,6 +74,7 @@ public slots:
     void editorJumpToDecl();
     void editorCreated(LiteApi::IEditor *editor);
     void loadApi();
+    void loadEnv();
     void loadApiFinished();
     void currentEnvChanged(LiteApi::IEnv*);
     void listCmd();

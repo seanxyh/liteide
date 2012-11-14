@@ -186,6 +186,8 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
     }
 
+    this->loadEnv();
+
     m_liteApp->extension()->addObject("LiteApi.IGolangDoc",this);
     m_liteApp->extension()->addObject("LiteApi.IGolangApi",m_golangApiThread);
 
@@ -204,7 +206,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     QUrl url;
     url.setScheme("file");
     url.setPath(info.filePath());
-    openUrl(url);
+    openUrl(url);    
 }
 
 GolangDoc::~GolangDoc()
@@ -290,6 +292,12 @@ void GolangDoc::loadApi()
 
 void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
 {
+    loadEnv();
+    loadApi();
+}
+
+void GolangDoc::loadEnv()
+{
     QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);//m_envManager->currentEnvironment();
     QString goroot = env.value("GOROOT");
     QString gobin = env.value("GOBIN");
@@ -312,7 +320,7 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
     if (m_goapiCmd.isEmpty()) {
         m_liteApp->appendLog("GolangDoc","not find goapi",true);
     } else {
-        m_liteApp->appendLog("GolangDoc",QString("load %1").arg(m_goapiCmd),true);
+        m_liteApp->appendLog("GolangDoc",QString("load %1").arg(m_goapiCmd),false);
     }
 
     m_goroot = goroot;
@@ -324,8 +332,6 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
     m_goapiProcess->setEnvironment(env.toStringList());
     m_lookupProcess->setEnvironment(env.toStringList());
     m_helpProcess->setEnvironment(env.toStringList());
-
-    this->loadApi();
 
     m_pathFileMap.clear();
     QDir dir(goroot);
@@ -1003,7 +1009,7 @@ void GolangDoc::appLoaded()
     if (info.exists()) {
         m_golangApiThread->loadFile(info.filePath());
     }
-    currentEnvChanged(m_envManager->currentEnv());
+    this->loadApi();
 }
 
 void GolangDoc::saveGolangApi()
