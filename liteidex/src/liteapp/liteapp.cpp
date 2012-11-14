@@ -99,6 +99,8 @@ IApplication* LiteApp::NewApplication(bool loadSession)
     return app;
 }
 
+QMap<QString,QVariant> LiteApp::m_cookie;
+
 LiteApp::LiteApp()
     : m_applicationPath(QApplication::applicationDirPath()),
       m_pluginPath(LiteApp::getPluginPath()),
@@ -192,7 +194,7 @@ void LiteApp::load(bool bUseSession)
     loadState();
     m_projectManager->setCurrentProject(0);
     //emit loaded();
-    QTimer::singleShot(6000,this,SIGNAL(loaded()));
+    QTimer::singleShot(100,this,SIGNAL(loaded()));
 
     appendLog("LiteApp","loaded");
     appendLog("LiteApp","Load Objects "+m_extension->objectMetaList().join(";"));
@@ -290,7 +292,7 @@ QSettings *LiteApp::settings()
     return m_settings;
 }
 
-QMap<QString,QVariant> &LiteApp::cookie()
+QMap<QString,QVariant> &LiteApp::globalCookie()
 {
     return m_cookie;
 }

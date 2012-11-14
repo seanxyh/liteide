@@ -71,8 +71,8 @@ bool PluginManager::loadPlugin(const QString &fileName)
         if (plugin) {
             addPlugin(plugin);
             m_filePluginMap.insert(fileName,plugin);
+            return true;
         }
-        return true;
     }
     return false;
 }

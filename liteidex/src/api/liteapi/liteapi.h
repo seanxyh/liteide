@@ -525,7 +525,7 @@ public:
 
     virtual QMainWindow *mainWindow() const = 0;
     virtual QSettings *settings() = 0;
-    virtual QMap<QString,QVariant> &cookie() = 0;
+    virtual QMap<QString,QVariant> &globalCookie() = 0; //global cookie
 
     virtual QString resourcePath() const = 0;
     virtual QString applicationPath() const = 0;
