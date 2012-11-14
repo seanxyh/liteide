@@ -39,6 +39,7 @@
 #include "folderprojectfactory.h"
 
 #include <QApplication>
+#include <QSplashScreen>
 #include <QMenuBar>
 #include <QDir>
 #include <QToolBar>
@@ -187,21 +188,32 @@ LiteApp::LiteApp()
 
 void LiteApp::load(bool bUseSession)
 {
+    QPixmap pixmap("icon:/images/splash.png");
+    QSplashScreen splash(pixmap,Qt::WindowStaysOnTopHint);
+    splash.show();
+
+    splash.showMessage("liteide scan plugins ...",Qt::AlignCenter);
     loadMimeType();
     loadPlugins();
+    splash.showMessage("liteide load plugins ...",Qt::AlignCenter);
     initPlugins();
+
+    splash.showMessage("liteide load state ...",Qt::AlignCenter);
+
+    emit loaded();
+    m_projectManager->setCurrentProject(0);
+
     loadState();
     m_mainwindow->show();
-    m_projectManager->setCurrentProject(0);
-    //emit loaded();
-    QTimer::singleShot(100,this,SIGNAL(loaded()));
+
+    splash.showMessage("liteide load session ...",Qt::AlignCenter);
 
     appendLog("LiteApp","loaded");
-    appendLog("LiteApp","Load Objects "+m_extension->objectMetaList().join(";"));
     bool b = m_settings->value("LiteApp/AutoLoadLastSession",true).toBool();
     if (b && bUseSession) {
         loadSession("default");
     }
+    splash.finish(m_mainwindow);
 }
 
 LiteApp::~LiteApp()
