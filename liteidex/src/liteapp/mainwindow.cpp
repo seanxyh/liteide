@@ -59,7 +59,7 @@ MainWindow::MainWindow(IApplication *app,QWidget *parent)
     : ToolMainWindow(parent),
       m_liteApp(app)
 {
-   // this->setAttribute(Qt::WA_DeleteOnClose);
+    this->setAttribute(Qt::WA_DeleteOnClose);
     this->setWindowIcon(QIcon("icon:images/liteide128.png"));
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setAcceptDrops(true);
@@ -68,7 +68,6 @@ MainWindow::MainWindow(IApplication *app,QWidget *parent)
     setCentralWidget(m_mainSplitter);
 
     loadInitToolState(m_liteApp->settings()->value("liteapp/toolState").toByteArray());
-
 }
 
 QSplitter *MainWindow::splitter()
@@ -78,6 +77,7 @@ QSplitter *MainWindow::splitter()
 
 MainWindow::~MainWindow()
 {
+    delete m_liteApp;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

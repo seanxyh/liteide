@@ -51,8 +51,13 @@ class LiteApp : public IApplication
 {
     Q_OBJECT
 public:
+    static QString getRootPath();
+    static QString getPluginPath();
+    static QString getResoucePath();
+    static IApplication* NewApplication(bool loadSession);
+public:
     LiteApp();
-    virtual ~LiteApp();
+    virtual ~LiteApp();    
     virtual IExtension *extension();
     virtual IProjectManager *projectManager();
     virtual IEditorManager  *editorManager();

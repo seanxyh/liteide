@@ -42,33 +42,6 @@
 #endif
 //lite_memory_check_end
 
-static inline QString getRootPath()
-{
-    QDir rootDir = QApplication::applicationDirPath();
-    rootDir.cdUp();
-    return rootDir.canonicalPath();
-}
-
-static inline QString getPluginPath()
-{
-    QString root = getRootPath();
-#ifdef Q_OS_MAC
-    return root+"/PlugIns";
-#else
-    return root+"/lib/liteide/plugins";
-#endif
-}
-
-static inline QString getResoucePath()
-{
-    QString root = getRootPath();
-#ifdef Q_OS_MAC
-    return root+"/Resources";
-#else
-    return root+"/share/liteide";
-#endif
-}
-
 int  main(int argc, char *argv[])
 {
 #if defined(_MSC_VER) && defined(_DEBUG)
@@ -81,8 +54,9 @@ int  main(int argc, char *argv[])
     const QSettings settings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteide");
     QString locale = QLocale::system().name();
     locale = settings.value("General/Language",locale).toString();
+    QString resPath = LiteApp::getResoucePath();
     if (!locale.isEmpty()) {
-        const QString &liteideTrPath = getResoucePath()+"/translations";
+        const QString &liteideTrPath = resPath+"/translations";
         if (translator.load(QLatin1String("liteide_") + locale, liteideTrPath)) {
             const QString &qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
             const QString &qtTrFile = QLatin1String("qt_") + locale;
@@ -94,13 +68,9 @@ int  main(int argc, char *argv[])
             app.setProperty("liteide_locale", locale);
         }
     }
-    QString resPath = getResoucePath();
     QDir::addSearchPath("icon",resPath);
     QDir::addSearchPath("icon",resPath+"/liteapp");
     QDir::addSearchPath("icon",":/");
-    LiteApp *liteApp = new LiteApp;
-    liteApp->setPluginPath(getPluginPath());
-    liteApp->setResourcePath(resPath);
 
     QStringList argList;
     QStringList fileList;
@@ -115,11 +85,9 @@ int  main(int argc, char *argv[])
             }
         }
     }
-    if (argList.contains("-no-session")) {
-        liteApp->load(false);
-    } else {
-        liteApp->load(true);
-    }
+
+    IApplication *liteApp = LiteApp::NewApplication(argList.contains("-no-session"));
+
     if (fileList.size() == 1) {
         QString file = fileList.at(0);
         QFileInfo f(file);
@@ -141,6 +109,5 @@ int  main(int argc, char *argv[])
     }
 
     int ret = app.exec();
-    delete liteApp;
     return ret;
 }
