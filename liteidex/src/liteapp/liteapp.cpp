@@ -47,6 +47,7 @@
 #include <QSplitter>
 #include <QTextCursor>
 #include <QTextBlock>
+#include <QTimer>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -147,7 +148,9 @@ void LiteApp::load(bool bUseSession)
     m_mainwindow->show();
     loadState();
     m_projectManager->setCurrentProject(0);
-    emit loaded();
+    //emit loaded();
+    QTimer::singleShot(500,this,SIGNAL(loaded()));
+
     appendLog("LiteApp","loaded");
     appendLog("LiteApp","Load Objects "+m_extension->objectMetaList().join(";"));
     bool b = m_settings->value("LiteApp/AutoLoadLastSession",true).toBool();
