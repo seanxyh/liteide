@@ -30,6 +30,7 @@
 #include <QPluginLoader>
 #include <QMenu>
 #include <QAction>
+#include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -43,6 +44,7 @@
 
 PluginManager::~PluginManager()
 {
+    m_filePluginMap.clear();
     qDeleteAll(m_pluginList);
 }
 
@@ -64,9 +66,12 @@ QList<IPlugin*> PluginManager::pluginList()
 bool PluginManager::loadPlugin(const QString &fileName)
 {
     QPluginLoader loader(fileName);
-    if (IPlugin *plugin = qobject_cast<IPlugin*>(loader.instance())) {
-        addPlugin(plugin);
-        m_filePluginMap.insert(fileName,plugin);
+    if (IPluginFactory *factory = qobject_cast<IPluginFactory*>(loader.instance())) {
+        IPlugin *plugin = factory->createPlugin();
+        if (plugin) {
+            addPlugin(plugin);
+            m_filePluginMap.insert(fileName,plugin);
+        }
         return true;
     }
     return false;

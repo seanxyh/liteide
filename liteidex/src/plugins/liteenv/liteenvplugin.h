@@ -33,13 +33,17 @@
 class EnvManager;
 class LiteEnvPlugin : public LiteApi::IPlugin
 {
-    Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     LiteEnvPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
 protected:
     EnvManager *m_envManager;    
+};
+
+class PluginFactory : public LiteApi::PluginFactory<LiteEnvPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // LITEENVPLUGIN_H

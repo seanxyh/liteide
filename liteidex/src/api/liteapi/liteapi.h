@@ -608,6 +608,22 @@ protected:
     IApplication *m_liteApp;
 };
 
+class IPluginFactory : public QObject
+{
+public:
+    virtual IPlugin *createPlugin() = 0;
+};
+
+template <typename T>
+class PluginFactory : public IPluginFactory
+{
+public:
+    virtual IPlugin *createPlugin()
+    {
+        return new T;
+    }
+};
+
 inline void gotoLine(IApplication *app, const QString &fileName, int line, int col) {
     app->editorManager()->addNavigationHistory();
     IEditor *edit = app->fileManager()->openEditor(fileName);
@@ -619,7 +635,7 @@ inline void gotoLine(IApplication *app, const QString &fileName, int line, int c
 
 } //namespace LiteApi
 
-Q_DECLARE_INTERFACE(LiteApi::IPlugin,"LiteApi.IPlugin/x14.0")
+Q_DECLARE_INTERFACE(LiteApi::IPluginFactory,"LiteApi.IPluginFactory/x14.1")
 
 
 #endif //__LITEAPI_H__

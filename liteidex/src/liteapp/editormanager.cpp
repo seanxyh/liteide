@@ -46,6 +46,7 @@
 #include <QDebug>
 #include "litetabwidget.h"
 #include "fileutil/fileutil.h"
+#include "liteapp.h"
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -825,9 +826,13 @@ void EditorManager::moveToNewWindow()
     if (filePath.isEmpty()) {
         return;
     }
-    QProcess process;
-    if (process.startDetached(qApp->applicationFilePath(),
-                          QStringList() << "-no-session" << filePath)) {
+    IApplication *app = LiteApp::NewApplication(false);
+    if (app->fileManager()->openEditor(filePath)) {
         this->closeEditor(ed);
     }
+//    QProcess process;
+//    if (process.startDetached(qApp->applicationFilePath(),
+//                          QStringList() << "-no-session" << filePath)) {
+//        this->closeEditor(ed);
+//    }
 }

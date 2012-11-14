@@ -59,6 +59,41 @@
 #endif
 //lite_memory_check_end
 
+QString LiteApp::getRootPath()
+{
+    QDir rootDir = QApplication::applicationDirPath();
+    rootDir.cdUp();
+    return rootDir.canonicalPath();
+}
+
+QString LiteApp::getPluginPath()
+{
+    QString root = getRootPath();
+#ifdef Q_OS_MAC
+    return root+"/PlugIns";
+#else
+    return root+"/lib/liteide/plugins";
+#endif
+}
+
+QString LiteApp::getResoucePath()
+{
+    QString root = getRootPath();
+#ifdef Q_OS_MAC
+    return root+"/Resources";
+#else
+    return root+"/share/liteide";
+#endif
+}
+
+IApplication* LiteApp::NewApplication(bool loadSession)
+{
+    LiteApp *app = new LiteApp;
+    app->setPluginPath(LiteApp::getPluginPath());
+    app->setResourcePath(LiteApp::getResoucePath());
+    app->load(loadSession);
+    return app;
+}
 
 LiteApp::LiteApp()
     : m_settings(new QSettings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteide",this)),
@@ -138,6 +173,7 @@ LiteApp::LiteApp()
     m_optionManager->addFactory(m_liteAppOptionFactory);
 
     m_projectManager->addFactory(new FolderProjectFactory(this,this));
+    qDebug() << "LiteApp" << this;
 }
 
 void LiteApp::load(bool bUseSession)
@@ -149,7 +185,7 @@ void LiteApp::load(bool bUseSession)
     loadState();
     m_projectManager->setCurrentProject(0);
     //emit loaded();
-    QTimer::singleShot(500,this,SIGNAL(loaded()));
+    QTimer::singleShot(6000,this,SIGNAL(loaded()));
 
     appendLog("LiteApp","loaded");
     appendLog("LiteApp","Load Objects "+m_extension->objectMetaList().join(";"));
@@ -161,6 +197,7 @@ void LiteApp::load(bool bUseSession)
 
 LiteApp::~LiteApp()
 {
+    qDebug() << "~LiteApp" << this;
     cleanup();
 }
 
@@ -183,7 +220,7 @@ void LiteApp::cleanup()
     delete m_extension;
     delete m_logOutput;
     delete m_toolWindowManager;
-    delete m_mainwindow;
+   // delete m_mainwindow;
     delete m_settings;
 }
 

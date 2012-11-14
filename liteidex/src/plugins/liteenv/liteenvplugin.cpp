@@ -60,4 +60,7 @@ bool LiteEnvPlugin::initWithApp(LiteApi::IApplication *app)
     return true;
 }
 
-Q_EXPORT_PLUGIN(LiteEnvPlugin)
+//LITEIDE_PLUGIN_FACTORY(LiteEnvPlugin)
+
+
+Q_EXPORT_PLUGIN(PluginFactory)
