@@ -1,3 +1,9 @@
+==== 2012.11.15 Ver x14.1 ====
+ * LiteApp : multi window mode
+ * GolangDoc: init load cache goapi data
+ * LiteEditor: fix if/else fold
+ * GolangAst : fix classview
+ * GolangDoc : goapi enable _test
 ==== 2012.11.6 Ver x14.0 ====
  * tools/goapi : new goapi tool
  * GolangDoc: View Expression Information (F1)
