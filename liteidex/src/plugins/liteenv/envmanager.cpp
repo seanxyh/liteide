@@ -186,6 +186,7 @@ void EnvManager::setCurrentEnv(LiteApi::IEnv *env)
     m_curEnv = env;
     if (m_curEnv) {
         m_curEnv->reload();
+        m_liteApp->settings()->setValue("LiteEnv/current",m_curEnv->id());
     }
     emit currentEnvChanged(m_curEnv);
 }
