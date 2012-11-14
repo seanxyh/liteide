@@ -86,17 +86,25 @@ QString LiteApp::getResoucePath()
 #endif
 }
 
+QString LiteApp::getStoragePath()
+{
+    QString root = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    return root+"/liteide";
+}
+
 IApplication* LiteApp::NewApplication(bool loadSession)
 {
     LiteApp *app = new LiteApp;
-    app->setPluginPath(LiteApp::getPluginPath());
-    app->setResourcePath(LiteApp::getResoucePath());
     app->load(loadSession);
     return app;
 }
 
 LiteApp::LiteApp()
-    : m_settings(new QSettings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteide",this)),
+    : m_applicationPath(QApplication::applicationDirPath()),
+      m_pluginPath(LiteApp::getPluginPath()),
+      m_resourcePath(LiteApp::getResoucePath()),
+      m_storagePath(LiteApp::getStoragePath()),
+      m_settings(new QSettings(QSettings::IniFormat,QSettings::UserScope,"liteide","liteide",this)),
       m_extension(new Extension),
       m_mainwindow(new MainWindow(this)),
       m_toolWindowManager(new ToolWindowManager),
@@ -109,7 +117,7 @@ LiteApp::LiteApp()
       //m_outputManager(new OutputManager),
       m_mimeTypeManager(new MimeTypeManager),
       m_optionManager(new OptionManager)
-{
+{    
     m_actionManager->initWithApp(this);
     m_toolWindowManager->initWithApp(this);
     m_dockManager->initWithApp(this);
@@ -173,7 +181,6 @@ LiteApp::LiteApp()
     m_optionManager->addFactory(m_liteAppOptionFactory);
 
     m_projectManager->addFactory(new FolderProjectFactory(this,this));
-    qDebug() << "LiteApp" << this;
 }
 
 void LiteApp::load(bool bUseSession)
@@ -197,7 +204,6 @@ void LiteApp::load(bool bUseSession)
 
 LiteApp::~LiteApp()
 {
-    qDebug() << "~LiteApp" << this;
     cleanup();
 }
 
@@ -222,6 +228,11 @@ void LiteApp::cleanup()
     delete m_toolWindowManager;
    // delete m_mainwindow;
     delete m_settings;
+}
+
+IApplication *LiteApp::newInstance(bool loadSession)
+{
+    return LiteApp::NewApplication(loadSession);
 }
 
 IEditorManager *LiteApp::editorManager()
@@ -291,12 +302,17 @@ QString LiteApp::resourcePath() const
 
 QString LiteApp::applicationPath() const
 {
-    return qApp->applicationDirPath();
+    return m_applicationPath;
 }
 
 QString LiteApp::pluginPath() const
 {
     return m_pluginPath;
+}
+
+QString LiteApp::storagePath() const
+{
+    return m_storagePath;
 }
 
 void LiteApp::setPluginPath(const QString &path)

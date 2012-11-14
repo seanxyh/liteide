@@ -126,4 +126,4 @@ void GolangFmtPlugin::editorCreated(LiteApi::IEditor *editor)
     menu->addAction(m_gofmtAct);
 }
 
-Q_EXPORT_PLUGIN(GolangFmtPlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

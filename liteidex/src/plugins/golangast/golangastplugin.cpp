@@ -54,4 +54,4 @@ bool GolangAstPlugin::initWithApp(LiteApi::IApplication *app)
     return true;
 }
 
-Q_EXPORT_PLUGIN(GolangAstPlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

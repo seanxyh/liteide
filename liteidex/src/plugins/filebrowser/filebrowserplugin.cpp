@@ -55,4 +55,4 @@ bool FileBrowserPlugin::initWithApp(LiteApi::IApplication *app)
     return true;
 }
 
-Q_EXPORT_PLUGIN(FileBrowserPlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

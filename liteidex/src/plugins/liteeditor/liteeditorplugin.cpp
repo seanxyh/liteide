@@ -65,4 +65,4 @@ QStringList LiteEditorPlugin::dependPluginList() const
     return QStringList() << "plugin/litebuild";
 }
 
-Q_EXPORT_PLUGIN(LiteEditorPlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

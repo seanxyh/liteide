@@ -33,14 +33,18 @@
 class LiteBuild;
 class LiteBuildPlugin : public LiteApi::IPlugin
 {
-    Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     LiteBuildPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
     virtual QStringList dependPluginList() const;
 protected:
     LiteBuild *m_build;
- };
+};
+
+class PluginFactory : public LiteApi::PluginFactory<LiteBuildPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
+};
 
 #endif // LITEBUILDPLUGIN_H

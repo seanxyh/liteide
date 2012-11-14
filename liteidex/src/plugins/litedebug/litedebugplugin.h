@@ -34,7 +34,6 @@ class LiteDebug;
 class LiteDebugPlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     LiteDebugPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
@@ -42,6 +41,12 @@ public:
 protected:
     LiteDebug *m_liteDebug;
     QAction   *m_viewDebug;
+};
+
+class PluginFactory : public LiteApi::PluginFactory<LiteDebugPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // LITEDEBUGPLUGIN_H

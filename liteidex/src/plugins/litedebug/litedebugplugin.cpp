@@ -78,4 +78,4 @@ bool LiteDebugPlugin::initWithApp(LiteApi::IApplication *app)
     return true;
 }
 
-Q_EXPORT_PLUGIN(LiteDebugPlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

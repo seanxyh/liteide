@@ -36,7 +36,6 @@ class FileSearch;
 class LiteFindPlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     LiteFindPlugin();
     ~LiteFindPlugin();
@@ -57,6 +56,12 @@ protected:
     QAction *m_findPrevAct;
     QAction *m_replaceAct;
     QAction *m_fileSearchAct;
+};
+
+class PluginFactory : public LiteApi::PluginFactory<LiteFindPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // LITEFINDPLUGIN_H

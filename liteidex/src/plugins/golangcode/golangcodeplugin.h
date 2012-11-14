@@ -34,7 +34,6 @@ class GolangCode;
 class GolangCodePlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     GolangCodePlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
@@ -48,6 +47,12 @@ protected:
     QAction    *m_commentAct;
     GolangCode *m_code;
     GolangCode *m_play;
+};
+
+class PluginFactory : public LiteApi::PluginFactory<GolangCodePlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // GOLANGCODEPLUGIN_H

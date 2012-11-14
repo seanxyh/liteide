@@ -117,4 +117,4 @@ void GolangCodePlugin::currentEditorChanged(LiteApi::IEditor *editor)
     }
 }
 
-Q_EXPORT_PLUGIN(GolangCodePlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

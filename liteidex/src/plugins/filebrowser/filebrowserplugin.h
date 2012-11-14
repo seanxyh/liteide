@@ -33,13 +33,17 @@
 class FileBrowser;
 class FileBrowserPlugin : public LiteApi::IPlugin
 {
-    Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     FileBrowserPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
 protected:
     FileBrowser *m_browser;
+};
+
+class PluginFactory : public LiteApi::PluginFactory<FileBrowserPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // FILEBROWSERPLUGIN_H

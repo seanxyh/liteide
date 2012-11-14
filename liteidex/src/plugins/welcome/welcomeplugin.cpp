@@ -77,4 +77,4 @@ bool WelcomePlugin::initWithApp(LiteApi::IApplication *app)
     return true;
 }
 
-Q_EXPORT_PLUGIN(WelcomePlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

@@ -32,12 +32,16 @@
 
 class LiteEditorPlugin : public LiteApi::IPlugin
 {
-    Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     LiteEditorPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
     virtual QStringList dependPluginList() const;
+};
+
+class PluginFactory : public LiteApi::PluginFactory<LiteEditorPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // LITEEDITORPLUGIN_H

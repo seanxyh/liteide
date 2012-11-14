@@ -161,4 +161,4 @@ void LiteFindPlugin::fileSearch()
     m_fileSearch->setVisible(true);
 }
 
-Q_EXPORT_PLUGIN(LiteFindPlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

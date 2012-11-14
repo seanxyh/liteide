@@ -32,12 +32,16 @@
 
 class GdbDebuggerPlugin : public LiteApi::IPlugin
 {
-    Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     GdbDebuggerPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
     virtual QStringList dependPluginList() const;
+};
+
+class PluginFactory : public LiteApi::PluginFactory<GdbDebuggerPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // GDBDEBUGGERPLUGIN_H

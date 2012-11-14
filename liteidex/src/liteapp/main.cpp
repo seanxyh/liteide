@@ -72,6 +72,10 @@ int  main(int argc, char *argv[])
     QDir::addSearchPath("icon",resPath+"/liteapp");
     QDir::addSearchPath("icon",":/");
 
+    QString storage = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    QDir dir(storage);
+    dir.mkdir("liteide");
+
     QStringList argList;
     QStringList fileList;
     if (argc >= 2) {

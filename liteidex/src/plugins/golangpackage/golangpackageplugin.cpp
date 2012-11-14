@@ -61,4 +61,4 @@ bool GolangPackagePlugin::initWithApp(LiteApi::IApplication *app)
 }
 
 
-Q_EXPORT_PLUGIN(GolangPackagePlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

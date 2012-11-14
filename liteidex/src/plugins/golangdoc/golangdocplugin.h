@@ -34,7 +34,6 @@ class GolangDoc;
 class GolangDocPlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     GolangDocPlugin();
     ~GolangDocPlugin();
@@ -43,6 +42,12 @@ protected slots:
     void currentEditorChanged(LiteApi::IEditor*);
 protected:
     GolangDoc *m_golangDoc;
+};
+
+class PluginFactory : public LiteApi::PluginFactory<GolangDocPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // GOLANGDOCPLUGIN_H
