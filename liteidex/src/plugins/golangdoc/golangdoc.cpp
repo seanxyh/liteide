@@ -184,7 +184,6 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_envManager = LiteApi::findExtensionObject<LiteApi::IEnvManager*>(m_liteApp,"LiteApi.IEnvManager");
     if (m_envManager) {
         connect(m_envManager,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
-        currentEnvChanged(m_envManager->currentEnv());
     }
 
     m_liteApp->extension()->addObject("LiteApi.IGolangDoc",this);
@@ -906,6 +905,7 @@ void GolangDoc::goapiOutput(QByteArray data,bool bError)
 void GolangDoc::goapiFinish(bool error,int code,QString)
 {
     if (!error && code == 0) {
+        m_liteApp->globalCookie().insert("goalngdoc.goapi.data",m_goapiData);
         m_golangApiThread->loadData(m_goapiData);
     }
 }
@@ -993,15 +993,17 @@ void GolangDoc::helpFinish(bool error, int code, QString)
 
 void GolangDoc::appLoaded()
 {
-    QDir dir(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
-    dir.mkpath("liteide");
-
-    if (dir.cd("liteide")) {
-        QFileInfo info(dir,"golangapi.txt");
-        if (info.exists()) {
-            m_golangApiThread->loadFile(info.filePath());
-        }
+    m_goapiData = m_liteApp->globalCookie().value("goalngdoc.goapi.data").toByteArray();
+    if (!m_goapiData.isEmpty()) {
+        m_golangApiThread->loadData(m_goapiData);
+        return;
     }
+
+    QFileInfo info(m_liteApp->storagePath(),"golangapi.txt");
+    if (info.exists()) {
+        m_golangApiThread->loadFile(info.filePath());
+    }
+    currentEnvChanged(m_envManager->currentEnv());
 }
 
 void GolangDoc::saveGolangApi()
@@ -1009,15 +1011,10 @@ void GolangDoc::saveGolangApi()
     if (m_golangApiThread->data().isEmpty()) {
         return;
     }
-    QDir dir(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
-    dir.mkpath("liteide");
-
-    if (dir.cd("liteide")) {
-        QFileInfo info(dir,"golangapi.txt");
-        QFile f(info.filePath());
-        if (f.open(QFile::WriteOnly|QFile::Truncate)) {
-            f.write(m_golangApiThread->data());
-        }
-        f.close();
+    QFileInfo info(m_liteApp->storagePath(),"golangapi.txt");
+    QFile f(info.filePath());
+    if (f.open(QFile::WriteOnly|QFile::Truncate)) {
+        f.write(m_golangApiThread->data());
     }
+    f.close();
 }
