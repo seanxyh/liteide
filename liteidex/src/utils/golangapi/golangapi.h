@@ -273,6 +273,7 @@ class GolangApiThread : public QThread
 {
 public:
     GolangApiThread(QObject *parent);
+    ~GolangApiThread();
     void loadData(const QByteArray &data);
     void loadFile(const QString &fileName);
     LiteApi::IGolangApi* api() const;
