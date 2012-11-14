@@ -500,6 +500,13 @@ GolangApiThread::GolangApiThread(QObject *parent)
     m_api = new GolangApi(this);
 }
 
+GolangApiThread::~GolangApiThread()
+{
+    if (this->isRunning()) {
+        this->terminate();
+    }
+}
+
 void GolangApiThread::loadData(const QByteArray &data)
 {
     m_data = data;

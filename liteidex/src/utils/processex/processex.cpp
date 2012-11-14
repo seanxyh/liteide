@@ -88,6 +88,13 @@ ProcessEx::ProcessEx(QObject *parent)
     connect(this,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(slotFinished(int,QProcess::ExitStatus)));
 }
 
+ProcessEx::~ProcessEx()
+{
+    if (isRuning()) {
+        this->kill();
+    }
+}
+
 bool ProcessEx::isRuning() const
 {
     return this->state() == QProcess::Running;

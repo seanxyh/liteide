@@ -190,8 +190,8 @@ void LiteApp::load(bool bUseSession)
     loadMimeType();
     loadPlugins();
     initPlugins();
-    m_mainwindow->show();
     loadState();
+    m_mainwindow->show();
     m_projectManager->setCurrentProject(0);
     //emit loaded();
     QTimer::singleShot(100,this,SIGNAL(loaded()));

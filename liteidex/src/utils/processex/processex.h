@@ -34,6 +34,7 @@ class ProcessEx : public QProcess
     Q_OBJECT
 public:
     ProcessEx(QObject *parent);
+    ~ProcessEx();
     void setUserData(int id, const QVariant &data);
     QVariant userData(int id) const;
     bool isRuning() const;
