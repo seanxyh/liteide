@@ -73,7 +73,7 @@ public:
 
     virtual QMainWindow *mainWindow() const;
     virtual QSettings *settings();
-    virtual QMap<QString,QVariant> &cookie();
+    virtual QMap<QString,QVariant> &globalCookie();
 
     virtual QString resourcePath() const;
     virtual QString applicationPath() const;
@@ -126,7 +126,7 @@ protected:
     TextOutput    *m_logOutput;
     QAction       *m_logAct;
     LiteAppOptionFactory *m_liteAppOptionFactory;
-    QMap<QString,QVariant> m_cookie;
+    static QMap<QString,QVariant> m_cookie;
 protected:
     QAction     *m_newAct;
     QAction     *m_openFileAct;

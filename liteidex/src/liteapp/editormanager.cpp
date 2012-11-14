@@ -60,6 +60,7 @@
 
 EditorManager::~EditorManager()
 {
+    delete m_tabContextMenu;
     m_browserActionMap.clear();
 }
 
