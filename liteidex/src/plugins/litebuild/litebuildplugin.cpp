@@ -61,4 +61,4 @@ QStringList LiteBuildPlugin::dependPluginList() const
     return QStringList() << "plugin/liteenv";
 }
 
-Q_EXPORT_PLUGIN(LiteBuildPlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

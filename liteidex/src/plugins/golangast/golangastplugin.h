@@ -33,11 +33,15 @@
 
 class GolangAstPlugin : public LiteApi::IPlugin
 {
-    Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     GolangAstPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
+};
+
+class PluginFactory : public LiteApi::PluginFactory<GolangAstPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // GOLANGASTPLUGIN_H

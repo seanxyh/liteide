@@ -35,7 +35,6 @@ class QToolButton;
 class GolangFmtPlugin : public LiteApi::IPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     GolangFmtPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
@@ -50,6 +49,12 @@ protected:
     LiteApi::IEditor *m_playEditor;
     QToolButton *m_fmtBtn;
     GolangFmt *m_fmt;
+};
+
+class PluginFactory : public LiteApi::PluginFactory<GolangFmtPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // GOLANGFMTPLUGIN_H

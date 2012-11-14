@@ -512,6 +512,7 @@ class IApplication : public IObject
     Q_OBJECT
 public:
     virtual ~IApplication() {}
+    virtual IApplication    *newInstance(bool loadSession) = 0;
     virtual IProjectManager *projectManager() = 0;
     virtual IEditorManager  *editorManager() = 0;
     virtual IFileManager    *fileManager() = 0;
@@ -529,6 +530,7 @@ public:
     virtual QString resourcePath() const = 0;
     virtual QString applicationPath() const = 0;
     virtual QString pluginPath() const = 0;
+    virtual QString storagePath() const = 0;
 
     virtual QList<IPlugin*> pluginList() const = 0;
 
@@ -544,14 +546,10 @@ signals:
     void broadcast(QString,QString,QVariant);
 };
 
-inline  QString storagePath() {
-    return QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/liteide";
-}
-
-
 class PluginInfo
 {
 public:
+    virtual ~PluginInfo() {}
     virtual QString anchor() const { return m_anchor; }
     virtual QString info() const { return m_info; }
     virtual QString id() const { return m_id; }

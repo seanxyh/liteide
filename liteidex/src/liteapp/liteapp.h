@@ -54,10 +54,12 @@ public:
     static QString getRootPath();
     static QString getPluginPath();
     static QString getResoucePath();
+    static QString getStoragePath();
     static IApplication* NewApplication(bool loadSession);
 public:
     LiteApp();
     virtual ~LiteApp();    
+    virtual IApplication *newInstance(bool loadSession);
     virtual IExtension *extension();
     virtual IProjectManager *projectManager();
     virtual IEditorManager  *editorManager();
@@ -76,6 +78,7 @@ public:
     virtual QString resourcePath() const;
     virtual QString applicationPath() const;
     virtual QString pluginPath() const;
+    virtual QString storagePath() const;
 
     virtual QList<IPlugin*> pluginList() const;
 
@@ -104,6 +107,10 @@ protected slots:
     void editorModifyChanged(bool);
     void cleanup();
 protected:
+    QString         m_applicationPath;
+    QString         m_pluginPath;
+    QString         m_resourcePath;
+    QString         m_storagePath;
     QSettings       *m_settings;
     Extension     *m_extension;
     MainWindow      *m_mainwindow;
@@ -120,8 +127,6 @@ protected:
     QAction       *m_logAct;
     LiteAppOptionFactory *m_liteAppOptionFactory;
     QMap<QString,QVariant> m_cookie;
-    QString         m_pluginPath;
-    QString         m_resourcePath;
 protected:
     QAction     *m_newAct;
     QAction     *m_openFileAct;

@@ -32,12 +32,16 @@
 
 class GolangPlayPlugin : public LiteApi::IPlugin
 {
-    Q_OBJECT
-    Q_INTERFACES(LiteApi::IPlugin)
 public:
     GolangPlayPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
     virtual QStringList dependPluginList() const;
+};
+
+class PluginFactory : public LiteApi::PluginFactory<GolangPlayPlugin>
+{
+    Q_OBJECT
+    Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
 #endif // GOLANGPLAYPLUGIN_H

@@ -64,4 +64,4 @@ QStringList GolangPlayPlugin::dependPluginList() const
     return QStringList() << "plugin/liteeditor";
 }
 
-Q_EXPORT_PLUGIN(GolangPlayPlugin)
+Q_EXPORT_PLUGIN(PluginFactory)

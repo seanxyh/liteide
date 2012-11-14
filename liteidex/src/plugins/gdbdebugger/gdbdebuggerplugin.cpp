@@ -67,4 +67,4 @@ QStringList GdbDebuggerPlugin::dependPluginList() const
     return QStringList() << "plugin/litedebug";
 }
 
-Q_EXPORT_PLUGIN(GdbDebuggerPlugin)
+Q_EXPORT_PLUGIN(PluginFactory)
