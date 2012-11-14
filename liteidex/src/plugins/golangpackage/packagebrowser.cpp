@@ -132,7 +132,8 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     }
 
     connect(m_liteApp->fileManager(),SIGNAL(fileWizardFinished(QString,QString,QString)),this,SLOT(fileWizardFinished(QString,QString,QString)));
-    this->reloadAll();
+    connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
+    //this->reloadAll();
 }
 
 PackageBrowser::~PackageBrowser()
