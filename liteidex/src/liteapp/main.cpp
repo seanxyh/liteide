@@ -29,6 +29,7 @@
 #include <QLibraryInfo>
 #include <QDir>
 #include <QSettings>
+#include <QSplashScreen>
 #include <QDebug>
 #include "mainwindow.h"
 #include "liteapp.h"
@@ -111,7 +112,6 @@ int  main(int argc, char *argv[])
             }
         }
     }
-
-    int ret = app.exec();
+     int ret = app.exec();
     return ret;
 }

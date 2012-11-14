@@ -104,6 +104,7 @@ bool EditorManager::initWithApp(IApplication *app)
     connect(closeOthersAct,SIGNAL(triggered()),this,SLOT(tabContextCloseOthers()));
     connect(closeAllAct,SIGNAL(triggered()),this,SLOT(tabContextCloseAll()));
     connect(moveToAct,SIGNAL(triggered()),this,SLOT(moveToNewWindow()));
+
     return true;
 }
 
@@ -136,7 +137,6 @@ static QList<QTextCodec*> textCodecList()
     }
     return codecMap.values();
 }
-
 
 void EditorManager::createActions()
 {

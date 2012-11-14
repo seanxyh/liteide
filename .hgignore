@@ -8,6 +8,7 @@ syntax: glob
 *.orig
 .git
 .gitignore
+*.pdn
 liteide-build-*
 liteidex/liteide
 build
