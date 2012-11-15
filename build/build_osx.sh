@@ -132,12 +132,6 @@ process_file
 export deploy_file=libliteeditor.dylib
 process_file2
 
-export deploy_file=libmakefileproject.dylib
-process_file
-
-export deploy_file=libprofileproject.dylib
-process_file
-
 export deploy_file=libwelcome.dylib
 process_file2
 
