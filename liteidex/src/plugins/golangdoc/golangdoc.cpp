@@ -291,7 +291,21 @@ void GolangDoc::loadApi()
 {
     m_bApiLoaded = true;
     m_goapiData.clear();
-    m_goapiProcess->startEx(m_goapiCmd,"-default_ctx all");
+
+    bool defctx = m_liteApp->settings()->value("golangapi/defctx",true).toBool();
+    bool std = m_liteApp->settings()->value("golangapi/std",false).toBool();
+    QString args;
+    if (defctx) {
+        args += "-default_ctx=true";
+        args += " ";
+    }
+    if (std) {
+        args += "std";
+    } else {
+        args += "all";
+    }
+
+    m_goapiProcess->startEx(m_goapiCmd,args);
 }
 
 void GolangDoc::currentEnvChanged(LiteApi::IEnv*)

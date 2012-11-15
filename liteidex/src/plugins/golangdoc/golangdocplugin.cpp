@@ -25,6 +25,7 @@
 
 #include "golangdocplugin.h"
 #include "golangdoc.h"
+#include "golangdocoptionfactory.h"
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -61,6 +62,7 @@ bool GolangDocPlugin::initWithApp(LiteApi::IApplication *app)
     }
 
     m_golangDoc = new GolangDoc(app,this);
+    m_liteApp->optionManager()->addFactory(new GolangDocOptionFactory(m_liteApp,this));
 
     return true;
 }
