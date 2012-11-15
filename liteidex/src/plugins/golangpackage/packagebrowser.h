@@ -63,6 +63,7 @@ signals:
     
 public slots:
     void appLoaded();
+    void triggeredToolWindow(bool);
     void reloadAll();
     void setupGopath();
     void loadPackageDoc();
@@ -96,7 +97,9 @@ protected:
     QAction     *m_editPackageAct;
     QAction     *m_openSrcAct;
     QAction     *m_copyNameAct;
+    QAction     *m_toolWindowAct;
     QMap<QString,QVariant> m_pkgJson;
+    bool         m_bLoaded;
 };
 
 #endif // PACKAGEBROWSER_H
