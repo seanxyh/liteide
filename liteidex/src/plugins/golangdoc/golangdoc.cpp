@@ -311,6 +311,9 @@ void GolangDoc::loadApi()
 void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
 {
     loadEnv();
+    if (!m_bApiLoaded) {
+        return;
+    }
     loadApi();
 }
 

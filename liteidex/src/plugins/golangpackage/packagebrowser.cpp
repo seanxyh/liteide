@@ -129,7 +129,7 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
 
     LiteApi::IEnvManager *env = LiteApi::getEnvManager(m_liteApp);
     if (env) {
-        connect(env,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(reloadAll()));
+        connect(env,SIGNAL(currentEnvChanged(LiteApi::IEnv*)),this,SLOT(currentEnvChanged(LiteApi::IEnv*)));
     }
 
     connect(m_liteApp->fileManager(),SIGNAL(fileWizardFinished(QString,QString,QString)),this,SLOT(fileWizardFinished(QString,QString,QString)));
@@ -168,6 +168,14 @@ void PackageBrowser::fileWizardFinished(const QString &type, const QString &sche
     if (scheme == "gopkg") {
         //reloadAll();
     }
+}
+
+void PackageBrowser::currentEnvChanged(LiteApi::IEnv *)
+{
+    if (!m_bLoaded) {
+        return;
+    }
+    reloadAll();
 }
 
 void PackageBrowser::reloadAll()
