@@ -131,6 +131,8 @@ protected:
     QAction     *m_newAct;
     QAction     *m_openFileAct;
     QAction     *m_openFolderAct;
+    QAction     *m_openFolderNewInstanceAct;
+    QAction     *m_newInstance;
     QAction     *m_closeAct;
     QAction     *m_closeAllAct;
     QAction     *m_openProjectAct;

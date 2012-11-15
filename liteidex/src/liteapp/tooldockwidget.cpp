@@ -59,8 +59,8 @@ ToolDockWidget::ToolDockWidget(QWidget *parent) :
     m_toolbar->addSeparator();
     m_spacerAct = m_toolbar->addWidget(spacer);
 
-    m_closeAct = new QAction(tr("Close"), m_toolbar);
-    m_closeAct->setToolTip(tr("Close"));
+    m_closeAct = new QAction(tr("Hide"), m_toolbar);
+    m_closeAct->setToolTip(tr("Hide Tool Window"));
     m_closeAct->setIcon(QIcon("icon:images/closetool.png"));
     m_toolbar->addAction(m_closeAct);
     connect(m_closeAct,SIGNAL(triggered()),this,SLOT(close()));

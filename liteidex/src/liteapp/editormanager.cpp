@@ -828,8 +828,10 @@ void EditorManager::moveToNewWindow()
         return;
     }
     IApplication *app = LiteApp::NewApplication(false);
+    QFileInfo info(filePath);
     if (app->fileManager()->openEditor(filePath)) {
         this->closeEditor(ed);
+        app->fileManager()->openFolderProject(info.path());
     }
 //    QProcess process;
 //    if (process.startDetached(qApp->applicationFilePath(),
