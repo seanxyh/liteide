@@ -16,8 +16,15 @@ include(../../3rdparty/qjson/qjson.pri)
 DEFINES += GOLANGDOC_LIBRARY
 
 SOURCES += golangdocplugin.cpp \
-    golangdoc.cpp
+    golangdoc.cpp \
+    golangdocoptionfactory.cpp \
+    golangdocoption.cpp
 
 HEADERS += golangdocplugin.h\
         golangdoc_global.h \
-    golangdoc.h
+    golangdoc.h \
+    golangdocoptionfactory.h \
+    golangdocoption.h
+
+FORMS += \
+    golangdocoption.ui
