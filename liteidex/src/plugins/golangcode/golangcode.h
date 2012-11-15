@@ -56,6 +56,7 @@ protected:
     QString     m_prefix;
     QString     m_lastPrefix;
     QString     m_fileName;
+    bool        m_breset;
     QProcess   *m_process;
     QByteArray  m_writeData;
     LiteApi::IEnvManager *m_envManager;

@@ -45,6 +45,7 @@ GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
     m_completer(0)
 {
     m_process = new QProcess(this);
+    m_breset = false;
     connect(m_process,SIGNAL(started()),this,SLOT(started()));
     connect(m_process,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
 
@@ -61,30 +62,30 @@ GolangCode::GolangCode(LiteApi::IApplication *app, QObject *parent) :
 void GolangCode::broadcast(QString module,QString id,QVariant)
 {
     if (module == "golangpackage" && id == "reloadgopath") {
+        qDebug() << module;
         resetGocode();
     }
 }
 
 GolangCode::~GolangCode()
 {
-    if (!m_gocodeCmd.isEmpty()) {
-        m_process->start(m_gocodeCmd,QStringList() << "close");
-        m_process->waitForFinished();
-    }
-    delete m_process;
+//    if (!m_gocodeCmd.isEmpty()) {
+//        m_process->start(m_gocodeCmd,QStringList() << "close");
+//        m_process->waitForFinished();
+//    }
+//    delete m_process;
 }
 
 void GolangCode::resetGocode()
 {
     if (!m_gocodeCmd.isEmpty()) {
+        m_breset = true;
         m_process->start(m_gocodeCmd,QStringList() << "close");
-        m_process->waitForFinished();
         m_process->setEnvironment(LiteApi::getGoEnvironment(m_liteApp).toStringList());
-        m_process->start(m_gocodeCmd);
     }
 }
 
-void GolangCode::currentEnvChanged(LiteApi::IEnv*)
+void GolangCode::currentEnvChanged(LiteApi::IEnv* e)
 {    
     QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);
     QString goroot = env.value("GOROOT");
@@ -190,6 +191,13 @@ void GolangCode::finished(int code,QProcess::ExitStatus)
     if (code != 0) {
         return;
     }
+
+    if (m_breset) {
+        m_breset = false;
+        m_process->start(m_gocodeCmd);
+        return;
+    }
+
     if (m_prefix.isEmpty()) {
         return;
     }

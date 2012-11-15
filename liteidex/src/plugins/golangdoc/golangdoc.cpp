@@ -211,7 +211,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
 GolangDoc::~GolangDoc()
 {
-    this->saveGolangApi();
+    //this->saveGolangApi();
     m_liteApp->settings()->setValue("golangdoc/goroot",m_goroot);
     if (m_docBrowser) {
         delete m_docBrowser;
@@ -287,7 +287,7 @@ void GolangDoc::editorCreated(LiteApi::IEditor *editor)
 void GolangDoc::loadApi()
 {
     m_goapiData.clear();
-    m_goapiProcess->startEx(m_goapiCmd,"all");
+    m_goapiProcess->startEx(m_goapiCmd,"-default_ctx all");
 }
 
 void GolangDoc::currentEnvChanged(LiteApi::IEnv*)

@@ -58,7 +58,6 @@ bool GolangCodePlugin::initWithApp(LiteApi::IApplication *app)
     }
 
     m_code = new GolangCode(app,this);
-    m_play = new GolangCode(app,this);
     m_commentAct = new QAction(tr("Toggle Comment Selection"),this);
     m_commentAct->setShortcut(QKeySequence("CTRL+/"));
     connect(m_commentAct,SIGNAL(triggered()),this,SLOT(editorComment()));
@@ -75,11 +74,6 @@ QStringList GolangCodePlugin::dependPluginList() const
 
 void GolangCodePlugin::appLoaded()
 {
-    LiteApi::IEditor* editor = LiteApi::findExtensionObject<LiteApi::IEditor*>(m_liteApp->extension(),"LiteApi.Goplay.IEditor");
-    if (editor && editor->mimeType() == "text/x-gosrc") {
-        LiteApi::ICompleter *completer = LiteApi::findExtensionObject<LiteApi::ICompleter*>(editor,"LiteApi.ICompleter");
-        m_play->setCompleter(completer);
-    }
 }
 
 void GolangCodePlugin::editorCreated(LiteApi::IEditor *editor)
@@ -109,12 +103,21 @@ void GolangCodePlugin::editorComment()
 
 void GolangCodePlugin::currentEditorChanged(LiteApi::IEditor *editor)
 {
-    if (editor && editor->mimeType() == "text/x-gosrc") {
-        LiteApi::ICompleter *completer = LiteApi::findExtensionObject<LiteApi::ICompleter*>(editor,"LiteApi.ICompleter");
-        m_code->setCompleter(completer);
-    } else {
-        m_code->setCompleter(0);
+    if (editor) {
+        if (editor->mimeType() == "text/x-gosrc") {
+            LiteApi::ICompleter *completer = LiteApi::findExtensionObject<LiteApi::ICompleter*>(editor,"LiteApi.ICompleter");
+            m_code->setCompleter(completer);
+            return;
+        } else if (editor->mimeType() == "browser/goplay") {
+            LiteApi::IEditor* editor = LiteApi::findExtensionObject<LiteApi::IEditor*>(m_liteApp->extension(),"LiteApi.Goplay.IEditor");
+            if (editor && editor->mimeType() == "text/x-gosrc") {
+                LiteApi::ICompleter *completer = LiteApi::findExtensionObject<LiteApi::ICompleter*>(editor,"LiteApi.ICompleter");
+                m_code->setCompleter(completer);
+                return;
+            }
+        }
     }
+    m_code->setCompleter(0);
 }
 
 Q_EXPORT_PLUGIN(PluginFactory)
