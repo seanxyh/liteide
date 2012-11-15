@@ -60,6 +60,7 @@
 #include <QScrollBar>
 #include <QTextBlock>
 #include <QToolTip>
+#include <QTimer>
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -211,7 +212,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
 
 GolangDoc::~GolangDoc()
 {
-    //this->saveGolangApi();
+    this->saveGolangApi();
     m_liteApp->settings()->setValue("golangdoc/goroot",m_goroot);
     if (m_docBrowser) {
         delete m_docBrowser;
