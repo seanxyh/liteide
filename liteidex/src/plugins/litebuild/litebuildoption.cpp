@@ -52,6 +52,8 @@ LiteBuildOption::LiteBuildOption(LiteApi::IApplication *app,QObject *parent) :
     ui->fileTreeView->setModel(m_fileModel);
     ui->fileTreeView->setRootIndex(root);
     ui->fileTreeView->header()->setResizeMode(QHeaderView::ResizeToContents);
+    bool b = m_liteApp->settings()->value("litebuild/goenvcheck",false).toBool();
+    ui->goenvCheckBox->setChecked(b);
     connect(ui->fileTreeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(doubleClickedFile(QModelIndex)));
 }
 
@@ -78,7 +80,8 @@ QString LiteBuildOption::mimeType() const
 
 void LiteBuildOption::apply()
 {
-
+    bool b = ui->goenvCheckBox->isChecked();
+    m_liteApp->settings()->setValue("litebuild/goenvcheck",b);
 }
 
 void LiteBuildOption::doubleClickedFile(QModelIndex index)
