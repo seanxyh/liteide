@@ -193,12 +193,15 @@ void LiteApp::load(bool bUseSession)
     splash.show();
 
     splash.showMessage("liteide scan plugins ...",Qt::AlignCenter);
+    qApp->processEvents();
     loadMimeType();
     loadPlugins();
     splash.showMessage("liteide load plugins ...",Qt::AlignCenter);
+    qApp->processEvents();
     initPlugins();
 
     splash.showMessage("liteide load state ...",Qt::AlignCenter);
+    qApp->processEvents();
 
     loadState();
     m_mainwindow->show();
@@ -207,6 +210,7 @@ void LiteApp::load(bool bUseSession)
     m_projectManager->setCurrentProject(0);
 
     splash.showMessage("liteide load session ...",Qt::AlignCenter);
+    qApp->processEvents();
 
     appendLog("LiteApp","loaded");
     bool b = m_settings->value("LiteApp/AutoLoadLastSession",true).toBool();
