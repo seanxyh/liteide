@@ -69,6 +69,7 @@ public slots:
     virtual void activeBrowser();
 public slots:
     void appLoaded();
+    void triggeredToolWindow(bool);
     void saveGolangApi();
     void editorFindDoc();
     void editorJumpToDecl();
@@ -141,9 +142,10 @@ protected:
     QString m_godocCmd;
     QString m_findCmd;
     QString m_goapiCmd;
+    bool    m_bApiLoaded;
     QStringList m_targetList;
     QMap<QString,QString> m_pathFileMap;
-    QAction *m_toolAct;
+    QAction *m_toolWindowAct;
     QAction *m_findDocAct;
     QAction *m_jumpDeclAct;
     QString m_docFind;

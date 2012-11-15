@@ -89,6 +89,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_helpProcess = new ProcessEx(this);
 
     m_lastEditor = 0;
+    m_bApiLoaded = false;
 
     m_widget = new QWidget;
     m_findResultModel = new QStringListModel(this);
@@ -123,7 +124,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_widget->setLayout(mainLayout);
 
     //m_liteApp->dockManager()->addDock(m_widget,tr("Golang Document Find"),Qt::LeftDockWidgetArea);
-    m_toolAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"godocfind",tr("Golang Document"),true);
+    m_toolWindowAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"godocfind",tr("Golang Document"),true);
 
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("Golang Document Browser"));
@@ -151,6 +152,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_jumpDeclAct = new QAction(tr("Jump to Declaration"),this);
     m_jumpDeclAct->setShortcut(QKeySequence("F2"));
 
+    connect(m_toolWindowAct,SIGNAL(triggered(bool)),this,SLOT(triggeredToolWindow(bool)));
     connect(m_findDocAct,SIGNAL(triggered()),this,SLOT(editorFindDoc()));
     connect(m_jumpDeclAct,SIGNAL(triggered()),this,SLOT(editorJumpToDecl()));
     connect(m_golangApiThread,SIGNAL(finished()),this,SLOT(loadApiFinished()));
@@ -287,6 +289,7 @@ void GolangDoc::editorCreated(LiteApi::IEditor *editor)
 
 void GolangDoc::loadApi()
 {
+    m_bApiLoaded = true;
     m_goapiData.clear();
     m_goapiProcess->startEx(m_goapiCmd,"-default_ctx all");
 }
@@ -1010,7 +1013,17 @@ void GolangDoc::appLoaded()
     if (info.exists()) {
         m_golangApiThread->loadFile(info.filePath());
     }
+    if (!m_toolWindowAct->isChecked()) {
+        return;
+    }
     this->loadApi();
+}
+
+void GolangDoc::triggeredToolWindow(bool b)
+{
+    if (b && !m_bApiLoaded) {
+        this->loadApi();
+    }
 }
 
 void GolangDoc::saveGolangApi()
