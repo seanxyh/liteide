@@ -347,109 +347,109 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>EditorManager</name>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="90"/>
+        <location filename="src/liteapp/editormanager.cpp" line="92"/>
         <source>Close</source>
         <translation type="unfinished">Fermer</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="91"/>
+        <location filename="src/liteapp/editormanager.cpp" line="93"/>
         <source>Close Others</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="92"/>
+        <location filename="src/liteapp/editormanager.cpp" line="94"/>
         <source>Close All</source>
         <translation type="unfinished">Tout fermer</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="93"/>
+        <location filename="src/liteapp/editormanager.cpp" line="95"/>
         <source>Move To New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="141"/>
+        <location filename="src/liteapp/editormanager.cpp" line="143"/>
         <source>Undo</source>
         <translation type="unfinished">Défaire</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="144"/>
+        <location filename="src/liteapp/editormanager.cpp" line="146"/>
         <source>Redo</source>
         <translation type="unfinished">Refaire</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="147"/>
+        <location filename="src/liteapp/editormanager.cpp" line="149"/>
         <source>Cut</source>
         <translation type="unfinished">Couper</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="150"/>
+        <location filename="src/liteapp/editormanager.cpp" line="152"/>
         <source>Copy</source>
         <translation type="unfinished">Copier</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="153"/>
+        <location filename="src/liteapp/editormanager.cpp" line="155"/>
         <source>Paste</source>
         <oldsource>paste</oldsource>
         <translation type="unfinished">Coller</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="156"/>
+        <location filename="src/liteapp/editormanager.cpp" line="158"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="159"/>
+        <location filename="src/liteapp/editormanager.cpp" line="161"/>
         <source>Goto Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="166"/>
+        <location filename="src/liteapp/editormanager.cpp" line="168"/>
         <source>&amp;Edit</source>
         <oldsource>Edit</oldsource>
         <translation type="unfinished">Édition</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="189"/>
+        <location filename="src/liteapp/editormanager.cpp" line="191"/>
         <source>GoBack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="193"/>
+        <location filename="src/liteapp/editormanager.cpp" line="195"/>
         <source>GoForward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="226"/>
+        <location filename="src/liteapp/editormanager.cpp" line="228"/>
         <source>File is writable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="367"/>
+        <location filename="src/liteapp/editormanager.cpp" line="369"/>
         <source>%1 is modified.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="368"/>
+        <location filename="src/liteapp/editormanager.cpp" line="370"/>
         <source>Save Modify</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="443"/>
+        <location filename="src/liteapp/editormanager.cpp" line="445"/>
         <source>All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="445"/>
+        <location filename="src/liteapp/editormanager.cpp" line="447"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="512"/>
+        <location filename="src/liteapp/editormanager.cpp" line="514"/>
         <source>File Is ReadOnly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="515"/>
+        <location filename="src/liteapp/editormanager.cpp" line="517"/>
         <source>File Is Writable</source>
         <translation type="unfinished"></translation>
     </message>
@@ -457,17 +457,17 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>EnvManager</name>
     <message>
-        <location filename="src/plugins/liteenv/envmanager.cpp" line="224"/>
+        <location filename="src/plugins/liteenv/envmanager.cpp" line="225"/>
         <source>Build ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteenv/envmanager.cpp" line="228"/>
+        <location filename="src/plugins/liteenv/envmanager.cpp" line="229"/>
         <source>Environment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/liteenv/envmanager.cpp" line="231"/>
+        <location filename="src/plugins/liteenv/envmanager.cpp" line="232"/>
         <source>Edit Environment</source>
         <translation type="unfinished"></translation>
     </message>
@@ -684,12 +684,12 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="278"/>
+        <location filename="src/liteapp/filemanager.cpp" line="297"/>
         <source>LiteIDE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="279"/>
+        <location filename="src/liteapp/filemanager.cpp" line="298"/>
         <source>Project &apos;%1&apos; is created.
 Do you want to load?</source>
         <translation type="unfinished"></translation>
@@ -706,32 +706,38 @@ Do you want to load?</source>
     </message>
     <message>
         <location filename="src/liteapp/filemanager.cpp" line="221"/>
-        <source>Open Package Folder</source>
+        <source>Open Folder</source>
+        <oldsource>Open Package Folder</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="234"/>
+        <location filename="src/liteapp/filemanager.cpp" line="239"/>
+        <source>Open Folder With New Instance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/filemanager.cpp" line="253"/>
         <source>Open Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="247"/>
+        <location filename="src/liteapp/filemanager.cpp" line="266"/>
         <source>Open Project</source>
         <translation type="unfinished">Ouvrir un projet</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="582"/>
+        <location filename="src/liteapp/filemanager.cpp" line="601"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="583"/>
+        <location filename="src/liteapp/filemanager.cpp" line="602"/>
         <source>LiteIDE X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="601"/>
+        <location filename="src/liteapp/filemanager.cpp" line="620"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation type="unfinished"></translation>
@@ -1058,7 +1064,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangCodePlugin</name>
     <message>
-        <location filename="src/plugins/golangcode/golangcodeplugin.cpp" line="62"/>
+        <location filename="src/plugins/golangcode/golangcodeplugin.cpp" line="61"/>
         <source>Toggle Comment Selection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1066,25 +1072,48 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangDoc</name>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="125"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="127"/>
         <source>Golang Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="128"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="130"/>
         <source>Golang Document Browser</source>
         <oldsource>Golang Document Browser Page</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="147"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="149"/>
         <source>View Expression Information</source>
         <oldsource>View Expression Infomation</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="150"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="152"/>
         <source>Jump to Declaration</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GolangDocOption</name>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdocoption.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdocoption.ui" line="20"/>
+        <source>Load golang api</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdocoption.ui" line="26"/>
+        <source>Use default context (fast)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdocoption.ui" line="33"/>
+        <source>Only load standard api</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1163,78 +1192,87 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteApp</name>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="348"/>
+        <location filename="src/liteapp/liteapp.cpp" line="418"/>
         <source>New</source>
         <translation>Nouveau</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="126"/>
+        <location filename="src/liteapp/liteapp.cpp" line="173"/>
         <source>Event Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="350"/>
+        <location filename="src/liteapp/liteapp.cpp" line="420"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="352"/>
+        <location filename="src/liteapp/liteapp.cpp" line="422"/>
         <source>Open Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="353"/>
-        <source>Close</source>
-        <translation>Fermer</translation>
+        <location filename="src/liteapp/liteapp.cpp" line="423"/>
+        <source>Open Folder With New Instance</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="355"/>
-        <source>Close All</source>
-        <translation>Tout fermer</translation>
+        <location filename="src/liteapp/liteapp.cpp" line="424"/>
+        <source>New Instance</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="356"/>
+        <location filename="src/liteapp/liteapp.cpp" line="425"/>
+        <source>Close File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="427"/>
+        <source>Close All Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="430"/>
+        <source>Close Folders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="431"/>
+        <source>Save File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="433"/>
+        <source>Save File As...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="435"/>
+        <source>Save All Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="428"/>
         <source>Open Project</source>
         <translation>Ouvrir un projet</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="357"/>
+        <location filename="src/liteapp/liteapp.cpp" line="429"/>
         <source>Save Project</source>
         <translation>Enregistrer un projet</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="358"/>
-        <source>Close Project</source>
-        <translation>Fermer le projet</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/liteapp.cpp" line="359"/>
-        <source>Save</source>
-        <translation>Enregistrer</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/liteapp.cpp" line="361"/>
-        <source>Save As...</source>
-        <translation>Enregistrer sous...</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/liteapp.cpp" line="363"/>
-        <source>Save All</source>
-        <oldsource>Save As</oldsource>
-        <translation>Enregistrer tout</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/liteapp.cpp" line="365"/>
+        <location filename="src/liteapp/liteapp.cpp" line="437"/>
         <source>Exit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="368"/>
+        <location filename="src/liteapp/liteapp.cpp" line="440"/>
         <source>About LiteIDE...</source>
         <translation>À propos de LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="369"/>
+        <location filename="src/liteapp/liteapp.cpp" line="441"/>
         <source>About Plugins...</source>
         <translation>À propos des plugins...</translation>
     </message>
@@ -1355,7 +1393,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuildoption.ui" line="23"/>
+        <location filename="src/plugins/litebuild/litebuildoption.ui" line="20"/>
+        <source>Recheck go env if enviroment changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/litebuildoption.ui" line="30"/>
         <source>The build config change will take effect after a restart of LiteIDE.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1882,32 +1925,32 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>PackageBrowser</name>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="83"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="84"/>
         <source>Setup GOPATH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="82"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="83"/>
         <source>Reload All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="84"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="85"/>
         <source>View Package Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="85"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="86"/>
         <source>Load Package Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="86"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="87"/>
         <source>Open Source File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="87"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="88"/>
         <source>Copy Name To Clipboard</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1918,12 +1961,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="169"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="189"/>
         <source>Not find go in PATH...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="174"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="194"/>
         <source>Loading go package ...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2167,9 +2210,13 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <name>ToolDockWidget</name>
     <message>
         <location filename="src/liteapp/tooldockwidget.cpp" line="62"/>
+        <source>Hide</source>
+        <translation type="unfinished">Masquer</translation>
+    </message>
+    <message>
         <location filename="src/liteapp/tooldockwidget.cpp" line="63"/>
-        <source>Close</source>
-        <translation type="unfinished">Fermer</translation>
+        <source>Hide Tool Window</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/liteapp/tooldockwidget.cpp" line="77"/>
