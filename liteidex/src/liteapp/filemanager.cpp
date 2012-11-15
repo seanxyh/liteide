@@ -218,7 +218,7 @@ void FileManager::openFiles()
 void FileManager::openFolder()
 {
      QString folder = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(),
-           tr("Open Package Folder"), m_initPath);
+           tr("Open Folder"), m_initPath);
     if (!folder.isEmpty()) {
         QDir dir(folder);
         if (dir.cdUp()) {
@@ -226,6 +226,25 @@ void FileManager::openFolder()
         }
         this->openFolderProject(folder);
     }
+}
+
+void FileManager::newInstance()
+{
+    m_liteApp->newInstance(false);
+}
+
+void FileManager::openFolderNewInstance()
+{
+    QString folder = QFileDialog::getExistingDirectory(m_liteApp->mainWindow(),
+          tr("Open Folder With New Instance"), m_initPath);
+   if (!folder.isEmpty()) {
+       QDir dir(folder);
+       if (dir.cdUp()) {
+           m_initPath = dir.path();
+       }
+       IApplication *app = m_liteApp->newInstance(false);
+       app->fileManager()->openFolderProject(folder);
+   }
 }
 
 void FileManager::openEditors()

@@ -420,17 +420,19 @@ void LiteApp::createActions()
     m_openFileAct = new QAction(QIcon("icon:images/openfile.png"),tr("Open File"),m_mainwindow);
     m_openFileAct->setShortcut(QKeySequence::Open);
     m_openFolderAct = new QAction(QIcon("icon:images/openfolder.png"),tr("Open Folder"),m_mainwindow);
-    m_closeAct = new QAction(QIcon("icon:images/close.png"),tr("Close"),m_mainwindow);
+    m_openFolderNewInstanceAct = new QAction(QIcon("icon:images/openfolder.png"),tr("Open Folder With New Instance"),m_mainwindow);
+    m_newInstance = new QAction(tr("New Instance"),m_mainwindow);
+    m_closeAct = new QAction(QIcon("icon:images/close.png"),tr("Close File"),m_mainwindow);
     m_closeAct->setShortcut(QKeySequence("Ctrl+W"));
-    m_closeAllAct = new QAction(QIcon("icon:images/closeall.png"),tr("Close All"),m_mainwindow);
+    m_closeAllAct = new QAction(QIcon("icon:images/closeall.png"),tr("Close All Files"),m_mainwindow);
     m_openProjectAct = new QAction(QIcon("icon:images/openproject.png"),tr("Open Project"),m_mainwindow);
     m_saveProjectAct = new QAction(QIcon("icon:images/saveproject.png"),tr("Save Project"),m_mainwindow);
-    m_closeProjectAct = new QAction(QIcon("icon:images/closeproject.png"),tr("Close Project"),m_mainwindow);
-    m_saveAct = new QAction(QIcon("icon:images/save.png"),tr("Save"),m_mainwindow);
+    m_closeProjectAct = new QAction(QIcon("icon:images/closeproject.png"),tr("Close Folders"),m_mainwindow);
+    m_saveAct = new QAction(QIcon("icon:images/save.png"),tr("Save File"),m_mainwindow);
     m_saveAct->setShortcut(QKeySequence::Save);
-    m_saveAsAct = new QAction(tr("Save As..."),m_mainwindow);
+    m_saveAsAct = new QAction(tr("Save File As..."),m_mainwindow);
     m_saveAsAct->setShortcut(QKeySequence::SaveAs);
-    m_saveAllAct = new QAction(QIcon("icon:images/saveall.png"),tr("Save All"),m_mainwindow);
+    m_saveAllAct = new QAction(QIcon("icon:images/saveall.png"),tr("Save All Files"),m_mainwindow);
 
     m_exitAct = new QAction(tr("Exit"),m_mainwindow);
     m_exitAct->setShortcut(QKeySequence::Quit);
@@ -441,6 +443,8 @@ void LiteApp::createActions()
     connect(m_newAct,SIGNAL(triggered()),m_fileManager,SLOT(newFile()));
     connect(m_openFileAct,SIGNAL(triggered()),m_fileManager,SLOT(openFiles()));
     connect(m_openFolderAct,SIGNAL(triggered()),m_fileManager,SLOT(openFolder()));
+    connect(m_openFolderNewInstanceAct,SIGNAL(triggered()),m_fileManager,SLOT(openFolderNewInstance()));
+    connect(m_newInstance,SIGNAL(triggered()),m_fileManager,SLOT(newInstance()));
     connect(m_closeAct,SIGNAL(triggered()),m_editorManager,SLOT(closeEditor()));
     connect(m_closeAllAct,SIGNAL(triggered()),m_editorManager,SLOT(closeAllEditors()));
     connect(m_openProjectAct,SIGNAL(triggered()),m_fileManager,SLOT(openProjects()));
@@ -462,17 +466,20 @@ void LiteApp::createMenus()
 
     m_fileMenu->addAction(m_newAct);
     m_fileMenu->addAction(m_openFileAct);
-    m_fileMenu->addAction(m_openFolderAct);
     m_fileMenu->addAction(m_closeAct);
     m_fileMenu->addAction(m_closeAllAct);
-    m_fileMenu->addSeparator();
-    m_fileMenu->addAction(m_openProjectAct);
-    m_fileMenu->addAction(m_saveProjectAct);
-    m_fileMenu->addAction(m_closeProjectAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_saveAct);
     m_fileMenu->addAction(m_saveAsAct);
     m_fileMenu->addAction(m_saveAllAct);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_newInstance);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_openFolderAct);
+    m_fileMenu->addAction(m_openFolderNewInstanceAct);
+    m_fileMenu->addAction(m_closeProjectAct);
+    //m_fileMenu->addAction(m_openProjectAct);
+    //m_fileMenu->addAction(m_saveProjectAct);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_exitAct);
 

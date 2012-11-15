@@ -78,7 +78,7 @@ protected:
     QPointer<IProject>      m_currentProject;
     QList<IProjectFactory*>    m_factoryList;
     QScrollArea             *m_widget;
-    QAction                 *m_action;
+    QAction                 *m_toolWindowAct;
     bool                    m_bAutoCloseProjectEditors;
     FolderProject           *m_folderProject;
 };

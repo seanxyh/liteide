@@ -79,7 +79,7 @@ bool ProjectManager::initWithApp(IApplication *app)
     m_widget->setWidgetResizable(true);
 
     m_folderProject = new FolderProject(m_liteApp);
-    m_action = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"projects",tr("Projects"),false);
+    m_toolWindowAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"projects",tr("Projects"),false);
 
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
 
@@ -227,7 +227,7 @@ void ProjectManager::setCurrentProject(IProject *project)
     m_currentProject = project;
 
     if (m_currentProject) {
-        m_action->setChecked(true);
+        m_toolWindowAct->setChecked(true);
         m_widget->setWidget(m_currentProject->widget());
         m_currentProject->load();
         m_liteApp->appendLog("ProjectManager","loadProject "+m_currentProject->name());
@@ -311,6 +311,7 @@ void ProjectManager::closeProjectHelper(IProject *project)
 
 void ProjectManager::closeProject(IProject *project)
 {
+    m_toolWindowAct->setChecked(false);
     closeProjectHelper(project);
     emit currentProjectChanged(0);
 }

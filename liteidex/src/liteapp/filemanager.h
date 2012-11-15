@@ -70,6 +70,8 @@ public slots:
     void newFile();
     void openFiles();
     void openFolder();
+    void openFolderNewInstance();
+    void newInstance();
     void openEditors();
     void openProjects();
     void fileChanged(QString);
