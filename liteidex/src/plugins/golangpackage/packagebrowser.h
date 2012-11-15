@@ -27,6 +27,7 @@
 #define PACKAGEBROWSER_H
 
 #include "liteapi/liteapi.h"
+#include "liteenvapi/liteenvapi.h"
 #include "symboltreeview/symboltreeview.h"
 #include "gotool.h"
 
@@ -61,9 +62,10 @@ public:
     ~PackageBrowser();
 signals:
     
-public slots:
+public slots:    
     void appLoaded();
     void triggeredToolWindow(bool);
+    void currentEnvChanged(LiteApi::IEnv*);
     void reloadAll();
     void setupGopath();
     void loadPackageDoc();
