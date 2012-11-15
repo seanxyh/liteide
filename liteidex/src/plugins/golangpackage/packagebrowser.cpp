@@ -149,7 +149,8 @@ PackageBrowser::~PackageBrowser()
 
 void PackageBrowser::appLoaded()
 {
-    QTimer::singleShot(200, this, SLOT(reloadAll()));
+    QTimer::singleShot(1000, this, SLOT(reloadAll()));
+    //reloadAll();
 }
 
 void PackageBrowser::fileWizardFinished(const QString &type, const QString &scheme, const QString &location)

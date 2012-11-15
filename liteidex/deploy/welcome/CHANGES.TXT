@@ -1,4 +1,5 @@
 ==== 2012.11.15 Ver x14.1 ====
+ * LiteApp : load fast
  * LiteApp : multi window mode
  * GolangDoc: init load cache goapi data
  * LiteEditor: fix if/else fold
