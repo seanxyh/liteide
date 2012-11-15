@@ -348,109 +348,109 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>EditorManager</name>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="90"/>
+        <location filename="src/liteapp/editormanager.cpp" line="92"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="91"/>
+        <location filename="src/liteapp/editormanager.cpp" line="93"/>
         <source>Close Others</source>
         <translation>关闭其他</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="92"/>
+        <location filename="src/liteapp/editormanager.cpp" line="94"/>
         <source>Close All</source>
         <translation>关闭所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="93"/>
+        <location filename="src/liteapp/editormanager.cpp" line="95"/>
         <source>Move To New Window</source>
         <translation>移到到新窗口</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="141"/>
+        <location filename="src/liteapp/editormanager.cpp" line="143"/>
         <source>Undo</source>
         <translation>撤消</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="144"/>
+        <location filename="src/liteapp/editormanager.cpp" line="146"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="147"/>
+        <location filename="src/liteapp/editormanager.cpp" line="149"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="150"/>
+        <location filename="src/liteapp/editormanager.cpp" line="152"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="153"/>
+        <location filename="src/liteapp/editormanager.cpp" line="155"/>
         <source>Paste</source>
         <oldsource>paste</oldsource>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="156"/>
+        <location filename="src/liteapp/editormanager.cpp" line="158"/>
         <source>Select All</source>
         <translation>选择所有</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="159"/>
+        <location filename="src/liteapp/editormanager.cpp" line="161"/>
         <source>Goto Line</source>
         <translation>跳转到行</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="166"/>
+        <location filename="src/liteapp/editormanager.cpp" line="168"/>
         <source>&amp;Edit</source>
         <oldsource>Edit</oldsource>
         <translation>编辑(&amp;E)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="189"/>
+        <location filename="src/liteapp/editormanager.cpp" line="191"/>
         <source>GoBack</source>
         <translation>返回</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="193"/>
+        <location filename="src/liteapp/editormanager.cpp" line="195"/>
         <source>GoForward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="226"/>
+        <location filename="src/liteapp/editormanager.cpp" line="228"/>
         <source>File is writable</source>
         <translation>文件可写</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="367"/>
+        <location filename="src/liteapp/editormanager.cpp" line="369"/>
         <source>%1 is modified.</source>
         <translation>%1 被修改.</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="368"/>
+        <location filename="src/liteapp/editormanager.cpp" line="370"/>
         <source>Save Modify</source>
         <translation>保存修改内容</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="443"/>
+        <location filename="src/liteapp/editormanager.cpp" line="445"/>
         <source>All Files (*)</source>
         <translation>所有文件(*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="445"/>
+        <location filename="src/liteapp/editormanager.cpp" line="447"/>
         <source>Save As</source>
         <translation>另存为</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="512"/>
+        <location filename="src/liteapp/editormanager.cpp" line="514"/>
         <source>File Is ReadOnly</source>
         <translation>文件只读</translation>
     </message>
     <message>
-        <location filename="src/liteapp/editormanager.cpp" line="515"/>
+        <location filename="src/liteapp/editormanager.cpp" line="517"/>
         <source>File Is Writable</source>
         <translation>文件可写</translation>
     </message>
@@ -458,17 +458,17 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
 <context>
     <name>EnvManager</name>
     <message>
-        <location filename="src/plugins/liteenv/envmanager.cpp" line="224"/>
+        <location filename="src/plugins/liteenv/envmanager.cpp" line="225"/>
         <source>Build ToolBar</source>
         <translation>编译工具栏</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteenv/envmanager.cpp" line="228"/>
+        <location filename="src/plugins/liteenv/envmanager.cpp" line="229"/>
         <source>Environment</source>
         <translation>环境变量</translation>
     </message>
     <message>
-        <location filename="src/plugins/liteenv/envmanager.cpp" line="231"/>
+        <location filename="src/plugins/liteenv/envmanager.cpp" line="232"/>
         <source>Edit Environment</source>
         <translation>编辑环境变量</translation>
     </message>
@@ -685,12 +685,12 @@ In addition, as a special exception, that plugins developed for LiteIDE, are all
         <translation>所有文件(*)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="278"/>
+        <location filename="src/liteapp/filemanager.cpp" line="297"/>
         <source>LiteIDE</source>
         <translation>LiteIDE</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="279"/>
+        <location filename="src/liteapp/filemanager.cpp" line="298"/>
         <source>Project &apos;%1&apos; is created.
 Do you want to load?</source>
         <translation>项目文件 &apos;%1&apos;已建立,是否加载?</translation>
@@ -707,33 +707,39 @@ Do you want to load?</source>
     </message>
     <message>
         <location filename="src/liteapp/filemanager.cpp" line="221"/>
-        <source>Open Package Folder</source>
-        <translation>打开Package目录</translation>
+        <source>Open Folder</source>
+        <oldsource>Open Package Folder</oldsource>
+        <translation>打开目录</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="234"/>
+        <location filename="src/liteapp/filemanager.cpp" line="239"/>
+        <source>Open Folder With New Instance</source>
+        <translation>打开目录(启动新实例)</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/filemanager.cpp" line="253"/>
         <source>Open Files</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="247"/>
+        <location filename="src/liteapp/filemanager.cpp" line="266"/>
         <source>Open Project</source>
         <translation>打开项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="582"/>
+        <location filename="src/liteapp/filemanager.cpp" line="601"/>
         <source>%1
 This file has been removed. Do you want save to file or close editor?</source>
         <translation>%1
 文件已经被删除，重新保存到文件还是关闭编辑器?</translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="583"/>
+        <location filename="src/liteapp/filemanager.cpp" line="602"/>
         <source>LiteIDE X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/liteapp/filemanager.cpp" line="601"/>
+        <location filename="src/liteapp/filemanager.cpp" line="620"/>
         <source>%1
 This file has been modified outside of the liteide. Do you want to reload it?</source>
         <translation>%1
@@ -1061,7 +1067,7 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangCodePlugin</name>
     <message>
-        <location filename="src/plugins/golangcode/golangcodeplugin.cpp" line="62"/>
+        <location filename="src/plugins/golangcode/golangcodeplugin.cpp" line="61"/>
         <source>Toggle Comment Selection</source>
         <translation>切换区域注释/反注释</translation>
     </message>
@@ -1069,26 +1075,49 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>GolangDoc</name>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="125"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="127"/>
         <source>Golang Document</source>
         <translation>Golang文档</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="128"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="130"/>
         <source>Golang Document Browser</source>
         <oldsource>Golang Document Browser Page</oldsource>
         <translation>GO文档浏览</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="147"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="149"/>
         <source>View Expression Information</source>
         <oldsource>View Expression Infomation</oldsource>
         <translation>查看表达式信息</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="150"/>
+        <location filename="src/plugins/golangdoc/golangdoc.cpp" line="152"/>
         <source>Jump to Declaration</source>
         <translation>跳转到声明</translation>
+    </message>
+</context>
+<context>
+    <name>GolangDocOption</name>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdocoption.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdocoption.ui" line="20"/>
+        <source>Load golang api</source>
+        <translation>加载golang api</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdocoption.ui" line="26"/>
+        <source>Use default context (fast)</source>
+        <translation>使用默认context(快速)</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/golangdoc/golangdocoption.ui" line="33"/>
+        <source>Only load standard api</source>
+        <translation>只加载标准库</translation>
     </message>
 </context>
 <context>
@@ -1166,78 +1195,87 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>LiteApp</name>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="348"/>
+        <location filename="src/liteapp/liteapp.cpp" line="418"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="126"/>
+        <location filename="src/liteapp/liteapp.cpp" line="173"/>
         <source>Event Log</source>
         <translation>事件记录</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="350"/>
+        <location filename="src/liteapp/liteapp.cpp" line="420"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="352"/>
+        <location filename="src/liteapp/liteapp.cpp" line="422"/>
         <source>Open Folder</source>
         <translation>打开目录</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="353"/>
-        <source>Close</source>
-        <translation>关闭</translation>
+        <location filename="src/liteapp/liteapp.cpp" line="423"/>
+        <source>Open Folder With New Instance</source>
+        <translation>打开目录(新实例)</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="355"/>
-        <source>Close All</source>
-        <translation>关闭所有</translation>
+        <location filename="src/liteapp/liteapp.cpp" line="424"/>
+        <source>New Instance</source>
+        <translation>启动新实例</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="356"/>
+        <location filename="src/liteapp/liteapp.cpp" line="425"/>
+        <source>Close File</source>
+        <translation>关闭文件</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="427"/>
+        <source>Close All Files</source>
+        <translation>关闭所有文件</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="430"/>
+        <source>Close Folders</source>
+        <translation>关闭目录</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="431"/>
+        <source>Save File</source>
+        <translation>保存文件</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="433"/>
+        <source>Save File As...</source>
+        <translation>文件另存为...</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="435"/>
+        <source>Save All Files</source>
+        <translation>保存所有文件</translation>
+    </message>
+    <message>
+        <location filename="src/liteapp/liteapp.cpp" line="428"/>
         <source>Open Project</source>
         <translation>打开项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="357"/>
+        <location filename="src/liteapp/liteapp.cpp" line="429"/>
         <source>Save Project</source>
         <translation>保存项目</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="358"/>
-        <source>Close Project</source>
-        <translation>关闭项目</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/liteapp.cpp" line="359"/>
-        <source>Save</source>
-        <translation>保存</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/liteapp.cpp" line="361"/>
-        <source>Save As...</source>
-        <translation>另存为...</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/liteapp.cpp" line="363"/>
-        <source>Save All</source>
-        <oldsource>Save As</oldsource>
-        <translation>保存所有</translation>
-    </message>
-    <message>
-        <location filename="src/liteapp/liteapp.cpp" line="365"/>
+        <location filename="src/liteapp/liteapp.cpp" line="437"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="368"/>
+        <location filename="src/liteapp/liteapp.cpp" line="440"/>
         <source>About LiteIDE...</source>
         <translation>关于LiteIDE...</translation>
     </message>
     <message>
-        <location filename="src/liteapp/liteapp.cpp" line="369"/>
+        <location filename="src/liteapp/liteapp.cpp" line="441"/>
         <source>About Plugins...</source>
         <translation>关于插件...</translation>
     </message>
@@ -1358,7 +1396,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation></translation>
     </message>
     <message>
-        <location filename="src/plugins/litebuild/litebuildoption.ui" line="23"/>
+        <location filename="src/plugins/litebuild/litebuildoption.ui" line="20"/>
+        <source>Recheck go env if enviroment changed</source>
+        <translation>环境改变时重新检查go env</translation>
+    </message>
+    <message>
+        <location filename="src/plugins/litebuild/litebuildoption.ui" line="30"/>
         <source>The build config change will take effect after a restart of LiteIDE.</source>
         <translation>编译配置更改生效,需要重新启动LiteIDE.</translation>
     </message>
@@ -1887,32 +1930,32 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
 <context>
     <name>PackageBrowser</name>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="83"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="84"/>
         <source>Setup GOPATH</source>
         <translation>设置GOPATH</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="82"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="83"/>
         <source>Reload All</source>
         <translation>重新加载所有</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="84"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="85"/>
         <source>View Package Document</source>
         <translation>查看Package文档</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="85"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="86"/>
         <source>Load Package Project</source>
         <translation>加载Package项目</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="86"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="87"/>
         <source>Open Source File</source>
         <translation>打开源文件</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="87"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="88"/>
         <source>Copy Name To Clipboard</source>
         <translation>复制名字到剪切板</translation>
     </message>
@@ -1923,12 +1966,12 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
         <translation>Package浏览</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="169"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="189"/>
         <source>Not find go in PATH...</source>
         <translation>在PATH中无法找到GO...</translation>
     </message>
     <message>
-        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="174"/>
+        <location filename="src/plugins/golangpackage/packagebrowser.cpp" line="194"/>
         <source>Loading go package ...</source>
         <translation>正在加载go package...</translation>
     </message>
@@ -2172,9 +2215,13 @@ This file has been modified outside of the liteide. Do you want to reload it?</s
     <name>ToolDockWidget</name>
     <message>
         <location filename="src/liteapp/tooldockwidget.cpp" line="62"/>
+        <source>Hide</source>
+        <translation>隐藏</translation>
+    </message>
+    <message>
         <location filename="src/liteapp/tooldockwidget.cpp" line="63"/>
-        <source>Close</source>
-        <translation>关闭</translation>
+        <source>Hide Tool Window</source>
+        <translation>隐藏工具窗口</translation>
     </message>
     <message>
         <location filename="src/liteapp/tooldockwidget.cpp" line="77"/>
