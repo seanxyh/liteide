@@ -189,7 +189,11 @@ LiteApp::LiteApp()
 void LiteApp::load(bool bUseSession)
 {
     QPixmap pixmap("icon:/images/splash.png");
+#ifdef Q_OS_LINUX
+    QSplashScreen splash(pixmap);
+#else
     QSplashScreen splash(pixmap,Qt::WindowStaysOnTopHint);
+#endif
     splash.show();
 
     splash.showMessage("liteide scan plugins ...",Qt::AlignCenter);
