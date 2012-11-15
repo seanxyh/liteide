@@ -200,11 +200,11 @@ void LiteApp::load(bool bUseSession)
 
     splash.showMessage("liteide load state ...",Qt::AlignCenter);
 
-    emit loaded();
-    m_projectManager->setCurrentProject(0);
-
     loadState();
     m_mainwindow->show();
+
+    emit loaded();
+    m_projectManager->setCurrentProject(0);
 
     splash.showMessage("liteide load session ...",Qt::AlignCenter);
 

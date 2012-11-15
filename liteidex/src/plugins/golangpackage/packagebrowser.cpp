@@ -55,7 +55,8 @@
 
 PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     QObject(parent),
-    m_liteApp(app)
+    m_liteApp(app),
+    m_bLoaded(false)
 {
     m_goTool = new GoTool(m_liteApp,this);
     m_widget = new QWidget;
@@ -104,8 +105,8 @@ PackageBrowser::PackageBrowser(LiteApi::IApplication *app, QObject *parent) :
     m_fileMenu->addAction(m_setupGopathAct);
 
 
-    //m_liteApp->dockManager()->addDock(m_widget,tr("Package Browser"));
-    m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"gopackbrowser",tr("Package Browser"),true);
+    m_toolWindowAct = m_liteApp->toolWindowManager()->addToolWindow(Qt::LeftDockWidgetArea,m_widget,"gopackbrowser",tr("Package Browser"),true);
+    connect(m_toolWindowAct,SIGNAL(triggered(bool)),this,SLOT(triggeredToolWindow(bool)));
     connect(m_goTool,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(finished(int,QProcess::ExitStatus)));
     connect(m_goTool,SIGNAL(error(QProcess::ProcessError)),this,SLOT(error(QProcess::ProcessError)));
     connect(m_treeView,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
@@ -149,14 +150,23 @@ PackageBrowser::~PackageBrowser()
 
 void PackageBrowser::appLoaded()
 {
+    if (!m_toolWindowAct->isChecked()) {
+        return;
+    }
     QTimer::singleShot(1000, this, SLOT(reloadAll()));
-    //reloadAll();
+}
+
+void PackageBrowser::triggeredToolWindow(bool b)
+{
+    if (b && !m_bLoaded) {
+        this->reloadAll();
+    }
 }
 
 void PackageBrowser::fileWizardFinished(const QString &type, const QString &scheme, const QString &location)
 {
     if (scheme == "gopkg") {
-        reloadAll();
+        //reloadAll();
     }
 }
 
@@ -171,7 +181,7 @@ void PackageBrowser::reloadAll()
         m_model->appendRow(new QStandardItem(tr("Not find go in PATH...")));
         return;
     }
-
+    m_bLoaded = true;
     if (m_model->rowCount() == 0) {
         m_model->appendRow(new QStandardItem(tr("Loading go package ...")));
     }
