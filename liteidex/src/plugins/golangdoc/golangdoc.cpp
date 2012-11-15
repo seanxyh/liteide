@@ -333,8 +333,10 @@ void GolangDoc::loadEnv()
     if (find.isEmpty()) {
         find = FileUtil::lookPath("godocview",env,true);
     }
-
-    m_goapiCmd = FileUtil::lookPath("goapi",env,false);
+    m_goapiCmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/goapi");
+    if (m_goapiCmd.isEmpty()) {
+        m_goapiCmd = FileUtil::lookPath("goapi",env,false);
+    }
     if (m_goapiCmd.isEmpty()) {
         m_goapiCmd = FileUtil::lookPathInDir("goapi",env,m_liteApp->applicationPath());
     }
