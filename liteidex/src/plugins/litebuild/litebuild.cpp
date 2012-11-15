@@ -283,6 +283,11 @@ void LiteBuild::currentEnvChanged(LiteApi::IEnv*)
     if (!env) {
         return;
     }
+
+    bool b = m_liteApp->settings()->value("litebuild/goenvcheck",false).toBool();
+    if (!b) {
+        return;
+    }
     m_output->updateExistsTextColor();
     m_output->appendTag0(QString("Current environment change id \"%1\"\n").arg(env->id()));
     m_output->append(m_envManager->currentEnv()->orgEnvLines().join("\n")+"\n",Qt::black);
