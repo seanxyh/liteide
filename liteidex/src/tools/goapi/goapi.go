@@ -2428,17 +2428,30 @@ func (w *Walker) findStructField(st ast.Expr, name string) (*ast.Ident, ast.Expr
 					return n, fi.Type
 				}
 			}
+			log.Println("->",w.nodeString(typ))
 			if fi.Names == nil {
 				switch v := typ.(type) {
 				case *ast.Ident:
 					if t := w.curPackage.findType(v.Name); t != nil {
-						return w.findStructField(t, name)
+						if v.Name == name {
+							return v,v
+						}
+						id, expr := w.findStructField(t, name)
+						if id != nil {
+							return id,expr
+						}
 					}
 				case *ast.StarExpr:
 					switch vv := v.X.(type) {
 					case *ast.Ident:
 						if t := w.curPackage.findType(vv.Name); t != nil {
-							return w.findStructField(t, name)
+							if vv.Name == name {
+								return vv,v.X
+							}							
+							id, expr := w.findStructField(t, name)
+							if id != nil {
+								return id,expr
+							}
 						}
 					case *ast.SelectorExpr:
 						pt := w.nodeString(typ)
@@ -2450,7 +2463,6 @@ func (w *Walker) findStructField(st ast.Expr, name string) (*ast.Ident, ast.Expr
 								}
 							}
 						}
-						w.emitFeature(fmt.Sprintf("embedded %s", w.nodeString(typ)), v.Pos())
 					default:
 						if *verbose {
 							log.Printf("unable to handle embedded starexpr before %T", typ)
@@ -2846,6 +2858,15 @@ func (w *Walker) varValueType(vi ast.Expr, index int) (string, error) {
 			if err == nil {
 				if strings.HasPrefix(typ, "[]") {
 					return w.varSelectorType(typ[2:], v.Sel.Name)
+				}
+			}
+		case *ast.CompositeLit:
+			typ, err := w.varValueType(st.Type,0)
+			if err == nil {
+				log.Println(typ,v.Sel.Name)
+				t,err := w.varSelectorType(typ,v.Sel.Name)
+				if err == nil {
+					return t,nil
 				}
 			}
 		}
