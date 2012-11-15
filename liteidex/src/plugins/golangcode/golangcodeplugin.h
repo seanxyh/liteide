@@ -46,7 +46,6 @@ protected slots:
 protected:
     QAction    *m_commentAct;
     GolangCode *m_code;
-    GolangCode *m_play;
 };
 
 class PluginFactory : public LiteApi::PluginFactory<GolangCodePlugin>
