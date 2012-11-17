@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 )
 
 func main() {
-	liteide(os.Args)
+	fmt.Println("liteidex(go)", os.Args)
+	cdrv_main(os.Args)
 }
 
 var (
