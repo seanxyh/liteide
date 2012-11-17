@@ -14,10 +14,10 @@ var (
 )
 
 func init() {
-	RegCmd("version", func(args []byte) (error, []byte) {
-		return nil, []byte("liteidex(go) version 15.0")
+	RegCmd("version", func(args []byte) ([]byte, error) {
+		return []byte("liteidex(go) version 15.0"), nil
 	})
-	RegCmd("setenv", func(args []byte) (error, []byte) {
+	RegCmd("setenv", func(args []byte) ([]byte, error) {
 		Env = strings.Split(string(args), "\n")
 		return nil, nil
 	})

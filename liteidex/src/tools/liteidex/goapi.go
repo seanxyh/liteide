@@ -131,22 +131,24 @@ var (
 	walker = NewWalker()
 )
 
-func apiList(args []byte) (error, []byte) {
+func apiList(args []byte) ([]byte, error) {
 	arguments := strings.Split(string(args), " ")
 	fset := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	err := fset.Parse(arguments)
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 	if fset.NArg() == 0 {
-		return fmt.Errorf("no args"), nil
+		return nil, fmt.Errorf("no args")
 	}
 	var pkgs []string
 
 	if fset.Arg(0) == "std" || fset.Arg(0) == "all" {
-		out, err := exec.Command("go", "list", "-e", fset.Arg(0)).Output()
+		cmd := exec.Command("go", "list", "-e", fset.Arg(0))
+		cmd.Env = Env
+		out, err := cmd.Output()
 		if err != nil {
-			return err, nil
+			return nil, err
 		}
 		pkgs = strings.Fields(string(out))
 	} else {
@@ -161,7 +163,7 @@ func apiList(args []byte) (error, []byte) {
 		walker.WalkPackage(pkg)
 	}
 	features := walker.Features("")
-	return nil, []byte(strings.Join(features, "\n"))
+	return []byte(strings.Join(features, "\n")), nil
 }
 
 func init() {
