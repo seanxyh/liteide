@@ -62,6 +62,7 @@ public:
     virtual ~LiteApp();    
     virtual IExtension *extension();
     virtual IApplication *newInstance(bool loadSession);
+    virtual bool hasGoProxy() const;
     virtual IGoProxy *createGoProxy(QObject *parent);
     virtual IProjectManager *projectManager();
     virtual IEditorManager  *editorManager();

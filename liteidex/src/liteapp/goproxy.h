@@ -39,7 +39,8 @@ class GoProxy : public LiteApi::IGoProxy
     Q_OBJECT
 public:
     explicit GoProxy(QObject *parent = 0);
-    virtual bool hasProxy() const;
+    virtual bool isValid() const;
+    static bool hasProxy();
 signals:
     void error(const QByteArray &id, int err);
     void done(const QByteArray &id, const QByteArray &args);

@@ -58,7 +58,12 @@ GoProxy::GoProxy(QObject *parent) :
 {
 }
 
-bool GoProxy::hasProxy() const
+bool GoProxy::isValid() const
+{
+    return godrv_call_fn != 0;
+}
+
+bool GoProxy::hasProxy()
 {
     return godrv_call_fn != 0;
 }

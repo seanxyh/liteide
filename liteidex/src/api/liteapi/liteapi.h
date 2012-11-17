@@ -511,7 +511,7 @@ class IGoProxy : public QObject
     Q_OBJECT
 public:
     IGoProxy(QObject *parent) : QObject(parent) {}
-    virtual bool hasProxy() const = 0;
+    virtual bool isValid() const = 0;
 signals:
     void error(const QByteArray &id, int err);
     void done(const QByteArray &id, const QByteArray &args);
@@ -526,6 +526,7 @@ class IApplication : public IObject
 public:
     virtual ~IApplication() {}
     virtual IApplication    *newInstance(bool loadSession) = 0;
+    virtual bool hasGoProxy() const = 0;
     virtual IGoProxy *createGoProxy(QObject *parent) = 0;
     virtual IProjectManager *projectManager() = 0;
     virtual IEditorManager  *editorManager() = 0;
