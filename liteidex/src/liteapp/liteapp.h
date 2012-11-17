@@ -60,8 +60,9 @@ public:
 public:
     LiteApp();
     virtual ~LiteApp();    
-    virtual IApplication *newInstance(bool loadSession);
     virtual IExtension *extension();
+    virtual IApplication *newInstance(bool loadSession);
+    virtual IGoProxy *createGoProxy(QObject *parent);
     virtual IProjectManager *projectManager();
     virtual IEditorManager  *editorManager();
     virtual IFileManager    *fileManager();

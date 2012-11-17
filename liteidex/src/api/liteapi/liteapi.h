@@ -506,6 +506,19 @@ public:
     virtual void insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act) = 0;
 };
 
+class IGoProxy : public QObject
+{
+    Q_OBJECT
+public:
+    IGoProxy(QObject *parent) : QObject(parent) {}
+    virtual bool hasProxy() const = 0;
+signals:
+    void error(const QByteArray &id, int err);
+    void done(const QByteArray &id, const QByteArray &args);
+public slots:
+    virtual void call(const QByteArray &id, const QByteArray &args = QByteArray()) = 0;
+};
+
 class IPlugin;
 class IApplication : public IObject
 {
@@ -513,6 +526,7 @@ class IApplication : public IObject
 public:
     virtual ~IApplication() {}
     virtual IApplication    *newInstance(bool loadSession) = 0;
+    virtual IGoProxy *createGoProxy(QObject *parent) = 0;
     virtual IProjectManager *projectManager() = 0;
     virtual IEditorManager  *editorManager() = 0;
     virtual IFileManager    *fileManager() = 0;

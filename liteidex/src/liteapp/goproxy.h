@@ -32,19 +32,19 @@
 #  define LITEIDESHARED_EXPORT Q_DECL_IMPORT
 #endif
 
-#include <QObject>
+#include "liteapi/liteapi.h"
 
-class GoProxy : public QObject
+class GoProxy : public LiteApi::IGoProxy
 {
     Q_OBJECT
 public:
     explicit GoProxy(QObject *parent = 0);
-    static bool hasProxy();
+    virtual bool hasProxy() const;
 signals:
     void error(const QByteArray &id, int err);
     void done(const QByteArray &id, const QByteArray &args);
 public slots:
-    void call(const QByteArray &id, const QByteArray &reply = QByteArray());
+    virtual void call(const QByteArray &id, const QByteArray &args = QByteArray());
 public:
     void callback(char *id, char *reply, int len, int err);
 };
