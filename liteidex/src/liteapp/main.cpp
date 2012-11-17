@@ -33,6 +33,7 @@
 #include <QDebug>
 #include "mainwindow.h"
 #include "liteapp.h"
+#include "goproxy.h"
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -112,6 +113,12 @@ int  main(int argc, char *argv[])
             }
         }
     }
-     int ret = app.exec();
+    int ret = app.exec();
     return ret;
+}
+
+extern "C"
+int LITEIDESHARED_EXPORT cdrv_main(int argc, char **argv)
+{
+    return main(argc,argv);
 }

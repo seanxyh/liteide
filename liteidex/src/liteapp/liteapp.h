@@ -29,6 +29,7 @@
 #include "liteapi/liteapi.h"
 #include "textoutput/textoutput.h"
 #include "extension/extension.h"
+#include "goproxy.h"
 
 using namespace LiteApi;
 
@@ -100,6 +101,7 @@ public:
     void setPluginPath(const QString &path); 
     void setResourcePath(const QString &path);
 protected slots:
+    void goproxyDone(const QByteArray &id,const QByteArray &reply);
     void dbclickLogOutput(QTextCursor);
     void projectReloaded();
     void currentProjectChanged(LiteApi::IProject *project);
@@ -149,6 +151,8 @@ protected:
     QMenu       *m_fileMenu;
     QMenu       *m_viewMenu;
     QMenu       *m_helpMenu;    
+protected:
+    GoProxy     *m_goProxy;
 };
 
 #endif // LITEAPP_H
