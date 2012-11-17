@@ -2,8 +2,8 @@
 package main
 
 /*
-extern int cdrv_main(int argc,char** argv);
 extern void cdrv_init(void *fn);
+extern int cdrv_main(int argc,char** argv);
 extern void cdrv_cb(void *cb, void *id, void *reply, int size, int err, void* ctx);
 static void cdrv_init_ex()
 {
@@ -15,7 +15,7 @@ static void cdrv_init_ex()
 import "C"
 import "unsafe"
 
-func liteide(args []string) int {
+func cdrv_main(args []string) int {
 	argc := len(args)
 	var cargs []*C.char
 	for _, arg := range args {
@@ -50,12 +50,12 @@ func RegCmd(id string, fn func(args []byte) ([]byte, error)) {
 
 func go_call(id []byte, args []byte, cb unsafe.Pointer, ctx unsafe.Pointer) int {
 	if fn, ok := cmdFuncMap[string(id)]; ok {
-		go func(_id, _args []byte, _cb, _ctx unsafe.Pointer) {
+		go func(id, args []byte, cb, ctx unsafe.Pointer) {
 			rep, err := fn(args)
 			if err != nil {
-				cdrv_cb(_cb, _id, []byte{0}, -1, _ctx)
+				cdrv_cb(cb, id, []byte{0}, -1, ctx)
 			}
-			cdrv_cb(_cb, _id, append(rep, 0), 0, _ctx)
+			cdrv_cb(cb, id, append(rep, 0), 0, ctx)
 		}(id, args, cb, ctx)
 		return 0
 	}
