@@ -41,17 +41,17 @@ func godrv_call(id unsafe.Pointer, id_size C.int, args unsafe.Pointer, size C.in
 }
 
 var (
-	cmdFuncMap = make(map[string]func(args []byte) (error, []byte))
+	cmdFuncMap = make(map[string]func(args []byte) ([]byte, error))
 )
 
-func RegCmd(id string, fn func(args []byte) (error, []byte)) {
+func RegCmd(id string, fn func(args []byte) ([]byte, error)) {
 	cmdFuncMap[id] = fn
 }
 
 func go_call(id []byte, args []byte, cb unsafe.Pointer, ctx unsafe.Pointer) int {
 	if fn, ok := cmdFuncMap[string(id)]; ok {
 		go func(_id, _args []byte, _cb, _ctx unsafe.Pointer) {
-			err, rep := fn(args)
+			rep, err := fn(args)
 			if err != nil {
 				cdrv_cb(_cb, _id, []byte{0}, -1, _ctx)
 			}
@@ -62,12 +62,12 @@ func go_call(id []byte, args []byte, cb unsafe.Pointer, ctx unsafe.Pointer) int 
 	return -1
 }
 
-func cmdList(args []byte) (error, []byte) {
+func cmdList(args []byte) ([]byte, error) {
 	var cmds []byte
 	for cmd, _ := range cmdFuncMap {
 		cmds = append(cmds, []byte(cmd+" ")...)
 	}
-	return nil, cmds
+	return cmds, nil
 }
 
 func init() {
