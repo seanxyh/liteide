@@ -35,7 +35,7 @@
 #endif
 //lite_memory_check_end
 
-typedef void (*DRV_CALLBACK)(char *id, char *reply, int len, void *ctx);
+typedef void (*DRV_CALLBACK)(char *id, char *reply, int len, int err, void *ctx);
 typedef int (*GODRV_CALL)(char* id,int id_size, char* args, int args_size, DRV_CALLBACK cb, void *ctx);
 
 static GODRV_CALL godrv_call_fn = 0;
@@ -48,9 +48,9 @@ static int godrv_call(const QByteArray &id, const QByteArray &args, DRV_CALLBACK
     return godrv_call_fn((char*)id.constData(),id.length(),(char*)args.constData(),args.length(),cb,ctx);
 }
 
-static void cdrv_callback(char *id, char *reply, int len, void *ctx)
+static void cdrv_callback(char *id, char *reply, int len, int err, void *ctx)
 {
-    ((GoProxy*)(ctx))->callback(id,reply,len);
+    ((GoProxy*)(ctx))->callback(id,reply,len,err);
 }
 
 GoProxy::GoProxy(QObject *parent) :
@@ -68,9 +68,13 @@ void GoProxy::call(const QByteArray &id, const QByteArray &args)
     godrv_call(id,args,&cdrv_callback,this);
 }
 
-void GoProxy::callback(char *id, char *reply, int len)
+void GoProxy::callback(char *id, char *reply, int len, int err)
 {
-    emit done(id,QByteArray(reply,len));
+    if (err != 0) {
+        emit error(id,err);
+    } else {
+        emit done(id,QByteArray(reply,len));
+    }
 }
 
 extern "C"
@@ -80,7 +84,7 @@ void LITEIDESHARED_EXPORT cdrv_init(void *fn)
 }
 
 extern "C"
-void LITEIDESHARED_EXPORT cdrv_cb(DRV_CALLBACK cb, char *id, char *reply, int size, void* ctx)
+void LITEIDESHARED_EXPORT cdrv_cb(DRV_CALLBACK cb, char *id, char *reply, int size, int err, void* ctx)
 {
-    cb(id,reply,size,ctx);
+    cb(id,reply,size,err,ctx);
 }

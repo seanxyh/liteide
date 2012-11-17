@@ -41,11 +41,12 @@ public:
     explicit GoProxy(QObject *parent = 0);
     static bool hasProxy();
 signals:
+    void error(const QByteArray &id, int err);
     void done(const QByteArray &id, const QByteArray &args);
 public slots:
     void call(const QByteArray &id, const QByteArray &reply = QByteArray());
 public:
-    void callback(char *id, char *reply, int len);
+    void callback(char *id, char *reply, int len, int err);
 };
 
 #endif // GOPROXY_H
