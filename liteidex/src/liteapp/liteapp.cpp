@@ -256,6 +256,11 @@ void LiteApp::cleanup()
     delete m_settings;
 }
 
+bool LiteApp::hasGoProxy() const
+{
+    return GoProxy::hasProxy();
+}
+
 IGoProxy *LiteApp::createGoProxy(QObject *parent)
 {
     return new GoProxy(parent);
