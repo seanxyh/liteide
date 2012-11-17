@@ -9,7 +9,7 @@ func main() {
 }
 
 func init() {
-	RegFunc("version", func(args []byte) []byte {
-		return []byte("liteide x15.0")
+	RegCmd("version", func(args []byte) []byte {
+		return []byte("liteidex(go) version 15.0")
 	})
 }
