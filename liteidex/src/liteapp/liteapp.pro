@@ -20,10 +20,18 @@ macx {
     QT += xml
 }
 
+DEFINES += LITEIDE_LIBRARY
+
 TARGET = $$IDE_APP_TARGET
+DESTDIR = $$IDE_APP_PATH
 TEMPLATE = app
 
-DESTDIR = $$IDE_APP_PATH
+contains(DEFINES, LITEIDE_LIBRARY) {
+    TEMPLATE = lib
+    DESTDIR = $$IDE_LIBRARY_PATH
+    DLLDESTDIR = $$IDE_APP_PATH
+}
+
 LIBS += -L$$IDE_LIBRARY_PATH
 
 INCLUDEPATH += $$IDE_SOURCE_TREE/src/api
@@ -54,7 +62,8 @@ SOURCES += main.cpp\
     rotationtoolbutton.cpp \
     toolwindowmanager.cpp \
     folderproject.cpp \
-    folderprojectfactory.cpp
+    folderprojectfactory.cpp \
+    goproxy.cpp
 
 HEADERS  += mainwindow.h \
     liteapp.h \
@@ -79,7 +88,8 @@ HEADERS  += mainwindow.h \
     rotationtoolbutton.h \
     toolwindowmanager.h \
     folderproject.h \
-    folderprojectfactory.h
+    folderprojectfactory.h \
+    goproxy.h
 
 FORMS += \
     aboutdialog.ui \

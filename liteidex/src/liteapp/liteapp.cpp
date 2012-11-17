@@ -121,6 +121,7 @@ LiteApp::LiteApp()
       m_mimeTypeManager(new MimeTypeManager),
       m_optionManager(new OptionManager)
 {    
+    m_goProxy = new GoProxy(this);
     m_actionManager->initWithApp(this);
     m_toolWindowManager->initWithApp(this);
     m_dockManager->initWithApp(this);
@@ -184,6 +185,9 @@ LiteApp::LiteApp()
     m_optionManager->addFactory(m_liteAppOptionFactory);
 
     m_projectManager->addFactory(new FolderProjectFactory(this,this));
+
+    connect(m_goProxy,SIGNAL(done(QByteArray,QByteArray)),this,SLOT(goproxyDone(QByteArray,QByteArray)));
+    m_goProxy->call("version");
 }
 
 void LiteApp::load(bool bUseSession)
@@ -658,4 +662,9 @@ void LiteApp::dbclickLogOutput(QTextCursor cur)
             textEditor->gotoLine(line-1,0,true);
         }
     }
+}
+
+void LiteApp::goproxyDone(const QByteArray &id, const QByteArray &reply)
+{
+    this->appendLog("GoProxy",QString("%1 = %2").arg(QString::fromUtf8(id)).arg(QString::fromUtf8(reply)));
 }
