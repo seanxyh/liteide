@@ -225,7 +225,6 @@ void LiteApp::load(bool bUseSession)
 
     m_goProxy->call("version");
     m_goProxy->call("cmdlist");
-    m_goProxy->call("goapi.List","all");
 }
 
 LiteApp::~LiteApp()
