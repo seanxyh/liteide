@@ -54,11 +54,11 @@ static void cdrv_callback(char *id, char *reply, int len, int err, void *ctx)
 }
 
 GoProxy::GoProxy(QObject *parent) :
-    QObject(parent)
+    LiteApi::IGoProxy(parent)
 {
 }
 
-bool GoProxy::hasProxy()
+bool GoProxy::hasProxy() const
 {
     return godrv_call_fn != 0;
 }

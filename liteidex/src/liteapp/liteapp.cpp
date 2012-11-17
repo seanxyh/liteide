@@ -225,6 +225,7 @@ void LiteApp::load(bool bUseSession)
 
     m_goProxy->call("version");
     m_goProxy->call("cmdlist");
+    m_goProxy->call("goapi.List","all");
 }
 
 LiteApp::~LiteApp()
@@ -253,6 +254,11 @@ void LiteApp::cleanup()
     delete m_toolWindowManager;
    // delete m_mainwindow;
     delete m_settings;
+}
+
+IGoProxy *LiteApp::createGoProxy(QObject *parent)
+{
+    return new GoProxy(parent);
 }
 
 IApplication *LiteApp::newInstance(bool loadSession)

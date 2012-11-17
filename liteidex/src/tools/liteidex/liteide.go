@@ -51,7 +51,7 @@ func RegCmd(id string, fn func(args []byte) (error, []byte)) {
 func go_call(id []byte, args []byte, cb unsafe.Pointer, ctx unsafe.Pointer) int {
 	if fn, ok := cmdFuncMap[string(id)]; ok {
 		go func(_id, _args []byte, _cb, _ctx unsafe.Pointer) {
-			err, rep := fn(id)
+			err, rep := fn(args)
 			if err != nil {
 				cdrv_cb(_cb, _id, []byte{0}, -1, _ctx)
 			}
