@@ -15,6 +15,7 @@ static void cdrv_init_ex()
 */
 import "C"
 import "unsafe"
+import "bytes"
 
 func liteide(args []string) int {
 	argc := len(args)
@@ -42,19 +43,32 @@ func godrv_call(id unsafe.Pointer, id_size C.int, args unsafe.Pointer, size C.in
 }
 
 var (
-	gocmd = make(map[string]func(args []byte) []byte)
+	cmdFuncMap = make(map[string]func(args []byte) []byte)
 )
 
-func RegFunc(id string, fn func(args []byte) []byte) {
-	gocmd[id] = fn
+func RegCmd(id string, fn func(args []byte) []byte) {
+	cmdFuncMap[id] = fn
 }
 
 func go_call(id []byte, args []byte, cb unsafe.Pointer, ctx unsafe.Pointer) int {
-	if fn, ok := gocmd[string(id)]; ok {
+	if fn, ok := cmdFuncMap[string(id)]; ok {
 		go func(_id, _args []byte, _cb, _ctx unsafe.Pointer) {
 			cdrv_cb(_cb, _id, append(fn(id), 0), _ctx)
 		}(id, args, cb, ctx)
 		return 0
 	}
 	return -1
+}
+
+func cmdList() (cmds [][]byte) {
+	for cmd, _ := range cmdFuncMap {
+		cmds = append(cmds, []byte(cmd))
+	}
+	return
+}
+
+func init() {
+	RegCmd("cmdlist", func(args []byte) []byte {
+		return bytes.Join(cmdList(), []byte(" "))
+	})
 }

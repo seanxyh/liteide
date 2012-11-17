@@ -187,7 +187,6 @@ LiteApp::LiteApp()
     m_projectManager->addFactory(new FolderProjectFactory(this,this));
 
     connect(m_goProxy,SIGNAL(done(QByteArray,QByteArray)),this,SLOT(goproxyDone(QByteArray,QByteArray)));
-    m_goProxy->call("version");
 }
 
 void LiteApp::load(bool bUseSession)
@@ -223,6 +222,9 @@ void LiteApp::load(bool bUseSession)
     }
     m_mainwindow->raise();
     splash.finish(m_mainwindow);
+
+    m_goProxy->call("version");
+    m_goProxy->call("cmdlist");
 }
 
 LiteApp::~LiteApp()
