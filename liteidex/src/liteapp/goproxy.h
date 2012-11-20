@@ -26,12 +26,6 @@
 #ifndef GOPROXY_H
 #define GOPROXY_H
 
-#if defined(LITEIDE_LIBRARY)
-#  define LITEIDESHARED_EXPORT Q_DECL_EXPORT
-#else
-#  define LITEIDESHARED_EXPORT Q_DECL_IMPORT
-#endif
-
 #include "liteapi/liteapi.h"
 
 class GoProxy : public LiteApi::IGoProxy
@@ -41,9 +35,6 @@ public:
     explicit GoProxy(QObject *parent = 0);
     virtual bool isValid() const;
     static bool hasProxy();
-signals:
-    void error(const QByteArray &id, int err);
-    void done(const QByteArray &id, const QByteArray &args);
 public slots:
     virtual void call(const QByteArray &id, const QByteArray &args = QByteArray());
 public:

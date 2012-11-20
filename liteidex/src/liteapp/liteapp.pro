@@ -22,13 +22,11 @@ macx {
     QT += xml
 }
 
-DEFINES += LITEIDE_LIBRARY
-
-TARGET = liteapp
 DESTDIR = $$IDE_APP_PATH
 TEMPLATE = app
+TARGET = $$qtLibraryName(liteapp)
 
-contains(DEFINES, LITEIDE_LIBRARY) {
+contains(DEFINES, LITEAPP_LIBRARY) {
     TEMPLATE = lib
 }
 
@@ -89,7 +87,8 @@ HEADERS  += mainwindow.h \
     toolwindowmanager.h \
     folderproject.h \
     folderprojectfactory.h \
-    goproxy.h
+    goproxy.h \
+    cdrv.h
 
 FORMS += \
     aboutdialog.ui \
@@ -101,7 +100,7 @@ FORMS += \
 RESOURCES += \
     liteapp.qrc
 
-contains(DEFINES, LITEIDE_LIBRARY) {
+contains(DEFINES, LITEAPP_LIBRARY) {
     win32 {
         target.path = /bin
         INSTALLS += target

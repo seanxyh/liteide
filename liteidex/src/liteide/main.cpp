@@ -32,9 +32,7 @@
 #endif
 //lite_memory_check_end
 
-extern "C"
-int cdrv_main(int argc, char **argv);
-
+#include "../liteapp/cdrv.h"
 
 int main(int argc, char *argv[])
 {
