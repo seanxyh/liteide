@@ -369,6 +369,8 @@ static QString typeName(LiteApi::PkgApiEnum api) {
         return "method";
     case LiteApi::TypeVarApi:
         return "field";
+    default:
+        break;
     }
     return QString();
 }

@@ -14,6 +14,8 @@ include (../utils/filesystem/filesystem.pri)
 include (../utils/symboltreeview/symboltreeview.pri)
 include (../3rdparty/elidedlabel/elidedlabel.pri)
 
+isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$IDE_SOURCE_TREE/src/pch/liteide_gui_pch.h
+
 QT += core gui
 
 macx {
@@ -22,14 +24,12 @@ macx {
 
 DEFINES += LITEIDE_LIBRARY
 
-TARGET = $$IDE_APP_TARGET
+TARGET = liteapp
 DESTDIR = $$IDE_APP_PATH
 TEMPLATE = app
 
 contains(DEFINES, LITEIDE_LIBRARY) {
     TEMPLATE = lib
-    DESTDIR = $$IDE_LIBRARY_PATH
-    DLLDESTDIR = $$IDE_APP_PATH
 }
 
 LIBS += -L$$IDE_LIBRARY_PATH
@@ -101,14 +101,16 @@ FORMS += \
 RESOURCES += \
     liteapp.qrc
 
-win32 {
-    target.path = /bin
-    INSTALLS += target
-    RC_FILE += liteapp.rc
-} else:macx {
-    ICON = images/liteide.icns
-    QMAKE_INFO_PLIST = Info.plist
-} else {
-    target.path  = /bin
-    INSTALLS    += target
+contains(DEFINES, LITEIDE_LIBRARY) {
+    win32 {
+        target.path = /bin
+        INSTALLS += target
+        RC_FILE += liteapp.rc
+    } else:macx {
+        ICON = images/liteide.icns
+        QMAKE_INFO_PLIST = Info.plist
+    } else {
+        target.path  = /bin
+        INSTALLS    += target
+    }
 }
