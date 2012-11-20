@@ -38,7 +38,12 @@ echo .
 cd %LITEIDE_ROOT%
 set GOPATH=%CD%;%GOPATH%
 
+cd src\liteidex
+windres -o liteide-res.syso liteide.rc
 go install -ldflags "-s -H windowgui" -v liteidex
+del liteide-res.syso
+cd ..\..
+
 go install -ldflags "-s" -v tools/goastview
 go install -ldflags "-s" -v tools/godocview
 go install -ldflags "-s" -v tools/goexec
