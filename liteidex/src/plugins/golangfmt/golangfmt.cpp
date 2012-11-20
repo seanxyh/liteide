@@ -369,7 +369,7 @@ void GolangFmt::loadDiff(QTextCursor &cursor, const QString &diff)
             if (reg.indexIn(s) == 0) {
                 int s1 = reg.cap(1).toInt();
                 int s2 = reg.cap(2).toInt();
-                int n1 = reg.cap(3).toInt();
+                //int n1 = reg.cap(3).toInt();
                 int n2 = reg.cap(4).toInt();
                 line = line_add+s1;
                 block = cursor.document()->findBlockByNumber(line-1);

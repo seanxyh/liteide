@@ -9,6 +9,6 @@ syntax: glob
 .git
 .gitignore
 *.pdn
-liteide-build-*
+*-build-*
 liteidex/liteide
 build

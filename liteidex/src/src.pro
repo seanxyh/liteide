@@ -1,4 +1,4 @@
-include (../liteide.pri)
+include (../liteidex.pri)
 
 TEMPLATE  = subdirs
 CONFIG   += ordered

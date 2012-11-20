@@ -1,4 +1,4 @@
-include (../liteide.pri)
+include (../liteidex.pri)
 
 DESTDIR = $$IDE_LIBRARY_PATH
 LIBS += -L$$IDE_LIBRARY_PATH

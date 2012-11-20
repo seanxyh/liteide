@@ -1,4 +1,4 @@
-include (../liteide.pri)
+include (../liteidex.pri)
 include (api/liteapi/liteapi.pri)
 
 isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$IDE_SOURCE_TREE/src/pch/liteide_gui_pch.h
