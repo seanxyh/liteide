@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("liteidex (go)", os.Args)
+	fmt.Println("liteidex", os.Args)
 	cdrv_main(os.Args)
 }
 
