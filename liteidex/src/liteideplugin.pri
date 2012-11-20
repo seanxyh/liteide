@@ -1,6 +1,8 @@
 include (../liteide.pri)
 include (api/liteapi/liteapi.pri)
 
+isEmpty(PRECOMPILED_HEADER):PRECOMPILED_HEADER = $$IDE_SOURCE_TREE/src/pch/liteide_gui_pch.h
+
 DESTDIR = $$IDE_PLUGIN_PATH
 LIBS += -L$$IDE_PLUGIN_PATH
 LIBS += -L$$IDE_LIBRARY_PATH
