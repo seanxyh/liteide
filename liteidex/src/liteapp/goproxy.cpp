@@ -80,14 +80,12 @@ void GoProxy::callback(char *id, char *reply, int len, int err)
     }
 }
 
-extern "C"
-void LITEIDESHARED_EXPORT cdrv_init(void *fn)
+void cdrv_init(void *fn)
 {
     godrv_call_fn = (GODRV_CALL)fn;
 }
 
-extern "C"
-void LITEIDESHARED_EXPORT cdrv_cb(DRV_CALLBACK cb, char *id, char *reply, int size, int err, void* ctx)
+void cdrv_cb(DRV_CALLBACK cb, char *id, char *reply, int size, int err, void* ctx)
 {
     cb(id,reply,size,err,ctx);
 }

@@ -124,8 +124,7 @@ int main(int argc, char *argv[])
     return ret;
 }
 
-extern "C"
-int LITEIDESHARED_EXPORT cdrv_main(int argc, char **argv)
+int cdrv_main(int argc, char **argv)
 {
     return liteapp_main(argc,argv);
 }
