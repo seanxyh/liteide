@@ -24,6 +24,7 @@
 // $Id: goproxy.cpp,v 1.0 2012-11-17 visualfc Exp $
 
 #include "goproxy.h"
+#include "cdrv.h"
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -34,9 +35,6 @@
      #define new DEBUG_NEW
 #endif
 //lite_memory_check_end
-
-typedef void (*DRV_CALLBACK)(char *id, char *reply, int len, int err, void *ctx);
-typedef int (*GODRV_CALL)(char* id,int id_size, char* args, int args_size, DRV_CALLBACK cb, void *ctx);
 
 static GODRV_CALL godrv_call_fn = 0;
 

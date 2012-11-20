@@ -38,8 +38,8 @@ func cdrv_cb(cb unsafe.Pointer, id []byte, reply []byte, err int, ctx unsafe.Poi
 }
 
 //export godrv_call
-func godrv_call(id unsafe.Pointer, id_size C.int, args unsafe.Pointer, size C.int, cb unsafe.Pointer, ctx unsafe.Pointer) int {
-	return go_call(C.GoBytes(id, id_size), C.GoBytes(args, size), cb, ctx)
+func godrv_call(id unsafe.Pointer, id_size C.int, args unsafe.Pointer, size C.int, cb unsafe.Pointer, ctx unsafe.Pointer) C.int {
+	return C.int(go_call(C.GoBytes(id, id_size), C.GoBytes(args, size), cb, ctx))
 }
 
 var (

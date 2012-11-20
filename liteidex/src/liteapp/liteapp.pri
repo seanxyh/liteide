@@ -1,4 +1,4 @@
-LIBS *= -lliteapp
+LIBS *= -l$$qtLibraryName(liteapp)
 
 
 

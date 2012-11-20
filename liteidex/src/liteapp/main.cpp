@@ -34,6 +34,7 @@
 #include "mainwindow.h"
 #include "liteapp.h"
 #include "goproxy.h"
+#include "cdrv.h"
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -44,10 +45,16 @@
 #endif
 //lite_memory_check_end
 
-int  main(int argc, char *argv[])
+#ifdef LITEAPP_LIBRARY
+int liteapp_main(int argc, char *argv[])
+#else
+int main(int argc, char *argv[])
+#endif
 {
-#if defined(_MSC_VER) && defined(_DEBUG)
-    _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
+#ifndef LITEAPP_LIBRARY
+    #if defined(_MSC_VER) && defined(_DEBUG)
+        _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
+    #endif
 #endif
     QApplication app(argc, argv);
 
@@ -120,5 +127,5 @@ int  main(int argc, char *argv[])
 extern "C"
 int LITEIDESHARED_EXPORT cdrv_main(int argc, char **argv)
 {
-    return main(argc,argv);
+    return liteapp_main(argc,argv);
 }

@@ -5,8 +5,8 @@
 #-------------------------------------------------
 
 include (../../liteidex.pri)
-include (../liteapp/liteapp.pri)
 include (../rpath.pri)
+include (../liteapp/liteapp.pri)
 
 QT -= gui
 
