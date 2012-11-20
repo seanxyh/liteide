@@ -4,12 +4,20 @@ package main
 /*
 extern void cdrv_init(void *fn);
 extern int cdrv_main(int argc,char** argv);
-extern void cdrv_cb(void *cb, void *id, void *reply, int size, int err, void* ctx);
+//extern void cdrv_cb(void *cb, void *id, void *reply, int size, int err, void* ctx);
+
 static void cdrv_init_ex()
 {
 	extern int godrv_call(void* id,int id_size, void* args, int args_size, void* cb, void* ctx);
 	cdrv_init(&godrv_call);
 }
+
+static void cdrv_cb(void *cb, void *id, void *reply, int size, int err, void* ctx)
+{
+	typedef void (*DRV_CALLBACK)(void *id, void *reply, int len, int err, void *ctx);
+    ((DRV_CALLBACK)(cb))(id,reply,size,err,ctx);
+}
+
 #cgo windows LDFLAGS: -L../../liteide/bin -lliteapp
 #cgo linux LDFLAGS: -L../../liteide/bin -lliteapp
 #cgo darwin LDFLAGS: -L../../liteide/bin/liteide.app/Contents/MacOS
