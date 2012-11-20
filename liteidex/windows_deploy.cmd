@@ -1,5 +1,4 @@
 @echo on
-call make_tools.cmd
 copy LICENSE.LGPL liteide
 copy LGPL_EXCEPTION.TXT liteide
 copy README.TXT liteide
