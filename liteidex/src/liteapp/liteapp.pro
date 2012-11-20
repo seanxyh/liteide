@@ -3,7 +3,7 @@
 # Project created by QtCreator 2011-03-18T16:21:43
 #
 #-------------------------------------------------
-include (../../liteide.pri)
+include (../../liteidex.pri)
 include (../rpath.pri)
 include (../api/liteapi/liteapi.pri)
 include (../utils/fileutil/fileutil.pri)

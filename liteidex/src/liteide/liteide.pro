@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-include (../../liteide.pri)
+include (../../liteidex.pri)
 include (../liteapp/liteapp.pri)
 include (../rpath.pri)
 

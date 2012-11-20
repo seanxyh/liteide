@@ -1,4 +1,4 @@
-!isEmpty(LITEIDE_PRI_INCLUDED):error("liteide.pri already included")
+!isEmpty(LITEIDE_PRI_INCLUDED):error("liteidex.pri already included")
 LITEIDE_PRI_INCLUDED = 1
 
 defineReplace(qtLibraryName) {
