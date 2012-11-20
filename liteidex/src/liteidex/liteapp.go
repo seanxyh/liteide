@@ -1,4 +1,4 @@
-// liteide.go
+// liteapp.go
 package main
 
 /*
@@ -10,7 +10,9 @@ static void cdrv_init_ex()
 	extern int godrv_call(void* id,int id_size, void* args, int args_size, void* cb, void* ctx);
 	cdrv_init(&godrv_call);
 }
-#cgo LDFLAGS: -L../../../liteide/lib/liteide -lliteide
+#cgo windows LDFLAGS: -L../../liteide/bin -lliteapp
+#cgo linux LDFLAGS: -L../../liteide/bin -lliteapp
+#cgo darwin LDFLAGS: -L../../liteide/bin/liteide.app/Contents/MacOS
 */
 import "C"
 import "unsafe"
