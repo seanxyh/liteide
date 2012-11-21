@@ -1,5 +1,7 @@
 TEMPLATE = lib
+
 CONFIG += staticlib
+
 TARGET = sundown
 
 include(../../liteideutils.pri)
@@ -14,6 +16,8 @@ HEADERS += src/autolink.h \
            src/stack.h \
            html/houdini.h \
            html/html.h \
+           mdtohtml.h \
+
 SOURCES += html/houdini_href_e.c \
            html/houdini_html_e.c \
            html/html.c \
@@ -21,7 +25,5 @@ SOURCES += html/houdini_href_e.c \
            src/autolink.c \
            src/buffer.c \
            src/markdown.c \
-           src/stack.c
-
-HEADERS +=  mdtohtml.h
-SOURCES +=  mdtohtml.cpp
+           src/stack.c \
+           mdtohtml.cpp \
