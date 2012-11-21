@@ -8,6 +8,10 @@
 
 QByteArray mdtohtml(const QByteArray &data)
 {
+    if (data.isEmpty()) {
+        return data;
+    }
+
     struct buf *ob;
 
     struct sd_callbacks callbacks;
@@ -23,8 +27,6 @@ QByteArray mdtohtml(const QByteArray &data)
     sd_markdown_render(ob, (uint8_t*)data.constData(), data.size(), markdown);
     sd_markdown_free(markdown);
 
-    /* writing the result to stdout */
-    //ret = fwrite(ob->data, 1, ob->size, stdout);
     QByteArray out((char*)ob->data,ob->size);
     /* cleanup */
     bufrelease(ob);
