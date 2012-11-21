@@ -145,8 +145,13 @@ rndr_blockcode(struct buf *ob, const struct buf *text, const struct buf *lang, v
 	} else
 		BUFPUTSL(ob, "<pre><code>");
 
-	if (text)
-		escape_html(ob, text->data, text->size);
+    if (text) {
+        if (text->data[text->size] == '\n') {
+            escape_html(ob, text->data, text->size-1);
+        } else {
+            escape_html(ob, text->data, text->size);
+        }
+    }
 
 	BUFPUTSL(ob, "</code></pre>\n");
 }
