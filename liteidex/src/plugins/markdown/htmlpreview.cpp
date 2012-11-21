@@ -55,18 +55,34 @@ HtmlPreview::HtmlPreview(LiteApi::IApplication *app,QObject *parent) :
                                                   QString("HtmlPreview"),
                                                   QString(tr("Html Preview")),
                                                   true);
-    loadCssData(m_liteApp->resourcePath()+"/markdown/style.css");
+    loadHeadData(m_liteApp->resourcePath()+"/markdown/style.css");
     connect(m_liteApp->editorManager(),SIGNAL(currentEditorChanged(LiteApi::IEditor*)),this,SLOT(currentEditorChanged(LiteApi::IEditor*)));
     connect(m_toolAct,SIGNAL(toggled(bool)),this,SLOT(triggered(bool)));
 }
 
-void HtmlPreview::loadCssData(const QString &css)
+static QByteArray head1 =
+"<html>"
+"<head>"
+"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>"
+"<style type=\"text/css\">";
+
+static QByteArray head2 =
+"</style>"
+"</head>"
+"<body>";
+
+static QByteArray end =
+"</body>"
+"</html>";
+
+void HtmlPreview::loadHeadData(const QString &css)
 {
     QFile f(css);
     if (!f.open(QFile::ReadOnly)) {
+        m_head = head1+head2;
         return;
     }
-    m_cssData = f.readAll();
+    m_head = head1+f.readAll()+head2;
 }
 
 void HtmlPreview::currentEditorChanged(LiteApi::IEditor *editor)
@@ -98,21 +114,6 @@ void HtmlPreview::currentEditorChanged(LiteApi::IEditor *editor)
     }
 }
 
-static QByteArray head1 =
-"<html>"
-"<head>"
-"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>"
-"<style type=\"text/css\">";
-
-static QByteArray head2 =
-"</style>"
-"</head>"
-"<body>";
-
-static QByteArray end =
-"</body>"
-"</html>";
-
 void HtmlPreview::editorHtmlPrivew()
 {
     if (!m_curEditor) {
@@ -127,14 +128,12 @@ void HtmlPreview::editorHtmlPrivew()
 
     int v = m_browser->verticalScrollBar()->value();
 
-    QString html;
     if (m_curEditor->mimeType() == "text/html") {
         QTextCodec *codec = QTextCodec::codecForHtml(data,QTextCodec::codecForName("utf-8"));
-        html = codec->toUnicode(data);
-        m_browser->setHtml(html);
+        m_browser->setHtml(codec->toUnicode(data));
     } else {
-        html = QString::fromUtf8(mdtohtml(data));
-        m_browser->setHtml(head1+m_cssData+head2+html+end);
+        QString html = QString::fromUtf8(mdtohtml(data));
+        m_browser->setHtml(m_head+html+end);
     }
 
     m_browser->verticalScrollBar()->setValue(v);
