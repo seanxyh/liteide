@@ -36,7 +36,7 @@ public:
     virtual bool initWithApp(LiteApi::IApplication *app);
 };
 
-class PluginFactory : public LiteApi::PluginFactory<MarkdownPlugin>
+class PluginFactory : public LiteApi::PluginFactoryT<MarkdownPlugin>
 {
     Q_OBJECT
     Q_INTERFACES(LiteApi::IPluginFactory)
