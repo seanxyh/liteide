@@ -18,32 +18,29 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: filebrowserplugin.h
+// Module: webkithtmlwidgetplugin.h
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2011-6-21
-// $Id: filebrowserplugin.h,v 1.0 2011-6-21 visualfc Exp $
+// date: 2012-11-22
+// $Id: webkithtmlwidgetplugin.h,v 1.0 2012-11-22 visualfc Exp $
 
-#ifndef FILEBROWSERPLUGIN_H
-#define FILEBROWSERPLUGIN_H
+#ifndef WEBKITHTMLWIDGETPLUGIN_H
+#define WEBKITHTMLWIDGETPLUGIN_H
 
-#include "filebrowser_global.h"
+#include "webkithtmlwidget_global.h"
 #include "liteapi/liteapi.h"
-#include <QtPlugin>
 
-class FileBrowser;
-class FileBrowserPlugin : public LiteApi::IPlugin
+class WebKitHtmlWidgetPlugin : public LiteApi::IPlugin
 {
 public:
-    FileBrowserPlugin();
+    WebKitHtmlWidgetPlugin();
     virtual bool initWithApp(LiteApi::IApplication *app);
-protected:
-    FileBrowser *m_browser;
 };
 
-class PluginFactory : public LiteApi::PluginFactoryT<FileBrowserPlugin>
+class PluginFactory : public LiteApi::PluginFactoryT<WebKitHtmlWidgetPlugin>
 {
     Q_OBJECT
     Q_INTERFACES(LiteApi::IPluginFactory)
 };
 
-#endif // FILEBROWSERPLUGIN_H
+
+#endif // WEBKITHTMLWIDGETPLUGIN_H
