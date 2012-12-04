@@ -18,27 +18,29 @@
 ** These rights are included in the file LGPL_EXCEPTION.txt in this package.
 **
 **************************************************************************/
-// Module: cdrv.h
+// Module: liteapp_global.h
 // Creator: visualfc <visualfc@gmail.com>
-// date: 2012-11-20
-// $Id: cdrv.h,v 1.0 2012-11-20 visualfc Exp $
+// date: 2012-12-4
+// $Id: liteapp_global.h,v 1.0 2012-12-4 visualfc Exp $
 
-#ifndef CDRV_H
-#define CDRV_H
+#ifndef LITEAPP_GLOBAL_H
+#define LITEAPP_GLOBAL_H
 
-#include "liteapp_global.h"
+#include <QtCore/qglobal.h>
 
-typedef void (*DRV_CALLBACK)(char *id, char *reply, int len, int err, void *ctx);
-typedef int (*GODRV_CALL)(char* id,int id_size, char* args, int args_size, DRV_CALLBACK cb, void *ctx);
+#if defined(LITEAPP_LIBRARY)
+#  define LITEIDESHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define LITEIDESHARED_EXPORT Q_DECL_IMPORT
+#endif
 
-extern "C"
-int LITEIDESHARED_EXPORT cdrv_main(int argc, char **argv);
+#define OPTION_LITEAPP "option/liteapp"
 
-extern "C"
-void LITEIDESHARED_EXPORT cdrv_init(void *fn);
+#define LITEAPP_MAXRECENTFILES "LiteApp/MaxRecentFiles"
+#define LITEAPP_AUTOCLOSEPROEJCTFILES "LiteApp/AutoCloseProjectEditors"
+#define LITEAPP_AUTOLOADLASTSESSION "LiteApp/AutoLoadLastSession"
+#define LITEAPP_LANGUAGE "General/Language"
+#define LITEAPP_SPLASHVISIBLE "LiteApp/SplashVisible"
+#define LITEAPP_WELCOMEPAGEVISIBLE "General/WelcomePageVisible"
 
-extern "C"
-void LITEIDESHARED_EXPORT cdrv_cb(DRV_CALLBACK cb, char *id, char *reply, int size, int err, void* ctx);
-
-
-#endif // CDRV_H
+#endif // LITEAPP_GLOBAL_H

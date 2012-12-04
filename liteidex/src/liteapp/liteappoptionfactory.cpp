@@ -25,6 +25,7 @@
 
 #include "liteappoption.h"
 #include "liteappoptionfactory.h"
+#include "liteapp_global.h"
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
      #define _CRTDBG_MAP_ALLOC
@@ -43,12 +44,12 @@ LiteAppOptionFactory::LiteAppOptionFactory(LiteApi::IApplication *app, QObject *
 
 QStringList LiteAppOptionFactory::mimeTypes() const
 {
-    return QStringList() << "option/liteapp";
+    return QStringList() << OPTION_LITEAPP;
 }
 
 LiteApi::IOption *LiteAppOptionFactory::create(const QString &mimeType)
 {
-    if (mimeType == "option/liteapp") {
+    if (mimeType == OPTION_LITEAPP) {
         return new LiteAppOption(m_liteApp,this);
     }
     return 0;
