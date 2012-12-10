@@ -33,3 +33,12 @@ QByteArray mdtohtml(const QByteArray &data)
 
     return out;
 }
+
+void fix_qt_textbrowser(bool b)
+{
+    if (b) {
+        set_fix_qt_textbrowser(1);
+    } else {
+        set_fix_qt_textbrowser(0);
+    }
+}

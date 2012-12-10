@@ -25,6 +25,9 @@
 extern "C" {
 #endif
 
+void
+set_fix_qt_textbrowser(int n);
+
 struct html_renderopt {
 	struct {
 		int header_count;
