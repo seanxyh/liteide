@@ -27,6 +27,14 @@
 
 #define USE_XHTML(opt) (opt->flags & HTML_USE_XHTML)
 
+static int fix_qt_textbrowser = 0;
+
+void
+set_fix_qt_textbrowser(int n)
+{
+    fix_qt_textbrowser = n;
+}
+
 int
 sdhtml_is_tag(const uint8_t *tag_data, size_t tag_size, const char *tagname)
 {
@@ -146,7 +154,7 @@ rndr_blockcode(struct buf *ob, const struct buf *text, const struct buf *lang, v
 		BUFPUTSL(ob, "<pre><code>");
 
     if (text) {
-        if (text->data[text->size] == '\n') {
+        if (fix_qt_textbrowser && text->data[text->size] == '\n') {
             escape_html(ob, text->data, text->size-1);
         } else {
             escape_html(ob, text->data, text->size);
