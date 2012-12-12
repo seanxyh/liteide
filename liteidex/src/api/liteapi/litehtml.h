@@ -59,6 +59,7 @@ signals:
     void linkHovered(const QUrl & url);
 };
 
+//html document util
 class IHtmlDocument : public QObject
 {
     Q_OBJECT
