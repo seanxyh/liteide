@@ -59,6 +59,23 @@ signals:
     void linkHovered(const QUrl & url);
 };
 
+class IHtmlDocument : public QObject
+{
+    Q_OBJECT
+public:
+    IHtmlDocument(QObject *parent) : QObject(parent){}
+    virtual ~IHtmlDocument() {}
+public:
+    virtual void setHtml(const QString &html, const QUrl &url) = 0;
+#ifndef QT_NO_PRINTER
+    virtual void print(QPrinter *printer) = 0;
+#endif
+    virtual QString	toHtml () const = 0;
+    virtual QString	toPlainText () const = 0;
+signals:
+    void loadFinished(bool);
+};
+
 class IHtmlWidgetFactory : public QObject
 {
     Q_OBJECT
@@ -66,6 +83,7 @@ public:
     IHtmlWidgetFactory(QObject *parent = 0) : QObject(parent) {}
     virtual QString className() const = 0;
     virtual IHtmlWidget *create(QObject *parent) = 0;
+    virtual IHtmlDocument  *createDocument(QObject *parent) = 0;
 };
 
 // QTextBrowser and QWebView
@@ -81,6 +99,8 @@ public:
     virtual QString defaultClassName() const = 0;
     virtual IHtmlWidget *create(QObject *parent) = 0;
     virtual IHtmlWidget *createByName(QObject *parent, const QString &className) = 0;
+    virtual IHtmlDocument *createDocument(QObject *parent) = 0;
+    virtual IHtmlDocument *createDocumentByName(QObject *parent, const QString &className) = 0;
 };
 
 } //namespace LiteApi
