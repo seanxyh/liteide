@@ -120,6 +120,30 @@ install_name_tool -change \
   liteide/LiteIDE.app/Contents/PlugIns/$1   
 }
 
+function deploy_p4()
+{
+  echo "install_name_tool" $1
+install_name_tool -change \
+ $QTLIBPATH/QtCore.framework/Versions/4/QtCore \
+ @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore \
+ liteide/LiteIDE.app/Contents/PlugIns/$1  
+
+install_name_tool -change \
+ $QTLIBPATH/QtGui.framework/Versions/4/QtGui \
+ @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui \
+  liteide/LiteIDE.app/Contents/PlugIns/$1   
+  
+install_name_tool -change \
+ $QTLIBPATH/QtXml.framework/Versions/4/QtXml \
+ @executable_path/../Frameworks/QtXml.framework/Versions/4/QtXml \
+  liteide/LiteIDE.app/Contents/PlugIns/$1   
+
+install_name_tool -change \
+ $QTLIBPATH/QtXml.framework/Versions/4/QtWebKit \
+ @executable_path/../Frameworks/QtXml.framework/Versions/4/QtWebKit\
+  liteide/LiteIDE.app/Contents/PlugIns/$1   
+}
+
 function deploy_m2()
 {
   echo "install_name_tool" $1
@@ -199,6 +223,6 @@ deploy_p1 liblitedebug.dylib
 deploy_p1 libgdbdebugger.dylib
 deploy_p1 libgolangplay.dylib
 deploy_p1 libgolangpackage.dylib
-deploy_p1 litemarkdown.dylib
-deploy_m4 libwebkithtmlwidget.dylib
+deploy_p1 libmarkdown.dylib
+deploy_p4 libwebkithtmlwidget.dylib
 
