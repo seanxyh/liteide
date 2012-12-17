@@ -7,18 +7,10 @@ if [ -z $LITEIDE_ROOT ]; then
 fi
 
 echo build liteide 
-echo QTDIR=$QTDIR
 echo GOROOT=$GOROOT
 echo BUILD_ROOT=$BUILD_ROOT
 echo LITEIDE_ROOT=$LITEIDE_ROOT
 echo .
-
-if [ -z $QTDIR ]; then
-	echo 'error, QTDIR is null'
-	exit 1
-fi
-
-export PATH=$QTDIR/bin:$PATH
 
 echo qmake liteide ...
 echo .
@@ -65,14 +57,14 @@ cd $BUILD_ROOT
 rm -r liteide
 mkdir -p liteide
 
-cp -r -v $LITEIDE_ROOT/liteide/bin/LiteIDE.app liteide
+cp -R -v $LITEIDE_ROOT/liteide/bin/LiteIDE.app liteide
 rm liteide/LiteIDE.app/Contents/PlugIns/*.a
 
-cp -v $LITEIDE_ROOT/LICENSE.LGPL liteide
-cp -v $LITEIDE_ROOT/LGPL_EXCEPTION.TXT liteide
-cp -v $LITEIDE_ROOT/../README.md liteide
+cp -R -v $LITEIDE_ROOT/LICENSE.LGPL liteide
+cp -R -v $LITEIDE_ROOT/LGPL_EXCEPTION.TXT liteide
+cp -R -v $LITEIDE_ROOT/../README.md liteide
 
-cp $LITEIDE_ROOT/bin/* liteide/LiteIDE.app/Contents/MacOS
-cp -r -v $LITEIDE_ROOT/deploy/* liteide/LiteIDE.app/Contents/Resources
-cp -r -v $LITEIDE_ROOT/os_deploy/macosx/* liteide/LiteIDE.app/Contents/Resources
+cp -R -v $LITEIDE_ROOT/bin/* liteide/LiteIDE.app/Contents/MacOS
+cp -R -v $LITEIDE_ROOT/deploy/* liteide/LiteIDE.app/Contents/Resources
+cp -R -v $LITEIDE_ROOT/os_deploy/macosx/* liteide/LiteIDE.app/Contents/Resources
 
