@@ -259,6 +259,10 @@ void LiteEditor::createActions()
     m_widget->addAction(m_duplicateAct);
     connect(m_duplicateAct,SIGNAL(triggered()),m_editorWidget,SLOT(duplicate()));
 
+    m_deleteLineAct = new QAction(tr("Delete Line"),this);
+    m_deleteLineAct->setShortcut(QKeySequence("Ctrl+Shift+K"));
+    connect(m_deleteLineAct,SIGNAL(triggered()),m_editorWidget,SLOT(deleteLine()));
+
     m_increaseFontSizeAct = new QAction(tr("Increase Font Size"),this);
     m_increaseFontSizeAct->setShortcuts(QList<QKeySequence>()
                                         << QKeySequence("Ctrl++")
@@ -401,6 +405,7 @@ void LiteEditor::createMenu()
     m_editMenu->addAction(m_copyAct);
     m_editMenu->addAction(m_pasteAct);
     m_editMenu->addAction(m_duplicateAct);
+    m_editMenu->addAction(m_deleteLineAct);
     m_editMenu->addSeparator();
     QMenu *expMenu = m_editMenu->addMenu(tr("Print"));
     //expMenu->addAction(m_exportHtmlAct);
