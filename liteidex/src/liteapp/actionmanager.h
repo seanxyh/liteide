@@ -45,6 +45,7 @@ public:
     virtual void removeToolBar(QToolBar* toolBar);
     virtual QList<QString> toolBarList() const;
     virtual void insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act);
+    virtual void regAction(const QString &id, QAction *act, const QString &defShortcuts);
 protected:
     QMap<QString,QMenu*>   m_idMenuMap;
     QMap<QString,QToolBar*> m_idToolBarMap;
