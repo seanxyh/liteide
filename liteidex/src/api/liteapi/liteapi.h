@@ -489,6 +489,10 @@ public:
     virtual void insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act) = 0;
     virtual void regAction(QAction *act, const QString &id, const QString &defShortcuts) = 0;
     virtual void regAction(QAction *act, const QString &id, const QKeySequence::StandardKey &def) = 0;
+    virtual QStringList actionKeys() const = 0;
+    virtual QString defActionShortcuts(const QString &key) = 0;
+    virtual void setActionShourtcuts(const QString &id, const QString &shortcuts) = 0;
+    virtual QAction *findActionForKey(const QString &id) = 0;
 };
 
 class IGoProxy : public QObject

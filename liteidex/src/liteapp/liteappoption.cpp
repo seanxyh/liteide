@@ -27,6 +27,9 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QLocale>
+#include <QStandardItemModel>
+#include <QStandardItem>
+
 #include <QDebug>
 //lite_memory_check_begin
 #if defined(WIN32) && defined(_MSC_VER) &&  defined(_DEBUG)
@@ -103,6 +106,31 @@ LiteAppOption::LiteAppOption(LiteApi::IApplication *app,QObject *parent) :
     if (id >= 0 && id < ui->buttonGroup->buttons().size()) {
         ui->buttonGroup->buttons().at(id)->setChecked(true);
     }
+
+    m_keysModel = new QStandardItemModel(0,2,this);
+    m_keysModel->setHeaderData(0,Qt::Horizontal,tr("Action"));
+    m_keysModel->setHeaderData(1,Qt::Horizontal,tr("Shortcuts"));
+    ui->keysTreeView->setModel(m_keysModel);
+    ui->keysTreeView->header()->setResizeMode(QHeaderView::ResizeToContents);
+
+    foreach (QString id, m_liteApp->actionManager()->actionKeys()) {
+        QStandardItem *item = new QStandardItem(id);
+        item->setEditable(false);
+        QString def = m_liteApp->actionManager()->defActionShortcuts(id);
+        QString val = m_liteApp->settings()->value("shortcuts/"+id,def).toString();
+        QStandardItem *bind = new QStandardItem(val);
+        bind->setEditable(true);
+        if (val != def) {
+            QFont font = bind->font();
+            font.setBold(true);
+            bind->setFont(font);
+        }
+        m_keysModel->appendRow(QList<QStandardItem*>() <<
+                               item <<
+                               bind);
+    }
+
+    connect(m_keysModel,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(shortcutsChanaged(QStandardItem*)));
 }
 
 LiteAppOption::~LiteAppOption()
@@ -162,4 +190,26 @@ void LiteAppOption::apply()
             qApp->setStyleSheet(styleSheet);
         }
     }
+}
+
+void LiteAppOption::shortcutsChanaged(QStandardItem *bind)
+{
+    if (!bind) {
+        return;
+    }
+    QStandardItem *item = m_keysModel->item(bind->row(),0);
+    if (!item) {
+        return;
+    }
+    QString id = item->text();
+    QString def = m_liteApp->actionManager()->defActionShortcuts(id);
+    QFont font = bind->font();
+    if (def != bind->text()) {
+        font.setBold(true);
+    } else {
+        font.setBold(false);
+    }
+    bind->setFont(font);
+
+    m_liteApp->actionManager()->setActionShourtcuts(id,bind->text());
 }
