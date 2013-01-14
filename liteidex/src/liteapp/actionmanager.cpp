@@ -191,7 +191,7 @@ void ActionManager::insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act)
     }
 }
 
-void ActionManager::regAction(const QString &id, QAction *act, const QString &defShortcuts)
+void ActionManager::regAction(QAction *act, const QString &id, const QString &defShortcuts)
 {
     QString shortcuts = m_liteApp->settings()->value("shortcuts/"+id,defShortcuts).toString();
     QList<QKeySequence> keys;
@@ -199,4 +199,9 @@ void ActionManager::regAction(const QString &id, QAction *act, const QString &de
         keys.append(QKeySequence(key));
     }
     act->setShortcuts(keys);
+}
+
+void ActionManager::regAction(QAction *act, const QString &id, const QKeySequence::StandardKey &def)
+{
+    regAction(act,id,QKeySequence(def).toString());
 }

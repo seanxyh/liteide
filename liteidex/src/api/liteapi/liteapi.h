@@ -487,7 +487,8 @@ public:
     virtual void removeToolBar(QToolBar* toolBar) = 0;
     virtual QList<QString> toolBarList() const = 0;
     virtual void insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act) = 0;
-    virtual void regAction(const QString &id, QAction *act, const QString &defShortcuts) = 0;
+    virtual void regAction(QAction *act, const QString &id, const QString &defShortcuts) = 0;
+    virtual void regAction(QAction *act, const QString &id, const QKeySequence::StandardKey &def) = 0;
 };
 
 class IGoProxy : public QObject
