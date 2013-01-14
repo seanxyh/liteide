@@ -317,35 +317,11 @@ void GolangDoc::currentEnvChanged(LiteApi::IEnv*)
 void GolangDoc::loadEnv()
 {
     QProcessEnvironment env = LiteApi::getGoEnvironment(m_liteApp);//m_envManager->currentEnvironment();
-    QString goroot = env.value("GOROOT");
-    QString gobin = env.value("GOBIN");
-    if (!goroot.isEmpty() && gobin.isEmpty()) {
-        gobin = goroot+"/bin";
-    }
-    QString godoc = FileUtil::findExecute(gobin+"/godoc");
-    if (godoc.isEmpty()) {
-        godoc = FileUtil::lookPath("godoc",env,true);
-    }
-    QString find = FileUtil::findExecute(m_liteApp->applicationPath()+"/godocview");
-    if (find.isEmpty()) {
-        find = FileUtil::lookPath("godocview",env,true);
-    }
-    m_goapiCmd = FileUtil::findExecute(m_liteApp->applicationPath()+"/goapi");
-    if (m_goapiCmd.isEmpty()) {
-        m_goapiCmd = FileUtil::lookPath("goapi",env,false);
-    }
-    if (m_goapiCmd.isEmpty()) {
-        m_goapiCmd = FileUtil::lookPathInDir("goapi",m_liteApp->applicationPath());
-    }
-    if (m_goapiCmd.isEmpty()) {
-        m_liteApp->appendLog("GolangDoc","not find goapi",true);
-    } else {
-        m_liteApp->appendLog("GolangDoc",QString("load %1").arg(m_goapiCmd),false);
-    }
+    m_goroot = env.value("GOROOT");
 
-    m_goroot = goroot;
-    m_godocCmd = godoc;
-    m_findCmd = find;
+    m_godocCmd = FileUtil::lookupGoBin("godoc",m_liteApp);
+    m_godocViewCmd = FileUtil::lookupLiteBin("godocview",m_liteApp);
+    m_goapiCmd = FileUtil::lookupLiteBin("goapi",m_liteApp);
 
     m_findProcess->setEnvironment(env.toStringList());
     m_godocProcess->setEnvironment(env.toStringList());
@@ -354,7 +330,7 @@ void GolangDoc::loadEnv()
     m_helpProcess->setEnvironment(env.toStringList());
 
     m_pathFileMap.clear();
-    QDir dir(goroot);
+    QDir dir(m_goroot);
     if (dir.exists() && dir.cd("doc")) {
         foreach(QFileInfo info, dir.entryInfoList(QStringList()<<"*.html",QDir::Files)) {
             QFile f(info.filePath());
@@ -388,24 +364,24 @@ void GolangDoc::activeBrowser()
 
 void GolangDoc::listPkg()
 {
-    if (m_findCmd.isEmpty()) {
+    if (m_godocViewCmd.isEmpty()) {
         return;
     }
     QStringList args;
     args << "-mode=lite" << "-list=pkg";
     m_findData.clear();
-    m_findProcess->start(m_findCmd,args);
+    m_findProcess->start(m_godocViewCmd,args);
 }
 
 void GolangDoc::listCmd()
 {
-    if (m_findCmd.isEmpty()) {
+    if (m_godocViewCmd.isEmpty()) {
         return;
     }
     QStringList args;
     args << "-mode=lite" << "-list=cmd";
     m_findData.clear();
-    m_findProcess->start(m_findCmd,args);
+    m_findProcess->start(m_godocViewCmd,args);
 }
 
 void GolangDoc::godocFindPackage(QString pkgname)
@@ -430,13 +406,13 @@ void GolangDoc::findPackage(QString pkgname)
     if (pkgname.isEmpty()) {
         return;
     }
-    if (m_findCmd.isEmpty()) {
+    if (m_godocViewCmd.isEmpty()) {
         return;
     }
     QStringList args;
     args << "-mode=lite" << "-find" << pkgname;
     m_findData.clear();
-    m_findProcess->start(m_findCmd,args);
+    m_findProcess->start(m_godocViewCmd,args);
 }
 
 void GolangDoc::findOutput(QByteArray data,bool bStderr)
@@ -572,13 +548,13 @@ void GolangDoc::openUrlList(const QUrl &url)
     if (url.scheme() != "list") {
         return;
     }
-    if (m_findCmd.isEmpty()) {
+    if (m_godocViewCmd.isEmpty()) {
         return;
     }
     QStringList args;
     args << "-mode=html"<< QString("-list=%1").arg(url.path());
     m_godocData.clear();
-    m_godocProcess->start(m_findCmd,args);
+    m_godocProcess->start(m_godocViewCmd,args);
 }
 
 void GolangDoc::openUrlFind(const QUrl &url)
@@ -586,13 +562,13 @@ void GolangDoc::openUrlFind(const QUrl &url)
     if (url.scheme() != "find") {
         return;
     }
-    if (m_findCmd.isEmpty()) {
+    if (m_godocViewCmd.isEmpty()) {
         return;
     }
     QStringList args;
     args << "-mode=html" << "-find" << url.path();
     m_godocData.clear();
-    m_godocProcess->start(m_findCmd,args);
+    m_godocProcess->start(m_godocViewCmd,args);
     return;
 }
 
@@ -766,6 +742,7 @@ QUrl GolangDoc::parserUrl(const QUrl &_url)
             }
             if (!info.exists()) {
                 QString path = url.path();
+                qDebug() << path;
                 if (path.at(0) == '/') {
                     info.setFile(QDir(m_goroot),path.right(path.length()-1));
                 } else if (m_lastUrl.scheme() == "file") {
