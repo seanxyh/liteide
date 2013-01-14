@@ -127,10 +127,10 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_docBrowser = new DocumentBrowser(m_liteApp,this);
     m_docBrowser->setName(tr("Golang Document Browser"));
 
-    QPalette p = m_docBrowser->textBrowser()->palette();
+    QPalette p = m_docBrowser->htmlWidget()->widget()->palette();
     p.setBrush(QPalette::Highlight,Qt::yellow);
     p.setColor(QPalette::HighlightedText,Qt::black);
-    m_docBrowser->textBrowser()->setPalette(p);
+    m_docBrowser->htmlWidget()->widget()->setPalette(p);
 
     QStringList paths;
     paths << m_liteApp->resourcePath()+"/golangdoc";
@@ -156,7 +156,7 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     connect(m_golangApiThread,SIGNAL(finished()),this,SLOT(loadApiFinished()));
 
     connect(m_docBrowser,SIGNAL(requestUrl(QUrl)),this,SLOT(openUrl(QUrl)));
-    connect(m_docBrowser,SIGNAL(highlighted(QUrl)),this,SLOT(highlighted(QUrl)));    
+    connect(m_docBrowser,SIGNAL(linkHovered(QUrl)),this,SLOT(highlighted(QUrl)));
     connect(m_docBrowser,SIGNAL(documentLoaded()),this,SLOT(documentLoaded()));
     connect(m_godocFindComboBox,SIGNAL(activated(QString)),this,SLOT(godocFindPackage(QString)));
     //connect(m_findEdit,SIGNAL(filterChanged(QString)),m_findFilterModel,setFilterFixedString(QString)));
@@ -924,14 +924,15 @@ void GolangDoc::currentIndexChanged(QModelIndex index)
 void GolangDoc::documentLoaded()
 {
     if (!m_docFind.isEmpty()) {
-        QTextCursor from = m_docBrowser->textBrowser()->cursorForPosition(QPoint(0,0));
-        QTextDocument *doc = m_docBrowser->textBrowser()->document();
-        QTextCursor find = doc->find(m_docFind,from,QTextDocument::FindCaseSensitively | QTextDocument::FindWholeWords);
+          m_docBrowser->htmlWidget()->findText(m_docFind,QTextDocument::FindCaseSensitively|QTextDocument::FindWholeWords);
+//        QTextCursor from = m_docBrowser->htmlWidget()->cursorForPosition(QPoint(0,0));
+//        QTextDocument *doc = m_docBrowser->htmlWidget()->document();
+//        QTextCursor find = doc->find(m_docFind,from,QTextDocument::FindCaseSensitively | QTextDocument::FindWholeWords);
 
-        if (!find.isNull()) {
-            m_docBrowser->textBrowser()->setTextCursor(find);
-        }
-        m_docFind.clear();
+//        if (!find.isNull()) {
+//            m_docBrowser->htmlWidget()->setTextCursor(find);
+//        }
+//        m_docFind.clear();
     }
 }
 
