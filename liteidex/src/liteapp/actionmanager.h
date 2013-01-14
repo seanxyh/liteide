@@ -47,6 +47,10 @@ public:
     virtual void insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act);
     virtual void regAction(QAction *act, const QString &id, const QString &defShortcuts);
     virtual void regAction(QAction *act, const QString &id, const QKeySequence::StandardKey &def);
+    virtual QStringList actionKeys() const;
+    virtual QString defActionShortcuts(const QString &key);
+    virtual void setActionShourtcuts(const QString &id, const QString &shortcuts);
+    virtual QAction *findActionForKey(const QString &id);
 protected:
     QMap<QString,QMenu*>   m_idMenuMap;
     QMap<QString,QToolBar*> m_idToolBarMap;
@@ -54,6 +58,8 @@ protected:
     QMenu *m_viewToolMenu;
     QAction *m_baseToolBarAct;
     QAction *m_baseBrowserAct;
+    QMap<QString,QString> m_actionKeyMap;
+    QMultiMap<QString,QAction*> m_actionMap;
 };
 
 #endif // ACTIONMANAGER_H
