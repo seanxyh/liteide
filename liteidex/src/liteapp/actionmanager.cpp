@@ -190,3 +190,13 @@ void ActionManager::insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act)
         m_viewMenu->addAction(act);
     }
 }
+
+void ActionManager::regAction(const QString &id, QAction *act, const QString &defShortcuts)
+{
+    QString shortcuts = m_liteApp->settings()->value("shortcuts/"+id,defShortcuts).toString();
+    QList<QKeySequence> keys;
+    foreach(QString key, shortcuts.split(";",QString::SkipEmptyParts)) {
+        keys.append(QKeySequence(key));
+    }
+    act->setShortcuts(keys);
+}
