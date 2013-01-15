@@ -271,16 +271,10 @@
       <zorder>groupBox_4</zorder>
       <zorder>verticalSpacer</zorder>
       <zorder>groupBox</zorder>
-      <zorder>label_2</zorder>
-      <zorder>groupBox_5</zorder>
-      <zorder>groupBox_2</zorder>
-      <zorder>groupBox_4</zorder>
-      <zorder>verticalSpacer</zorder>
-      <zorder>groupBox</zorder>
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string>Key Sequence</string>
+       <string>Keyboard</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
@@ -289,7 +283,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="resetAllButton">
            <property name="text">
             <string>Reset All</string>
            </property>
