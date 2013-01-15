@@ -473,8 +473,7 @@ enum VIEWMENU_ACTION_POS
 };
 
 struct ActionInfo {
-    QString id;
-    QString text;
+    QString label;
     QString defShortcuts;
     QString shortcuts;
     QList<QKeySequence> keys;

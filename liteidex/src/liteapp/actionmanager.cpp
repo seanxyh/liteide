@@ -201,8 +201,7 @@ void ActionManager::regAction(QAction *act, const QString &id, const QString &de
     ActionInfo *info = m_actionInfoMap.value(id);
     if (!info) {
         info = new ActionInfo;
-        info->id = id;
-        info->text = act->text();
+        info->label = act->text();
         info->defShortcuts = defShortcuts;
         info->shortcuts = m_liteApp->settings()->value("shortcuts/"+id,defShortcuts).toString();
         foreach(QString key, info->shortcuts.split(";",QString::SkipEmptyParts)) {

@@ -44,8 +44,10 @@ public:
     virtual QString name() const;
     virtual QString mimeType() const;
     virtual void apply();
+    virtual void active();
 public slots:
     void shortcutsChanaged(QStandardItem*);
+    void resetAllShortcuts();
 private:
     LiteApi::IApplication   *m_liteApp;
     QWidget           *m_widget;

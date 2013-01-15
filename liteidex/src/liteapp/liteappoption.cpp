@@ -108,32 +108,14 @@ LiteAppOption::LiteAppOption(LiteApi::IApplication *app,QObject *parent) :
     }
 
     m_keysModel = new QStandardItemModel(0,3,this);
-    m_keysModel->setHeaderData(0,Qt::Horizontal,tr("Action"));
+    m_keysModel->setHeaderData(0,Qt::Horizontal,tr("Command"));
     m_keysModel->setHeaderData(1,Qt::Horizontal,tr("Label"));
     m_keysModel->setHeaderData(2,Qt::Horizontal,tr("Shortcuts"));
     ui->keysTreeView->setModel(m_keysModel);
     ui->keysTreeView->header()->setResizeMode(QHeaderView::ResizeToContents);
 
-    foreach (QString id, m_liteApp->actionManager()->actionKeys()) {
-        LiteApi::ActionInfo *info = m_liteApp->actionManager()->actionInfo(id);
-        if (!info) {
-            continue;
-        }
-        QStandardItem *item = new QStandardItem(id);
-        item->setEditable(false);
-        QStandardItem *label = new QStandardItem(info->text);
-        label->setEditable(false);
-        QStandardItem *bind = new QStandardItem(info->shortcuts);
-        bind->setEditable(true);
-        if (info->shortcuts != info->defShortcuts) {
-            QFont font = bind->font();
-            font.setBold(true);
-            bind->setFont(font);
-        }
-        m_keysModel->appendRow(QList<QStandardItem*>() << item << label << bind);
-    }
-
     connect(m_keysModel,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(shortcutsChanaged(QStandardItem*)));
+    connect(ui->resetAllButton,SIGNAL(clicked()),this,SLOT(resetAllShortcuts()));
 }
 
 LiteAppOption::~LiteAppOption()
@@ -193,6 +175,41 @@ void LiteAppOption::apply()
             qApp->setStyleSheet(styleSheet);
         }
     }
+
+    for (int i = 0; i < m_keysModel->rowCount(); i++) {
+        QStandardItem *id = m_keysModel->item(i,0);
+        if (!id) {
+            continue;
+        }
+        QStandardItem *bind = m_keysModel->item(i,2);
+        if (!bind) {
+            continue;
+        }
+        m_liteApp->actionManager()->setActionShourtcuts(id->text(),bind->text());
+    }
+}
+
+void LiteAppOption::active()
+{
+    m_keysModel->removeRows(0,m_keysModel->rowCount());
+    foreach (QString id, m_liteApp->actionManager()->actionKeys()) {
+        LiteApi::ActionInfo *info = m_liteApp->actionManager()->actionInfo(id);
+        if (!info) {
+            continue;
+        }
+        QStandardItem *item = new QStandardItem(id);
+        item->setEditable(false);
+        QStandardItem *label = new QStandardItem(info->label);
+        label->setEditable(false);
+        QStandardItem *bind = new QStandardItem(info->shortcuts);
+        bind->setEditable(true);
+        if (info->shortcuts != info->defShortcuts) {
+            QFont font = bind->font();
+            font.setBold(true);
+            bind->setFont(font);
+        }
+        m_keysModel->appendRow(QList<QStandardItem*>() << item << label << bind);
+    }
 }
 
 void LiteAppOption::shortcutsChanaged(QStandardItem *bind)
@@ -216,6 +233,26 @@ void LiteAppOption::shortcutsChanaged(QStandardItem *bind)
         font.setBold(false);
     }
     bind->setFont(font);
+}
 
-    m_liteApp->actionManager()->setActionShourtcuts(id,bind->text());
+void LiteAppOption::resetAllShortcuts()
+{
+    for (int i = 0; i < m_keysModel->rowCount(); i++) {
+        QStandardItem *id = m_keysModel->item(i,0);
+        if (!id) {
+            continue;
+        }
+        QStandardItem *bind = m_keysModel->item(i,2);
+        if (!bind) {
+            continue;
+        }
+        LiteApi::ActionInfo *info = m_liteApp->actionManager()->actionInfo(id->text());
+        if (!info) {
+            continue;
+        }
+        bind->setText(info->defShortcuts);
+        QFont font = bind->font();
+        font.setBold(false);
+        bind->setFont(font);
+    }
 }
