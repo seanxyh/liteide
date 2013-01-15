@@ -46,6 +46,11 @@ ActionManager::ActionManager(QObject *parent) :
 {
 }
 
+ActionManager::~ActionManager()
+{
+    qDeleteAll(m_actionInfoMap);
+}
+
 bool ActionManager::initWithApp(IApplication *app)
 {
     if (!IActionManager::initWithApp(app)) {
@@ -193,14 +198,20 @@ void ActionManager::insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act)
 
 void ActionManager::regAction(QAction *act, const QString &id, const QString &defShortcuts)
 {
-    QString shortcuts = m_liteApp->settings()->value("shortcuts/"+id,defShortcuts).toString();
-    QList<QKeySequence> keys;
-    foreach(QString key, shortcuts.split(";",QString::SkipEmptyParts)) {
-        keys.append(QKeySequence(key));
+    ActionInfo *info = m_actionInfoMap.value(id);
+    if (!info) {
+        info = new ActionInfo;
+        info->id = id;
+        info->text = act->text();
+        info->defShortcuts = defShortcuts;
+        info->shortcuts = m_liteApp->settings()->value("shortcuts/"+id,defShortcuts).toString();
+        foreach(QString key, info->shortcuts.split(";",QString::SkipEmptyParts)) {
+            info->keys.append(QKeySequence(key));
+        }
+        m_actionInfoMap.insert(id,info);
     }
-    act->setShortcuts(keys);
-    m_actionKeyMap.insert(id,defShortcuts);
-    m_actionMap.insert(id,act);
+    act->setShortcuts(info->keys);
+    info->actions.append(act);
 }
 
 void ActionManager::regAction(QAction *act, const QString &id, const QKeySequence::StandardKey &def)
@@ -210,27 +221,27 @@ void ActionManager::regAction(QAction *act, const QString &id, const QKeySequenc
 
 QStringList ActionManager::actionKeys() const
 {
-    return m_actionKeyMap.keys();
+    return m_actionInfoMap.keys();
 }
 
-QString ActionManager::defActionShortcuts(const QString &key)
+ActionInfo *ActionManager::actionInfo(const QString &key)
 {
-    return m_actionKeyMap.value(key);
+    return m_actionInfoMap.value(key);
 }
 
 void ActionManager::setActionShourtcuts(const QString &id, const QString &shortcuts)
 {
-    QList<QKeySequence> keys;
-    foreach(QString key, shortcuts.split(";",QString::SkipEmptyParts)) {
-        keys.append(QKeySequence(key));
+    ActionInfo *info = m_actionInfoMap.value(id);
+    if (!info) {
+        return;
     }
-    foreach (QAction *act, m_actionMap.values(id)) {
-        act->setShortcuts(keys);
+    info->shortcuts = shortcuts;
+    info->keys.clear();
+    foreach(QString key, shortcuts.split(";",QString::SkipEmptyParts)) {
+        info->keys.append(QKeySequence(key));
+    }
+    foreach (QAction *act, info->actions) {
+        act->setShortcuts(info->keys);
     }
     m_liteApp->settings()->setValue("shortcuts/"+id,shortcuts);
-}
-
-QAction *ActionManager::findActionForKey(const QString &id)
-{
-    return m_actionMap.value(id);
 }
