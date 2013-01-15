@@ -191,19 +191,7 @@ LiteApp::LiteApp()
     connect(m_goProxy,SIGNAL(done(QByteArray,QByteArray)),this,SLOT(goproxyDone(QByteArray,QByteArray)));
 }
 
-static QString s_ver = "LiteIDE X15.2";
-
-static QString s_info =
-"2011-2013(c)\n"
-"visualfc@gmail.com\n"
-"\n"
-"http://code.google.com/p/liteide\n"
-"http://code.google.com/p/golangide\n"
-"https://github.com/visualfc/liteide";
-
-
-
-static QImage makeSplashImage()
+static QImage makeSplashImage(LiteApi::IApplication *app)
 {
     QRect r(0,0,400,280);
     QImage image(r.size(),QImage::Format_ARGB32_Premultiplied);
@@ -226,14 +214,14 @@ static QImage makeSplashImage()
     font.setItalic(true);
     painter.setPen(Qt::white);
     painter.setFont(font);
-    painter.drawText(2,2,r.width()-2,th,Qt::AlignCenter,s_ver);
+    painter.drawText(2,2,r.width()-2,th,Qt::AlignCenter,app->version());
 
     font.setPointSize(9);
     font.setItalic(false);
     font.setBold(true);
     painter.setPen(Qt::black);
     painter.setFont(font);
-    painter.drawText(10,th,r.width()-10,bh,Qt::AlignLeft|Qt::AlignVCenter,s_info);
+    painter.drawText(10,th,r.width()-10,bh,Qt::AlignLeft|Qt::AlignVCenter,app->copyright());
 
     painter.drawImage(r.width()-145,r.height()-145,QImage("icon:/images/liteide-logo128.png"));
     return image;
@@ -244,7 +232,7 @@ void LiteApp::load(bool bUseSession)
     QSplashScreen *splash = 0;
     bool bSplash = m_settings->value(LITEAPP_SPLASHVISIBLE,true).toBool();
     if (bSplash) {
-        splash = new QSplashScreen(QPixmap::fromImage(makeSplashImage()),Qt::WindowStaysOnTopHint);
+        splash = new QSplashScreen(QPixmap::fromImage(makeSplashImage(this)),Qt::WindowStaysOnTopHint);
     }
     if (bSplash) {
         splash->show();
@@ -443,6 +431,33 @@ QString LiteApp::pluginPath() const
 QString LiteApp::storagePath() const
 {
     return m_storagePath;
+}
+
+QString LiteApp::shortVer() const
+{
+    return "X16";
+}
+
+QString LiteApp::version() const
+{
+    return "LiteIDE X16";
+}
+
+QString LiteApp::name() const
+{
+    return "LiteIDE";
+}
+
+QString LiteApp::copyright() const
+{
+    static QString s_info =
+    "2011-2013(c)\n"
+    "visualfc@gmail.com\n"
+    "\n"
+    "http://code.google.com/p/liteide\n"
+    "http://code.google.com/p/golangide\n"
+    "https://github.com/visualfc/liteide";
+    return s_info;
 }
 
 void LiteApp::setPluginPath(const QString &path)
@@ -742,9 +757,9 @@ void LiteApp::saveSession(const QString &name)
 
     QStringList fileList;
     foreach (IEditor* ed,m_editorManager->sortedEditorList()) {
-        if (ed->mimeType().indexOf("liteide/") == 0) {
-            continue;
-        }
+//        if (ed->mimeType().indexOf("liteide/") == 0) {
+//            continue;
+//        }
         if (ed->filePath().isEmpty()) {
             continue;
         }
