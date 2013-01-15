@@ -99,10 +99,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_customModel->setHeaderData(0,Qt::Horizontal,tr("Name"));
     m_customModel->setHeaderData(1,Qt::Horizontal,tr("Value"));
 
-    m_configAct = new QAction(QIcon("icon:litebuild/images/config.png"),tr("Config"),this);
-    m_configAct->setToolTip(tr("Build Config"));
-    //m_toolBar->addSeparator();
-    //m_toolBar->addAction(m_configAct);
+    m_configAct = new QAction(QIcon("icon:litebuild/images/config.png"),tr("Build Config"),this);
     m_liteApp->actionManager()->regAction(m_configAct,"LiteBuild.Config","");
 
     m_process = new ProcessEx(this);
