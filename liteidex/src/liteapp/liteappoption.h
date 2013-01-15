@@ -48,6 +48,9 @@ public:
 public slots:
     void shortcutsChanaged(QStandardItem*);
     void resetAllShortcuts();
+    void resetShortcuts();
+    void importShortcuts();
+    void exportShortcuts();
 private:
     LiteApi::IApplication   *m_liteApp;
     QWidget           *m_widget;
