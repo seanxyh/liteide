@@ -543,6 +543,11 @@ public:
     virtual QString pluginPath() const = 0;
     virtual QString storagePath() const = 0;
 
+    virtual QString shortVer() const = 0;
+    virtual QString version() const = 0;
+    virtual QString name() const = 0;
+    virtual QString copyright() const = 0;
+
     virtual QList<IPlugin*> pluginList() const = 0;
 
     virtual void loadSession(const QString &name) = 0;
@@ -682,7 +687,7 @@ inline QSize getToolBarIconSize() {
 
 } //namespace LiteApi
 
-Q_DECLARE_INTERFACE(LiteApi::IPluginFactory,"LiteApi.IPluginFactory/X15.1")
+Q_DECLARE_INTERFACE(LiteApi::IPluginFactory,"LiteApi.IPluginFactory/X16")
 
 
 #endif //__LITEAPI_H__
