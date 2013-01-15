@@ -280,7 +280,7 @@
        <item>
         <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>Format: {Ctrl+B},{Ctrl+Shift+B},{Ctrl+K,Ctrl+U},{Ctrl+Shit+Z;Ctrl+Y}</string>
+          <string>Format: {Ctrl+B},{Ctrl+Shift+B},{Ctrl+K,Ctrl+U},{Ctrl+Shift+Z;Ctrl+Y}</string>
          </property>
         </widget>
        </item>
@@ -289,6 +289,13 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QCheckBox" name="standardCheckBox">
+           <property name="text">
+            <string>Hide Standard</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QPushButton" name="resetButton">
            <property name="text">
