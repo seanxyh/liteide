@@ -103,23 +103,27 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
     m_configAct->setToolTip(tr("Build Config"));
     //m_toolBar->addSeparator();
     //m_toolBar->addAction(m_configAct);
+    m_liteApp->actionManager()->regAction(m_configAct,"LiteBuild.Config","");
 
     m_process = new ProcessEx(this);
     m_output = new TextOutput;
     m_output->setMaxLine(1024);
 
-    QAction *stopAct = new QAction(tr("Stop Action"),this);
-    stopAct->setIcon(QIcon("icon:litebuild/images/stopaction.png"));
-    QAction *clearAct = new QAction(tr("Clear All"),this);
-    clearAct->setIcon(QIcon("icon:images/cleanoutput.png"));
+    m_stopAct = new QAction(tr("Stop Action"),this);
+    m_stopAct->setIcon(QIcon("icon:litebuild/images/stopaction.png"));
+    m_liteApp->actionManager()->regAction(m_stopAct,"LiteBuild.Stop","");
 
-    connect(stopAct,SIGNAL(triggered()),this,SLOT(stopAction()));
-    connect(clearAct,SIGNAL(triggered()),m_output,SLOT(clear()));
+    m_clearAct = new QAction(tr("Clear All"),this);
+    m_clearAct->setIcon(QIcon("icon:images/cleanoutput.png"));
+    m_liteApp->actionManager()->regAction(m_clearAct,"LiteBuild.Clear","");
+
+    connect(m_stopAct,SIGNAL(triggered()),this,SLOT(stopAction()));
+    connect(m_clearAct,SIGNAL(triggered()),m_output,SLOT(clear()));
 
     m_buildMenu->addAction(m_configAct);
     m_buildMenu->addSeparator();
-    m_buildMenu->addAction(stopAct);
-    m_buildMenu->addAction(clearAct);
+    m_buildMenu->addAction(m_stopAct);
+    m_buildMenu->addAction(m_clearAct);
     m_buildMenu->addSeparator();
 
     //m_liteApp->outputManager()->addOutuput(m_output,tr("Build Output"));
@@ -127,7 +131,7 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
                                                                 m_output,"buildoutput",
                                                                 tr("Build Output"),
                                                                 false,
-                                                                QList<QAction*>() << stopAct << clearAct);
+                                                                QList<QAction*>() << m_stopAct << m_clearAct);
 
     connect(m_liteApp,SIGNAL(loaded()),this,SLOT(appLoaded()));
     //connect(m_liteApp->projectManager(),SIGNAL(currentProjectChanged(LiteApi::IProject*)),this,SLOT(currentProjectChanged(LiteApi::IProject*)));
@@ -671,6 +675,13 @@ void LiteBuild::editorCreated(LiteApi::IEditor *editor)
     toolBar->insertActions(spacer,actions);
 
     QMenu *menu = new QMenu(editor->widget());
+
+    menu->addAction(m_configAct);
+    menu->addSeparator();
+    menu->addAction(m_stopAct);
+    menu->addAction(m_clearAct);
+    menu->addSeparator();
+
     foreach (QAction *act, actions) {
         QMenu *subMenu = act->menu();
         if (subMenu) {

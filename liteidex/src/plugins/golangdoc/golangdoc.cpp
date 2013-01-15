@@ -145,10 +145,10 @@ GolangDoc::GolangDoc(LiteApi::IApplication *app, QObject *parent) :
     m_liteApp->actionManager()->insertViewMenu(LiteApi::ViewMenuBrowserPos,m_browserAct);
 
     m_findDocAct = new QAction(tr("View Expression Information"),this);
-    m_findDocAct->setShortcut(QKeySequence::HelpContents);
+    m_liteApp->actionManager()->regAction(m_findDocAct,"Golang.ViewInfo",QKeySequence::HelpContents);
 
     m_jumpDeclAct = new QAction(tr("Jump to Declaration"),this);
-    m_jumpDeclAct->setShortcut(QKeySequence("F2"));
+    m_liteApp->actionManager()->regAction(m_jumpDeclAct,"Golang.JumpToDeclaration","F2");
 
     connect(m_toolWindowAct,SIGNAL(triggered(bool)),this,SLOT(triggeredToolWindow(bool)));
     connect(m_findDocAct,SIGNAL(triggered()),this,SLOT(editorFindDoc()));
