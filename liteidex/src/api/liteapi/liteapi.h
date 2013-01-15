@@ -472,6 +472,15 @@ enum VIEWMENU_ACTION_POS
     ViewMenuLastPos
 };
 
+struct ActionInfo {
+    QString id;
+    QString text;
+    QString defShortcuts;
+    QString shortcuts;
+    QList<QKeySequence> keys;
+    QList<QAction*> actions;
+};
+
 class IActionManager : public IManager
 {
     Q_OBJECT
@@ -490,9 +499,8 @@ public:
     virtual void regAction(QAction *act, const QString &id, const QString &defShortcuts) = 0;
     virtual void regAction(QAction *act, const QString &id, const QKeySequence::StandardKey &def) = 0;
     virtual QStringList actionKeys() const = 0;
-    virtual QString defActionShortcuts(const QString &key) = 0;
+    virtual ActionInfo *actionInfo(const QString &key) = 0;
     virtual void setActionShourtcuts(const QString &id, const QString &shortcuts) = 0;
-    virtual QAction *findActionForKey(const QString &id) = 0;
 };
 
 class IGoProxy : public QObject
