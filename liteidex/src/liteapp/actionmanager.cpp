@@ -201,15 +201,23 @@ void ActionManager::regAction(QAction *act, const QString &id, const QString &de
     ActionInfo *info = m_actionInfoMap.value(id);
     if (!info) {
         info = new ActionInfo;
-        info->label = act->text();
+        if (act) {
+            info->label = act->text();
+        }
         info->defShortcuts = defShortcuts;
         info->shortcuts = m_liteApp->settings()->value("shortcuts/"+id,defShortcuts).toString();
         foreach(QString key, info->shortcuts.split(";",QString::SkipEmptyParts)) {
             info->keys.append(QKeySequence(key));
         }
         m_actionInfoMap.insert(id,info);
+    }    
+    if (!act) {
+        return;
     }
     act->setShortcuts(info->keys);
+    if (!info->shortcuts.isEmpty()) {
+        act->setToolTip(QString("%1 (%2)").arg(act->text()).arg(info->shortcuts));
+    }
     info->actions.append(act);
 }
 
@@ -241,6 +249,9 @@ void ActionManager::setActionShourtcuts(const QString &id, const QString &shortc
     }
     foreach (QAction *act, info->actions) {
         act->setShortcuts(info->keys);
+        if (!info->shortcuts.isEmpty()) {
+            act->setToolTip(QString("%1 (%2)").arg(act->text()).arg(info->shortcuts));
+        }
     }
     m_liteApp->settings()->setValue("shortcuts/"+id,shortcuts);
 }
