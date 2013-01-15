@@ -147,6 +147,22 @@ LiteBuild::LiteBuild(LiteApi::IApplication *app, QObject *parent) :
 
     foreach(LiteApi::IBuild *build, m_buildManager->buildList()) {
         connect(build,SIGNAL(buildAction(LiteApi::IBuild*,LiteApi::BuildAction*)),this,SLOT(buildAction(LiteApi::IBuild*,LiteApi::BuildAction*)));
+        QList<QAction*> actionList;
+        foreach(QAction *act, build->actions()) {
+            QMenu *subMenu = act->menu();
+            if (subMenu) {
+                actionList.append(subMenu->actions());
+            } else {
+                actionList.append(act);
+            }
+        }
+        foreach(QAction *act, actionList) {
+            QStringList shortcuts;
+            foreach(QKeySequence key, act->shortcuts()) {
+                shortcuts.append(key.toString());
+            }
+            m_liteApp->actionManager()->regAction(act,"LiteBuild."+act->objectName(),shortcuts.join(";"));
+        }
     }    
 }
 
