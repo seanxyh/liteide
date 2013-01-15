@@ -196,7 +196,7 @@ void ActionManager::insertViewMenu(VIEWMENU_ACTION_POS pos, QAction *act)
     }
 }
 
-void ActionManager::regAction(QAction *act, const QString &id, const QString &defShortcuts)
+void ActionManager::regAction(QAction *act, const QString &id, const QString &defShortcuts, bool standard)
 {
     ActionInfo *info = m_actionInfoMap.value(id);
     if (!info) {
@@ -204,6 +204,7 @@ void ActionManager::regAction(QAction *act, const QString &id, const QString &de
         if (act) {
             info->label = act->text();
         }
+        info->standard = standard;
         info->defShortcuts = defShortcuts;
         info->shortcuts = m_liteApp->settings()->value("shortcuts/"+id,defShortcuts).toString();
         foreach(QString key, info->shortcuts.split(";",QString::SkipEmptyParts)) {
@@ -223,7 +224,7 @@ void ActionManager::regAction(QAction *act, const QString &id, const QString &de
 
 void ActionManager::regAction(QAction *act, const QString &id, const QKeySequence::StandardKey &def)
 {
-    regAction(act,id,QKeySequence(def).toString());
+    regAction(act,id,QKeySequence(def).toString(),true);
 }
 
 QStringList ActionManager::actionKeys() const

@@ -560,7 +560,7 @@ void LiteApp::createActions()
 
     m_fullScreent = new QAction(tr("Full Screen"),m_mainwindow);
     m_fullScreent->setCheckable(true);
-    m_actionManager->regAction(m_fullScreent,"LiteApp.FullScreen","Ctrl+Shit+F11");
+    m_actionManager->regAction(m_fullScreent,"LiteApp.FullScreen","Ctrl+Shift+F11");
 
     m_aboutAct = new QAction(tr("About LiteIDE..."),m_mainwindow);
     m_actionManager->regAction(m_aboutAct,"LiteApp.About","");

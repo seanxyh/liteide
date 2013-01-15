@@ -46,6 +46,7 @@ public:
     virtual void apply();
     virtual void active();
 public slots:
+    void reloadShortcuts();
     void shortcutsChanaged(QStandardItem*);
     void resetAllShortcuts();
     void resetShortcuts();

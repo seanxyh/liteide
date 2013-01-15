@@ -109,18 +109,21 @@ LiteAppOption::LiteAppOption(LiteApi::IApplication *app,QObject *parent) :
         ui->buttonGroup->buttons().at(id)->setChecked(true);
     }
 
-    m_keysModel = new QStandardItemModel(0,3,this);
+    m_keysModel = new QStandardItemModel(0,4,this);
     m_keysModel->setHeaderData(0,Qt::Horizontal,tr("Command"));
     m_keysModel->setHeaderData(1,Qt::Horizontal,tr("Label"));
     m_keysModel->setHeaderData(2,Qt::Horizontal,tr("Shortcuts"));
+    m_keysModel->setHeaderData(3,Qt::Horizontal,tr("Standard"));
     ui->keysTreeView->setModel(m_keysModel);
     ui->keysTreeView->header()->setResizeMode(QHeaderView::ResizeToContents);
+    ui->standardCheckBox->setChecked(true);
 
     connect(m_keysModel,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(shortcutsChanaged(QStandardItem*)));
     connect(ui->resetAllButton,SIGNAL(clicked()),this,SLOT(resetAllShortcuts()));
     connect(ui->resetButton,SIGNAL(clicked()),this,SLOT(resetShortcuts()));
     connect(ui->importButton,SIGNAL(clicked()),this,SLOT(importShortcuts()));
     connect(ui->exportButton,SIGNAL(clicked()),this,SLOT(exportShortcuts()));
+    connect(ui->standardCheckBox,SIGNAL(toggled(bool)),this,SLOT(reloadShortcuts()));
 }
 
 LiteAppOption::~LiteAppOption()
@@ -196,24 +199,37 @@ void LiteAppOption::apply()
 
 void LiteAppOption::active()
 {
+    this->reloadShortcuts();
+}
+
+void LiteAppOption::reloadShortcuts()
+{
     m_keysModel->removeRows(0,m_keysModel->rowCount());
+    bool bCheckStandard = ui->standardCheckBox->isChecked();
     foreach (QString id, m_liteApp->actionManager()->actionKeys()) {
         LiteApi::ActionInfo *info = m_liteApp->actionManager()->actionInfo(id);
         if (!info) {
+            continue;
+        }
+        if (bCheckStandard && info->standard && (info->shortcuts == info->defShortcuts)) {
             continue;
         }
         QStandardItem *item = new QStandardItem(id);
         item->setEditable(false);
         QStandardItem *label = new QStandardItem(info->label);
         label->setEditable(false);
+        QStandardItem *std = new QStandardItem;
+        std->setCheckable(true);
+        std->setEnabled(false);
+        std->setCheckState(info->standard?Qt::Checked:Qt::Unchecked);
         QStandardItem *bind = new QStandardItem(info->shortcuts);
         bind->setEditable(true);
         if (info->shortcuts != info->defShortcuts) {
             QFont font = bind->font();
             font.setBold(true);
-            bind->setFont(font);
+            bind->setFont(font);            
         }
-        m_keysModel->appendRow(QList<QStandardItem*>() << item << label << bind);
+        m_keysModel->appendRow(QList<QStandardItem*>() << item << label << bind << std);
     }
 }
 
