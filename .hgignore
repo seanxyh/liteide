@@ -11,4 +11,5 @@ syntax: glob
 *.pdn
 *-build-*
 liteidex/liteide
-build
+build*
+liteide-build*
